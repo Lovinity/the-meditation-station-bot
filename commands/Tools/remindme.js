@@ -15,6 +15,8 @@ module.exports = class extends Command {
 	}
 
 	async run(msg, [when, ...text]) {
+            if (msg.channel.id !== msg.guild.settings.get('botChannel'))
+                return msg.sendMessage(`:x: Sorry, but this command may only be used in the bot channel.`)
 		const reminder = await this.client.schedule.create('reminder', when, {
 			data: {
 				channel: msg.channel.id,
@@ -22,7 +24,7 @@ module.exports = class extends Command {
 				text: text.join(' | ')
 			}
 		});
-		return msg.sendMessage(`Got it! I will remind you. Remember this reminder ID: \`${reminder.id}\``);
+		return msg.sendMessage(`:white_check_mark: Got it! I will remind you. Remember this reminder ID: \`${reminder.id}\``);
 	}
 
 };

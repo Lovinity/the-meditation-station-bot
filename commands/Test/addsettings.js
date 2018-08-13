@@ -11,9 +11,12 @@ module.exports = class extends Command {
 	}
 
 	async run(message, []) {
-            //this.client.settings.guilds.add("modRole", { type: "Role" });
-            //this.client.settings.guilds.add("modLogChannel", { type: "TextChannel" });
-            //this.client.settings.guilds.add("reportLogChannel", { type: "TextChannel" });
+            //const { schema } = this.client.gateways.guilds;
+            //schema.add("botChannel", { type: "TextChannel" });
+            //schema.add("modLogChannel", { type: "TextChannel" });
+            //schema.add("reportLogChannel", { type: "TextChannel" });
+            //schema.add("noSelfModRole", { type: "Role" });
+            //schema.add("muteRole", { type: "Role" });
 	}
 
 };
