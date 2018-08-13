@@ -46,8 +46,11 @@ module.exports = class extends Command {
     // Run schema initialising
     async init() {
         var wait = require('wait-for-stuff');
+        this.client.log(`Waiting for gateways...`, 'debug');
         wait.for.property(this.client, 'gateways');
+        this.client.log(`Waiting for guilds...`, 'debug');
         wait.for.property(this.client.gateways, 'guilds');
+        this.client.log(`Complete`, 'debug');
         // Ensure guild configs have the keys needed for this piece
         const {schema} = this.client.gateways.guilds;
 
