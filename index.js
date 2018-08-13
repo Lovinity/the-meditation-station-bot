@@ -9,7 +9,7 @@ new Client({
     commandEditing: true,
     typing: true,
     providers: {
-        default: 'mongodb'
+        default: 'json'
     },
     readyMessage: (client) => `Ready to serve ${client.guilds.size} guilds and ${client.users.size} users`
 }).login(config.botToken);
