@@ -1,0 +1,23 @@
+{
+  "name": "the-meditation-station-bot",
+  "version": "1.0.0",
+  "description": "This is a Klasa bot used for The Meditation Station Discord",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lovinity/the-meditation-station-bot.git"
+  },
+  "author": "Patrick Schmalstig",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Lovinity/the-meditation-station-bot/issues"
+  },
+  "homepage": "https://github.com/Lovinity/the-meditation-station-bot#readme",
+  "dependencies": {
+    "discord.js": "github:hydrabolt/discord.js#master",
+    "klasa": "^0.4.0"
+  }
+}
