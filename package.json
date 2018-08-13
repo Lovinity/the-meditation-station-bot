@@ -18,7 +18,10 @@
   "homepage": "https://github.com/Lovinity/the-meditation-station-bot#readme",
   "dependencies": {
     "discord.js": "github:hydrabolt/discord.js#master",
-    "klasa": "^0.4.0",
+    "isprofanity": "^1.4.1",
+    "klasa": "github:dirigeants/klasa",
+    "mongodb": "^3.1.1",
+    "string-similarity": "^1.2.0",
     "wait-for-stuff": "^1.4.0"
   }
 }
