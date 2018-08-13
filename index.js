@@ -8,4 +8,4 @@ new Client({
     cmdEditing: true,
     typing: true,
     readyMessage: (client) => `${client.user.tag}, Ready to serve ${client.guilds.size} guilds and ${client.users.size} users`
-}).login('NDc4MDYyODEyNjIzNzk4Mjgy.DlKnHQ.0eGxaSvNk4Yszvs078r1R3kjjwk');
+}).login(process.env.BOT_TOKEN);
