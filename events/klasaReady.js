@@ -35,11 +35,8 @@ module.exports = class extends Event {
                         // We have to lodash clone the roles before we start adding them, otherwise guildMemberUpdate will interfere with this process
                         var _temp = guildMember.user.settings[guild.id].roles;
                         var temp = _.cloneDeep(_temp);
-                        console.log(temp.length);
-                        temp.forEach(function (role) {
-                            guildMember.roles.add(role);
-                        });
-                        guildMember.roles.add(verifiedRole);
+                        temp.push(verifiedRole.id);
+                        guildMember.roles.add(temp);
                     }
                 });
             }
