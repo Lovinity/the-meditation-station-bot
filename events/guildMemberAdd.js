@@ -1,4 +1,5 @@
 const {Event} = require('klasa');
+const _ = require("lodash");
 
 module.exports = class extends Event {
 
@@ -9,7 +10,9 @@ module.exports = class extends Event {
         const verifiedRole = guildMember.guild.roles.get(verified);
         if (verifiedRole)
         {
-            guildMember.settings.roles.forEach(function (role) {
+            // We have to lodash clone the roles before we start adding them, otherwise guildMemberUpdate will interfere with this process
+            var temp = _.clone(guildMember.settings.roles);
+            temp.forEach(function (role) {
                 guildMember.roles.add(role);
             });
             guildMember.roles.add(verifiedRole);
