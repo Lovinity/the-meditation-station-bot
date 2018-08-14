@@ -24,7 +24,6 @@ module.exports = class extends Event {
                     // Member has the verified role. Update database with the current roles set in case anything changed since bot was down.
                     if (guildMember.roles.get(verifiedRole.id))
                     {
-                        guildMember.user.settings.reset(`${guild.id}.roles`);
                         var roleArray = [];
                         guildMember.roles.each(function (role) {
                             if (role.id !== guild.defaultRole.id)
@@ -34,7 +33,7 @@ module.exports = class extends Event {
                         // Member does not have verified role, so add all roles from the database, and then add the verified role
                     } else {
                         // We have to lodash clone the roles before we start adding them, otherwise guildMemberUpdate will interfere with this process
-                        var _temp = guildMember.settings.roles;
+                        var _temp = guildMember.user.settings[guild.id].roles;
                         var temp = _.cloneDeep(_temp);
                         console.log(temp.length);
                         temp.forEach(function (role) {
