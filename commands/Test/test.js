@@ -11,6 +11,7 @@ module.exports = class extends Command {
     }
 
     async run(message, []) {
+        var stuff = await message.author.settings.reset(`${message.guild.id}.xp`);
         return message.send(JSON.stringify(stuff));
     }
 

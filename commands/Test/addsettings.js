@@ -19,6 +19,7 @@ module.exports = class extends Command {
             //schema.add("muteRole", { type: "Role" });
             //schema.add("conflictResolutionMembers", { type: "Integer", default: 3 });
             //schema.add("conflictResolutionTime", { type: "Integer", default: 15 });
+            //schema.add("verifiedRole", { type: "Role"});
 	}
 
 };
