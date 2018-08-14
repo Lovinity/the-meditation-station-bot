@@ -11,8 +11,7 @@ module.exports = class extends Command {
 	}
 
 	async run(message, []) {
-            return message.send(message.guild.settings.get('botChannel'));
-            return null;
+            return message.send(message.channel.settings.get(`conflictResolution`).length);
 	}
 
 };

@@ -1,0 +1,84 @@
+/*
+ * This command is used to report a conflict in a text channel. If a configured number of members report in a configured amount of time, the bot
+ * activates conflict resolution, taking "SEND_MESSAGES" away from everyone for 5 minutes while instructing a breathing exercise, and then
+ * proceeding with conflict resolution questions. Used with tasks/conflictstage[2-5].js and tasks/removeconflict.js.
+ */
+const {Command} = require('klasa');
+const moment = require('moment');
+
+module.exports = class extends Command {
+
+    constructor(...args) {
+        super(...args, {
+            description: 'Issue this command inside a text channel when there is a conflict going on in that channel.',
+            usage: '',
+            usageDelim: '',
+            cooldown: 30
+        });
+    }
+
+    async run(msg, []) {
+        // First, get configured settings
+        const conflict = msg.channel.settings.get(`conflictResolution`);
+        const confMembers = msg.guild.settings.get('conflictResolutionMembers') || 3;
+        const confTime = moment().add(parseInt(msg.guild.settings.get('conflictResolutionTime')), 'minutes').toDate();
+        const {permission} = await this.client.permissionLevels.run(msg, 4);
+        
+        // Is there an active conflict resolution on this channel? If so, forfeit.
+        if (conflict.indexOf(`ACTIVE`) !== -1)
+            return msg.send(`:x: A conflict resolution is in progress in this channel`);
+
+        // Check if this specific member used the conflict command in this specific channel recently. If not, add an entry
+        if (conflict.indexOf(`${msg.channel.id}-${msg.author.id}`) === -1)
+        {
+            // Add a scheduled task to remove this report after configured minutes.
+            const conflictadd = await this.client.schedule.create('removeconflict', confTime, {
+                data: {
+                    channel: msg.channel.id,
+                    user: msg.author.id
+                }
+            });
+
+            // Add this report into settings, both to count the number of reports, and to prevent multiple reports by the same member.
+            await msg.channel.settings.update('conflictResolution', `${msg.channel.id}-${msg.author.id}`, {action: 'add'});
+
+            // Not anough members reported yet to trigger conflict resolution? And member is not staff (level 4 permission)? Inform the channel.
+            if (conflict.length < confMembers && !permission)
+            {
+                return msg.sendMessage(`:white_check_mark: ${confMembers - (conflict.length)} more members need to issue the command in this channel in the next ${msg.guild.settings.get('conflictResolutionTime')} minutes for conflict resolution to activate.`);
+
+                // Time to activate!
+            } else {
+                // Add an "ACTIVE" entry to prevent further use of this command until conflict resolution finishes.
+                await msg.channel.settings.update('conflictResolution', `ACTIVE`, {action: 'add'});
+
+                // deny "SEND_MESSAGES" for @everyone in the channel
+                const permOverwrite = msg.channel.permissionOverwrites.get(msg.channel.guild.defaultRole.id);
+                const locked = permOverwrite ? permOverwrite.denied.has('SEND_MESSAGES') : false;
+                await msg.channel.updateOverwrite(msg.channel.guild.defaultRole, {'SEND_MESSAGES': false}, "Conflict Resolution Activation");
+
+                // Add a 5 minute task. In 5 minutes, send messages will be re-granted, and the bot will begin asking conflict resolving questions.
+                const conflictstage2 = await this.client.schedule.create('conflictstage2', moment().add(5, 'minutes').toDate(), {
+                    data: {
+                        channel: msg.channel.id
+                    }
+                });
+
+                // Send a message
+                return msg.sendMessage(`:warning: **__Everyone, please take the next 5 minutes to calm down with this breathing exercise__** :warning:
+                
+Take a deep, slow inhale through your nose for 4 counts. Hold for a count of 4. Then slowly exhale through your mouth for a count of 6. Repeat for the next 5 minutes, counting on each exhale.
+Use this gif to help you with the breathing exercise: https://giphy.com/gifs/breathing-8YfwmT1T8PsfC .
+                
+In 5 minutes, I will re-enable message sending and provide some questions to aid in resolving this conflict. Continuing this conversation elsewhere before the 5 minutes may result in staff intervention / discipline.
+`);
+            }
+            // Member already used the command recently in this channel.
+        } else {
+            return msg.sendMessage(`:x: You already issued the conflict command in this channel within the last ${msg.guild.settings.get('conflictResolutionTime')} minutes.`);
+    }
+    }
+
+};
+
+
