@@ -13,7 +13,11 @@ module.exports = class extends Command {
             description: 'Issue this command inside a text channel when there is a conflict going on in that channel.',
             usage: '',
             usageDelim: '',
-            cooldown: 30
+            cooldown: 30,
+            runIn: ['text'],
+            requiredPermissions: ["MANAGE_ROLES"],
+            requiredSettings: ["conflictResolutionMembers", "conflictResolutionYime"],
+            extendedHelp: 'When multiple people use this command in the same text channel in a certain period of time, I will intervene by muting the channel for 5 minutes and posting a breathing exercise for everyone to try. Then, I will unmute the channel and ask 3 sets of conflict resolving questions, giving 5 minutes in between each set for members to respond.'
         });
     }
 
@@ -23,10 +27,10 @@ module.exports = class extends Command {
         const confMembers = msg.guild.settings.get('conflictResolutionMembers') || 3;
         const confTime = moment().add(parseInt(msg.guild.settings.get('conflictResolutionTime')), 'minutes').toDate();
         const {permission} = await this.client.permissionLevels.run(msg, 4);
-        
+
         // Is there an active conflict resolution on this channel? If so, forfeit.
         if (conflict.indexOf(`ACTIVE`) !== -1)
-            return msg.send(`:x: A conflict resolution is in progress in this channel`);
+            return msg.send(`:x: I'm sorry to hear the conflict is still going on. But I cannot start another conflict resolution when one is in progress. If there are still issues, consider stepping away for a while, or reporting the problematic members via the instructions from the report-a-member channel.`);
 
         // Check if this specific member used the conflict command in this specific channel recently. If not, add an entry
         if (conflict.indexOf(`${msg.channel.id}-${msg.author.id}`) === -1)
