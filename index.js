@@ -1,7 +1,10 @@
 const {Client, PermissionLevels} = require('klasa');
 const config = require('./config.js');
-require('./util/conflictResolution');
+require('./util/extendTextChannel');
+require('./util/extendUser');
+require('./util/extendGuildMember');
 
+// Prepare Klasa
 var client = new Client({
     clientOptions: {
         fetchAllMembers: false
@@ -12,6 +15,7 @@ var client = new Client({
     providers: {
         default: 'json'
     },
+    // Add custom permissions
     permissionLevels: new PermissionLevels()
             // everyone can use these commands
             .add(0, () => true)
@@ -28,6 +32,7 @@ var client = new Client({
     readyMessage: (client) => `Ready to serve ${client.guilds.size} guilds and ${client.users.size} users`,
 });
 
+// Add a channels gateway
 client.gateways.register('channels', {
     conflictResolution: {
         type: 'string',
@@ -35,4 +40,8 @@ client.gateways.register('channels', {
     }
 });
 
+// Add a users gateway with no schema (there will be folders for each guild)
+client.gateways.register('users');
+
+// login the client
 client.login(config.botToken);
