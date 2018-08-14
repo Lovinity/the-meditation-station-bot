@@ -34,7 +34,9 @@ module.exports = class extends Event {
                         // Member does not have verified role, so add all roles from the database, and then add the verified role
                     } else {
                         // We have to lodash clone the roles before we start adding them, otherwise guildMemberUpdate will interfere with this process
-                        var temp = _.clone(guildMember.settings.roles);
+                        var _temp = guildMember.settings.roles;
+                        var temp = _.cloneDeep(_temp);
+                        console.log(temp.length);
                         temp.forEach(function (role) {
                             guildMember.roles.add(role);
                         });
