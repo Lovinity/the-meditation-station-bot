@@ -24,6 +24,10 @@ module.exports = class extends Event {
                     type: 'integer',
                     default: 0
                 },
+                reputation: {
+                    type: 'integer',
+                    default: 0
+                },
                 spamscore: {
                     type: 'integer',
                     default: 0

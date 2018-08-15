@@ -10,7 +10,7 @@ module.exports = class extends Command {
             botPerms: ['MANAGE_MESSAGES'],
             runIn: ['text'],
             description: 'Prune messages',
-            usage: '[limit:integer] [link|invite|bots|you|me|upload|user:user]',
+            usage: '[limit:integer] [link|invite|bots|you|me|upload|user:username]',
             usageDelim: ' | '
         });
     }
