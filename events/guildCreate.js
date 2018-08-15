@@ -36,12 +36,31 @@ module.exports = class extends Event {
                     type: 'any',
                     array: true
                 },
+                reports: {
+                    type: 'string',
+                    array: true
+                },
                 roles: {
                     type: 'string',
                     array: true
                 }
             });
         }
+
+        // Add a scheduled task to run every minute for the guild if it does not already exist
+        const guildTask = guild.settings.get('guildTasks');
+        if (!guildTask)
+        {
+            this.client.schedule.create('guildtasks', "* * * * *", {
+                data: {
+                    guild: guild.id,
+                }
+            })
+                    .then((task) => {
+                        guild.settings.update('guildTasks', task.id);
+                    });
+        }
+
     }
 
 };

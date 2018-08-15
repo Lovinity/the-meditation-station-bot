@@ -6,13 +6,13 @@ module.exports = class extends Command {
         super(...args, {
             aliases: [],
             permissionLevel: 10,
-            usage: ''
+            usage: '<person:username>'
         });
     }
 
-    async run(message, []) {
-        var stuff = await message.author.settings.reset(`${message.guild.id}.xp`);
-        return message.send(JSON.stringify(stuff));
+    async run(message, [person]) {
+        //var stuff = await message.author.settings.reset(`${message.guild.id}.xp`);
+        return message.send(person.id);
     }
 
 };
