@@ -1,4 +1,5 @@
 const {MessageEmbed} = require('discord.js');
+const moment = require("moment");
 
 module.exports = class ModLog {
 
@@ -91,9 +92,10 @@ module.exports = class ModLog {
     get pack() {
         return {
             case: this.case,
+            date: moment().toISOString(true),
             type: this.type,
-            user: this.user.id,
-            moderator: this.moderator.id,
+            user: this.user,
+            moderator: this.moderator,
             reason: this.reason,
             expiration: this.expiration,
             valid: true
