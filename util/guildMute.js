@@ -109,7 +109,10 @@ module.exports = class GuildMute {
 Hello <@!${this.user.id}>,
 You have been muted from the guild for the following reason(s): ${this.reason}
 Your mute will expire ${this.duration === null ? 'when staff conclude this investigation / manually unmute you' : `at ${moment(this.duration).format("LLLL Z")}`}.
-You may use this private channel between you and the staff to communicate any concerns you have regarding this mute. Please be respectful, or staff may issue more severe discipline.
+You may use this private channel between you and the staff to communicate any concerns or questions you have regarding this mute. Please be respectful, or staff may issue more severe discipline.
+           
+Thank you for your understanding and cooperation.
+            
 ${guildMember ? '' : `<@!${this.responsible.id}> **NOTE: this user is currently not in the guild and will not see this channel until you manually set permissions**.`}
 `);
         }

@@ -8,12 +8,13 @@ module.exports = class extends Command {
             permLevel: 4,
             runIn: ['text'],
             description: 'Get information about a given user modlogs.',
-            usage: '<user:username> [caseID:string]',
+            subcommands: true,
+            usage: '<show|remove> <user:username> [caseID:string]',
             usageDelim: ' | '
         });
     }
 
-    async run(msg, [user, caseID = null]) {
+    async show(msg, [user, caseID = null]) {
 
         // Get the modLogs
         const modLogs = user.settings[msg.guild.id].modLogs;
@@ -38,7 +39,7 @@ module.exports = class extends Command {
                     `Counts?   : ${log.valid ? "Yes" : "No"}`
                 ], {code: 'http'});
             } else {
-                return msg.send(`The provided user and case ID were not found.`);
+                return msg.send(`:x: The provided user and case ID were not found.`);
             }
             // If no case ID provided, provide a mod history of the user
         } else {
@@ -65,7 +66,7 @@ module.exports = class extends Command {
             modLogs.forEach(function (log) {
                 if (typeof actions[log.type] !== 'undefined' && log.valid)
                     actions[log.type]++;
-                if (typeof cases[log.type] !== 'undefined')
+                if (typeof cases[log.type] !== 'undefined' && log.valid)
                     cases[log.type].push(log.case);
             });
 
@@ -83,6 +84,30 @@ module.exports = class extends Command {
                 util.codeBlock('http', Object.entries(final).map(([action, value]) => `${util.toTitleCase(`${action}s`).padEnd(11)}: ${value}`).join('\n'))
             ]);
     }
+    }
+    
+    async remove(msg, [user, caseID = null]) {
+        
+        if (caseID === null)
+            return msg.send(`:x: caseID is required when removing a case.`);
+
+        // Get the modLogs
+        const modLogs = user.settings[msg.guild.id].modLogs;
+
+            var log = modLogs.find(function (element) {
+                return element.case === caseID;
+            });
+
+            if (log)
+            {
+                await user.settings.update(`${msg.guild.id}.modLogs`, log, {action: 'remove'});
+                log.valid = false;
+                await user.settings.update(`${msg.guild.id}.modLogs`, log, {action: 'add'});
+                return msg.send(`:white_check_mark: The log has been marked as invalid; though it remains in the system, it will not count towards the user records.`);
+            } else {
+                return msg.send(`:x: The provided user and case ID were not found.`);
+            }
+            // If no case ID provided, provide a mod history of the user
     }
 
 };
