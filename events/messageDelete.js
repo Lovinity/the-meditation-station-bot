@@ -7,6 +7,10 @@ module.exports = class extends Event {
             for (const msg of message.responses)
                 msg.delete();
         
+        // Skip the bot
+        if (message.author.id === this.client.user.id)
+            return;
+
         // Get the configured modLog channel.
         const modLog = message.guild.settings.get('modLogChannel');
 
