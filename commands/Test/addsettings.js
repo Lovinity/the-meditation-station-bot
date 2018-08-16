@@ -24,7 +24,11 @@ module.exports = class extends Command {
         //schema.add("statsMessage", { type: "string"});
         //schema.add("reportMembers", {type: "Integer", default: 3});
         //schema.add("reportTime", {type: "Integer", default: 60});
-
+        //schema.add("pendSuspensions", {type: "any", array: true, configurable: false});
+        //schema.add("pendBans", {type: "any", array: true, configurable: false});
+        //schema.add("pendIncidents", {type: "any", array: true, configurable: false});
+        //schema.add("incidentsCategory", {type: "categorychannel"});
+        //schema.add("staffCategory", {type: "categorychannel"});
         return message.send(`done`);
     }
 

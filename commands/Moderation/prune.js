@@ -10,7 +10,7 @@ module.exports = class extends Command {
             botPerms: ['MANAGE_MESSAGES'],
             runIn: ['text'],
             description: 'Prune messages',
-            usage: '[limit:integer] [link|invite|bots|you|me|upload|user:username]',
+            usage: '[limit:integer{1,1000}] [link|invite|bots|you|me|upload|user:username]',
             usageDelim: ' | '
         });
     }
@@ -45,19 +45,23 @@ module.exports = class extends Command {
 
     async process(msg, limit, filter) {
         wait.for.time(3);
-        while (limit > 0)
+        var iteration = 0;
+        while (limit > 0 && iteration < 10)
         {
-            var filtered = await this._process(msg, (limit > 100 ? 100 : limit), filter);
+            var filtered = await this._process(msg, limit, filter);
+            if (filtered <= 0)
+                limit = -1;
             limit -= filtered;
-            if (filtered === 0)
-                limit = 0;
             wait.for.time(10);
+            iteration++;
         }
         return true;
     }
 
     async _process(msg, amount, filter) {
         let messages = await msg.channel.messages.fetch({limit: 100});
+        if (messages.array().length <= 0)
+            return -1;
         if (filter) {
             const user = typeof filter !== 'string' ? filter : null;
             const type = typeof filter === 'string' ? filter : 'user';

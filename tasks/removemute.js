@@ -26,6 +26,13 @@ module.exports = class extends Task {
                     }
                 }
 
+                const logchannel = _guild.channels.get(_guild.settings.get('modLogChannel'));
+
+                if (logchannel)
+                {
+                    logchannel.send(`:loud_sound: The mute for ${_user.tag} has expired.`);
+                }
+
                 // Announce in the inbcidents channel that the mute is expired
                 if (incidentsChannel !== null)
                 {

@@ -24,7 +24,11 @@ module.exports = class extends Event {
                     type: 'integer',
                     default: 0
                 },
-                reputation: {
+                badRep: {
+                    type: 'integer',
+                    default: 0
+                },
+                goodRep: {
                     type: 'integer',
                     default: 0
                 },

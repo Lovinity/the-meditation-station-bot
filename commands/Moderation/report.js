@@ -5,7 +5,7 @@
  */
 const {Command} = require('klasa');
 const moment = require('moment');
-const GuildMute = require('../../util/guildMute');
+const GuildMute = require('../../util/guildDiscipline');
 
 module.exports = class extends Command {
 
@@ -68,9 +68,11 @@ module.exports = class extends Command {
             if (reports.length < reportMembers)
                 return msg.sendMessage(`:white_check_mark: Thank you for your report. I have not deemed a mute necessary yet. Please provide information and evidence to their misconduct in this channel. Not doing so could be deemed !report abuse, and you could lose reporting privileges.`);
 
-            new GuildMute(user, msg.guild, this.client.user)
+            new GuildDiscipline(user, msg.guild, this.client.user)
+                    .setType('mute')
                     .setReason(`${reportMembers} have reported you for misconduct within the last ${reportTime} minutes. This does **not** guarantee you are in trouble; staff will investigate and determine. Please be patient.`)
-                    .execute();
+                    .prepare()
+                    .finalize();
 
             return msg.sendMessage(`:mute: Thank you for your report. I have deemed it necessary to mute the user until staff investigate. Please provide information and evidence in this channel of their misconduct. Not doing so could deem this !report as abuse, and you could lose reporting privileges.`);
     }

@@ -29,6 +29,45 @@ module.exports = class extends Event {
             guildMember.roles.add(temp);
         }
 
+        // See if there are any pending incidents for this member, and if so, assign permissions to that channel
+        const pendIncidents = guildMember.guild.settings.get('pendIncidents');
+        if (pendIncidents && pendIncidents.length > 0)
+        {
+            pendIncidents.forEach(function (incident) {
+                if (incident.user === guildMember.id)
+                {
+                    const channel = this.client.channels.get(incident.channel);
+                    if (channel)
+                    {
+                        var overwrites = [];
+                        overwrites.push({
+                            id: guildMember.id,
+                            allowed: [
+                                "ADD_REACTIONS",
+                                "VIEW_CHANNEL",
+                                "SEND_MESSAGES",
+                                "EMBED_LINKS",
+                                "ATTACH_FILES",
+                                "READ_MESSAGE_HISTORY"
+                            ],
+                            type: 'member'
+                        });
+                        // Add deny permissions for @everyone
+                        overwrites.push({
+                            id: this.guild.defaultRole,
+                            denied: [
+                                "VIEW_CHANNEL",
+                            ],
+                            type: 'role'
+                        });
+
+                        channel.overwritePermissions(overwrites);
+                        guildMember.guild.settings.update(`pendIncidents`, incident, {action: 'remove'});
+                    }
+                }
+            });
+        }
+
     }
 
 };

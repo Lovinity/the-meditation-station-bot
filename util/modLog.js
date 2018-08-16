@@ -10,6 +10,8 @@ module.exports = class ModLog {
         this.user = null;
         this.moderator = null;
         this.reason = null;
+        this.discipline = null;
+        this.channel = null;
         this.case = null;
         this.expiration = null;
     }
@@ -49,6 +51,16 @@ module.exports = class ModLog {
         this.expiration = expiration;
         return this;
     }
+    
+    setDiscipline(discipline) {
+        this.discipline = discipline;
+        return this;
+    }
+    
+    setChannel(channel) {
+        this.channel = channel;
+        return this;
+    }
 
     // Send the log to the modlog channel
 
@@ -57,8 +69,10 @@ module.exports = class ModLog {
         await this.getCase();
         if (channel)
         {
-            return channel.send({embed: this.embed});
+            await channel.send({embed: this.embed});
         }
+        
+        return this.pack;
     }
 
     // Here we build the modlog embed
@@ -71,6 +85,7 @@ module.exports = class ModLog {
                     `**Type**: ${this.type[0].toUpperCase() + this.type.slice(1)}`,
                     `**User**: ${this.user.tag} (${this.user.id})`,
                     `**Reason**: ${this.reason}`,
+                    `**Discipline**: ${JSON.stringify(this.discipline)}`,
                     `${this.expiration ? `**Expiration**: ${this.expiration}` : ``}`
                 ])
                 .setFooter(`Case ${this.case}`)
@@ -97,6 +112,8 @@ module.exports = class ModLog {
             user: this.user,
             moderator: this.moderator,
             reason: this.reason,
+            discipline: this.discipline,
+            channel: this.channel,
             expiration: this.expiration,
             valid: true
         };
@@ -108,11 +125,11 @@ module.exports = class ModLog {
         switch (type) {
             case 'ban':
                 return 16724253;
-            case 'unban':
+            case 'usethis':
                 return 1822618;
             case 'warn':
                 return 16564545;
-            case 'kick':
+            case 'tempban':
                 return 16573465;
             case 'mute':
                 return 15014476;
