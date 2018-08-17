@@ -30,6 +30,9 @@ module.exports = class extends Command {
         //schema.add("pendIncidents", {type: "any", array: true, configurable: false});
         //schema.add("incidentsCategory", {type: "categorychannel"});
         //schema.add("staffCategory", {type: "categorychannel"});
+        //schema.add("antispamCooldown", {type: "integer", default: 50});
+        //schema.add("antispamLessStrictRoles", {type: "Role", array: true});
+        //schema.add("antispamLessStrictChannels", {type: "TextChannel", array: true});
         return message.send(`done`);
     }
 

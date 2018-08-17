@@ -1,0 +1,1 @@
+Developer's note: By choice, I decided against using Klasa extendables (except for awaitReply) and instead using util files that utilize Discord.js's Structure extends. Yes, this means rebooting the bot whenever you make changes to them instead of using !reload, but I don't care; extendables are garbage and don't work even when I follow the exact documentation.
