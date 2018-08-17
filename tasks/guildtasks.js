@@ -21,6 +21,25 @@ module.exports = class extends Task {
                 _guild.channels.get(statsMessageChannel).messages.fetch(statsMessage)
                         .then(message => message.edit(themessage));
             }
+
+            var n = new Date();
+            var m = n.getMinutes();
+            var h = n.getHours();
+
+            if (m === 0 && (h === 6 || h === 12 || h === 18 || h === 0))
+            {
+                const iceBreakerChannel = _guild.settings.get('iceBreakerChannel');
+                const _channel = this.client.channels.get(iceBreakerChannel);
+                if (_channel)
+                {
+                    var iceBreakers = _guild.settings.get('icebreakers');
+                    _channel.send(`:snowflake: **Time for another ice breaker question!** :snowflake:
+                    
+${iceBreakers[Math.floor(Math.random() * iceBreakers.length)]}
+`);
+                }
+
+            }
     }
     }
 

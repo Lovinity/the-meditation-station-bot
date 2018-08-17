@@ -11,7 +11,7 @@ module.exports = class extends Command {
             permissionLevel: 4,
             requiredPermissions: ["MANAGE_ROLES"],
             requiredSettings: ["muteRole", "incidentsCategory", "staffCategory"],
-            description: 'Starts the discipline wizard to issue either a warning, discipline, mute, suspension, or ban to a user.',
+            description: 'Starts the discipline wizard to issue either a warning, discipline, mute, suspension, or ban to a user. Must be used in a staff or incidents channel.',
             quotedStringSupport: false,
             usage: '<user:username>',
             extendedHelp: ''

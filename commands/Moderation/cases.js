@@ -7,7 +7,7 @@ module.exports = class extends Command {
             name: 'cases',
             permLevel: 4,
             runIn: ['text'],
-            description: 'Get information about a given user modlogs.',
+            description: 'Get information about a given user modlogs. Must be used in a staff or incidents channel.',
             subcommands: true,
             usage: '<show|remove|appeal> <user:username> [caseID:string]',
             usageDelim: ' | '
@@ -15,7 +15,13 @@ module.exports = class extends Command {
     }
 
     async show(msg, [user, caseID = null]) {
-
+        // Bail if the command was not run in a staff category channel or incidents category channel.
+        if (!msg.channel.parent || (msg.channel.parent.id !== msg.guild.settings.get('incidentsCategory') && msg.channel.parent.id !== msg.guild.settings.get('staffCategory')))
+        {
+            await msg.channel.send(`:x: For confidentiality, the cases command may only be used in a staff channel or incidents channel.`);
+            return msg.delete({reason: `Use of !cases channel outside of a staff or incidents channel`});
+        }
+        
         // Get the modLogs
         const modLogs = user.settings[msg.guild.id].modLogs;
 
