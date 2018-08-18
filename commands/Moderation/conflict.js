@@ -56,10 +56,8 @@ module.exports = class extends Command {
                 // Add an "ACTIVE" entry to prevent further use of this command until conflict resolution finishes.
                 await msg.channel.settings.update('conflictResolution', `ACTIVE`, {action: 'add'});
 
-                // deny "SEND_MESSAGES" for @everyone in the channel
-                const permOverwrite = msg.channel.permissionOverwrites.get(msg.channel.guild.defaultRole.id);
-                const locked = permOverwrite ? permOverwrite.denied.has('SEND_MESSAGES') : false;
-                await msg.channel.updateOverwrite(msg.channel.guild.defaultRole, {'SEND_MESSAGES': false}, "Conflict Resolution Activation");
+                // rename the channel to include "-MUTED" at the end of the title, which tells messageCreate to remove all messages posted
+                await msg.channel.setName(`${msg.channel.name}-muted`, 'Channel mute due to !conflict');
 
                 // Add a 5 minute task. In 5 minutes, send messages will be re-granted, and the bot will begin asking conflict resolving questions.
                 const conflictstage2 = await this.client.schedule.create('conflictstage2', moment().add(5, 'minutes').toDate(), {

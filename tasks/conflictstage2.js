@@ -8,25 +8,23 @@ module.exports = class extends Task {
     async run( { channel }) {
         const _channel = this.client.channels.get(channel);
         if (_channel) {
-            // Re-grant SEND_MESSAGES on @everyone
-            const permOverwrite = _channel.permissionOverwrites.get(_channel.guild.defaultRole.id);
-            const locked = permOverwrite ? permOverwrite.denied.has('SEND_MESSAGES') : false;
-            await _channel.updateOverwrite(_channel.guild.defaultRole, {'SEND_MESSAGES': true}, "Conflict Resolution Expired");
-            
+// rename the channel to remove "-MUTED", taking the channel mute off
+            await _channel.setName(_channel.name.replace("-muted", ""), 'Channel mute expired');
+
             // Add a 5 minute timer for the next stage in conflict resolution
             const conflictstage3 = await this.client.schedule.create('conflictstage3', moment().add(5, 'minutes').toDate(), {
                 data: {
                     channel: _channel.id
                 }
             });
-            
+
             // Ask the first series of questions to the community.
             await _channel.send(`:two: Now that we are more calm, each member involved in the conflict please take the next 5 minutes to answer these questions:
             
 *What is the conflict? Stick solely to objective facts when explaining the conflict.
 *How does the conflict make **you** feel? Use "I" statements, and avoid blaming nor talking about other people; stick solely to you.
 *What do **you** need to happen to put this conflict to rest?
-`)     
+`)
     }
     }
 

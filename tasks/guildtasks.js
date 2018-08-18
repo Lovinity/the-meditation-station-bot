@@ -15,7 +15,7 @@ module.exports = class extends Task {
 
                 // Edit the message containing stats
                 var themessage = `:chart_with_upwards_trend: **Current ${_guild.name} Statistics** (edited automatically every minute) :chart_with_upwards_trend: \n\n`;
-                themessage = themessage + `Current Guild Time (Eastern Time with DST when applicable):  **${moment().format('LLLL')}** \n`;
+                themessage = themessage + `Current Guild Time (GMT):  **${moment().format('LLLL')}** \n`;
                 themessage = themessage + `Number of members in the guild: **${_guild.members.array().length}** \n`;
 
                 _guild.channels.get(statsMessageChannel).messages.fetch(statsMessage)

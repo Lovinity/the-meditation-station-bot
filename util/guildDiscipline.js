@@ -129,7 +129,7 @@ module.exports = class GuildDiscipline {
             await this.channel.setName(`int_d_${this.channel.id}`, `Incident assigned ID ${this.channel.id}`);
 
             // Send an initial message to the channel
-            this.message = await this.channel.send(`:hourglass_flowing_sand: <@${this.user.id}>, the staff are preparing ${this.type === 'warn' ? `a warning` : `disciplinary action`} for recent misconduct. Please wait while they complete the wizard, and then more information will be provided to you.`);
+            this.message = await this.channel.send(`:hourglass_flowing_sand: <@${this.user.id}>, a recent incident involving you occurred in the guild/server. ${(this.type === 'mute' || this.type === 'preban' || this.type === 'ban' ? "You have been muted in the guild/server for the time being for the safety of the community. " : "")}More information will be provided to you shortly; please wait while staff finish filling out information via the bot.`);
         }
 
         return this;
@@ -183,17 +183,17 @@ module.exports = class GuildDiscipline {
         var discipline = [];
         if (this.xp > 0)
         {
-            discipline.push(`You lost ${this.xp} XP.`);
+            discipline.push(`You lost ${this.xp} XP`);
             this.user.settings.update(`${this.guild.id}.xp`, (this.user.settings[this.guild.id].xp - this.xp));
         }
         if (this.yang > 0)
         {
-            discipline.push(`You lost ${this.yang} Yang.`);
+            discipline.push(`You lost ${this.yang} Yang`);
             this.user.settings.update(`${this.guild.id}.yang`, (this.user.settings[this.guild.id].yang - this.yang));
         }
         if (this.reputation > 0)
         {
-            discipline.push(`${this.reputation} bad reputation was assessed on your profile.`);
+            discipline.push(`${this.reputation} bad reputation was assessed on your profile`);
             this.user.settings.update(`${this.guild.id}.badRep`, (this.user.settings[this.guild.id].badRep + this.reputation));
         }
         if (this.other !== null)
@@ -281,9 +281,9 @@ ${guildMember ? '' : `<@!${this.responsible.id}> **NOTE: this user is currently 
                 
 Hello <@!${this.user.id}>,
 We don't like having to mute people, but a mute had to be issued to you for the safety of the community.
-You have been muted from the guild for the following reason(s): ${this.reason}
-${discipline.length > 0 ? `The following discipline was also issued: ${discipline.join("; ")}` : ``}
-Your mute will expire ${this.duration === 0 ? 'when staff conclude this investigation / manually unmute you' : `at ${moment().add(this.duration, 'minutes').format("LLLL Z")}`}.
+You have been muted from the guild for the following reason(s): **${this.reason}**
+${discipline.length > 0 ? `The following discipline was also issued: **${discipline.join("; ")}**` : ``}
+Your mute will expire ${this.duration === 0 ? 'when staff conclude this investigation / manually unmute you (staff, to unmute this user, simply remove the muted role)' : `at ${moment().add(this.duration, 'minutes').format("LLLL Z")}`}.
 This channel is private between you and staff; you may communicate any questions or concerns you have here. If you need help resolving this incident, staff are happy to provide some tips and guidance. But please remain respectful.
            
 Thank you for your understanding and cooperation.
@@ -296,10 +296,10 @@ ${guildMember ? '' : `<@!${this.responsible.id}> **NOTE: this user is currently 
                 
 Hello <@!${this.user.id}>,
 A recent incident has resulted in you earning a suspension. We really do not like having to suspend out members. But it is in our hopes that this suspension will give you some time to reflect on this incident before coming back.
-You have been suspended for the following reason(s): ${this.reason}.
-${discipline.length > 0 ? `The following discipline was also issued: ${discipline.join("; ")}` : ``}
-**Once you leave the guild/server, a server ban will be placed on you, and will be removed in ${this.duration / (60 * 24)} days**. Your suspension time will not begin until you leave the guild/server or get kicked; until then, you will remain muted.
-This channel is private between you and staff; you may communicate any questions or concerns you have here prior to leaving. If you need help resolving this incident, staff are happy to provide some tips and guidance. But please remain respectful.
+You have been suspended for the following reason(s): **${this.reason}**.
+${discipline.length > 0 ? `The following discipline was also issued: **${discipline.join("; ")}**` : ``}
+**Once you leave the guild/server, a server ban will be placed on you, which will be removed in ${this.duration / (60 * 24)} days**. Your suspension time will not begin until you leave the guild/server or get kicked; until then, you will remain muted.
+This channel is private between you and staff; you may communicate any questions or concerns you have here prior to leaving (once you leave, you will lose access to the server until the suspension ends). If you need help resolving this incident, staff are happy to provide some tips and guidance. But please remain respectful.
            
 Thank you for your understanding and cooperation.
             
@@ -311,10 +311,10 @@ ${guildMember ? '' : `<@!${this.responsible.id}> **NOTE: this user is currently 
                 
 Hello <@!${this.user.id}>,
 It is with great regret to inform you that you have been banned from the guild/server. We hope you enjoyed your experiences here, and wish you the best of luck on your future adventures.
-You have been banned for the following reason(s): ${this.reason}.
-${discipline.length > 0 ? `The following discipline was also issued: ${discipline.join("; ")}` : ``}
+You have been banned for the following reason(s): **${this.reason}**.
+${discipline.length > 0 ? `The following discipline was also issued: **${discipline.join("; ")}**` : ``}
 **Once you leave the guild/server, a server ban will be placed on you**. This ban will remain in place indefinitely. Until you leave or staff kick you, you will remain muted.
-This channel is private between you and staff; you may communicate any questions or concerns you have here prior to leaving. If you need help resolving this incident, staff are happy to provide some tips and guidance. But please remain respectful.
+This channel is private between you and staff; you may communicate any questions or concerns you have here prior to leaving (once you leave, you will lose access to the server). If you need help resolving this incident, staff are happy to provide some tips and guidance. But please remain respectful.
            
 Thank you for your understanding and cooperation.
             
