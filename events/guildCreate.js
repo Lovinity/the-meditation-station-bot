@@ -12,7 +12,7 @@ module.exports = class extends Event {
         }
 
         // add guild into the users gateway if it does not exist
-        const {schema} = this.client.gateways.users;
+        const {schema} = this.client.gateways.user;
         if (!schema.has(message.guild.id))
         {
             schema.add(message.guild.id, {
@@ -56,8 +56,9 @@ module.exports = class extends Event {
         }
 
         // Add a scheduled task to run every minute for the guild if it does not already exist
+        // BROKEN
         const guildTask = guild.settings.get('guildTasks');
-        if (!guildTask)
+        if (!guildTask || guildTask === null)
         {
             this.client.schedule.create('guildtasks', "* * * * *", {
                 data: {

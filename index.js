@@ -13,7 +13,11 @@ var client = new Client({
     commandEditing: true,
     typing: true,
     providers: {
-        default: 'json'
+        default: 'rethinkdb',
+        rethinkdb: {
+            pool: true,
+            servers: [{host: 'localhost', port: 28015}]
+        }
     },
     // Add custom permissions
     permissionLevels: new PermissionLevels()
@@ -41,7 +45,7 @@ client.gateways.register('channels', {
 });
 
 // Add a users gateway with no schema (there will be folders for each guild)
-client.gateways.register('users');
+client.gateways.register('user');
 
 // login the client
 client.login(config.botToken);

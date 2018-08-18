@@ -4,7 +4,7 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
 
     constructor(...args) {
         super(...args);
-        this.settings = this.client.gateways.users.get(`${this.id}`, true)[this.guild.id];
+        this.settings = this.client.gateways.user.get(`${this.id}`, true)[this.guild.id];
         this.settings.update = (key, data, options = {}) => {
             return this.user.settings.update(`${this.guild.id}.${key}`, data, options);
         };
