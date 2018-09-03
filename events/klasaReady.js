@@ -7,20 +7,6 @@ module.exports = class extends Event {
 
         // Iterate through guild operations on bot startup
         this.client.guilds.each(function (guild) {
-            // Create a guild task if it doesn't exist
-            // BROKEN
-            const guildTask = guild.settings.get('guildTasks');
-            if (!guildTask || guildTask === null)
-            {
-                this.client.schedule.create('guildtasks', "* * * * *", {
-                    data: {
-                        guild: guild.id,
-                    }
-                })
-                        .then((task) => {
-                            guild.settings.update('guildTasks', task.id);
-                        });
-            }
 
             // Cache the last (default #) messages in all channels
             guild.channels.each(function (channel) {

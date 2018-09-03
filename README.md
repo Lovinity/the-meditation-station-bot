@@ -1,1 +1,5 @@
 Developer's note: By choice, I decided against using Klasa extendables (except for awaitReply) and instead using util files that utilize Discord.js's Structure extends. Yes, this means rebooting the bot whenever you make changes to them instead of using !reload, but I don't care; extendables are garbage and don't work even when I follow the exact documentation.
+
+Developer's note 2: This bot was intended to be used with Klasa master commit a444a80 and NOT the newer ones. A newer commit switched Schemas to sync, which broke the bot's ability to dynamically store guild-based info for each user. Until an alternative working method can be determined, this bot will not utilize / be developed for newer commits.
+
+This bot is considered UNSTABLE at the moment... it will NOT work 100% if you set up your own instance.
