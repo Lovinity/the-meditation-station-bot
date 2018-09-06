@@ -7,6 +7,16 @@ module.exports = class extends Task {
         const _guild = this.client.guilds.get(guild);
         if (_guild)
         {
+            // Antispam cooldown
+            var cooldown = _guild.settings.get('antispamCooldown');
+            _guild.members.each((guildMember) => {
+                var newscore = guildMember.settings.spamscore - cooldown;
+                if (newscore < 0)
+                    newscore = 0;
+                guildMember.settings.update('spamscore', newscore);
+            });
+            
+            // Do stats
             const statsMessageChannel = _guild.settings.get('statsMessageChannel');
             const statsMessage = _guild.settings.get('statsMessage');
 
@@ -15,13 +25,14 @@ module.exports = class extends Task {
 
                 // Edit the message containing stats
                 var themessage = `:chart_with_upwards_trend: **Current ${_guild.name} Statistics** (edited automatically every minute) :chart_with_upwards_trend: \n\n`;
-                themessage = themessage + `Current Guild Time (GMT):  **${moment().format('LLLL')}** \n`;
+                themessage = themessage + `Current Guild Time:  **${moment().format('LLLL')}** \n`;
                 themessage = themessage + `Number of members in the guild: **${_guild.members.array().length}** \n`;
 
                 _guild.channels.get(statsMessageChannel).messages.fetch(statsMessage)
                         .then(message => message.edit(themessage));
             }
 
+            // Do icebreakers
             var n = new Date();
             var m = n.getMinutes();
             var h = n.getHours();

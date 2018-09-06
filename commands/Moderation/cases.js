@@ -21,7 +21,7 @@ module.exports = class extends Command {
             await msg.channel.send(`:x: For confidentiality, the cases command may only be used in a staff channel or incidents channel.`);
             return msg.delete({reason: `Use of !cases channel outside of a staff or incidents channel`});
         }
-        
+
         // Get the modLogs
         const modLogs = user.settings[msg.guild.id].modLogs;
 
@@ -158,7 +158,10 @@ module.exports = class extends Command {
             if (log.type === 'tempban' || log.type === 'ban')
             {
                 if (log.discipline.schedule !== null)
-                    await this.client.schedule.delete(log.discipline.schedule);
+                    this.client.schedule.delete(log.discipline.schedule)
+                            .catch(err => {
+
+                            });
                 await msg.guild.members.unban(user, `Ban was appealed`);
 
                 if (log.type === 'tempban')
@@ -189,12 +192,15 @@ module.exports = class extends Command {
 
             if (log.type === 'mute')
             {
-                if (log.type.discipline.schedule !== null)
-                    await this.client.schedule.delete(log.type.discipline.schedule);
+                if (log.discipline.schedule !== null)
+                    this.client.schedule.delete(log.discipline.schedule)
+                            .catch(err => {
+
+                            });
 
                 // Get the configured muted role
-                const muted = this.guild.settings.get(`muteRole`);
-                const mutedRole = this.guild.roles.get(muted);
+                const muted = msg.guild.settings.get(`muteRole`);
+                const mutedRole = msg.guild.roles.get(muted);
 
                 // Add the mute role to the user, if the user is in the guild
                 if (guildMember)

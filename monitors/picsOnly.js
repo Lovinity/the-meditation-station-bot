@@ -4,13 +4,12 @@ module.exports = class extends Monitor {
 
     constructor(...args) {
         super(...args, {
-            name: 'mutedChannel',
             enabled: true,
             ignoreBots: false,
             ignoreSelf: true,
             ignoreOthers: false,
             ignoreWebhooks: true,
-            ignoreEdits: true,
+            ignoreEdits: false,
             ignoreBlacklistedUsers: false,
             ignoreBlacklistedGuilds: true
         });
@@ -18,9 +17,9 @@ module.exports = class extends Monitor {
 
     run(message) {
         // Delete messages sent in channels that have -MUTED at the end of their name (muted channels)
-        if (message.channel.name.endsWith("-muted"))
+        if (message.channel.name.endsWith("-pics") && message.attachments.size <= 0)
         {
-            message.channel.send(`:x: This channel is currently muted. A 25-yang penalty was assessed.`)
+            message.channel.send(`:x: This channel is for attachments only. Please use another channel for discussion.`)
                     .then((msg) => {
                         setTimeout(function () {
                             msg.delete();
@@ -34,5 +33,6 @@ module.exports = class extends Monitor {
     }
 
 };
+
 
 

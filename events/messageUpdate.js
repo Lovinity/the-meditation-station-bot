@@ -5,6 +5,18 @@ const moment = require("moment");
 module.exports = class extends Event {
 
     async run(old, message) {
+        // First, update spam score if new score is bigger than old score. Do NOT update if new score is less than old score; we don't want to lower it.
+        if (typeof message.member !== 'undefined')
+        {
+            var oldscore = old.spamScore;
+            var newscore = message.spamScore;
+            if (newscore > oldscore)
+            {
+                var diff = newscore - oldscore;
+                message.member.spamScore(diff, message);
+            }
+        }
+
         if (this.client.ready && old.content !== message.content)
             this.client.monitors.run(message);
 

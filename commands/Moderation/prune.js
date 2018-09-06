@@ -10,7 +10,7 @@ module.exports = class extends Command {
             botPerms: ['MANAGE_MESSAGES'],
             runIn: ['text'],
             description: 'Prune messages',
-            usage: '[limit:integer{1,1000}] [link|invite|bots|you|me|upload|user:username]',
+            usage: '[limit:integer{1,1000}] [link|invite|bots|you|me|upload|noupload|user:username]',
             usageDelim: ' | '
         });
     }
@@ -38,6 +38,8 @@ module.exports = class extends Command {
                 return mes => mes.attachments.size > 0;
             case 'user':
                 return mes => mes.author.id === user.id;
+            case 'noupload':
+                return mes => mes.attachments.size === 0;
             default:
                 return () => true;
         }

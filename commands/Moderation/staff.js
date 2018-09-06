@@ -86,7 +86,7 @@ Channels like this may or may not be created as a result of misconduct; being in
 
 You are seeing this channel because you used the !staff command to request to speak with staff privately.
             
-**If you are reporting someone for misconduct**, please include any/all evidence and information to show their misconduct, including screenshots if necessary.
+**If you are reporting someone for misconduct**, please include any/all evidence and information to show their misconduct, including screenshots, or audio recordings of VC incidents, if necessary.
 You may consider using the command \`!report username/mention/snowflake\` in this channel as well; if several members use this on the same person within a period of time, they will automatically be muted until staff investigate. Please do not abuse this command.
             
 **If you are not reporting someone for misconduct**, please post your inquiry here, and staff will get to you as soon as possible.

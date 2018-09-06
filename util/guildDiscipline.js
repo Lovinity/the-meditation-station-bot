@@ -244,7 +244,8 @@ module.exports = class GuildDiscipline {
         }
 
         // Update the incidents channel with relevant information
-        await this.message.delete();
+        if (this.message !== null)
+            await this.message.delete();
         switch (this.type)
         {
             case 'warn':
