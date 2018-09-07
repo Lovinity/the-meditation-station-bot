@@ -67,6 +67,14 @@ module.exports = class extends Event {
                 }
             });
         }
+        
+        // If the guild is under a raid mitigation, assign the mitigation role to the new member.
+        if (guildMember.guild.settings.raidMitigation > 0)
+        {
+            const raidRole = guildMember.guild.roles.get(guildMember.guild.settings.raidRole);
+            if (raidRole)
+                guildMember.roles.add(raidRole, `Raid mitigation is active`);
+        }
 
     }
 

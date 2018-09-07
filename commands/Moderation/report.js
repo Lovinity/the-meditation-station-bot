@@ -62,6 +62,9 @@ module.exports = class extends Command {
                 }
             });
 
+            // Add 10 to the guild's raid score
+            msg.guild.raidScore(10);
+
             // Add this report into the member's report records
             await user.settings.update(`${msg.guild.id}.reports`, `${msg.author.id}`, {action: 'add'});
 

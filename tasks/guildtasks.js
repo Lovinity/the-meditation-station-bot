@@ -15,7 +15,7 @@ module.exports = class extends Task {
                     newscore = 0;
                 guildMember.settings.update('spamscore', newscore);
             });
-            
+
             // Do stats
             const statsMessageChannel = _guild.settings.get('statsMessageChannel');
             const statsMessage = _guild.settings.get('statsMessage');
@@ -50,6 +50,59 @@ ${iceBreakers[Math.floor(Math.random() * iceBreakers.length)]}
 `);
                 }
 
+            }
+
+            // Delete all invites if under mitigation level 3
+            if (_guild && _guild.settings.raidMitigation >= 3)
+            {
+                _guild.fetchInvites()
+                        .then(invites => {
+                            invites.each(invite => {
+                                invite.delete();
+                            });
+                        })
+            }
+
+            // Raid score cool-down
+            var newscore = _guild.settings.raidscore - 1;
+            if (newscore < 0)
+                newscore = 0;
+            _guild.settings.update('raidscore', newscore);
+
+            // Raid mitigation ends
+            if (newscore <= 0 && _guild.settings.raidMitigation > 0)
+            {
+                var channel = _guild.settings.announcementsChannel;
+                const _channel = this.client.channels.get(channel);
+                if (_channel)
+                {
+                    var response = `:ballot_box_with_check: **Raid mitigation has ended** :ballot_box_with_check: 
+
+I do not detect raid activity anymore. Raid mitigation has ended.
+                    
+All new members now have full access to the guild.
+Verification is now set down to high (must wait 10 minutes after joining before new users can talk)
+Level 3: **Please remember to re-generate invite links if mitigation level was 3**. I do not re-generate those automatically.`;
+                    _channel.send(response);
+                }
+
+                // Remove raidRole
+                _guild.members.each(function (guildMember) {
+                    var raidRole = _guild.roles.get(_guild.settings.raidRole);
+                    if (raidRole)
+                    {
+                        if (guildMember.roles.get(raidRole.id))
+                        {
+                            guildMember.roles.remove(raidRole, `Raid mitigation expired`);
+                        }
+                    }
+                });
+                
+                // Reset verification level
+                _guild.setVerificationLevel(3);
+
+                // Disable mitigation in settings
+                _guild.settings.update('raidMitigation', 0);
             }
     }
     }

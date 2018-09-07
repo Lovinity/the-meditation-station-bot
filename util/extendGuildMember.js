@@ -47,7 +47,12 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                 } else if (currentScore >= 100 && moment().subtract(10, 'seconds').isAfter(moment(this.spamScoreStamp)))
                 {
                     console.log(`Muting time!`);
-                    var discipline = new GuildDiscipline(message.author, message.guild, this.client.user)
+                    
+                    // Add 20 to the raid score of the guild
+                    this.guild.raidScore(20);
+                    
+                    // Issue the 30 minute mute
+                    var discipline = new GuildDiscipline(this.user, this.guild, this.client.user)
                             .setType('mute')
                             .setReason(`Triggered the antispam system and ignored the warnings by the bot.`)
                             .setDuration(30);

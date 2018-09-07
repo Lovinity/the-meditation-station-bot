@@ -65,6 +65,9 @@ module.exports = class extends Command {
                         channel: msg.channel.id
                     }
                 });
+                
+                // Add 20 to the raid score of the guild
+                msg.guild.raidScore(20);
 
                 // Send a message
                 return msg.sendMessage(`:warning: **__Everyone, please take the next 5 minutes to calm down with this breathing exercise__** :warning:

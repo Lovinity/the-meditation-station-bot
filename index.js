@@ -3,6 +3,7 @@ const config = require('./config.js');
 require('./util/extendTextChannel');
 require('./util/extendUser');
 require('./util/extendGuildMember');
+require('./util/extendGuild');
 
 // Prepare Klasa
 var client = new Client({

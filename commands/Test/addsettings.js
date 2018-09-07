@@ -15,8 +15,10 @@ module.exports = class extends Command {
         //schema.add("botChannel", { type: "TextChannel" });
         //schema.add("modLogChannel", { type: "TextChannel" });
         //schema.add("iceBreakerChannel", { type: "TextChannel" });
+        //schema.add("announcementsChannel", { type: "TextChannel" });
         //schema.add("noSelfModRole", { type: "Role" });
         //schema.add("muteRole", { type: "Role" });
+        //schema.add("raidRole", { type: "Role" });
         //schema.add("conflictResolutionMembers", { type: "Integer", default: 3 });
         //schema.add("conflictResolutionTime", { type: "Integer", default: 15 });
         //schema.add("verifiedRole", { type: "Role"});
@@ -33,6 +35,8 @@ module.exports = class extends Command {
         //schema.add("antispamCooldown", {type: "integer", default: 50});
         //schema.add("antispamLessStrictRoles", {type: "Role", array: true});
         //schema.add("antispamLessStrictChannels", {type: "TextChannel", array: true});
+        //schema.add("raidscore", {type: "integer", default: 0, configurable: false});
+        //schema.add("raidMitigation", {type: "integer", default: 0, configurable: false});
         return message.send(`done`);
     }
 
