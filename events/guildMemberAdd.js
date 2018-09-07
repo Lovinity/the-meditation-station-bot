@@ -42,7 +42,7 @@ module.exports = class extends Event {
                         var overwrites = [];
                         overwrites.push({
                             id: guildMember.id,
-                            allowed: [
+                            allow: [
                                 "ADD_REACTIONS",
                                 "VIEW_CHANNEL",
                                 "SEND_MESSAGES",
@@ -55,7 +55,7 @@ module.exports = class extends Event {
                         // Add deny permissions for @everyone
                         overwrites.push({
                             id: this.guild.defaultRole,
-                            denied: [
+                            deny: [
                                 "VIEW_CHANNEL",
                             ],
                             type: 'role'

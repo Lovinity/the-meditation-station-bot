@@ -53,7 +53,7 @@ Channels like this may or may not be created as a result of misconduct; being in
                 response += `<@${guildMember.id}> `;
                 overwrites.push({
                     id: guildMember.id,
-                    allowed: [
+                    allow: [
                         "ADD_REACTIONS",
                         "VIEW_CHANNEL",
                         "SEND_MESSAGES",
@@ -70,7 +70,7 @@ Channels like this may or may not be created as a result of misconduct; being in
             // Process permission overwrites for author
             overwrites.push({
                 id: message.author.id,
-                allowed: [
+                allow: [
                     "ADD_REACTIONS",
                     "VIEW_CHANNEL",
                     "SEND_MESSAGES",
@@ -99,7 +99,7 @@ Thank you, <@${message.author.id}>!
         // Add deny permissions for @everyone
         overwrites.push({
             id: msg.channel.guild.defaultRole,
-            denied: [
+            deny: [
                 "VIEW_CHANNEL",
             ],
             type: 'role'

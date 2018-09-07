@@ -31,7 +31,7 @@ module.exports = class extends Extendable {
             //console.log(`special characters`);
         }
 
-        // Add 3 points for every profane word used; excessive proganity spam
+        // Add 3 points for every profane word used; excessive profanity spam
         config.profanity.forEach((word) => {
             var numbers = getIndicesOf(word, this.cleanContent, false);
             if (numbers.length > 0)
