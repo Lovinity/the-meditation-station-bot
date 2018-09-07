@@ -26,7 +26,13 @@ module.exports = class extends Argument {
 		const results = [];
 		const reg = new RegExp(regExpEsc(arg), 'i');
 		for (const member of msg.guild.members.values()) {
-			if (reg.test(member.user.username)) results.push(member.user);
+			if (reg.test(member.user.username)) 
+                        {
+                            results.push(member.user);
+                        } else if (reg.test(member.nickname))
+                        {
+                            results.push(member.user);
+                        }
 		}
 
 		let querySearch;
@@ -39,9 +45,9 @@ module.exports = class extends Argument {
 		}
 
 		switch (querySearch.length) {
-			case 0: throw `${possible.name} Must be a valid name, id or user mention`;
+			case 0: throw `Sorry, I could not find any users matching the criteria provided for ${possible.name}. Please make sure you provided a valid username, nickname, mention, or id.`;
 			case 1: return querySearch[0];
-			default: throw `Found multiple matches: \`${querySearch.map(user => user.tag).join('`, `')}\``;
+			default: throw `I found multiple users matching the criteria provided for ${possible.name}. Please try your command again with one of these users: \`${querySearch.map(user => user.tag).join('`, `')}\``;
 		}
 	}
 
