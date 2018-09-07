@@ -31,7 +31,7 @@ module.exports = class extends Extendable {
             //console.log(`special characters`);
         }
 
-        // Add 3 points for every profane word used
+        // Add 3 points for every profane word used; excessive proganity spam
         config.profanity.forEach((word) => {
             var numbers = getIndicesOf(word, this.cleanContent, false);
             if (numbers.length > 0)
@@ -41,20 +41,71 @@ module.exports = class extends Extendable {
             }
         });
 
-        // Add score if there are any mentions
+        // Add score for repeating consecutive characters
+        // 25 or more consecutive repeating characters = extremely spammy
+        if (/(.)\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1/.test(this.content.toLowerCase())) {
+            score += 20;
+            // 10 or more consecutive repeating characters = spammy
+        } else if (/(.)\1\1\1\1\1\1\1\1\1\1/.test(this.content.toLowerCase()))
+        {
+            score += 10;
+            // 5 or more consecutive repeating characters = a little bit spammy
+        } else if (/(.)\1\1\1\1\1/.test(this.content.toLowerCase()))
+        {
+            score += 5;
+        }
+
+        // Add score if there are any mentions; mention spam
         var nummentions = this.mentions.users.size + this.mentions.roles.size;
         score += (5 * nummentions);
         //console.log(`${nummentions} mentions`);
 
-        // Add score for embeds
+        // Add score for embeds; link/embed spam
         var numembeds = this.embeds.length;
         score += (10 * numembeds);
         //console.log(`${numembeds} embeds`);
 
-        // Add score for attachments
+        // Add score for attachments; attachment spam
         var numattachments = this.attachments.size;
         score += (10 * numattachments);
         //console.log(`${numattachments} attachments`);
+
+        // Add score for the number of new lines in the message; scroll spam.
+        var newlines = this.content.split(/\r\n|\r|\n/).length;
+        if (newlines > 9) // 10 or more newlines = extremely spammy
+        {
+            score += 20;
+        } else if (newlines > 4) // 5-9 newlines = spammy
+        {
+            score += 10;
+        } else if (newlines > 1) // 2 or more newlines = a little spammy
+        {
+            score += 5;
+        }
+
+        // Add score for repeating patterns
+        // TODO: improve this algorithm
+        var newstring = this.content;
+        var regex = /(\W|^)(.+)\s\2/gmi;
+        var matcher = regex.exec(this.content);
+        while (matcher !== null)
+        {
+            newstring = newstring.replace(matcher[2], ``);
+            matcher = regex.exec(this.content);
+        }
+        var patternScore = (this.content.length > 0 ? (newstring.length / this.content.length) : 1);
+        
+        // 60% or lower means lots of repeating patterns, thus very spammy.
+        if (patternScore < 0.6)
+        {
+            score += 20;
+        } else if (patternScore < 0.8)
+        {
+            score += 10;
+        } else if (patternScore < 0.9)
+        {
+            score += 5;
+        }
 
         // Calculate how many seconds this message took to type based off of 5 characters per second.
         var msgTime = (this.cleanContent.length / 5);
@@ -65,10 +116,10 @@ module.exports = class extends Extendable {
                 .filter((msg) => {
                     return msg.id !== this.id && msg.author.id === this.author.id && moment(this.createdAt).subtract(3, 'minutes').isBefore(moment(msg.createdAt));
                 });
-                //console.log(`${collection.size} messages`);
+        //console.log(`${collection.size} messages`);
         collection.each((msg) => {
 
-            // If the current message was sent at a time that causes the typing speed to be more than 5 characters per second, add score for flooding.
+            // If the current message was sent at a time that causes the typing speed to be more than 5 characters per second, add score for flooding / copypasting.
             var timediff = moment(this.createdAt).diff(moment(msg.createdAt), 'seconds');
             if (timediff <= msgTime)
             {
@@ -76,22 +127,26 @@ module.exports = class extends Extendable {
                 //console.log(`Flooding`);
             }
 
-            // If the current message is 90% or more similar to the comparing message, add score.
+            // If the current message is 90% or more similar to the comparing message, add score for duplicate message spamming.
             var similarity = stringSimilarity.compareTwoStrings(this.content, msg.content);
             if (similarity >= 0.9)
             {
-                score += 5;
+                score += 10;
                 //console.log(`String similarity`);
             }
         });
 
-
+        // Start with a spam score multiplier of 0.5
+        // spam score 50% if less strict channel AND less strict role
+        // Spam score 100% if less strict channel OR less strict role
+        // Spam score 150% if neither less strict channel nor less strict role
         var multiplier = 0.5;
-        // If this is not a less strict channel, add 50% to the score
+
+        // If this is not a less strict channel, add 0.5 to the multiplier.
         if (this.guild.settings.get('antispamLessStrictChannels').indexOf(this.channel.id) === -1)
             multiplier += 0.5;
 
-        // If the member does not have a role defined in less strict roles, add 50% to the score.
+        // If the member does not have a role defined in less strict roles, add 0.5 to the multiplier.
         if (typeof this.member !== 'undefined')
         {
             var lessStrict = false;
