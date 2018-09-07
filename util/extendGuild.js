@@ -18,25 +18,25 @@ Structures.extend('Guild', Guild => class MyGuild extends Guild {
                 var channel = this.settings.announcementsChannel;
                 const _channel = this.client.channels.get(channel);
 
-                // If score is 60 or more, and we have not activated level 1 mitigation, do so!
+                // Activate raid mitigation if necessary
                 if (newScore >= 60 && mitigation < 1)
-                {
-                    this.settings.update('raidMitigation', 1);
-                    if (_channel)
-                        _channel.send(`:rotating_light: **Raid mitigation level 1 activated** :rotating_light:
-    
-I have detected a potential raid. As a precaution, level 1 mitigation has been activated. All new members will be isolated in a channel with staff until mitigation ends. If no more raid-like activity is detected, mitigation should end in about one hour. If raid activity continues, higher levels will be activated.`);
-                } else if (newScore >= 90 && mitigation < 2)
                 {
                     this.setVerificationLevel(4)
                             .then(updated => {
-                                this.settings.update('raidMitigation', 2);
+                                this.settings.update('raidMitigation', 1);
                                 if (_channel)
-                                    _channel.send(`:rotating_light: **Raid mitigation level 2 activated** :rotating_light:
+                                    _channel.send(`:rotating_light: **Raid mitigation level 1 activated** :rotating_light:
     
-I continue to detect raid activity. As a further precaution, level 2 mitigation has been activated. All new members must have a verified phone number associated with their account until mitigation expires. If no more activity is detected, mitigation should end in about 1.5 hours.
-Staff are advised to operate under code R "ban trolls immediately" until mitigation ends. **Trolling or spamming is now an immediately bannable offense until mitigation ends**.`);
+I have detected a potential raid. As a precaution, level 1 mitigation has been activated. All new members must have a verified phone number associated with their account until mitigation expires. If no more activity is detected, mitigation should end in about one hour. If raid activity continues, higher levels will be activated.`);
                             });
+                } else if (newScore >= 90 && mitigation < 2)
+                {
+                    this.settings.update('raidMitigation', 2);
+                    if (_channel)
+                        _channel.send(`:rotating_light: **Raid mitigation level 2 activated** :rotating_light:
+    
+I continue to detect raid activity. As a further precaution, level 2 mitigation has been activated. All new members will be isolated in a channel with staff until mitigation ends. If no more raid-like activity is detected, mitigation should end in about 1.5 hours. If raid activity continues, higher levels will be activated.
+Staff are now advised to operate under code R "ban trolls immediately" until mitigation ends. **Trolling or spamming is now an immediately bannable offense until mitigation ends**.`);
                 } else if (newScore >= 120 && mitigation < 3) {
                     this.settings.update('raidMitigation', 3);
                     if (_channel)
@@ -46,7 +46,7 @@ Serious raid activity continues to be detected. I activated the highest mitigati
                     this.fetchInvites()
                             .then(invites => {
                                 invites.each(invite => {
-                                   invite.delete(); 
+                                    invite.delete();
                                 });
                             })
                 }

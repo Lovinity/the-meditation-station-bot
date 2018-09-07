@@ -37,8 +37,8 @@ module.exports = class extends Event {
                         temp.push(verifiedRole.id);
                         guildMember.roles.add(temp, `Re-assigning saved roles`);
 
-                        // Also if the guild is under a raid mitigation, assign the mitigation role to the new member.
-                        if (guildMember.guild.settings.raidMitigation > 0)
+                        // Also if the guild is under a raid mitigation level 2+, assign the mitigation role to the new member.
+                        if (guildMember.guild.settings.raidMitigation > 1)
                         {
                             const raidRole = guildMember.guild.roles.get(guildMember.guild.settings.raidRole);
                             if (raidRole)
