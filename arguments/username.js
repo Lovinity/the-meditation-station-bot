@@ -64,6 +64,7 @@ module.exports = class extends Argument {
                 });
                 const collector = await menu.run(await msg.channel.send('Please wait...'));
                 const choice = await collector.selection;
+                collector.message.delete();
                 if (menu.options[choice])
                 {
                     return this.run(menu.options[choice].name, possible, msg);
