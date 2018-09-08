@@ -11,7 +11,8 @@ module.exports = class extends Command {
 			description: 'creates a reminder',
 			usage: '<when:time> <text:str> [...]',
 			usageDelim: ' | ',
-                        cooldown: 30
+                        cooldown: 30,
+                        requiredSettings: ["botChannel"],
 		});
 	}
 

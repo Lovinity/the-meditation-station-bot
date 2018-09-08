@@ -16,7 +16,7 @@ module.exports = class extends Command {
             cooldown: 30,
             runIn: ['text'],
             requiredPermissions: ["MANAGE_ROLES"],
-            requiredSettings: ["conflictResolutionMembers", "conflictResolutionTime"],
+            requiredSettings: ["conflictResolution", "conflictResolutionMembers", "conflictResolutionTime"],
             extendedHelp: 'When multiple people use this command in the same text channel in a certain period of time, I will intervene by muting the channel for 5 minutes and posting a breathing exercise for everyone to try. Then, I will unmute the channel and ask 3 sets of conflict resolving questions, giving 5 minutes in between each set for members to respond.'
         });
     }

@@ -10,7 +10,8 @@ module.exports = class extends Command {
             runIn: ['text'],
             description: 'Get information about a given user modlogs, and perform actions on them. Must be used in a staff or incidents channel.',
             usage: '<user:username>',
-            usageDelim: ' | '
+            usageDelim: ' | ',
+            requiredSettings: ["incidentsCategory", "staffCategory"],
         });
     }
 

@@ -12,11 +12,15 @@ module.exports = class extends Command {
             description: 'Change your server nickname. Names with profanity or special characters are not allowed.',
             usage: '<nick:str>',
             usageDelim: '',
-            cooldown: 60
+            cooldown: 60,
+            requiredSettings: ["botChannel"],
         });
     }
 
     async run(message, [nick]) {
+        if (message.channel.id !== message.guild.settings.get('botChannel'))
+            return message.send(`:x: Sorry, but this command may only be used in the bot channel.`);
+        
         // Test for profanity
         config.profanity.forEach((word) => {
             var numbers = getIndicesOf(word, nick, false);
@@ -25,15 +29,15 @@ module.exports = class extends Command {
                 return message.send(`:x: Sorry, but that nickname is not allowed; it contains profanity.`);
             }
         });
-        
+
         // Test for special characters
         if (/[^\x20-\x7E]/g.test(nick))
         {
             return message.send(`:x: Sorry, but that nickname is not allowed; it contains special characters.`);
         }
-        
+
         await message.member.setNickname(nick, `Requested from the !nick command`);
-        
+
         return message.send(`:white_check_mark: Your nickname has been changed.`);
     }
 

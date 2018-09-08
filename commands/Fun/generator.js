@@ -6,6 +6,7 @@ module.exports = class extends Command {
     constructor(...args) {
         super(...args, {
             runIn: ['text'],
+            requiredSettings: ["botChannel"],
             cooldown: 30,
             permissionLevel: 0,
             description: 'Uses NPM fantasy-names to generate pretty much anything.',
