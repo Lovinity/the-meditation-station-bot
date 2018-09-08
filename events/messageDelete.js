@@ -1,4 +1,5 @@
 const {Event} = require('klasa');
+const {MessageEmbed} = require('discord.js');
 const moment = require("moment");
 module.exports = class extends Event {
 
@@ -24,25 +25,24 @@ module.exports = class extends Event {
         if (!modLog)
             return;
 
+        var display = new MessageEmbed()
+                .setTitle(`Deleted Message`)
+                .setDescription(`${message.cleanContent}`)
+                .setAuthor(message.author.tag, message.author.displayAvatarURL({size: 32}))
+                .setFooter(`Message created **${message.createdAt}** in channel **${message.channel.name}**`);
+
         const _channel = this.client.channels.get(modLog);
 
-        // send a log to the channel
-        _channel.send(`:wastebasket: A message was deleted.`);
-
-        var data = `\`\`\``;
-        data += `+++Message by ${message.author.username}#${message.author.discriminator} (${message.author.id}), ID ${message.id}, channel ${message.channel.name}+++\n`;
-        data += `-Time: ${moment(message.createdAt).format()}\n`;
         // Write attachment URLs
         message.attachments.array().forEach(function (attachment) {
-            data += `-Attachment: ${attachment.url}\n`;
+            display.addField(`Contained Attachment`, attachment);
         });
         // Write embeds as JSON
         message.embeds.forEach(function (embed) {
-            data += `-Embed: ${JSON.stringify(embed)}\n`;
+            display.addField(`Contained Embed`, JSON.stringify(embed));
         });
-        // Write the clean version of the message content
-        data += `${message.cleanContent}\`\`\``;
-        _channel.send(data);
+
+        _channel.sendEmbed(display, `:wastebasket: A message ${message.id} was deleted.`);
 
 
     }

@@ -1,4 +1,5 @@
 const {Event} = require('klasa');
+const {MessageEmbed} = require('discord.js');
 var jsdiff = require('diff');
 const moment = require("moment");
 
@@ -40,53 +41,71 @@ module.exports = class extends Event {
         if (!modLog)
             return;
 
+        var display = new MessageEmbed()
+                .setTitle(`Old Message`)
+                .setDescription(`${old.cleanContent}`)
+                .setAuthor(message.author.tag, message.author.displayAvatarURL({size: 32}))
+                .setFooter(`Message created **${message.createdAt}** in channel **${message.channel.name}**`);
+
         const _channel = this.client.channels.get(modLog);
 
-        var oldContent = ``;
-        var newContent = ``;
+        // First, determine any attachment changes
+        var oldAttachments = [];
+        var newAttachments = [];
 
-        // Old message first
         old.attachments.array().forEach(function (attachment) {
-            oldContent += `-Attachment: ${attachment.url}\n`;
+            oldAttachments.push(attachment.url);
         });
-        // Write embeds as JSON
-        old.embeds.forEach(function (embed) {
-            oldContent += `-Embed: ${JSON.stringify(embed)}\n`;
-        });
-        // Write the clean version of the message content
-        oldContent += `${old.cleanContent}`;
 
-        // Process new message
         message.attachments.array().forEach(function (attachment) {
-            newContent += `-Attachment: ${attachment.url}\n`;
+            newAttachments.push(attachment.url);
         });
-        // Write embeds as JSON
-        message.embeds.forEach(function (embed) {
-            newContent += `-Embed: ${JSON.stringify(embed)}\n`;
-        });
-        // Write the clean version of the message content
-        newContent += `${message.cleanContent}`;
 
-        // Get the differences between old and new
-        var diff = jsdiff.diffWordsWithSpace(oldContent, newContent);
-        var newstring = '';
+        oldAttachments.forEach(function (attachment) {
+            if (newAttachments.indexOf(attachment) === -1)
+                display.addField(`Attachment removed`, attachment);
+        });
+
+        newAttachments.forEach(function (attachment) {
+            if (oldAttachments.indexOf(attachment) === -1)
+                display.addField(`Attachment added`, attachment);
+        });
+
+        // Next, determine embed changes
+
+        var oldEmbeds = [];
+        var newEmbeds = [];
+
+        old.embeds.forEach(function (embed) {
+            oldEmbeds.push(JSON.stringify(embed));
+        });
+
+        message.embeds.forEach(function (embed) {
+            newEmbeds.push(JSON.stringify(embed));
+        });
+
+        oldEmbeds.forEach(function (embed) {
+            if (newEmbeds.indexOf(embed) === -1)
+                display.addField(`Embed removed`, embed);
+        });
+
+        newEmbeds.forEach(function (embed) {
+            if (oldEmbeds.indexOf(embed) === -1)
+                display.addField(`Embed added`, embed);
+        });
+
+        // Get the differences between old and new content
+        var diff = jsdiff.diffWordsWithSpace(old.cleanContent, message.cleanContent);
         diff.forEach(function (part) {
             if (part.added) {
-                newstring = `${newstring} #+${part.value}+#`;
+                display.addField(`Part added`, part.value);
             } else if (part.removed) {
-                newstring = `${newstring} #-${part.value}-#`;
-            } else {
-                newstring = `${newstring}${part.value}`;
+                display.addField(`Part removed`, part.value);
             }
         });
 
         // send a log to the channel
-        _channel.send(`:pencil: A message was edited.`);
-        var returnData = `\`\`\``;
-        returnData += `+++Message by ${message.author.username}#${message.author.discriminator} (${message.author.id}), ID ${message.id}, channel ${message.channel.name}+++\n`;
-        returnData += `-Time: ${moment(message.createdAt).format()}\n`;
-        returnData += `${newstring}\`\`\``;
-        _channel.send(returnData);
+        _channel.sendEmbed(display, `:pencil: Message ${message.id} was edited.`);
 
 
 
