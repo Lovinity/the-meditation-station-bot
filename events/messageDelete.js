@@ -6,10 +6,16 @@ module.exports = class extends Event {
         if (message.command && message.command.deletable)
             for (const msg of message.responses)
                 msg.delete();
-        
         // Skip the bot
         if (message.author.id === this.client.user.id)
             return;
+
+        // Remove XP/Yang
+        if (typeof message.member !== 'undefined')
+        {
+            var xp = 0 - message.xp;
+            message.member.xp(xp, message);
+        }
 
         // Get the configured modLog channel.
         const modLog = message.guild.settings.get('modLogChannel');

@@ -37,6 +37,7 @@ module.exports = class extends Command {
         //schema.add("antispamLessStrictChannels", {type: "TextChannel", array: true});
         //schema.add("raidscore", {type: "integer", default: 0, configurable: false});
         //schema.add("raidMitigation", {type: "integer", default: 0, configurable: false});
+        schema.remove(`levelRoles`);
         return message.send(`done`);
     }
 

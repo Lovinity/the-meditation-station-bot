@@ -17,6 +17,13 @@ module.exports = class extends Event {
             return a.id - b.id;
         }).forEach(function (message) {
 
+            // Remove XP/Yang
+            if (typeof message.member !== 'undefined')
+            {
+                var xp = 0 - message.xp;
+                message.member.xp(xp, message);
+            }
+
             // Get the configured modLog channel.
             if (!modLog)
             {

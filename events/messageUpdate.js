@@ -17,6 +17,15 @@ module.exports = class extends Event {
             }
         }
 
+        // Update XP/Yang
+        if (typeof message.member !== 'undefined')
+        {
+            var xp1 = old.xp;
+            var xp2 = message.xp;
+            if (xp2 - xp1 !== 0)
+                message.member.xp(xp2 - xp1, message);
+        }
+
         if (this.client.ready && old.content !== message.content)
             this.client.monitors.run(message);
 

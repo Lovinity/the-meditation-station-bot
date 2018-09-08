@@ -1,6 +1,8 @@
 const {Structures} = require('discord.js');
 const moment = require("moment");
+require("moment-duration-format");
 const GuildDiscipline = require('./guildDiscipline');
+const config = require("../config");
 
 Structures.extend('GuildMember', GuildMember => class MyGuildMember extends GuildMember {
 
@@ -16,18 +18,15 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
             this.spamScoreStamp = null;
             this.spamScore = (score, message) => {
 
+                // Ignore if score = 0
+                if (score === 0)
+                    return null;
+
                 // Ignore this bot
                 if (message.author.id === this.client.user.id)
                     return null;
 
-                // If user is already muted, do not update score, but delete any messages that scored 20 or more.
-                if (message.member && message.guild && message.member.roles.get(message.guild.settings.muteRole))
-                {
-                    console.log(`User already muted`);
-                    if (score >= 20)
-                        message.delete();
-                    return null;
-                }
+                var isMuted = (this.roles.get(this.guild.settings.muteRole));
 
                 // Update the score
                 var currentScore = this.settings.spamscore;
@@ -41,8 +40,11 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                     if (this.spamScoreStamp === null || moment().subtract(30, 'seconds').isAfter(moment(this.spamScoreStamp)))
                     {
                         console.log(`Sent warning`);
-                        var response = `:warning: <@${message.author.id}> **Please take a 2-minute break**; your spam score is high. `;
-                        if (this.guild.settings.raidMitigation >= 3)
+                        var response = `:warning: <@${message.author.id}> **Please take a break for about ${moment.duration(this.guild.settings.antispamCooldown > 0 ? (currentScore / this.guild.settings.antispamCooldown) : `Infinity`, 'minutes').format("m [Minutes]")}**; your spam score is high. `;
+                        if (isMuted)
+                        {
+                            response += `__**Ignoring this may result in getting kicked from the guild**__ and any pending bans being applied immediately.`;
+                        } else if (this.guild.settings.raidMitigation >= 3)
                         {
                             response += `__**Ignoring this may result in a permanent ban**__ since we are under level 3 raid mitigation.`;
                         } else if (this.guild.settings.raidMitigation >= 2)
@@ -59,10 +61,20 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                     }
                 } else if (currentScore >= 100 && moment().subtract(10, 'seconds').isAfter(moment(this.spamScoreStamp)))
                 {
-                    console.log(`Muting time!`);
+                    console.log(`Antispam triggered!`);
 
-                    // Add 20 to the raid score of the guild
-                    this.guild.raidScore(20);
+                    // Add 15 to the raid score of the guild
+                    this.guild.raidScore(15);
+
+                    // Reset the member's spam score
+                    this.settings.update('spamscore', 0);
+
+                    // If user is muted already, kick the user and end here
+                    if (isMuted)
+                    {
+                        this.kick(`Triggered antispam while being muted.`);
+                        return null;
+                    }
 
                     // Issue the mute
                     if (this.guild.settings.raidMitigation < 1)
@@ -107,6 +119,73 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                     }
                 }
             };
+            this.xp = (score, message = null) => {
+
+                // Ignore if score = 0
+                if (score === 0)
+                    return null;
+
+                // Ignore this bot
+                if (this.id === this.client.user.id)
+                    return null;
+
+                // Update the Yang
+                var currentScore = this.settings.yang;
+                this.settings.update('yang', currentScore + score);
+                var newScore = currentScore + score;
+
+                // Update the XP
+                var currentScore = this.settings.xp;
+                this.settings.update('xp', currentScore + score);
+                var newScore = currentScore + score;
+                var prevLevel = Math.floor(0.177 * Math.sqrt(currentScore)) + 1;
+                var curLevel = Math.floor(0.177 * Math.sqrt(newScore)) + 1;
+                
+                // TODO: use settings instead of config; at this time, object role settings for some stupid f***king reason erases itself on each reboot, so we cannot use it right now
+
+                // Level was bumped up
+                if (prevLevel < curLevel)
+                {
+                    console.log(`Increased level!`);
+                    for (var i = prevLevel + 1; i <= curLevel; i++)
+                    {
+                        console.log(`Level ${i}.`);
+                        if (typeof config.levelRoles[i] === 'string')
+                        {
+                            console.log(`Role setting exists.`);
+                            var role = this.guild.roles.get(config.levelRoles[i]);
+                            if (role)
+                            {
+                                console.log(`Role exists. Adding role.`);
+                                this.roles.add(role, `Achieved level ${i}`);
+                                if (message !== null)
+                                    message.channel.send(`:tada: **Congratulations <@${this.id}>, you earned the ${role.name} role!**`);
+                            }
+                        }
+                    }
+                }
+
+                // Level was bumped down
+                if (prevLevel > curLevel)
+                {
+                    console.log(`Decreased level!`);
+                    for (var i = prevLevel - 1; i >= curLevel; i--)
+                    {
+                        console.log(`Level <${i}.`);
+                        if (typeof config.levelRoles[i+1] === 'string')
+                        {
+                            console.log(`Role setting exists.`);
+                            var role = this.guild.roles.get(config.levelRoles[i+1]);
+                            if (role)
+                            {
+                                console.log(`Role exists. Removing role.`);
+                                this.roles.remove(role, `Demoted role for level ${i + 1}`);
+                            }
+                        }
+                    }
+            }
+            };
+            this.speaking = 0;
         }
 
     });

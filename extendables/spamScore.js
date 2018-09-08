@@ -94,7 +94,7 @@ module.exports = class extends Extendable {
             matcher = regex.exec(this.content);
         }
         var patternScore = (this.content.length > 0 ? (newstring.length / this.content.length) : 1);
-        
+
         // 60% or lower means lots of repeating patterns, thus very spammy.
         if (patternScore < 0.6)
         {
@@ -140,7 +140,10 @@ module.exports = class extends Extendable {
         // spam score 50% if less strict channel AND less strict role
         // Spam score 100% if less strict channel OR less strict role
         // Spam score 150% if neither less strict channel nor less strict role
+        // If the member is muted, the spam score will always be 150%
         var multiplier = 0.5;
+
+        var isMuted = (this.member && this.guild && this.member.roles.get(this.guild.settings.muteRole));
 
         // If this is not a less strict channel, add 0.5 to the multiplier.
         if (this.guild.settings.get('antispamLessStrictChannels').indexOf(this.channel.id) === -1)
@@ -160,9 +163,14 @@ module.exports = class extends Extendable {
             if (!lessStrict)
                 multiplier += 0.5;
         }
+        if (isMuted)
+            multiplier = 1.5;
+        
         //console.log(`${multiplier} multiplier`);
 
         score *= multiplier;
+
+        //console.log(`Spam: ${score}`);
 
         return score;
     }
