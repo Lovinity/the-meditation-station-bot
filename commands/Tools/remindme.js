@@ -15,17 +15,17 @@ module.exports = class extends Command {
 		});
 	}
 
-	async run(msg, [when, ...text]) {
-            if (msg.channel.id !== msg.guild.settings.get('botChannel'))
-                return msg.sendMessage(`:x: Sorry, but this command may only be used in the bot channel.`)
+	async run(message, [when, ...text]) {
+            if (message.channel.id !== message.guild.settings.get('botChannel'))
+                return message.sendMessage(`:x: Sorry, but this command may only be used in the bot channel.`)
 		const reminder = await this.client.schedule.create('reminder', when, {
 			data: {
-				channel: msg.channel.id,
-				user: msg.author.id,
+				channel: message.channel.id,
+				user: message.author.id,
 				text: text.join(' | ')
 			}
 		});
-		return msg.sendMessage(`:white_check_mark: Got it! I will remind you. Remember this reminder ID: \`${reminder.id}\``);
+		return message.sendMessage(`:white_check_mark: Got it! I will remind you. Remember this reminder ID: \`${reminder.id}\``);
 	}
 
 };

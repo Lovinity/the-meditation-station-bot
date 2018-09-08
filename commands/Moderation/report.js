@@ -22,62 +22,62 @@ module.exports = class extends Command {
         });
     }
 
-    async run(msg, [user]) {
+    async run(message, [user]) {
         // Error if this command was not executed in an incidents channel, and delete the message for user's confidentiality
-        if (msg.channel.parent && msg.channel.parent.id !== msg.guild.settings.get('incidentsCategory'))
+        if (message.channel.parent && message.channel.parent.id !== message.guild.settings.get('incidentsCategory'))
         {
-            await msg.send(`:x: For your confidentiality, the report command may only be used in an incident channel (private channel between you and the staff). Please use the command !staff to create one.`);
-            return msg.delete({reason: `Use of !report ourside an incidents channel. Deleted for confidentiality.`});
+            await message.send(`:x: For your confidentiality, the report command may only be used in an incident channel (private channel between you and the staff). Please use the command !staff to create one.`);
+            return message.delete({reason: `Use of !report ourside an incidents channel. Deleted for confidentiality.`});
         }
 
         // First, get configured settings
-        const reports = user.settings.get(`${msg.guild.id}.reports`);
-        const reportMembers = msg.guild.settings.get('reportMembers') || 3;
-        const reportTime = moment().add(parseInt(msg.guild.settings.get('reportTime')), 'minutes').toDate();
-        const muted = msg.guild.settings.get(`muteRole`);
-        const mutedRole = msg.guild.roles.get(muted);
-        const noSelfMod = msg.guild.settings.get(`noSelfModRole`);
-        const noSelfModRole = msg.guild.roles.get(noSelfMod);
-        const guildMember = msg.guild.members.get(user.id);
-        const incidents = msg.guild.settings.get(`incidentsCategory`);
+        const reports = user.settings.get(`${message.guild.id}.reports`);
+        const reportMembers = message.guild.settings.get('reportMembers') || 3;
+        const reportTime = moment().add(parseInt(message.guild.settings.get('reportTime')), 'minutes').toDate();
+        const muted = message.guild.settings.get(`muteRole`);
+        const mutedRole = message.guild.roles.get(muted);
+        const noSelfMod = message.guild.settings.get(`noSelfModRole`);
+        const noSelfModRole = message.guild.roles.get(noSelfMod);
+        const guildMember = message.guild.members.get(user.id);
+        const incidents = message.guild.settings.get(`incidentsCategory`);
 
         // Check if this specific member used the conflict command on the user recently. If not, add an entry.
-        if (reports.indexOf(`${msg.author.id}`) === -1)
+        if (reports.indexOf(`${message.author.id}`) === -1)
         {
             // Do not activate the mute if already muted, not in the guild, or not activated by staff and not enough reports made yet
             if (guildMember && guildMember.roles.get(mutedRole.id))
-                return msg.sendMessage(`:warning: Thank you for your report. The member is already muted. Please use this channel to provide any further information or evidence of their misconduct.`);
+                return message.sendMessage(`:warning: Thank you for your report. The member is already muted. Please use this channel to provide any further information or evidence of their misconduct.`);
 
             if (guildMember && guildMember.roles.get(noSelfModRole.id))
-                return msg.sendMessage(`:warning: Thank you for your report. Unfortunately, you have the No Self Mod role, which means your report will not count towards muting the user. But you can continue to use this channel to provide information or evidence of their misconduct.`);
+                return message.sendMessage(`:warning: Thank you for your report. Unfortunately, you have the No Self Mod role, which means your report will not count towards muting the user. But you can continue to use this channel to provide information or evidence of their misconduct.`);
 
             // By this point, the report is authorized
 
             // Add a scheduled task to remove this report after configured minutes.
             const reportsadd = await this.client.schedule.create('removereport', reportTime, {
                 data: {
-                    guild: msg.guild.id,
+                    guild: message.guild.id,
                     reportee: user.id,
-                    reporter: msg.author.id
+                    reporter: message.author.id
                 }
             });
 
             // Add 10 to the guild's raid score
-            msg.guild.raidScore(10);
+            message.guild.raidScore(10);
 
             // Add this report into the member's report records
-            await user.settings.update(`${msg.guild.id}.reports`, `${msg.author.id}`, {action: 'add'});
+            await user.settings.update(`${message.guild.id}.reports`, `${message.author.id}`, {action: 'add'});
 
             if (reports.length < reportMembers)
-                return msg.sendMessage(`:white_check_mark: Thank you for your report. I have not deemed a mute necessary yet. Please provide information and evidence to their misconduct in this channel. Not doing so could be deemed !report abuse, and you could lose reporting privileges.`);
+                return message.sendMessage(`:white_check_mark: Thank you for your report. I have not deemed a mute necessary yet. Please provide information and evidence to their misconduct in this channel. Not doing so could be deemed !report abuse, and you could lose reporting privileges.`);
 
-            var discipline = new GuildDiscipline(user, msg.guild, this.client.user)
+            var discipline = new GuildDiscipline(user, message.guild, this.client.user)
                     .setType('mute')
                     .setReason(`${reportMembers} have reported you for misconduct within the last ${reportTime} minutes. This does **not** guarantee you are in trouble; staff will investigate and determine. Please be patient.`);
             discipline = await discipline.prepare();
             await discipline.finalize();
 
-            return msg.sendMessage(`:mute: Thank you for your report. I have deemed it necessary to mute the user until staff investigate. Please provide information and evidence in this channel of their misconduct. Not doing so could deem this !report as abuse, and you could lose reporting privileges.`);
+            return message.sendMessage(`:mute: Thank you for your report. I have deemed it necessary to mute the user until staff investigate. Please provide information and evidence in this channel of their misconduct. Not doing so could deem this !report as abuse, and you could lose reporting privileges.`);
     }
 
     }

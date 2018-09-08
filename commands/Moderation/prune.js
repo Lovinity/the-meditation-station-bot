@@ -15,13 +15,13 @@ module.exports = class extends Command {
         });
     }
 
-    async run(msg, [limit = 50, filter = null]) {
-        var message = await msg.send(`:hourglass_flowing_sand: Pruning messages (depending on the specified limit, this could take a while)...`);
-        await this.process(msg, limit, filter);
-        return msg.send(`:white_check_mark: Prune is complete!`);
+    async run(message, [limit = 50, filter = null]) {
+        var message = await message.send(`:hourglass_flowing_sand: Pruning messages (depending on the specified limit, this could take a while)...`);
+        await this.process(message, limit, filter);
+        return message.send(`:white_check_mark: Prune is complete!`);
     }
 
-    getFilter(msg, filter, user) {
+    getFilter(message, filter, user) {
         switch (filter) {
             // Here we use Regex to check for the diffrent types of prune options
             case 'link':
@@ -33,7 +33,7 @@ module.exports = class extends Command {
             case 'you':
                 return mes => mes.author.id === this.client.user.id;
             case 'me':
-                return mes => mes.author.id === msg.author.id;
+                return mes => mes.author.id === message.author.id;
             case 'upload':
                 return mes => mes.attachments.size > 0;
             case 'user':
@@ -45,12 +45,12 @@ module.exports = class extends Command {
         }
     }
 
-    async process(msg, limit, filter) {
+    async process(message, limit, filter) {
         wait.for.time(3);
         var iteration = 0;
         while (limit > 0 && iteration < 10)
         {
-            var filtered = await this._process(msg, limit, filter);
+            var filtered = await this._process(message, limit, filter);
             if (filtered <= 0)
                 limit = -1;
             limit -= filtered;
@@ -60,17 +60,17 @@ module.exports = class extends Command {
         return true;
     }
 
-    async _process(msg, amount, filter) {
-        let messages = await msg.channel.messages.fetch({limit: 100});
+    async _process(message, amount, filter) {
+        let messages = await message.channel.messages.fetch({limit: 100});
         if (messages.array().length <= 0)
             return -1;
         if (filter) {
             const user = typeof filter !== 'string' ? filter : null;
             const type = typeof filter === 'string' ? filter : 'user';
-            messages = messages.filter(this.getFilter(msg, type, user));
+            messages = messages.filter(this.getFilter(message, type, user));
         }
         messages = messages.array().slice(0, amount);
-        await msg.channel.bulkDelete(messages);
+        await message.channel.bulkDelete(messages);
         return messages.length;
     }
 

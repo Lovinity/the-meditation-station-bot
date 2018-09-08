@@ -21,16 +21,16 @@ function resolveUser(query, guild) {
 
 module.exports = class extends Argument {
 
-    async run(arg, possible, msg) {
-        if (!msg.guild)
-            return this.store.get('user').run(arg, possible, msg);
-        const resUser = await resolveUser(arg, msg.guild);
+    async run(arg, possible, message) {
+        if (!message.guild)
+            return this.store.get('user').run(arg, possible, message);
+        const resUser = await resolveUser(arg, message.guild);
         if (resUser)
             return resUser;
 
         const results = [];
         const reg = new RegExp(regExpEsc(arg), 'i');
-        for (const member of msg.guild.members.values()) {
+        for (const member of message.guild.members.values()) {
             if (reg.test(member.user.username))
             {
                 results.push(member.user);
@@ -62,12 +62,12 @@ module.exports = class extends Argument {
                 querySearch.forEach(option => {
                    menu.addOption(option.tag, option.id); 
                 });
-                const collector = await menu.run(await msg.channel.send('Please wait...'), {time: 60000, filter: (reaction, user) => user.id === msg.author.id});
+                const collector = await menu.run(await message.channel.send('Please wait...'), {time: 60000, filter: (reaction, user) => user.id === message.author.id});
                 const choice = await collector.selection;
                 collector.message.delete();
                 if (menu.options[choice])
                 {
-                    return this.run(menu.options[choice].name, possible, msg);
+                    return this.run(menu.options[choice].name, possible, message);
                 } else {
                     throw `:stop_button: The request was canceled.`;
                 }

@@ -28,7 +28,7 @@ module.exports = class extends Event {
         var display = new MessageEmbed()
                 .setTitle(`Deleted Message`)
                 .setDescription(`${message.cleanContent}`)
-                .setAuthor(message.author.tag, message.author.displayAvatarURL({size: 32}))
+                .setAuthor(message.author.tag, message.author.displayAvatarURL())
                 .setFooter(`Message created **${message.createdAt}** in channel **${message.channel.name}**`);
 
         const _channel = this.client.channels.get(modLog);

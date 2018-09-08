@@ -16,25 +16,25 @@ module.exports = class extends Command {
         });
     }
 
-    async run(msg, [nick]) {
+    async run(message, [nick]) {
         // Test for profanity
         config.profanity.forEach((word) => {
             var numbers = getIndicesOf(word, nick, false);
             if (numbers.length > 0)
             {
-                return msg.send(`:x: Sorry, but that nickname is not allowed; it contains profanity.`);
+                return message.send(`:x: Sorry, but that nickname is not allowed; it contains profanity.`);
             }
         });
         
         // Test for special characters
         if (/[^\x20-\x7E]/g.test(nick))
         {
-            return msg.send(`:x: Sorry, but that nickname is not allowed; it contains special characters.`);
+            return message.send(`:x: Sorry, but that nickname is not allowed; it contains special characters.`);
         }
         
-        await msg.member.setNickname(nick, `Requested from the !nick command`);
+        await message.member.setNickname(nick, `Requested from the !nick command`);
         
-        return msg.send(`:white_check_mark: Your nickname has been changed.`);
+        return message.send(`:white_check_mark: Your nickname has been changed.`);
     }
 
 };

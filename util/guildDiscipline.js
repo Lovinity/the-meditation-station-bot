@@ -157,7 +157,8 @@ module.exports = class GuildDiscipline {
                     xp: this.xp,
                     yang: this.yang,
                     reputation: this.reputation,
-                    schedule: null});
+                    schedule: null})
+                .setOtherDiscipline(this.other);
 
         // Add a schedule if a mute is in place
         if (this.duration > 0 && this.type === 'mute')

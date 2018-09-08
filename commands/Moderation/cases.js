@@ -14,16 +14,16 @@ module.exports = class extends Command {
         });
     }
 
-    async run(msg, [user]) {
+    async run(message, [user]) {
         // Bail if the command was not run in a staff category channel or incidents category channel.
-        if (!msg.channel.parent || (msg.channel.parent.id !== msg.guild.settings.get('incidentsCategory') && msg.channel.parent.id !== msg.guild.settings.get('staffCategory')))
+        if (!message.channel.parent || (message.channel.parent.id !== message.guild.settings.get('incidentsCategory') && message.channel.parent.id !== message.guild.settings.get('staffCategory')))
         {
-            await msg.channel.send(`:x: For confidentiality, the cases command may only be used in a staff channel or incidents channel.`);
-            return msg.delete({reason: `Use of !cases channel outside of a staff or incidents channel`});
+            await message.channel.send(`:x: For confidentiality, the cases command may only be used in a staff channel or incidents channel.`);
+            return message.delete({reason: `Use of !cases channel outside of a staff or incidents channel`});
         }
 
         // Get the modLogs
-        const modLogs = user.settings[msg.guild.id].modLogs;
+        const modLogs = user.settings[message.guild.id].modLogs;
 
         var actions = {
             warn: 0,
@@ -55,7 +55,7 @@ module.exports = class extends Command {
         Object.entries(actions).map(([key, value]) => {
             menu.addOption(key, `**${value}** active cases`);
         });
-        var collector = await menu.run(await msg.channel.send('Please wait...'), {time: 180000, filter: (reaction, user) => user.id === msg.author.id});
+        var collector = await menu.run(await message.channel.send('Please wait...'), {time: 180000, filter: (reaction, user) => user.id === message.author.id});
         var choice = await collector.selection;
         if (menu.options[choice])
         {
@@ -69,7 +69,7 @@ module.exports = class extends Command {
                 cases[chosen].forEach(function (modLog) {
                     menu.addOption(modLog.id, `Issued **${modLog.issued}** by **${modLog.moderator}**`);
                 });
-                var collector = await menu.run(await collector.message.edit('Please wait...'), {time: 180000, filter: (reaction, user) => user.id === msg.author.id});
+                var collector = await menu.run(await collector.message.edit('Please wait...'), {time: 180000, filter: (reaction, user) => user.id === message.author.id});
                 var choice = await collector.selection;
                 if (menu.options[choice])
                 {
@@ -86,12 +86,13 @@ Moderator : ${log.moderator.tag} (${log.moderator.id})
 Reason:   : ${log.reason}
 Expiration: ${log.expiration}
 Discipline: ${JSON.stringify(log.discipline)}
+Additional: ${log.otherDiscipline}
 
 Use number reactions to select an action, or stop to exit.`)
                                 );
                         menu.addOption(`remove`, `Remove this case from user records, but do not reverse the discipline.`);
                         menu.addOption(`appeal`, `Remove this case from user records, AND reverse the discipline.`);
-                        var collector = await menu.run(await collector.message.edit('Please wait...'), {time: 180000, filter: (reaction, user) => user.id === msg.author.id});
+                        var collector = await menu.run(await collector.message.edit('Please wait...'), {time: 180000, filter: (reaction, user) => user.id === message.author.id});
                         var choice = await collector.selection;
                         await collector.message.delete();
                         if (menu.options[choice])
@@ -99,35 +100,35 @@ Use number reactions to select an action, or stop to exit.`)
                             var chosen3 = menu.options[choice].name;
                             if (chosen3 === 'remove')
                             {
-                                await user.settings.update(`${msg.guild.id}.modLogs`, log, {action: 'remove'});
+                                await user.settings.update(`${message.guild.id}.modLogs`, log, {action: 'remove'});
                                 log.valid = false;
-                                await user.settings.update(`${msg.guild.id}.modLogs`, log, {action: 'add'});
-                                const channel2 = msg.guild.channels.get(msg.guild.settings.get('modLogChannel'));
+                                await user.settings.update(`${message.guild.id}.modLogs`, log, {action: 'add'});
+                                const channel2 = message.guild.channels.get(message.guild.settings.get('modLogChannel'));
                                 if (channel2)
                                 {
-                                    channel2.send(`:negative_squared_cross_mark: Case ${log.case} (A ${log.type} against ${log.user.tag}) was removed by ${msg.author.tag} (${msg.author.id}), but the discipline remains in place.`);
+                                    channel2.send(`:negative_squared_cross_mark: Case ${log.case} (A ${log.type} against ${log.user.tag}) was removed by ${message.author.tag} (${message.author.id}), but the discipline remains in place.`);
                                 }
                             }
                             if (chosen3 === 'appeal')
                             {
-                                await user.settings.update(`${msg.guild.id}.modLogs`, log, {action: 'remove'});
+                                await user.settings.update(`${message.guild.id}.modLogs`, log, {action: 'remove'});
                                 log.valid = false;
-                                await user.settings.update(`${msg.guild.id}.modLogs`, log, {action: 'add'});
+                                await user.settings.update(`${message.guild.id}.modLogs`, log, {action: 'add'});
                                 // Now, appeal all discipline
                                 if (log.discipline.xp > 0)
                                 {
-                                    user.settings.update(`${msg.guild.id}.xp`, (user.settings[msg.guild.id].xp + log.discipline.xp));
+                                    user.settings.update(`${message.guild.id}.xp`, (user.settings[message.guild.id].xp + log.discipline.xp));
                                 }
                                 if (log.discipline.yang > 0)
                                 {
-                                    user.settings.update(`${msg.guild.id}.yang`, (user.settings[msg.guild.id].yang + log.discipline.yang));
+                                    user.settings.update(`${message.guild.id}.yang`, (user.settings[message.guild.id].yang + log.discipline.yang));
                                 }
                                 if (log.discipline.reputation > 0)
                                 {
-                                    user.settings.update(`${msg.guild.id}.badRep`, (user.settings[msg.guild.id].badRep - log.discipline.reputation));
+                                    user.settings.update(`${message.guild.id}.badRep`, (user.settings[message.guild.id].badRep - log.discipline.reputation));
                                 }
 
-                                const guildMember = msg.guild.members.get(user.id);
+                                const guildMember = message.guild.members.get(user.id);
 
                                 if (log.type === 'tempban' || log.type === 'ban')
                                 {
@@ -136,29 +137,29 @@ Use number reactions to select an action, or stop to exit.`)
                                                 .catch(err => {
 
                                                 });
-                                    await msg.guild.members.unban(user, `Ban was appealed`);
+                                    await message.guild.members.unban(user, `Ban was appealed`);
 
                                     if (log.type === 'tempban')
                                     {
                                         // Remove the suspension if it is pending in the guild
-                                        const pendSuspensions = msg.guild.settings.get('pendSuspensions');
+                                        const pendSuspensions = message.guild.settings.get('pendSuspensions');
                                         if (pendSuspensions && pendSuspensions.length > 0)
                                         {
                                             pendSuspensions.forEach(function (suspension) {
                                                 if (suspension.user === user.id)
-                                                    msg.guild.settings.update(`pendSuspensions`, suspension, {action: 'remove'});
+                                                    message.guild.settings.update(`pendSuspensions`, suspension, {action: 'remove'});
                                             });
                                         }
                                     }
                                     if (log.type === 'ban')
                                     {
                                         // Remove the ban if it is pending in the guild
-                                        const pendBans = msg.guild.settings.get('pendBans');
+                                        const pendBans = message.guild.settings.get('pendBans');
                                         if (pendBans && pendBans.length > 0)
                                         {
                                             pendBans.forEach(function (ban) {
                                                 if (ban.user === user.id)
-                                                    msg.guild.settings.update(`pendBans`, ban, {action: 'remove'});
+                                                    message.guild.settings.update(`pendBans`, ban, {action: 'remove'});
                                             });
                                         }
                                     }
@@ -173,8 +174,8 @@ Use number reactions to select an action, or stop to exit.`)
                                                 });
 
                                     // Get the configured muted role
-                                    const muted = msg.guild.settings.get(`muteRole`);
-                                    const mutedRole = msg.guild.roles.get(muted);
+                                    const muted = message.guild.settings.get(`muteRole`);
+                                    const mutedRole = message.guild.roles.get(muted);
 
                                     // Add the mute role to the user, if the user is in the guild
                                     if (guildMember)
@@ -182,49 +183,49 @@ Use number reactions to select an action, or stop to exit.`)
                                         guildMember.roles.remove(mutedRole, `Mute was appealed`);
                                     } else {
                                         // Otherwise, remove mutedRole to the list of roles for the user so it's applied when/if they return
-                                        user.settings.update(`${msg.guild.id}.roles`, mutedRole.id, {action: 'remove'});
+                                        user.settings.update(`${message.guild.id}.roles`, mutedRole.id, {action: 'remove'});
                                     }
                                 }
 
                                 // Remove incident if it is pending in the guild
-                                const pendIncidents = msg.guild.settings.get('pendIncidents');
+                                const pendIncidents = message.guild.settings.get('pendIncidents');
                                 if (pendIncidents && pendIncidents.length > 0)
                                 {
                                     pendIncidents.forEach(function (incident) {
                                         if (incident.user === user.id)
-                                            msg.guild.settings.update(`pendIncidents`, incident, {action: 'remove'});
+                                            message.guild.settings.update(`pendIncidents`, incident, {action: 'remove'});
                                     });
                                 }
 
                                 if (log.channel !== null)
                                 {
-                                    const channel = msg.guild.channels.get(log.channel);
+                                    const channel = message.guild.channels.get(log.channel);
                                     if (channel)
                                     {
-                                        channel.send(`:negative_squared_cross_mark: This incident has been appealed by ${msg.author.tag} (${msg.author.id}), and issued discipline was reversed.`);
+                                        channel.send(`:negative_squared_cross_mark: This incident has been appealed by ${message.author.tag} (${message.author.id}), and issued discipline was reversed.`);
                                     }
                                 }
 
-                                const channel2 = msg.guild.channels.get(msg.guild.settings.get('modLogChannel'));
+                                const channel2 = message.guild.channels.get(message.guild.settings.get('modLogChannel'));
                                 if (channel2)
                                 {
-                                    channel2.send(`:negative_squared_cross_mark: Case ${log.case} (A ${log.type} against ${log.user.tag}) was appealed by ${msg.author.tag} (${msg.author.id}), and all discipline reversed.`);
+                                    channel2.send(`:negative_squared_cross_mark: Case ${log.case} (A ${log.type} against ${log.user.tag}) was appealed by ${message.author.tag} (${message.author.id}), and all discipline reversed.`);
                                 }
                             }
-                            return msg.send(`:white_check_mark: Action completed.`);
+                            return message.send(`:white_check_mark: Action completed.`);
                         } else {
-                            return msg.send(`:stop_button: The request was canceled.`);
+                            return message.send(`:stop_button: The request was canceled.`);
                         }
                     }
                 } else {
-                    return msg.send(`:stop_button: The request was canceled.`);
+                    return message.send(`:stop_button: The request was canceled.`);
                 }
             }
         } else {
-            return msg.send(`:stop_button: The request was canceled.`);
+            return message.send(`:stop_button: The request was canceled.`);
         }
 
-        return msg.send([
+        return message.send([
             `${user.tag} (${user.id}) Moderation Logs:`,
             util.codeBlock('http', Object.entries(final).map(([action, value]) => `${util.toTitleCase(`${action}s`).padEnd(11)}: ${value}`).join('\n'))
         ]);

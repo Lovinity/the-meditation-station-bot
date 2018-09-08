@@ -108,27 +108,27 @@ module.exports = class extends Extendable {
         }
 
         // Calculate how many seconds this message took to type based off of 5 characters per second.
-        var msgTime = (this.cleanContent.length / 5);
-        //console.log(`${msgTime} msgtime`);
+        var messageTime = (this.cleanContent.length / 5);
+        //console.log(`${messageTime} messagetime`);
 
         // Iterate through messages of this channel from the last 3 minutes by the same author
         var collection = this.channel.messages
-                .filter((msg) => {
-                    return msg.id !== this.id && msg.author.id === this.author.id && moment(this.createdAt).subtract(3, 'minutes').isBefore(moment(msg.createdAt));
+                .filter((message) => {
+                    return message.id !== this.id && message.author.id === this.author.id && moment(this.createdAt).subtract(3, 'minutes').isBefore(moment(message.createdAt));
                 });
         //console.log(`${collection.size} messages`);
-        collection.each((msg) => {
+        collection.each((message) => {
 
             // If the current message was sent at a time that causes the typing speed to be more than 5 characters per second, add score for flooding / copypasting.
-            var timediff = moment(this.createdAt).diff(moment(msg.createdAt), 'seconds');
-            if (timediff <= msgTime)
+            var timediff = moment(this.createdAt).diff(moment(message.createdAt), 'seconds');
+            if (timediff <= messageTime)
             {
                 score += 10;
                 //console.log(`Flooding`);
             }
 
             // If the current message is 90% or more similar to the comparing message, add score for duplicate message spamming.
-            var similarity = stringSimilarity.compareTwoStrings(this.content, msg.content);
+            var similarity = stringSimilarity.compareTwoStrings(this.content, message.content);
             if (similarity >= 0.9)
             {
                 score += 10;

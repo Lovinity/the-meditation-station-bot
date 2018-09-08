@@ -13,16 +13,16 @@ function resolveRole(query, guild) {
 
 module.exports = class extends Argument {
 
-    async run(arg, possible, msg) {
-        if (!msg.guild)
-            return this.role(arg, possible, msg);
-        const resRole = resolveRole(arg, msg.guild);
+    async run(arg, possible, message) {
+        if (!message.guild)
+            return this.role(arg, possible, message);
+        const resRole = resolveRole(arg, message.guild);
         if (resRole)
             return resRole;
 
         const results = [];
         const reg = new RegExp(regExpEsc(arg), 'i');
-        for (const role of msg.guild.roles.values()) {
+        for (const role of message.guild.roles.values()) {
             if (reg.test(role.name))
                 results.push(role); }
 
@@ -48,12 +48,12 @@ module.exports = class extends Argument {
                 querySearch.forEach(option => {
                     menu.addOption(option.id, option.name);
                 });
-                const collector = await menu.run(await msg.channel.send('Please wait...'), {time: 60000, filter: (reaction, user) => user.id === msg.author.id});
+                const collector = await menu.run(await message.channel.send('Please wait...'), {time: 60000, filter: (reaction, user) => user.id === message.author.id});
                 const choice = await collector.selection;
                 collector.message.delete();
                 if (menu.options[choice])
                 {
-                    return this.run(menu.options[choice].name, possible, msg);
+                    return this.run(menu.options[choice].name, possible, message);
                 } else {
                     throw `:stop_button: The request was canceled.`;
                 }

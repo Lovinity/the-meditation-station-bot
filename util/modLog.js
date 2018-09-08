@@ -11,6 +11,7 @@ module.exports = class ModLog {
         this.moderator = null;
         this.reason = null;
         this.discipline = null;
+        this.otherDiscipline = null;
         this.channel = null;
         this.case = null;
         this.expiration = null;
@@ -51,12 +52,19 @@ module.exports = class ModLog {
         this.expiration = expiration;
         return this;
     }
-    
+
     setDiscipline(discipline) {
         this.discipline = discipline;
         return this;
     }
-    
+
+    setOtherDiscipline(other = null) {
+        if (other instanceof Array)
+            other = other.join('; ');
+        this.otherDiscipline = other;
+        return this;
+    }
+
     setChannel(channel) {
         this.channel = channel;
         return this;
@@ -71,7 +79,7 @@ module.exports = class ModLog {
         {
             await channel.send({embed: this.embed});
         }
-        
+
         return this.pack;
     }
 
@@ -79,15 +87,14 @@ module.exports = class ModLog {
 
     get embed() {
         const embed = new MessageEmbed()
-                .setAuthor(this.moderator.tag, this.moderator.avatar)
+                .setTitle(`Discipline issued: ${this.type[0].toUpperCase() + this.type.slice(1)}`)
+                .setAuthor(this.user.tag, this.user.avatar)
                 .setColor(ModLog.colour(this.type))
-                .setDescription([
-                    `**Type**: ${this.type[0].toUpperCase() + this.type.slice(1)}`,
-                    `**User**: ${this.user.tag} (${this.user.id})`,
-                    `**Reason**: ${this.reason}`,
-                    `**Discipline**: ${JSON.stringify(this.discipline)}`,
-                    `${this.expiration ? `**Expiration**: ${this.expiration}` : ``}`
-                ])
+                .setDescription(this.reason)
+                .addField(`Issued By`, this.moderator.tag)
+                .addField(`Standard Discpline`, JSON.stringify(this.discipline))
+                .addField(`Additional Discpline`, this.otherDiscipline)
+                .addField(`Expiration`, this.expiration ? this.expiration : 'None')
                 .setFooter(`Case ${this.case}`)
                 .setTimestamp();
         return embed;
@@ -113,6 +120,7 @@ module.exports = class ModLog {
             moderator: this.moderator,
             reason: this.reason,
             discipline: this.discipline,
+            otherDiscipline: this.otherDiscipline,
             channel: this.channel,
             expiration: this.expiration,
             valid: true
