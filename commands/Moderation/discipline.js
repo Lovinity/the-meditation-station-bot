@@ -38,7 +38,7 @@ module.exports = class extends Command {
         menu.addOption(`mute`, `Add the muteRole to the user, temporarily or indefinitely. Optionally, also add discipline.`);
         menu.addOption(`tempban`, `Suspend/ban the user from the guild temporarily. Optionally, also add discipline.`);
         menu.addOption(`ban`, `Permanently ban the user from the guild. Optionally, also add discipline.`);
-        var collector = await menu.run(await message.channel.send('Please wait...'), {time: 300000});
+        var collector = await menu.run(await message.channel.send('Please wait...'), {time: 300000, filter: (reaction, user) => user.id === msg.author.id});
         var choice = await collector.selection;
         collector.message.delete();
         if (menu.options[choice])

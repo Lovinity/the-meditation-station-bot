@@ -55,7 +55,7 @@ module.exports = class extends Command {
         Object.entries(actions).map(([key, value]) => {
             menu.addOption(key, `**${value}** active cases`);
         });
-        var collector = await menu.run(await msg.channel.send('Please wait...'), {time: 180000});
+        var collector = await menu.run(await msg.channel.send('Please wait...'), {time: 180000, filter: (reaction, user) => user.id === msg.author.id});
         var choice = await collector.selection;
         if (menu.options[choice])
         {
@@ -69,7 +69,7 @@ module.exports = class extends Command {
                 cases[chosen].forEach(function (modLog) {
                     menu.addOption(modLog.id, `Issued **${modLog.issued}** by **${modLog.moderator}**`);
                 });
-                var collector = await menu.run(await collector.message.edit('Please wait...'), {time: 180000});
+                var collector = await menu.run(await collector.message.edit('Please wait...'), {time: 180000, filter: (reaction, user) => user.id === msg.author.id});
                 var choice = await collector.selection;
                 if (menu.options[choice])
                 {
@@ -91,7 +91,7 @@ Use number reactions to select an action, or stop to exit.`)
                                 );
                         menu.addOption(`remove`, `Remove this case from user records, but do not reverse the discipline.`);
                         menu.addOption(`appeal`, `Remove this case from user records, AND reverse the discipline.`);
-                        var collector = await menu.run(await collector.message.edit('Please wait...'), {time: 180000});
+                        var collector = await menu.run(await collector.message.edit('Please wait...'), {time: 180000, filter: (reaction, user) => user.id === msg.author.id});
                         var choice = await collector.selection;
                         await collector.message.delete();
                         if (menu.options[choice])
