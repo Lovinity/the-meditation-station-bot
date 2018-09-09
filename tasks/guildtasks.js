@@ -161,7 +161,7 @@ Level 3: **Please remember to re-generate invite links if mitigation level was 3
                                             .addField('Clue', clue);
 
                                     _channel.send({embed: embed});
-                                    _channel.awaitMessages(message => message.cleanContent.toLowerCase().includes(answer.toLowerCase()),
+                                    _channel.awaitMessages(message => slugify(message.cleanContent).includes(slugify(answer)),
                                             {max: 1, time: 120000, errors: ['time']})
                                             .then(messages => {
                                                 messages.first().member.settings.update('yang', messages.first().member.settings.yang + yang);
@@ -182,3 +182,15 @@ Level 3: **Please remember to re-generate invite links if mitigation level was 3
 
 };
 
+function slugify(text)
+{
+    return text.toString().toLowerCase()
+            .replace(/^(a |the )/, '')        // Remove "a" or "the" at the beginning
+            .replace(/ *\([^)]*\) */g, '')    // Remove anything in parenthesis
+            .replace('&', 'and')                // Replace & with "and"
+            .replace(/\s+/g, '-')           // Replace spaces with -
+            .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
+            .replace(/\-\-+/g, '-')         // Replace multiple - with single -
+            .replace(/^-+/, '')             // Trim - from start of text
+            .replace(/-+$/, '');            // Trim - from end of text
+}
