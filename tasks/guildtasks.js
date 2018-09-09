@@ -161,7 +161,7 @@ Level 3: **Please remember to re-generate invite links if mitigation level was 3
                                             .addField('Clue', clue);
 
                                     _channel.send({embed: embed});
-                                    _channel.awaitMessages(message => message.cleanContent.toLowerCase() === answer.toLowerCase(),
+                                    _channel.awaitMessages(message => message.cleanContent.toLowerCase().includes(answer.toLowerCase()),
                                             {max: 1, time: 120000, errors: ['time']})
                                             .then(messages => {
                                                 messages.first().member.settings.update('yang', messages.first().member.settings.yang + yang);
