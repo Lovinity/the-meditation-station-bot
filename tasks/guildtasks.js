@@ -1,5 +1,7 @@
 const {Task} = require('klasa');
 const moment = require("moment");
+const needle = require("needle");
+const {MessageEmbed} = require('discord.js');
 
 module.exports = class extends Task {
 
@@ -120,7 +122,7 @@ Level 3: **Please remember to re-generate invite links if mitigation level was 3
                                     if (!guildMember.voice.mute && !guildMember.user.bot)
                                         award = true;
                                 });
-                                
+
                         // Award XP to everyone who qualifies if the channel as a whole qualifies
                         if (award && awardTo.length > 0)
                         {
@@ -129,6 +131,52 @@ Level 3: **Please remember to re-generate invite links if mitigation level was 3
                             });
                         }
                     });
+
+            // Hourly Trivia Game at minute 47
+            if (m === 58)
+            {
+                console.log(`trivia`);
+                const botGamesChannel = _guild.settings.get('botGamesChannel');
+                const _channel = this.client.channels.get(botGamesChannel);
+                if (_channel)
+                {
+                    console.log(`channel`);
+                    needle('get', 'http://jservice.io/api/random', {}, {json: true})
+                            .then(function (response) {
+                                console.log(`response`);
+                                response = response.body[0];
+                                if (response && response.invalid_count === null)
+                                {
+                                    console.log(`Valid input`);
+                                    var category = response.category.title;
+                                    var clue = response.question;
+                                    var answer = response.answer;
+                                    var yang = response.value !== null ? (response.value / 10) : 20;
+
+                                    var embed = new MessageEmbed()
+                                            .setTitle(`Hourly Trivia Contest!`)
+                                            .setDescription(`The first person to answer this question correctly will win **${yang}** Yang! But hurry... you only have 2 minutes to answer! Make your guesses as messages. I will respond if and only if you have the correct answer.`)
+                                            .setColor("GREEN")
+                                            .addField('Category', category)
+                                            .addField('Clue', clue);
+
+                                    _channel.send({embed: embed});
+                                    _channel.awaitMessages(message => message.cleanContent.toLowerCase() === answer.toLowerCase(),
+                                            {max: 1, time: 120000, errors: ['time']})
+                                            .then(messages => {
+                                                messages.first().member.settings.update('yang', messages.first().member.settings.yang + yang);
+                                                _channel.send(`:first_place: Congratulations to <@${messages.first().member.id}> who got the answer correct! You just earned ${yang} Yang.`);
+                                            })
+                                            .catch(() => {
+                                                _channel.send(`:hourglass: Time is up! The answer was ${answer}. Maybe next time someone will win.`)
+                                            });
+                                }
+                            })
+                            .catch(function (err) {
+                                console.error(err);
+                            })
+                }
+            }
     }
     }
 

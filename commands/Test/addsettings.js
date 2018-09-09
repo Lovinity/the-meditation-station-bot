@@ -13,7 +13,7 @@ module.exports = class extends Command {
     async run(message, []) {
         const {schema} = this.client.gateways.guilds;
         //schema.add("botChannel", { type: "TextChannel" });
-        schema.add("botGamesChannel", { type: "TextChannel" });
+        //schema.add("botGamesChannel", { type: "TextChannel" });
         //schema.add("modLogChannel", { type: "TextChannel" });
         //schema.add("iceBreakerChannel", { type: "TextChannel" });
         //schema.add("announcementsChannel", { type: "TextChannel" });
