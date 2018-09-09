@@ -50,10 +50,10 @@ Progress: `;
         } else {
 // Make some calculations
             var xp2 = user.settings[message.guild.id].xp;
-            var level2 = Math.floor(0.177 * Math.sqrt(xp)) + 1;
+            var level2 = Math.floor(0.177 * Math.sqrt(xp2)) + 1;
             var upper2 = Math.ceil((level / 0.177) ** 2);
             var lower2 = Math.ceil(((level - 1) / 0.177) ** 2);
-            var fillValue2 = Math.min(Math.max((xp - lower) / (upper - lower), 0), 1);
+            var fillValue2 = Math.min(Math.max((xp2 - lower2) / (upper2 - lower2), 0), 1);
 
             var claimed = (xp / (xp + xp2));
 

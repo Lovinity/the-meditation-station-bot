@@ -18,6 +18,26 @@ module.exports = class extends Event {
             message.member.xp(xp, message);
         }
 
+        // Remove good rep
+        if (message.member && !message.author.bot)
+        {
+            var removeRep = false;
+            message.reactions
+                    .each((reaction) => {
+                        if (reaction.me)
+                            removeRep = true;
+                    });
+
+            if (removeRep)
+            {
+                message.reactions
+                        .filter((reaction) => reaction.emoji.identifier === ":heavy_plus_sign:" && !reaction.me)
+                        .each((reaction) => {
+                            message.member.settings.update('goodRep', message.member.settings.goodRep - 1);
+                        });
+            }
+        }
+
         // Get the configured modLog channel.
         const modLog = message.guild.settings.get('modLogChannel');
 

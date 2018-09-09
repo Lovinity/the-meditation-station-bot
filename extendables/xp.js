@@ -95,6 +95,17 @@ module.exports = class extends Extendable {
         if (this.member && this.guild && this.member.roles.get(this.guild.settings.muteRole))
             score = 0;
 
+        // Activate reputation earning if XP score is at least 1, and the newstring (taking out repeat patterns) is at least 128 characters in length
+        if (this.member && !this.author.bot)
+        {
+            if (score > 0 && newstring.length >= 128)
+            {
+                this.react("➕");
+            } else if (!this.deleted) {
+                this.reactions.removeAll();
+            }
+        }
+
         //console.log(`XP: ${score}`);
         return score;
     }
