@@ -155,14 +155,14 @@ Level 3: **Please remember to re-generate invite links if mitigation level was 3
 
                                     var embed = new MessageEmbed()
                                             .setTitle(`Hourly Trivia Contest!`)
-                                            .setDescription(`The first person to answer this question correctly will win **${yang}** Yang! But hurry... you only have 2 minutes to answer! Make your guesses as messages. I will respond if and only if you have the correct answer.`)
+                                            .setDescription(`The first person to answer this question correctly will win **${yang}** Yang! But hurry... you only have 3 minutes to answer! Make your guesses as messages. I will respond if and only if you have the correct answer.`)
                                             .setColor("GREEN")
                                             .addField('Category', category)
                                             .addField('Clue', clue);
 
                                     _channel.send({embed: embed});
                                     _channel.awaitMessages(message => slugify(message.cleanContent).includes(slugify(answer)),
-                                            {max: 1, time: 120000, errors: ['time']})
+                                            {max: 1, time: 180000, errors: ['time']})
                                             .then(messages => {
                                                 messages.first().member.settings.update('yang', messages.first().member.settings.yang + yang);
                                                 _channel.send(`:first_place: Congratulations to <@${messages.first().member.id}> who got the answer correct! You just earned ${yang} Yang.`);

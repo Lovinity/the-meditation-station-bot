@@ -95,7 +95,7 @@ module.exports = class extends Event {
         });
 
         // Get the differences between old and new content
-        var diff = jsdiff.diffWordsWithSpace(old.cleanContent, message.cleanContent);
+        var diff = jsdiff.diffSentences(old.cleanContent, message.cleanContent);
         diff.forEach(function (part) {
             if (part.added) {
                 display.addField(`Part added`, part.value);

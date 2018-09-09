@@ -114,7 +114,7 @@ module.exports = class extends Extendable {
         // Iterate through messages of this channel from the last 3 minutes by the same author
         var collection = this.channel.messages
                 .filter((message) => {
-                    return message.id !== this.id && message.author.id === this.author.id && moment(this.createdAt).subtract(3, 'minutes').isBefore(moment(message.createdAt));
+                    return message.id !== this.id && message.author.id === this.author.id && moment(this.createdAt).subtract(3, 'minutes').isBefore(moment(message.createdAt)) && moment(this.createdAt).isAfter(moment(message.createdAt));
                 });
         //console.log(`${collection.size} messages`);
         collection.each((message) => {
