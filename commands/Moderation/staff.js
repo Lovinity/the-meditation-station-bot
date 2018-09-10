@@ -19,13 +19,13 @@ module.exports = class extends Command {
             subcommands: false,
             description: 'Initiates a private text channel between you and the staff, say, to report incidents in private.',
             quotedStringSupport: false,
-            usage: '[member:member] [...]',
+            usage: '[user:username] [...]',
             usageDelim: ' ',
             extendedHelp: 'When provided with no arguments, the command will create a text channel between the author and the staff. When arguments are provided, and the author has permission level 4 or above, a private text channel is created between the provided members and staff.'
         });
     }
 
-    async run(message, [...member]) {
+    async run(message, [...users]) {
         var overwrites = [];
         var msg = await message.send(`:hourglass_flowing_sand: Please wait...`);
         var response = ``;
@@ -33,7 +33,7 @@ module.exports = class extends Command {
         const incidents = message.guild.settings.get(`incidentsCategory`);
 
         // First, handle if any member parameters were provided
-        if (member && member.length > 0)
+        if (users && users.length > 0)
         {
             // Check to see if author is staff. If not, bail with an error message.
             const {permission} = await this.client.permissionLevels.run(message, 4);
@@ -49,10 +49,10 @@ Channels like this may or may not be created as a result of misconduct; being in
 `;
 
             // Process permission overwrites and response mentions
-            member.forEach(function (guildMember) {
-                response += `<@${guildMember.id}> `;
+            users.forEach(function (user) {
+                response += `<@${user.id}> `;
                 overwrites.push({
-                    id: guildMember.id,
+                    id: user.id,
                     allow: [
                         "ADD_REACTIONS",
                         "VIEW_CHANNEL",
