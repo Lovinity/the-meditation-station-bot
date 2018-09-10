@@ -165,10 +165,10 @@ Level 3: **Please remember to re-generate invite links if mitigation level was 3
                                             {max: 1, time: 180000, errors: ['time']})
                                             .then(messages => {
                                                 messages.first().member.settings.update('yang', messages.first().member.settings.yang + yang);
-                                                _channel.send(`:first_place: Congratulations to <@${messages.first().member.id}> who got the answer correct! You just earned ${yang} Yang.`);
+                                                _channel.send(`:first_place: Congratulations to <@${messages.first().member.id}> who got the answer correct! It was ${answer}. You just earned ${yang} Yang.`);
                                             })
                                             .catch(() => {
-                                                _channel.send(`:hourglass: Time is up! The answer was ${answer}. Maybe next time someone will win.`)
+                                                _channel.send(`:hourglass: Time is up! The answer was ${answer}.`)
                                             });
                                 }
                             })
@@ -185,7 +185,7 @@ Level 3: **Please remember to re-generate invite links if mitigation level was 3
 function slugify(text)
 {
     return text.toString().toLowerCase()
-            .replace(/^(a |the )/, '')        // Remove "a" or "the" at the beginning
+            .replace(/^(a |the |his |her |their |your )/, '')        // Remove a, the, his, her, their, your from the beginning
             .replace(/ *\([^)]*\) */g, '')    // Remove anything in parenthesis
             .replace('&', 'and')                // Replace & with "and"
             .replace(/\s+/g, '-')           // Replace spaces with -
