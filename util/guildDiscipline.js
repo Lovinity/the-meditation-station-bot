@@ -115,7 +115,7 @@ module.exports = class GuildDiscipline {
                 ],
                 type: 'role'
             });
-            
+
             // Process permission overwrites for staff
             if (this.guild.settings.modRole)
             {
@@ -168,6 +168,9 @@ module.exports = class GuildDiscipline {
 
         var guildMember = this.guild.members.get(this.user.id);
 
+        // Init the message embed
+        const embed = new MessageEmbed();
+
         // prepare a modLog
         var modLog = await new ModLog(this.guild)
                 .setType(this.type)
@@ -202,25 +205,24 @@ module.exports = class GuildDiscipline {
         }
 
         // Issue discipline
-        var discipline = [];
         if (this.xp > 0)
         {
-            discipline.push(`You lost ${this.xp} XP`);
+            embed.addField(`You lost ${this.xp} XP`, `Your XP is now at ${(this.user.settings[this.guild.id].xp - this.xp)}`);
             this.user.settings.update(`${this.guild.id}.xp`, (this.user.settings[this.guild.id].xp - this.xp));
         }
         if (this.yang > 0)
         {
-            discipline.push(`You lost ${this.yang} Yang`);
+            embed.addField(`You lost ${this.yang} Yang`, `Your Yang balance is now at ${(this.user.settings[this.guild.id].yang - this.yang)}`);
             this.user.settings.update(`${this.guild.id}.yang`, (this.user.settings[this.guild.id].yang - this.yang));
         }
         if (this.reputation > 0)
         {
-            discipline.push(`${this.reputation} bad reputation was assessed on your profile`);
+            embed.addField(`${this.reputation} bad reputation was assessed on your profile`, `Your reputation is now +${this.user.settings[this.guild.id].goodRep} / -${(this.user.settings[this.guild.id].badRep + this.reputation)}`);
             this.user.settings.update(`${this.guild.id}.badRep`, (this.user.settings[this.guild.id].badRep + this.reputation));
         }
         if (this.other !== null)
         {
-            discipline.push(`Other discipline was also applied: ${this.other}`);
+            embed.addField(`Other discipline`, `${this.other}`);
         }
 
         // If the member is no longer in the guild, issue the ban or tempban immediately, and undo the mute
@@ -279,78 +281,78 @@ module.exports = class GuildDiscipline {
         switch (this.type)
         {
             case 'warn':
-                // Send a message in the channel
-                await this.channel.send(`:warning: **__This is a warning__** :warning:
-                
-Hello <@!${this.user.id}>,
-We all make mistakes, and that is okay; we're human. The staff want you to be aware of an incident that occurred that is concerning. Therefore, you have been issued a warning.
-They provided the following reason/information regarding this warning: ${this.reason}.
-No discipline has been issued; this is just a warning. Staff would like to see you work on this concern though, and learn from this encounter.
-If you need assistance with that, or have any questions or concerns about this warning, feel free to post in this private channel with staff. They will be happy to help you. But please remain respectful.
-            
-Thank you for your understanding and cooperation.
-            
-${guildMember ? '' : `<@!${this.responsible.id}> **NOTE: this user is currently not in the guild.** I will add permissions if I detect them returning to the guild so they can see this channel.`}
-`);
+                embed
+                        .setTitle(`:warning: You have been issued a warning :warning:`)
+                        .setDescription(`We all make mistakes, and that is okay; we're human. The staff want you to be aware of an incident that occurred that is concerning. Therefore, you have been issued a warning.
+Please review the below information. Staff would like to see you work on this concern, and learn from this encounter. Staff may need to issue discipline if this happens again.           
+If you need assistance, or have any questions or concerns about this warning, feel free to post in this private channel with staff. They will be happy to help you. But please remain respectful.
+Thank you for your understanding and cooperation.`)
+                        .setColor(16564545)
+                        .setFooter(`Reason/Information: ${this.reason}`);
+
+                if (!guildMember)
+                    embed.addField(`This user is not currently in the guild` `<@!${this.responsible.id}>, I will add permissions to this channel if/when I detect them re-entering the guild.`);
+
+                await this.channel.send(`<@!${this.user.id}>`, {embed});
                 break;
             case 'discipline':
-                await this.channel.send(`:octagonal_sign: **__Discipline has been issued__** :octagonal_sign:
-                
-Hello <@!${this.user.id}>,
-We all make mistakes, and staff do not like having to discipline their members. However, we need to hold you accountable for a recent incident in the guild/server. 
-Discipline has been issued to you for the following reason(s): ${this.reason}
-The following discipline has been issued: ${discipline.join("; ")}
+                embed
+                        .setTitle(`:octagonal_sign: You have been issued discipline :octagonal_sign:`)
+                        .setDescription(`We all make mistakes, and staff do not like having to discipline their members. However, we need to hold you accountable for a recent incident in the guild/server.  Please review the below information carefully and use it as a tool to help improve your conduct.
 This channel is private between you and staff; you may communicate any questions or concerns you have here. If you need help resolving this incident, staff are happy to provide some tips and guidance. But please remain respectful.
-           
-Thank you for your understanding and cooperation.
-            
-${guildMember ? '' : `<@!${this.responsible.id}> **NOTE: this user is currently not in the guild.** I will add permissions to this channel if/when I detect them re-entering the guild.`}
-`);
+Thank you for your understanding and cooperation.`)
+                        .setColor(8421631)
+                        .setFooter(`Reason/Information: ${this.reason}`);
+
+                if (!guildMember)
+                    embed.addField(`This user is not currently in the guild` `<@!${this.responsible.id}>, I will add permissions to this channel if/when I detect them re-entering the guild.`);
+
+                await this.channel.send(`<@!${this.user.id}>`, {embed});
                 break;
             case 'mute':
-                await this.channel.send(`:mute: **__You have been muted__** :mute:
-                
-Hello <@!${this.user.id}>,
-We don't like having to mute people, but a mute had to be issued to you for the safety of the community.
-You have been muted from the guild for the following reason(s): **${this.reason}**
-${discipline.length > 0 ? `The following discipline was also issued: **${discipline.join("; ")}**` : ``}
-Your mute will expire ${this.duration === 0 ? 'when staff conclude this investigation / manually unmute you (staff, to unmute this user, simply remove the muted role)' : `at ${moment().add(this.duration, 'minutes').format("LLLL Z")}`}.
+                embed
+                        .setTitle(`:mute: You have been muted :mute:`)
+                        .setDescription(`We all make mistakes, and staff do not like having to discipline their members. However, we need to hold you accountable for a recent incident in the guild/server.  Please review the below information carefully and use it as a tool to help improve your conduct.
 This channel is private between you and staff; you may communicate any questions or concerns you have here. If you need help resolving this incident, staff are happy to provide some tips and guidance. But please remain respectful.
-           
-Thank you for your understanding and cooperation.
-            
-${guildMember ? '' : `<@!${this.responsible.id}> **NOTE: this user is currently not in the guild.** I will add permissions to this channel if/when I detect them re-entering the guild.`}
-`);
+Thank you for your understanding and cooperation.`)
+                        .addField(`Duration of Mute`, `The mute will expire ${this.duration === 0 ? 'when staff conclude this investigation / manually remove the Muted role' : `at ${moment().add(this.duration, 'minutes').format("LLLL Z")}`}`)
+                        .setColor(15014476)
+                        .setFooter(`Reason/Information: ${this.reason}`);
+
+                if (!guildMember)
+                    embed.addField(`This user is not currently in the guild` `<@!${this.responsible.id}>, the mute will be applied if they re-enter the guild before it expires. I will add permissions to this channel if/when I detect them re-entering the guild.`);
+
+                await this.channel.send(`<@!${this.user.id}>`, {embed});
                 break;
             case 'tempban':
-                await this.channel.send(`:no_entry: **__You have been suspended__** :no_entry:
-                
-Hello <@!${this.user.id}>,
-A recent incident has resulted in you earning a suspension. We really do not like having to suspend out members. But it is in our hopes that this suspension will give you some time to reflect on this incident before coming back.
-You have been suspended for the following reason(s): **${this.reason}**.
-${discipline.length > 0 ? `The following discipline was also issued: **${discipline.join("; ")}**` : ``}
-**Once you leave the guild/server, a server ban will be placed on you, which will be removed in ${this.duration / (60 * 24)} days**. Your suspension time will not begin until you leave the guild/server or get kicked; until then, you will remain muted.
+                embed
+                        .setTitle(`:no_entry: You have been suspended from the guild temporarily :no_entry:`)
+                        .setDescription(`A recent incident has resulted in you earning a suspension. We really do not like having to suspend out members. But it is in our hopes that this suspension will give you some time to reflect on this incident before coming back.
 This channel is private between you and staff; you may communicate any questions or concerns you have here prior to leaving (once you leave, you will lose access to the server until the suspension ends). If you need help resolving this incident, staff are happy to provide some tips and guidance. But please remain respectful.
-           
-Thank you for your understanding and cooperation.
-            
-${guildMember ? '' : `<@!${this.responsible.id}> **NOTE: this user is currently not in the guild.** I applied the suspension immediately. I will add permissions to this channel if/when I detect them re-entering the guild.`}
-`);
+Thank you for your understanding and cooperation.`)
+                        .addField(`Suspension Duration / Procedure`, `Once you leave the guild/server, a ban will be placed on you, which will be removed by the bot in ${this.duration / (60 * 24)} days. Your suspension time will not begin until you leave the guild/server or get kicked; until then, you will remain muted.`)
+                        .setColor(16573465)
+                        .setFooter(`Reason/Information: ${this.reason}`);
+
+                if (!guildMember)
+                    embed.addField(`This user is not currently in the guild` `<@!${this.responsible.id}>, the suspension was applied immediately.`);
+
+                await this.channel.send(`<@!${this.user.id}>`, {embed});
                 break;
             case 'ban':
-                await this.channel.send(`:no_entry_sign: **__You have been banned__** :no_entry_sign:
-                
-Hello <@!${this.user.id}>,
-It is with great regret to inform you that you have been banned from the guild/server. We hope you enjoyed your experiences here, and wish you the best of luck on your future adventures.
-You have been banned for the following reason(s): **${this.reason}**.
-${discipline.length > 0 ? `The following discipline was also issued: **${discipline.join("; ")}**` : ``}
-**Once you leave the guild/server, a server ban will be placed on you**. This ban will remain in place indefinitely. Until you leave or staff kick you, you will remain muted.
+                embed
+                        .setTitle(`:no_entry_sign: You have been banned from the guild :no_entry_sign:`)
+                        .setDescription(`It is with great regret to inform you that you have been banned from the guild/server. We hope you enjoyed your experiences here, and wish you the best of luck on your future adventures.
 This channel is private between you and staff; you may communicate any questions or concerns you have here prior to leaving (once you leave, you will lose access to the server). If you need help resolving this incident, staff are happy to provide some tips and guidance. But please remain respectful.
-           
-Thank you for your understanding and cooperation.
-            
-${guildMember ? '' : `<@!${this.responsible.id}> **NOTE: this user is currently not in the guild.** I applied the ban immediately.`}
-`);
+Thank you for your understanding and cooperation.`)
+                        .addField(`Ban Procedure`, `Once you leave the guild/server, a server ban will be placed on you. This ban will remain in place indefinitely. Until you leave or staff kick you, you will remain muted.`)
+                        .setColor(16724253)
+                        .setFooter(`Reason/Information: ${this.reason}`);
+
+                if (!guildMember)
+                    embed.addField(`This user is not currently in the guild` `<@!${this.responsible.id}>, the ban was applied immediately.`);
+
+                await this.channel.send(`<@!${this.user.id}>`, {embed});
                 break;
         }
 
