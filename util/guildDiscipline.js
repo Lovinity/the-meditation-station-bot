@@ -115,6 +115,27 @@ module.exports = class GuildDiscipline {
                 ],
                 type: 'role'
             });
+            
+            // Process permission overwrites for staff
+            if (this.guild.settings.modRole)
+            {
+                overwrites.push({
+                    id: this.guild.settings.modRole,
+                    allow: [
+                        "ADD_REACTIONS",
+                        "VIEW_CHANNEL",
+                        "SEND_MESSAGES",
+                        "MANAGE_MESSAGES",
+                        "MENTION_EVERYONE",
+                        "MANAGE_ROLES",
+                        "EMBED_LINKS",
+                        "ATTACH_FILES",
+                        "READ_MESSAGE_HISTORY"
+                    ],
+                    type: 'role'
+                });
+            }
+
 
             // Create the incidents channel
             this.channel = await this.guild.channels.create('int_d', {

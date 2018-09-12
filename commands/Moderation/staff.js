@@ -104,6 +104,26 @@ Thank you, <@${message.author.id}>!
             ],
             type: 'role'
         });
+        
+        // Process permission overwrites for staff
+        if (message.guild.settings.modRole)
+        {
+            overwrites.push({
+                id: message.guild.settings.modRole,
+                allow: [
+                    "ADD_REACTIONS",
+                    "VIEW_CHANNEL",
+                    "SEND_MESSAGES",
+                    "MANAGE_MESSAGES",
+                    "MENTION_EVERYONE",
+                    "MANAGE_ROLES",
+                    "EMBED_LINKS",
+                    "ATTACH_FILES",
+                    "READ_MESSAGE_HISTORY"
+                ],
+                type: 'role'
+            });
+        }
 
         // Create the incidents channel
         var channel = await message.guild.channels.create('int_i', {
