@@ -133,7 +133,7 @@ Level 3: **Please remember to re-generate invite links if mitigation level was 3
                     });
 
             // Hourly Trivia Game at minute 47
-            if (m === 58)
+            if (m === 58 && h % 3 === 0)
             {
                 console.log(`trivia`);
                 const botGamesChannel = _guild.settings.get('botGamesChannel');

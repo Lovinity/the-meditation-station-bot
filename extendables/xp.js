@@ -10,7 +10,7 @@ module.exports = class extends Extendable {
     }
 
     get extend() {
-        var botPrefixes = ["!"];
+        var botPrefixes = ["!", "p!"];
 
         // Start with a base score of 1
         var score = 1;
