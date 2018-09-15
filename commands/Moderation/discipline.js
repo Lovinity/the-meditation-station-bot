@@ -68,7 +68,7 @@ module.exports = class extends Command {
             }
 
             // Next, ask for a reason
-            var reason = await message.awaitReply(`:question: Please provide a reason/explanation for this discipline. You have 5 minutes to respond.`, 300000);
+            var reason = await message.awaitReply(`:question: Please state the reason for this action concisely but completely. Please do not provide additional instruction here; that will be asked later. You have 5 minutes to respond.`, 300000);
             if (!reason)
             {
                 await discipline.cancel();
@@ -123,17 +123,17 @@ module.exports = class extends Command {
                 }
                 xp = parseInt(xp);
                 await discipline.setXp(xp);
-
-                // Ask for any additional discipline
-                var other = await message.awaitReply(`:question: If any other manual discipline is to be assigned, such as requiring the user to make an apology, please state so here. If there is no other further discipline, send "none". You have 5 minutes to respond.`, 300000);
-                if (!other)
-                {
-                    await discipline.cancel();
-                    return message.send(`:x: The wizard timed out and was canceled.`);
-                }
-                if (other !== 'none')
-                    await discipline.setOther(other);
             }
+
+            // Ask for any additional discipline or instruction
+            var other = await message.awaitReply(`:question: If there is any other discipline or instructions for the user, such as requiring the user to make an apology, please state so here. If there is no other further discipline or instruction, send "none". You have 5 minutes to respond.`, 300000);
+            if (!other)
+            {
+                await discipline.cancel();
+                return message.send(`:x: The wizard timed out and was canceled.`);
+            }
+            if (other.toLowerCase() !== 'none')
+                await discipline.setOther(other);
 
             await discipline.finalize();
             return message.send(`:white_check_mark: Discipline has been sent!`);

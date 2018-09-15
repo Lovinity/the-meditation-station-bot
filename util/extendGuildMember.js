@@ -66,10 +66,9 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                     // Reset the member's spam score
                     this.settings.update('spamscore', 0);
 
-                    // If user is muted already, kick the user, add 15 to the raid score, and end here
+                    // If user is muted already, kick the user and end here
                     if (isMuted)
                     {
-                        this.guild.raidScore(15);
                         this.kick(`Triggered antispam while being muted.`);
                         return null;
                     }
