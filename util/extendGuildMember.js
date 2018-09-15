@@ -40,19 +40,19 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                     if (this.spamScoreStamp === null || moment().subtract(30, 'seconds').isAfter(moment(this.spamScoreStamp)))
                     {
                         console.log(`Sent warning`);
-                        var response = `:warning: <@${message.author.id}> **Please take a break for about ${moment.duration(this.guild.settings.antispamCooldown > 0 ? (currentScore / this.guild.settings.antispamCooldown) : `Infinity`, 'minutes').format("m [Minutes]")}**; your spam score is high. `;
+                        var response = `:warning: <@${message.author.id}> **Please take a break for about ${moment.duration(this.guild.settings.antispamCooldown > 0 ? (currentScore / this.guild.settings.antispamCooldown) : 0, 'minutes').format("m [Minutes]")}**; your spam score is high. `;
                         if (isMuted)
                         {
                             response += `__**Ignoring this may result in getting kicked from the guild**__ and any pending bans being applied immediately.`;
                         } else if (this.guild.settings.raidMitigation >= 3)
                         {
-                            response += `__**Ignoring this may result in a permanent ban**__ since we are under level 3 raid mitigation.`;
+                            response += `__**Ignoring this may result in a permanent ban**__`;
                         } else if (this.guild.settings.raidMitigation >= 2)
                         {
-                            response += `**Ignoring this may result in a 1-day suspension** since we are under level 2 raid mitigation.`;
+                            response += `**Ignoring this may result in a 1-day suspension**`;
                         } else if (this.guild.settings.raidMitigation >= 1)
                         {
-                            response += `Ignoring this may result in a 1-hour mute since we are under level 1 raid mitigation.`;
+                            response += `Ignoring this may result in being muted until staff manually un-mute you.`;
                         } else {
                             response += `Ignoring this may result in a 30-minute mute.`;
                         }
@@ -63,15 +63,13 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                 {
                     console.log(`Antispam triggered!`);
 
-                    // Add 15 to the raid score of the guild
-                    this.guild.raidScore(15);
-
                     // Reset the member's spam score
                     this.settings.update('spamscore', 0);
 
-                    // If user is muted already, kick the user and end here
+                    // If user is muted already, kick the user, add 15 to the raid score, and end here
                     if (isMuted)
                     {
+                        this.guild.raidScore(15);
                         this.kick(`Triggered antispam while being muted.`);
                         return null;
                     }
@@ -91,8 +89,8 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                     {
                         var discipline = new GuildDiscipline(this.user, this.guild, this.client.user)
                                 .setType('mute')
-                                .setReason(`Triggered the antispam system and ignored the warnings by the bot. Level 1 raid mitigation was in effect, so a 60-minute mute was issued.`)
-                                .setDuration(60);
+                                .setReason(`Triggered the antispam system and ignored the warnings by the bot. Level 1 raid mitigation was in effect.`)
+                                .setDuration(0);
                         discipline.prepare()
                                 .then(prepared => {
                                     prepared.finalize();
@@ -101,7 +99,7 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                     {
                         var discipline = new GuildDiscipline(this.user, this.guild, this.client.user)
                                 .setType('tempban')
-                                .setReason(`Triggered the antispam system and ignored the warnings by the bot. Level 2 raid mitigation was in effect, so a 1-day suspension was issued.`)
+                                .setReason(`Triggered the antispam system and ignored the warnings by the bot. Level 2 raid mitigation was in effect.`)
                                 .setDuration((1 * 60 * 24));
                         discipline.prepare()
                                 .then(prepared => {
@@ -111,7 +109,7 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                     {
                         var discipline = new GuildDiscipline(this.user, this.guild, this.client.user)
                                 .setType('ban')
-                                .setReason(`Triggered the antispam system and ignored the warnings by the bot. Level 3 raid mitigation was in effect, so a permanent ban was issued.`);
+                                .setReason(`Triggered the antispam system and ignored the warnings by the bot. Level 3 raid mitigation was in effect.`);
                         discipline.prepare()
                                 .then(prepared => {
                                     prepared.finalize();
@@ -140,7 +138,7 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                 var newScore = currentScore + score;
                 var prevLevel = Math.floor(0.177 * Math.sqrt(currentScore)) + 1;
                 var curLevel = Math.floor(0.177 * Math.sqrt(newScore)) + 1;
-                
+
                 // TODO: use settings instead of config; at this time, object role settings for some stupid f***king reason erases itself on each reboot, so we cannot use it right now
 
                 // Level was bumped up
@@ -172,10 +170,10 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                     for (var i = prevLevel - 1; i >= curLevel; i--)
                     {
                         console.log(`Level <${i}.`);
-                        if (typeof config.levelRoles[i+1] === 'string')
+                        if (typeof config.levelRoles[i + 1] === 'string')
                         {
                             console.log(`Role setting exists.`);
-                            var role = this.guild.roles.get(config.levelRoles[i+1]);
+                            var role = this.guild.roles.get(config.levelRoles[i + 1]);
                             if (role)
                             {
                                 console.log(`Role exists. Removing role.`);

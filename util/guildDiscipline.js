@@ -256,13 +256,13 @@ module.exports = class GuildDiscipline {
             }
         }
 
-        // Add 30 to the raid score for permanent bans
-        if (this.type === 'ban')
+        // Add 30 to the raid score for permanent bans and temp bans
+        if (this.type === 'ban' || this.type === 'tempban')
             this.guild.raidScore(30);
 
-        // Add 20 to the raid score for temp bans
-        if (this.type === 'tempban')
-            this.guild.raidScore(20);
+        // Add 15 to the raid score for mutes
+        if (this.type === 'mute')
+            this.guild.raidScore(15);
 
         // Push out the mod log
         modLog = await modLog.send();
