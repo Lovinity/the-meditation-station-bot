@@ -4,23 +4,23 @@ module.exports = class extends Monitor {
 
     constructor(...args) {
         super(...args, {
-            name: 'mutedChannel',
+            name: 'staffMention',
             enabled: true,
             ignoreBots: false,
             ignoreSelf: true,
             ignoreOthers: false,
             ignoreWebhooks: true,
-            ignoreEdits: true,
+            ignoreEdits: false,
             ignoreBlacklistedUsers: false,
             ignoreBlacklistedGuilds: true
         });
     }
 
     run(message) {
-        // Delete messages sent in channels that have -MUTED at the end of their name (muted channels)
-        if (message.channel.name.endsWith("-muted"))
+        // Someone mentions the mod role, have the bot respond to it regarding the staff command
+        if (message.content.includes(`<@&${message.guild.settings.modRole || 0}>`))
         {
-            message.delete();
+            message.channel.send(`<@${message.author.id}>, instead of mentioning staff, please use the bot command \`!staff\` to create a private channel between you and staff.`);
         }
     }
 
@@ -28,5 +28,3 @@ module.exports = class extends Monitor {
     }
 
 };
-
-

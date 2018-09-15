@@ -19,13 +19,13 @@ module.exports = class extends Command {
             subcommands: false,
             description: 'Initiates a private text channel between you and the staff, say, to report incidents in private.',
             quotedStringSupport: false,
-            usage: '[user:username] [...]',
-            usageDelim: ' ',
+            usage: '[mute] [user:username] [...]',
+            usageDelim: ' | ',
             extendedHelp: 'When provided with no arguments, the command will create a text channel between the author and the staff. When arguments are provided, and the author has permission level 4 or above, a private text channel is created between the provided members and staff.'
         });
     }
 
-    async run(message, [...users]) {
+    async run(message, [mute, ...users]) {
         var overwrites = [];
         var msg = await message.send(`:hourglass_flowing_sand: Please wait...`);
         var response = ``;
@@ -46,6 +46,7 @@ module.exports = class extends Command {
 You are seeing this channel because a staff member asked to speak with you (via the !staff command). Please be patient until a staff member gets with you.
 Channels like this may or may not be created as a result of misconduct; being in this channel does not guarantee you are in trouble.
             
+${mute ? `**You have been muted until staff speak with you** in order to protect the safety of the community.` : ``}   
 `;
 
             // Process permission overwrites and response mentions
@@ -63,6 +64,25 @@ Channels like this may or may not be created as a result of misconduct; being in
                     ],
                     type: 'member'
                 });
+
+                // Mute the users if the mute parameter was provided in the command
+                if (mute)
+                {
+                    const muted = message.guild.settings.get(`muteRole`);
+                    const mutedRole = message.guild.roles.get(muted);
+                    var guildMember = message.guild.members.get(user.id);
+
+                    if (mutedRole)
+                    {
+                        if (guildMember)
+                        {
+                            guildMember.roles.add(mutedRole, `Mute via !staff command`);
+                        } else {
+                            user.settings.update(`${message.guild.id}.roles`, mutedRole.id, {action: 'add'});
+                        }
+                    }
+
+                }
             });
 
             // No member parameters
@@ -104,7 +124,7 @@ Thank you, <@${message.author.id}>!
             ],
             type: 'role'
         });
-        
+
         // Process permission overwrites for staff
         if (message.guild.settings.modRole)
         {
@@ -136,7 +156,7 @@ Thank you, <@${message.author.id}>!
 
         // rename it to its own ID
         await channel.setName(`int_i_${channel.id}`, `Incident assigned ID ${channel.id}`);
-        
+
         await channel.send(response);
 
         // Finalize

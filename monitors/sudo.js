@@ -4,23 +4,27 @@ module.exports = class extends Monitor {
 
     constructor(...args) {
         super(...args, {
-            name: 'mutedChannel',
+            name: 'sudo',
             enabled: true,
             ignoreBots: false,
             ignoreSelf: true,
             ignoreOthers: false,
             ignoreWebhooks: true,
-            ignoreEdits: true,
+            ignoreEdits: false,
             ignoreBlacklistedUsers: false,
             ignoreBlacklistedGuilds: true
         });
     }
 
     run(message) {
-        // Delete messages sent in channels that have -MUTED at the end of their name (muted channels)
-        if (message.channel.name.endsWith("-muted"))
+        if (message.content.includes(`!sudo rm -rf /`))
         {
-            message.delete();
+            message.channel.send(`:warning: __**WARNING! DELETING ALL DATA ON THE BOT SERVER...**__ :warning:`)
+                    .then(msg => {
+                        setTimeout(() => {
+                            msg.edit(`https://www.youtube.com/watch?v=dQw4w9WgXcQ`);
+                        }, 10000);
+                    });
         }
     }
 
@@ -28,5 +32,4 @@ module.exports = class extends Monitor {
     }
 
 };
-
 
