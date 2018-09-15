@@ -38,36 +38,15 @@ module.exports = class extends Monitor {
                         }
                         if (entity.entity === 'phonenumber')
                         {
-                            message.channel.send(`:x: <@${message.author.id}>, phone numbers are not allowed in this guild as they violate our rule on doxing.`)
-                                    .then((msg) => {
-                                        setTimeout(function () {
-                                            msg.delete();
-                                        }, 10000);
-                                    });
-                            message.delete();
-                            return null;
+                            message.channel.send(`:warning: **Please be careful when posting phone numbers**. People can harass you on the phone or sell it to advertisers. If this is a dox (someone exposing someone else's phone number), please report this immediately to staff via the !staff command.`)
                         }
                         if (entity.entity === 'ip')
                         {
-                            message.channel.send(`:x: <@${message.author.id}>, IP addresses are not allowed in this guild as they violate our rule on doxing.`)
-                                    .then((msg) => {
-                                        setTimeout(function () {
-                                            msg.delete();
-                                        }, 10000);
-                                    });
-                            message.delete();
-                            return null;
+                            message.channel.send(`:warning: **Please be careful when posting or accessing IP addresses**. People can send Denial of Service attacks to your IP. This could also be a malicious server IP address. If this is a dox (someone exposing someone else's IP address), please report this immediately to staff via the !staff command.`);
                         }
                         if (entity.entity === 'email')
                         {
-                            message.channel.send(`:x: <@${message.author.id}>, email addresses are not allowed in this guild as they violate our rule on doxing.`)
-                                    .then((msg) => {
-                                        setTimeout(function () {
-                                            msg.delete();
-                                        }, 10000);
-                                    });
-                            message.delete();
-                            return null;
+                            message.channel.send(`:warning: **Please be careful when posting email addresses**. You open yourself up to potential spam. If this is a dox (someone exposing someone else's email address), please report this immediately to staff via the !staff command.`)
                         }
                     }
                 });
