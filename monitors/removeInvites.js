@@ -19,7 +19,7 @@ module.exports = class extends Monitor {
         // Delete discord invites
         if (/(https?:\/\/)?(www\.)?(discord\.(gg|li|me|io)|discordapp\.com\/invite)\/.+/.test(message.content))
         {
-            message.channel.send(`:x: Only I can post Discord invites. Please contact a staff member if you want to promote a server.`);
+            message.channel.send(`:x: <@${message.author.id}>, Only I can post Discord invites. Please contact a staff member if you want to promote a server.`);
             message.delete();
         }
     }
