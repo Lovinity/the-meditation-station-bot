@@ -73,13 +73,13 @@ module.exports = class extends Extendable {
 
             // If the current message was sent at a time that causes the typing speed to be more than 5 characters per second, no XP.
             var timediff = moment(this.createdAt).diff(moment(message.createdAt), 'seconds');
-            if (timediff <= messageTime)
+            if (timediff <= messageTime && !this.author.bot)
             {
                 score = 0;
             }
 
             // If the current message is 90% or more similar to the comparing message, no XP for this message.
-            var similarity = stringSimilarity.compareTwoStrings(this.content, message.content);
+            var similarity = stringSimilarity.compareTwoStrings(`${this.content}${JSON.stringify(this.embeds)}${JSON.stringify(this.attachments.array())}`, `${message.content}${JSON.stringify(message.embeds)}${JSON.stringify(message.attachments.array())}`);
             if (similarity >= 0.9)
             {
                 score = 0;

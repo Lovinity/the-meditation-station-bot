@@ -121,14 +121,14 @@ module.exports = class extends Extendable {
 
             // If the current message was sent at a time that causes the typing speed to be more than 8 characters per second, add score for flooding / copypasting.
             var timediff = moment(this.createdAt).diff(moment(message.createdAt), 'seconds');
-            if (timediff <= messageTime)
+            if (timediff <= messageTime && !this.author.bot)
             {
                 score += 10;
                 //console.log(`Flooding`);
             }
 
             // If the current message is 90% or more similar to the comparing message, add score for duplicate message spamming.
-            var similarity = stringSimilarity.compareTwoStrings(this.content, message.content);
+            var similarity = stringSimilarity.compareTwoStrings(`${this.content}${JSON.stringify(this.embeds)}${JSON.stringify(this.attachments.array())}`, `${message.content}${JSON.stringify(message.embeds)}${JSON.stringify(message.attachments.array())}`);
             if (similarity >= 0.9)
             {
                 score += 10;
