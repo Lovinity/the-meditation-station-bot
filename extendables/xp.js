@@ -10,7 +10,7 @@ module.exports = class extends Extendable {
     }
 
     get extend() {
-        var botPrefixes = ["!", "p!"];
+        var botPrefixes = ["!", "p!", "r!"];
 
         // Start with a base score of 1
         var score = 1;
@@ -57,7 +57,7 @@ module.exports = class extends Extendable {
         });
 
         // Calculate how many seconds this message took to type based off of 5 characters per second.
-        var messageTime = (this.cleanContent.length / 5);
+        var messageTime = (this.cleanContent.length / 8);
 
         // Iterate through messages of this channel from the last 3 minutes by the same author
         var collection = this.channel.messages
