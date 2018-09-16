@@ -119,7 +119,8 @@ Level 3: **Please remember to re-generate invite links if mitigation level was 3
                                     if (!guildMember.voice.deaf && !guildMember.user.bot)
                                         awardTo.push(guildMember);
                                     // Is the member unmuted and not a bot? Award listening XP/Yang to qualified members (if no one is unmuted, no one gets rewarded)
-                                    if (!guildMember.voice.mute && !guildMember.user.bot)
+                                    // Every 2 minutes, allow for XP rewarding even if the only speaking member is a bot
+                                    if (!guildMember.voice.mute && (!guildMember.user.bot || m % 2 === 0))
                                         award = true;
                                 });
 
@@ -132,7 +133,7 @@ Level 3: **Please remember to re-generate invite links if mitigation level was 3
                         }
                     });
 
-            // Hourly Trivia Game at minute 47
+            // tri-hourly Trivia Game at minute 58
             if (m === 58 && h % 3 === 0)
             {
                 console.log(`trivia`);
@@ -154,7 +155,7 @@ Level 3: **Please remember to re-generate invite links if mitigation level was 3
                                     var yang = response.value !== null ? (response.value / 10) : 20;
 
                                     var embed = new MessageEmbed()
-                                            .setTitle(`Hourly Trivia Contest!`)
+                                            .setTitle(`Trivia Contest!`)
                                             .setDescription(`The first person to answer this question correctly will win **${yang}** Yang! But hurry... you only have 3 minutes to answer! Make your guesses as messages. I will respond if and only if you have the correct answer.`)
                                             .setColor("GREEN")
                                             .addField('Category', category)
