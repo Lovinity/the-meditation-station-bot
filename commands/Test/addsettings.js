@@ -17,6 +17,7 @@ module.exports = class extends Command {
         //schema.add("modLogChannel", { type: "TextChannel" });
         //schema.add("iceBreakerChannel", { type: "TextChannel" });
         //schema.add("announcementsChannel", { type: "TextChannel" });
+        //schema.add("generalChannel", { type: "TextChannel" });
         //schema.add("noSelfModRole", { type: "Role" });
         //schema.add("muteRole", { type: "Role" });
         //schema.add("modRole", { type: "Role" });

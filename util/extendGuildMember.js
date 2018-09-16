@@ -156,7 +156,14 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                                 console.log(`Role exists. Adding role.`);
                                 this.roles.add(role, `Achieved level ${i}`);
                                 if (message !== null)
+                                {
                                     message.channel.send(`:tada: **Congratulations <@${this.id}>, you earned the ${role.name} role!**`);
+                                } else {
+                                    var channel = this.guild.settings.generalChannel;
+                                    var _channel = this.guild.channels.get(channel);
+                                    if (channel)
+                                        channel.send(`:tada: **Congratulations <@${this.id}>, you earned the ${role.name} role!**`);
+                                }
                             }
                         }
                     }
