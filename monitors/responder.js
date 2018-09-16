@@ -60,6 +60,7 @@ module.exports = class extends Monitor {
     }
 
     async init() {
+        /*
         this.manager.addDocument('en', 'how do I report someone', 'help.report');
         this.manager.addDocument('en', 'I need to report someone', 'help.report');
 
@@ -67,6 +68,7 @@ module.exports = class extends Monitor {
 
         this.manager.train();
         this.manager.save();
+        */
     }
 
 };
