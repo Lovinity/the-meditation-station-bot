@@ -57,9 +57,9 @@ Progress: `;
 
             var claimed = (xp / (xp + xp2));
 
-            var response = `:crossed_swords: XP Battle! (:smirk: You / ${user.tag} :smirk_cat:)
-**XP**     :smirk: ${xp} / ${xp2} :smirk_cat: 
-**Level**  :smirk: ${level} / ${level2} :smirk_cat: 
+            var response = `:crossed_swords: XP Battle! (:sun_with_face: You / ${user.tag} :full_moon_with_face:)
+**XP**     :sun_with_face: ${xp} / ${xp2} :full_moon_with_face:
+**Level**  :sun_with_face: ${level} / ${level2} :full_moon_with_face: 
 **Battle** `;
 
             var dots = 20;
@@ -67,12 +67,12 @@ Progress: `;
             {
                 claimed -= 0.05;
                 dots--;
-                response += `:smirk: `;
+                response += `:sun_with_face: `;
             }
             while (dots > 0)
             {
                 dots--;
-                response += `:smirk_cat: `;
+                response += `:full_moon_with_face: `;
             }
         }
 
