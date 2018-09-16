@@ -125,7 +125,7 @@ Level 3: **Please remember to re-generate invite links if mitigation level was 3
                                 });
 
                         // Award XP to everyone who qualifies if the channel as a whole qualifies
-                        if (award && awardTo.length > 0)
+                        if (award && awardTo.length > 1)
                         {
                             awardTo.forEach((guildMember) => {
                                 guildMember.xp(1);
