@@ -26,13 +26,17 @@ module.exports = class extends Extendable {
         //console.log(`${numattachments} attachments`);
 
         // Add score for length
-        if (this.content.length >= 140)
+        if (this.content.length >= 128)
             score += 1;
         if (this.content.length >= 256)
             score += 1;
         if (this.content.length >= 512)
             score += 1;
+        if (this.content.length >= 768)
+            score += 1;
         if (this.content.length >= 1024)
+            score += 1;
+        if (this.content.length >= 1536)
             score += 1;
 
         // Subtract score for repeat patterns
@@ -48,7 +52,7 @@ module.exports = class extends Extendable {
         var patternScore = (this.content.length > 0 ? (newstring.length / this.content.length) : 1);
 
         score *= ((patternScore - 0.5) * 2);
-        score = parseInt(score);
+        score = Math.ceil(parseInt(score));
 
         // If the message begins with any bot prefixes, consider it a bot command and do not score XP for it.
         botPrefixes.forEach((prefix) => {
