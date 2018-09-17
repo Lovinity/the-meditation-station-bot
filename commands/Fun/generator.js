@@ -18,6 +18,10 @@ module.exports = class extends Command {
     }
 
     async run(message, [group, individual, quantity]) {
+        if (group)
+            group = group.replace(" ", "_");
+        if (individual)
+            individual = individual.replace(" ", "_");
         if (message.channel.id !== message.guild.settings.get('botChannel'))
             return message.send(`:x: Sorry, but this command may only be used in the bot channel.`);
 

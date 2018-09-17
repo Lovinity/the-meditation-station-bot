@@ -11,7 +11,6 @@ module.exports = class extends Command {
             description: 'Add a self-assigned role to yourself.',
             usage: '<role:rolename>',
             usageDelim: '',
-            cooldown: 60,
             runIn: ['text'],
             requiredSettings: ["selfRoles", "botChannel"],
         });

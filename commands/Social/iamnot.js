@@ -11,7 +11,6 @@ module.exports = class extends Command {
             description: 'Remove a self-assigned role from yourself.',
             usage: '<role:rolename>',
             usageDelim: '',
-            cooldown: 60,
             runIn: ['text'],
             requiredSettings: ["selfRoles", "botChannel"],
         });
