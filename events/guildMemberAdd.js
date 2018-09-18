@@ -20,8 +20,22 @@ module.exports = class extends Event {
         // Reassign saved roles, if any, to the member. Also, creates a settings entry in the database for them if it doesn't exist
         // We have to lodash clone the roles before we start adding them, otherwise guildMemberUpdate will interfere with this process
         var _temp = guildMember.user.settings[guildMember.guild.id].roles;
-        var temp = _.cloneDeep(_temp);
-        guildMember.roles.add(temp);
+        if (_temp.length > 0)
+        {
+            var temp = _.cloneDeep(_temp);
+            guildMember.roles.add(temp);
+            const _channel2 = this.client.channels.get(guildMember.guild.settings.get('generalChannel'));
+            if (_channel2)
+            {
+                _channel2.send(`**Welcome back** <@${guildMember.id}>! I see you have been here before. I remembered your profile, XP, Yang, reputation, etc. I also re-assigned the roles that you had when you left.`);
+            }
+        } else {
+            const _channel2 = this.client.channels.get(guildMember.guild.settings.get('generalChannel'));
+            if (_channel2)
+            {
+                _channel2.send(`**Welcome new member** <@${guildMember.id}>! It looks like you've never been here before. Be sure to check out the welcome channel, rules channel, and conflict-resolution channel. We prune new members who do not send any messages within 7 days, so please say hi to us. Use the \`!staff\` command if you ever need to talk with staff. We hope you enjoy your stay!`);
+            }
+        }
 
         // See if there are any pending incidents for this member, and if so, assign permissions to that channel
         const pendIncidents = guildMember.guild.settings.get('pendIncidents');
