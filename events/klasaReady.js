@@ -29,12 +29,11 @@ module.exports = class extends Event {
                                 roleArray.push(role.id);
                         });
                         guildMember.user.settings.update(`${guild.id}.roles`, roleArray);
-                        // Member does not have verified role, so add all roles from the database, and then add the verified role
+                        // Member does not have verified role, so add all roles from the database
                     } else {
                         // We have to lodash clone the roles before we start adding them, otherwise guildMemberUpdate will interfere with this process
                         var _temp = guildMember.user.settings[guild.id].roles;
                         var temp = _.cloneDeep(_temp);
-                        temp.push(verifiedRole.id);
                         guildMember.roles.add(temp, `Re-assigning saved roles`);
 
                         // Also if the guild is under a raid mitigation level 2+, assign the mitigation role to the new member.

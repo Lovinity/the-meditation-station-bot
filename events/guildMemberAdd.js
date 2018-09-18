@@ -18,16 +18,10 @@ module.exports = class extends Event {
         _channel.send(`:tada: The member <@!${guildMember.user.id}> just joined the guild. They created their account on ${guildMember.user.createdAt.toUTCString()}`);
 
         // Reassign saved roles, if any, to the member. Also, creates a settings entry in the database for them if it doesn't exist
-        const verified = guildMember.guild.settings.get(`verifiedRole`);
-        const verifiedRole = guildMember.guild.roles.get(verified);
-        if (verifiedRole)
-        {
-            // We have to lodash clone the roles before we start adding them, otherwise guildMemberUpdate will interfere with this process
-            var _temp = guildMember.user.settings[guildMember.guild.id].roles;
-            var temp = _.cloneDeep(_temp);
-            temp.push(verifiedRole.id);
-            guildMember.roles.add(temp);
-        }
+        // We have to lodash clone the roles before we start adding them, otherwise guildMemberUpdate will interfere with this process
+        var _temp = guildMember.user.settings[guildMember.guild.id].roles;
+        var temp = _.cloneDeep(_temp);
+        guildMember.roles.add(temp);
 
         // See if there are any pending incidents for this member, and if so, assign permissions to that channel
         const pendIncidents = guildMember.guild.settings.get('pendIncidents');
