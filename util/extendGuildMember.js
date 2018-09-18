@@ -122,8 +122,8 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                 if (score === 0)
                     return null;
 
-                // Ignore this bot
-                if (this.id === this.client.user.id)
+                // Ignore this bot and all other bots; no XP for them
+                if (this.id === this.client.user.id || this.user.bot)
                     return null;
 
                 // Update the Yang
