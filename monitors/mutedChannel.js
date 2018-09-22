@@ -17,6 +17,8 @@ module.exports = class extends Monitor {
     }
 
     run(message) {
+        if (message.type !== 'DEFAULT')
+            return null;
         // Delete messages sent in channels that have -MUTED at the end of their name (muted channels)
         if (message.channel.name.endsWith("-muted"))
         {

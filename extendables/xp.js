@@ -10,6 +10,8 @@ module.exports = class extends Extendable {
     }
 
     get extend() {
+        if (this.type !== 'DEFAULT')
+            return null;
         var botPrefixes = ["!", "p!", "r!"];
 
         // Start with a base score of 1

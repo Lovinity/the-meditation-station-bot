@@ -18,6 +18,8 @@ module.exports = class extends Monitor {
     }
 
     run(message) {
+        if (message.type !== 'DEFAULT')
+            return null;
         if (/(https?:\/\/[^\s]+)/g.test(message.content) && message.member.settings.xp < 128)
         {
             message.channel.send(`:x: <@${message.author.id}>, You must be level 3 (128 XP) or above to post links in this guild.`)

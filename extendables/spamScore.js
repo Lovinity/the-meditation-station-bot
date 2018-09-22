@@ -10,6 +10,8 @@ module.exports = class extends Extendable {
     }
 
     get extend() {
+        if (this.type !== 'DEFAULT')
+            return null;
         // Start with a base score of 2
         var score = 2;
 
