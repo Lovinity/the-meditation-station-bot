@@ -27,7 +27,7 @@ module.exports = class extends Event {
             const _channel2 = this.client.channels.get(guildMember.guild.settings.get('generalChannel'));
             if (_channel2)
             {
-                _channel2.send(`**Welcome back** <@${guildMember.id}>! I see you have been here before. I remembered your profile, XP, Yang, reputation, etc. I also re-assigned the roles that you had when you left.`);
+                _channel2.send(`**Welcome back** <@${guildMember.id}>! I see you have been here before. I remembered your profile, XP, Yang, reputation, etc. I also re-assigned the roles that you had when you left. Be sure to check out the rules; they may have changed since you were last with us.`);
             }
         } else {
             const _channel2 = this.client.channels.get(guildMember.guild.settings.get('generalChannel'));

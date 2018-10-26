@@ -20,15 +20,16 @@ module.exports = class extends Command {
     async run(message, [user = null]) {
         if (message.channel.id !== message.guild.settings.get('botChannel'))
             return message.send(`:x: Sorry, but this command may only be used in the bot channel.`);
-
-// Make some calculations
-        var totalrep = message.member.settings.goodRep - message.member.settings.badRep;
-        var fillValue = message.member.settings.goodRep / totalrep;
+        
         if (user === null)
             user = message.author;
 
+// Make some calculations
+        var totalrep = user.settings[message.guild.id].goodRep - user.settings[message.guild.id].badRep;
+        var fillValue = user.settings[message.guild.id].goodRep / totalrep;
+
         var response = `**Reputation for ${user.tag}**
-:heavy_plus_sign: ${message.member.settings.goodRep} / :heavy_minus_sign: ${message.member.settings.badRep}
+:heavy_plus_sign: ${user.settings[message.guild.id].goodRep} / :heavy_minus_sign: ${user.settings[message.guild.id].badRep}
 Total reputation: **${totalrep}**
 Visualization: `;
 
