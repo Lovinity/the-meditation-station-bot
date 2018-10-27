@@ -20,7 +20,7 @@ module.exports = class extends Event {
         {
             console.log(`Remove all rep`);
             message.reactions
-                    .filter((reaction) => reaction.emoji.name === "➕" && !reaction.me && reaction.message.author.id !== message.author.id)
+                    .filter((reaction) => reaction.emoji.id === reaction.message.guild.settings.get("repEmoji") && !reaction.me && reaction.message.author.id !== message.author.id)
                     .each((reaction) => {
                         console.log(`A rep removed`);
                         message.member.settings.update('goodRep', message.member.settings.goodRep - 1);

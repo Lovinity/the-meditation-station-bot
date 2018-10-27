@@ -106,7 +106,7 @@ module.exports = class extends Extendable {
         {
             if (score > 0 && newstring.length >= 128)
             {
-                this.react("➕");
+                this.react(this.guild.settings.get("repEmoji"));
             } else if (!this.deleted) {
                 this.reactions.removeAll();
             }

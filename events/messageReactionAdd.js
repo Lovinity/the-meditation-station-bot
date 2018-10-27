@@ -7,7 +7,7 @@ module.exports = class extends Event {
             return null;
 
         // Add rep if this is a rep earning message
-        if (reaction.message.author.id !== this.client.user.id && !user.bot && reaction.message.author.id !== user.id && reaction.emoji.name === '➕')
+        if (reaction.message.author.id !== this.client.user.id && !user.bot && reaction.message.author.id !== user.id && reaction.emoji.id === reaction.message.guild.settings.get("repEmoji"))
         {
             console.log(`Rep earning`);
             var addRep = false;

@@ -17,7 +17,7 @@ module.exports = class extends Event {
                             removeRep = true;
                     });
 
-            if (removeRep && !user.bot && reaction.message.author.id !== user.id && reaction.emoji.name === '➕')
+            if (removeRep && !user.bot && reaction.message.author.id !== user.id && reaction.emoji.id === reaction.message.guild.settings.get("repEmoji"))
             {
                 console.log(`Remove rep`);
                 reaction.message.member.settings.update(`goodRep`, reaction.message.member.settings.goodRep - 1);

@@ -31,7 +31,7 @@ module.exports = class extends Event {
             if (removeRep)
             {
                 message.reactions
-                        .filter((reaction) => reaction.emoji.identifier === ":heavy_plus_sign:" && !reaction.me)
+                        .filter((reaction) => reaction.emoji.id === message.guild.settings.get("repEmoji") && !reaction.me)
                         .each((reaction) => {
                             message.member.settings.update('goodRep', message.member.settings.goodRep - 1);
                         });
