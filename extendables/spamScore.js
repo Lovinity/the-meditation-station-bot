@@ -110,7 +110,7 @@ module.exports = class extends Extendable {
         }
 
         // Calculate how many seconds this message took to type based off of 8 characters per second.
-        var messageTime = (this.cleanContent.length / 8);
+        var messageTime = (this.cleanContent.length / 7);
         //console.log(`${messageTime} messagetime`);
 
         // Iterate through messages of this channel from the last 3 minutes by the same author
@@ -121,7 +121,7 @@ module.exports = class extends Extendable {
         //console.log(`${collection.size} messages`);
         collection.each((message) => {
 
-            // If the current message was sent at a time that causes the typing speed to be more than 8 characters per second, add score for flooding / copypasting.
+            // If the current message was sent at a time that causes the typing speed to be more than 7 characters per second, add score for flooding / copypasting.
             var timediff = moment(this.createdAt).diff(moment(message.createdAt), 'seconds');
             if (timediff <= messageTime && !this.author.bot)
             {

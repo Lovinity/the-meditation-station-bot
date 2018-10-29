@@ -62,8 +62,8 @@ module.exports = class extends Extendable {
                 score = 0;
         });
 
-        // Calculate how many seconds this message took to type based off of 5 characters per second.
-        var messageTime = (this.cleanContent.length / 8);
+        // Calculate how many seconds this message took to type based off of 7 characters per second.
+        var messageTime = (this.cleanContent.length / 7);
 
         // Iterate through messages of this channel from the last 3 minutes by the same author
         var collection = this.channel.messages
@@ -73,7 +73,7 @@ module.exports = class extends Extendable {
         //console.log(`${collection.size} messages`);
         collection.each((message) => {
 
-            // If the current message was sent at a time that causes the typing speed to be more than 5 characters per second, no XP.
+            // If the current message was sent at a time that causes the typing speed to be more than 7 characters per second, no XP.
             var timediff = moment(this.createdAt).diff(moment(message.createdAt), 'seconds');
             if (timediff <= messageTime && !this.author.bot)
             {

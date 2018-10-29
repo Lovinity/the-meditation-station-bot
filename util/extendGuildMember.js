@@ -49,10 +49,10 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                             response += `__**Ignoring this may result in a permanent ban**__`;
                         } else if (this.guild.settings.raidMitigation >= 2)
                         {
-                            response += `**Ignoring this may result in a 1-day suspension**`;
+                            response += `__**Ignoring this may result in a 24-hour ban**__`;
                         } else if (this.guild.settings.raidMitigation >= 1)
                         {
-                            response += `Ignoring this may result in being muted until staff manually un-mute you.`;
+                            response += `**Ignoring this may result in being muted until staff manually un-mute you.**`;
                         } else {
                             response += `Ignoring this may result in a 30-minute mute.`;
                         }

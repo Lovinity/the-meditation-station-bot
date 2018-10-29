@@ -27,13 +27,13 @@ module.exports = class extends Event {
             const _channel2 = this.client.channels.get(guildMember.guild.settings.get('generalChannel'));
             if (_channel2)
             {
-                _channel2.send(`**Welcome back** <@${guildMember.id}>! I see you have been here before. I remembered your profile, XP, Yang, reputation, etc. I also re-assigned the roles that you had when you left. Be sure to check out the rules; they may have changed since you were last with us.`);
+                _channel2.send(`**Welcome back** <@${guildMember.id}>! I see you have been here before. I remembered your profile, XP, Yang, reputation, etc. I also re-assigned the roles that you had when you left. Be sure to check out the rules channel; they may have changed since you were last with us.`);
             }
         } else {
             const _channel2 = this.client.channels.get(guildMember.guild.settings.get('generalChannel'));
             if (_channel2)
             {
-                _channel2.send(`**Welcome new member** <@${guildMember.id}>! It looks like you've never been here before. Be sure to check out the welcome channel, rules channel, and conflict-resolution channel. We prune new members who do not send any messages within 7 days, so please say hi to us. Use the \`!staff\` command if you ever need to talk with staff. We hope you enjoy your stay!`);
+                _channel2.send(`**Welcome new member** <@${guildMember.id}>! It looks like you've never been here before. Be sure to check out the welcome channel and rules channel. Use the \`!staff\` command if you ever need to talk with staff in private. We hope you enjoy your stay!`);
             }
         }
 
