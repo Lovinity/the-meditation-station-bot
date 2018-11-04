@@ -6,7 +6,7 @@ module.exports = class extends Event {
     run(guildMember) {
 
         // Get the configured modLog channel.
-        const modLog = guildMember.guild.settings.get('modLogChannel');
+        const modLog = guildMember.guild.settings.modLogChannel;
 
         // End if there is no configured channel or the channel is not a text channel
         if (!modLog)
@@ -19,18 +19,18 @@ module.exports = class extends Event {
 
         // Reassign saved roles, if any, to the member. Also, creates a settings entry in the database for them if it doesn't exist
         // We have to lodash clone the roles before we start adding them, otherwise guildMemberUpdate will interfere with this process
-        var _temp = guildMember.user.settings[guildMember.guild.id].roles;
+        var _temp = guildMember.settings.roles;
         if (_temp.length > 0)
         {
             var temp = _.cloneDeep(_temp);
             guildMember.roles.add(temp);
-            const _channel2 = this.client.channels.get(guildMember.guild.settings.get('generalChannel'));
+            const _channel2 = this.client.channels.get(guildMember.guild.settings.generalChannel);
             if (_channel2)
             {
                 _channel2.send(`**Welcome back** <@${guildMember.id}>! I see you have been here before. I remembered your profile, XP, Yang, reputation, etc. I also re-assigned the roles that you had when you left. Be sure to check out the rules channel; they may have changed since you were last with us.`);
             }
         } else {
-            const _channel2 = this.client.channels.get(guildMember.guild.settings.get('generalChannel'));
+            const _channel2 = this.client.channels.get(guildMember.guild.settings.generalChannel);
             if (_channel2)
             {
                 _channel2.send(`**Welcome new member** <@${guildMember.id}>! It looks like you've never been here before. Be sure to check out the welcome channel and rules channel. Use the \`!staff\` command if you ever need to talk with staff in private. We hope you enjoy your stay!`);
@@ -38,7 +38,7 @@ module.exports = class extends Event {
         }
 
         // See if there are any pending incidents for this member, and if so, assign permissions to that channel
-        const pendIncidents = guildMember.guild.settings.get('pendIncidents');
+        const pendIncidents = guildMember.guild.settings.pendIncidents;
         if (pendIncidents && pendIncidents.length > 0)
         {
             pendIncidents.forEach(function (incident) {

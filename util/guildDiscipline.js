@@ -64,7 +64,7 @@ module.exports = class GuildDiscipline {
     // prepare the discipline while the staff is still going through the wizard.
     async prepare() {
         // Get the configured muted role
-        const muted = this.guild.settings.get(`muteRole`);
+        const muted = this.guild.settings.muteRole;
         const mutedRole = this.guild.roles.get(muted);
 
         // error if there is no muted role
@@ -81,12 +81,12 @@ module.exports = class GuildDiscipline {
                 guildMember.roles.add(mutedRole, this.reason);
             } else {
                 // Otherwise, add mutedRole to the list of roles for the user so it's applied when/if they return
-                this.user.settings.update(`${this.guild.id}.roles`, mutedRole.id, {action: 'add'});
+                this.user.guildSettings(this.guild.id).update(`roles`, mutedRole.id, {action: 'add'});
             }
         }
 
         // Create an incidents channel if configuration permits
-        const incidents = this.guild.settings.get(`incidentsCategory`);
+        const incidents = this.guild.settings.incidentsCategory;
         if (incidents)
         {
             // Create an incidents channel between the muted user and staff, first grant permissions for the user
@@ -159,7 +159,7 @@ module.exports = class GuildDiscipline {
     // Execute when the discipline wizard has been completed by staff
     async finalize() {
         // Get the configured muted role
-        const muted = this.guild.settings.get(`muteRole`);
+        const muted = this.guild.settings.muteRole;
         const mutedRole = this.guild.roles.get(muted);
 
         // error if there is no muted role
@@ -207,18 +207,18 @@ module.exports = class GuildDiscipline {
         // Issue discipline
         if (this.xp > 0)
         {
-            embed.addField(`You lost ${this.xp} XP`, `Your XP is now at ${(this.user.settings[this.guild.id].xp - this.xp)}`);
-            this.user.settings.update(`${this.guild.id}.xp`, (this.user.settings[this.guild.id].xp - this.xp));
+            embed.addField(`You lost ${this.xp} XP`, `Your XP is now at ${(this.user.guildSettings(this.guild.id).xp - this.xp)}`);
+            this.user.guildSettings(this.guild.id).update(`xp`, (this.user.guildSettings(this.guild.id).xp - this.xp));
         }
         if (this.yang > 0)
         {
-            embed.addField(`You lost ${this.yang} Yang`, `Your Yang balance is now at ${(this.user.settings[this.guild.id].yang - this.yang)}`);
-            this.user.settings.update(`${this.guild.id}.yang`, (this.user.settings[this.guild.id].yang - this.yang));
+            embed.addField(`You lost ${this.yang} Yang`, `Your Yang balance is now at ${(this.user.guildSettings(this.guild.id).yang - this.yang)}`);
+            this.user.guildSettings(this.guild.id).update(`yang`, (this.user.guildSettings(this.guild.id).yang - this.yang));
         }
         if (this.reputation > 0)
         {
-            embed.addField(`${this.reputation} bad reputation was assessed`, `Your reputation is now +${this.user.settings[this.guild.id].goodRep} / -${(this.user.settings[this.guild.id].badRep + this.reputation)}`);
-            this.user.settings.update(`${this.guild.id}.badRep`, (this.user.settings[this.guild.id].badRep + this.reputation));
+            embed.addField(`${this.reputation} bad reputation was assessed`, `Your reputation is now +${this.user.guildSettings(this.guild.id).goodRep} / -${(this.user.settings[this.guild.id].badRep + this.reputation)}`);
+            this.user.guildSettings(this.guild.id).update(`badRep`, (this.user.guildSettings(this.guild.id).badRep + this.reputation));
         }
         if (this.other !== null)
         {
@@ -232,7 +232,7 @@ module.exports = class GuildDiscipline {
             if (this.type === 'tempban' || this.type === 'ban')
             {
                 await this.guild.members.ban(this.user, {days: 7, reason: this.reason});
-                this.user.settings.update(`${this.guild.id}.roles`, mutedRole.id, {action: 'remove'});
+                this.user.guildSettings(this.guild.id).update(`roles`, mutedRole.id, {action: 'remove'});
                 if (this.type === 'tempban')
                 {
                     // Add a schedule if the mute is limited duration
@@ -362,7 +362,7 @@ Thank you for your understanding and cooperation.`)
     // Called when the staff member fails to complete the wizard
     async cancel() {
         // Get the configured muted role
-        const muted = this.guild.settings.get(`muteRole`);
+        const muted = this.guild.settings.muteRole;
         const mutedRole = this.guild.roles.get(muted);
 
         // error if there is no muted role
@@ -379,7 +379,7 @@ Thank you for your understanding and cooperation.`)
                 guildMember.roles.remove(mutedRole, `Staff did not complete discipline wizard.`);
             } else if (this.type === 'mute') {
                 // Otherwise, remove mutedRole to the list of roles for the user so it's applied when/if they return
-                this.user.settings.update(`${this.guild.id}.roles`, mutedRole.id, {action: 'remove'});
+                this.user.guildSettings(this.guild.id).update(`roles`, mutedRole.id, {action: 'remove'});
             }
         }
         await this.message.delete();

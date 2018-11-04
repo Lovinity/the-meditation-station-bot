@@ -2,14 +2,15 @@ const {Extendable} = require('klasa');
 const config = require("../config");
 const moment = require("moment");
 const stringSimilarity = require("string-similarity");
+const {Message} = require('discord.js');
 
 module.exports = class extends Extendable {
 
     constructor(...args) {
-        super(...args, {appliesTo: ['Message']});
+        super(...args, {appliesTo: [Message]});
     }
 
-    get extend() {
+    get spamScore() {
         if (this.type !== 'DEFAULT')
             return null;
         // Start with a base score of 2
@@ -148,7 +149,7 @@ module.exports = class extends Extendable {
         var isMuted = (this.member && this.guild && this.member.roles.get(this.guild.settings.muteRole));
 
         // If this is not a less strict channel, add 0.5 to the multiplier.
-        if (this.guild.settings.get('antispamLessStrictChannels').indexOf(this.channel.id) === -1)
+        if (this.guild.settings.antispamLessStrictChannels.indexOf(this.channel.id) === -1)
             multiplier += 0.5;
 
         // If the member does not have a role defined in less strict roles, add 0.5 to the multiplier.
@@ -157,7 +158,7 @@ module.exports = class extends Extendable {
             var lessStrict = false;
             this.member.roles
                     .filter((role) => {
-                        return this.guild.settings.get('antispamLessStrictRoles').indexOf(role.id) !== -1;
+                        return this.guild.settings.antispamLessStrictRoles.indexOf(role.id) !== -1;
                     })
                     .each((role) => {
                         lessStrict = true;
@@ -167,7 +168,7 @@ module.exports = class extends Extendable {
         }
         if (isMuted)
             multiplier = 1.5;
-        
+
         //console.log(`${multiplier} multiplier`);
 
         score *= multiplier;

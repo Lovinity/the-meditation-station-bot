@@ -8,13 +8,6 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
 
         constructor(...args) {
             super(...args);
-            this.settings = this.client.gateways.user.get(`${this.id}`, true)[this.guild.id];
-            this.settings.update = (key, data, options = {}) => {
-                return this.user.settings.update(`${this.guild.id}.${key}`, data, options);
-            };
-            this.settings.reset = (key) => {
-                return this.user.settings.reset(`${this.guild.id}.${key}`);
-            };
             this.spamScoreStamp = null;
             this.spamScore = (score, message) => {
 

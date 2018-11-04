@@ -31,7 +31,7 @@ module.exports = class extends Event {
             if (removeRep)
             {
                 message.reactions
-                        .filter((reaction) => reaction.emoji.id === message.guild.settings.get("repEmoji") && !reaction.me)
+                        .filter((reaction) => reaction.emoji.id === message.guild.settings.repEmoji && !reaction.me)
                         .each((reaction) => {
                             message.member.settings.update('goodRep', message.member.settings.goodRep - 1);
                         });
@@ -39,7 +39,7 @@ module.exports = class extends Event {
         }
 
         // Get the configured modLog channel.
-        const modLog = message.guild.settings.get('modLogChannel');
+        const modLog = message.guild.settings.modLogChannel;
 
         // End if there is no configured channel
         if (!modLog)

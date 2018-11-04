@@ -18,7 +18,7 @@ module.exports = class extends Command {
     }
 
     async run(message, [nick]) {
-        if (message.channel.id !== message.guild.settings.get('botChannel'))
+        if (message.channel.id !== message.guild.settings.botChannel)
             return message.send(`:x: Sorry, but this command may only be used in the bot channel.`);
         
         // Test for profanity

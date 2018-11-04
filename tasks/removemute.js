@@ -10,7 +10,7 @@ module.exports = class extends Task {
         if (_user)
         {
             // Remove the role from the user's database
-            _user.settings.update(`${guild}.roles`, role, {action: 'remove'});
+            _user.guildSettings(guild).update(`roles`, role, {action: 'remove'});
 
             const _guild = this.client.guilds.get(guild);
             if (_guild)
@@ -26,7 +26,7 @@ module.exports = class extends Task {
                     }
                 }
 
-                const logchannel = _guild.channels.get(_guild.settings.get('modLogChannel'));
+                const logchannel = _guild.channels.get(_guild.settings.modLogChannel);
 
                 if (logchannel)
                 {

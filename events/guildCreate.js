@@ -11,53 +11,9 @@ module.exports = class extends Event {
             return;
         }
 
-        // add guild into the users gateway if it does not exist
-        const {schema} = this.client.gateways.user;
-        if (!schema.has(message.guild.id))
-        {
-            schema.add(message.guild.id, {
-                xp: {
-                    type: 'integer',
-                    default: 0
-                },
-                yang: {
-                    type: 'integer',
-                    default: 0
-                },
-                badRep: {
-                    type: 'integer',
-                    default: 0
-                },
-                goodRep: {
-                    type: 'integer',
-                    default: 0
-                },
-                spamscore: {
-                    type: 'integer',
-                    default: 0
-                },
-                profile: {
-                    type: 'any',
-                    array: true
-                },
-                modLogs: {
-                    type: 'any',
-                    array: true
-                },
-                reports: {
-                    type: 'string',
-                    array: true
-                },
-                roles: {
-                    type: 'string',
-                    array: true
-                }
-            });
-        }
-
         // Add a scheduled task to run every minute for the guild if it does not already exist
         // BROKEN
-        const guildTask = guild.settings.get('guildTasks');
+        const guildTask = guild.settings.guildTasks;
         if (!guildTask || guildTask === null)
         {
             this.client.schedule.create('guildtasks', "* * * * *", {

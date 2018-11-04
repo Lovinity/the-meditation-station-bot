@@ -14,7 +14,6 @@ module.exports = class extends Monitor {
             ignoreBlacklistedUsers: false,
             ignoreBlacklistedGuilds: true
         });
-        this.manager = new NlpManager({languages: ['en']});
     }
 
     run(message) {

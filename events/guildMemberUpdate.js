@@ -10,7 +10,7 @@ module.exports = class extends Event {
             if (role.id !== newMember.guild.defaultRole.id)
                 roleArray.push(role.id);
         });
-        newMember.user.settings.update(`${newMember.guild.id}.roles`, roleArray);
+        newMember.settings.update(`roles`, roleArray);
     }
 
 };

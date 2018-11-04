@@ -2,14 +2,15 @@ const {Extendable} = require('klasa');
 const config = require("../config");
 const moment = require("moment");
 const stringSimilarity = require("string-similarity");
+const {Message} = require('discord.js');
 
 module.exports = class extends Extendable {
 
     constructor(...args) {
-        super(...args, {appliesTo: ['Message']});
+        super(...args, {appliesTo: [Message]});
     }
 
-    get extend() {
+    get xp() {
         if (this.type !== 'DEFAULT')
             return null;
         var botPrefixes = ["!", "p!", "r!"];
@@ -106,7 +107,7 @@ module.exports = class extends Extendable {
         {
             if (score > 0 && newstring.length >= 128)
             {
-                this.react(this.guild.settings.get("repEmoji"));
+                this.react(this.guild.settings.repEmoji);
             } else if (!this.deleted) {
                 this.reactions.removeAll();
             }

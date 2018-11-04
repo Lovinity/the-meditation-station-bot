@@ -24,22 +24,22 @@ module.exports = class extends Command {
 
     async run(message, [user]) {
         // Error if this command was not executed in an incidents channel, and delete the message for user's confidentiality
-        if (message.channel.parent && message.channel.parent.id !== message.guild.settings.get('incidentsCategory'))
+        if (message.channel.parent && message.channel.parent.id !== message.guild.settings.incidentsCategory)
         {
             await message.send(`:x: For your confidentiality, the report command may only be used in an incident channel (private channel between you and the staff). Please use the command !staff to create one.`);
             return message.delete({reason: `Use of !report ourside an incidents channel. Deleted for confidentiality.`});
         }
 
         // First, get configured settings
-        const reports = user.settings.get(`${message.guild.id}.reports`);
-        const reportMembers = message.guild.settings.get('reportMembers') || 3;
-        const reportTime = moment().add(parseInt(message.guild.settings.get('reportTime')), 'minutes').toDate();
-        const muted = message.guild.settings.get(`muteRole`);
+        const reports = user.guildSettings(message.guild.id).reports;
+        const reportMembers = message.guild.settings.reportMembers || 3;
+        const reportTime = moment().add(parseInt(message.guild.settings.reportTime), 'minutes').toDate();
+        const muted = message.guild.settings.muteRole;
         const mutedRole = message.guild.roles.get(muted);
-        const noSelfMod = message.guild.settings.get(`noSelfModRole`);
+        const noSelfMod = message.guild.settings.noSelfModRole;
         const noSelfModRole = message.guild.roles.get(noSelfMod);
         const guildMember = message.guild.members.get(user.id);
-        const incidents = message.guild.settings.get(`incidentsCategory`);
+        const incidents = message.guild.settings.incidentsCategory;
 
         // Check if this specific member used the conflict command on the user recently. If not, add an entry.
         if (reports.indexOf(`${message.author.id}`) === -1)
@@ -66,7 +66,7 @@ module.exports = class extends Command {
             message.guild.raidScore(10);
 
             // Add this report into the member's report records
-            await user.settings.update(`${message.guild.id}.reports`, `${message.author.id}`, {action: 'add'});
+            await user.guildSettings(message.guild.id).update(`reports`, `${message.author.id}`, {action: 'add'});
 
             if (reports.length < reportMembers)
                 return message.sendMessage(`:white_check_mark: Thank you for your report. I have not deemed a mute necessary yet. Please provide information and evidence to their misconduct in this channel. Not doing so could be deemed !report abuse, and you could lose reporting privileges.`);

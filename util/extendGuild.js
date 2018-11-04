@@ -8,8 +8,8 @@ Structures.extend('Guild', Guild => class MyGuild extends Guild {
             this.raidScore = (score) => {
 
                 // Update the score.
-                var currentScore = this.settings.raidscore;
-                this.settings.update('raidscore', currentScore + score);
+                var currentScore = this.settings.raidScore;
+                this.settings.update('raidScore', currentScore + score);
                 var newScore = currentScore + score;
 
                 var mitigation = this.settings.raidMitigation;

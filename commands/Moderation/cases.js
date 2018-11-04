@@ -17,14 +17,14 @@ module.exports = class extends Command {
 
     async run(message, [user]) {
         // Bail if the command was not run in a staff category channel or incidents category channel.
-        if (!message.channel.parent || (message.channel.parent.id !== message.guild.settings.get('incidentsCategory') && message.channel.parent.id !== message.guild.settings.get('staffCategory')))
+        if (!message.channel.parent || (message.channel.parent.id !== message.guild.settings.incidentsCategory && message.channel.parent.id !== message.guild.settings.staffCategory))
         {
             await message.channel.send(`:x: For confidentiality, the cases command may only be used in a staff channel or incidents channel.`);
             return message.delete({reason: `Use of !cases channel outside of a staff or incidents channel`});
         }
 
         // Get the modLogs
-        const modLogs = user.settings[message.guild.id].modLogs;
+        const modLogs = user.guildSettings(message.guild.id).modLogs;
 
         var actions = {
             warn: 0,
@@ -103,10 +103,10 @@ Use number reactions to select an action, or stop to exit.`)
                             var chosen3 = menu.options[choice].name;
                             if (chosen3 === 'remove')
                             {
-                                await user.settings.update(`${message.guild.id}.modLogs`, log, {action: 'remove'});
+                                await user.guildSettings(message.guild.id).update(`modLogs`, log, {action: 'remove'});
                                 log.valid = false;
-                                await user.settings.update(`${message.guild.id}.modLogs`, log, {action: 'add'});
-                                const channel2 = message.guild.channels.get(message.guild.settings.get('modLogChannel'));
+                                await user.guildSettings(message.guild.id).update(`modLogs`, log, {action: 'add'});
+                                const channel2 = message.guild.channels.get(message.guild.settings.modLogChannel);
                                 if (channel2)
                                 {
                                     channel2.send(`:negative_squared_cross_mark: Case ${log.case} (A ${log.type} against ${log.user.tag}) was removed by ${message.author.tag} (${message.author.id}), but the discipline remains in place.`);
@@ -114,21 +114,21 @@ Use number reactions to select an action, or stop to exit.`)
                             }
                             if (chosen3 === 'appeal')
                             {
-                                await user.settings.update(`${message.guild.id}.modLogs`, log, {action: 'remove'});
+                                await user.guildSettings(message.guild.id).update(`modLogs`, log, {action: 'remove'});
                                 log.valid = false;
-                                await user.settings.update(`${message.guild.id}.modLogs`, log, {action: 'add'});
+                                await user.guildSettings(message.guild.id).update(`modLogs`, log, {action: 'add'});
                                 // Now, appeal all discipline
                                 if (log.discipline.xp > 0)
                                 {
-                                    user.settings.update(`${message.guild.id}.xp`, (user.settings[message.guild.id].xp + log.discipline.xp));
+                                    user.guildSettings(message.guild.id).update(`xp`, (user.guildSettings(message.guild.id).xp + log.discipline.xp));
                                 }
                                 if (log.discipline.yang > 0)
                                 {
-                                    user.settings.update(`${message.guild.id}.yang`, (user.settings[message.guild.id].yang + log.discipline.yang));
+                                    user.guildSettings(message.guild.id).update(`yang`, (user.guildSettings(message.guild.id).yang + log.discipline.yang));
                                 }
                                 if (log.discipline.reputation > 0)
                                 {
-                                    user.settings.update(`${message.guild.id}.badRep`, (user.settings[message.guild.id].badRep - log.discipline.reputation));
+                                    user.guildSettings(message.guild.id).update(`badRep`, (user.guildSettings(message.guild.id).badRep - log.discipline.reputation));
                                 }
 
                                 const guildMember = message.guild.members.get(user.id);
@@ -145,7 +145,7 @@ Use number reactions to select an action, or stop to exit.`)
                                     if (log.type === 'tempban')
                                     {
                                         // Remove the suspension if it is pending in the guild
-                                        const pendSuspensions = message.guild.settings.get('pendSuspensions');
+                                        const pendSuspensions = message.guild.settings.pendSuspensions;
                                         if (pendSuspensions && pendSuspensions.length > 0)
                                         {
                                             pendSuspensions.forEach(function (suspension) {
@@ -157,7 +157,7 @@ Use number reactions to select an action, or stop to exit.`)
                                     if (log.type === 'ban')
                                     {
                                         // Remove the ban if it is pending in the guild
-                                        const pendBans = message.guild.settings.get('pendBans');
+                                        const pendBans = message.guild.settings.pendBans;
                                         if (pendBans && pendBans.length > 0)
                                         {
                                             pendBans.forEach(function (ban) {
@@ -177,7 +177,7 @@ Use number reactions to select an action, or stop to exit.`)
                                                 });
 
                                     // Get the configured muted role
-                                    const muted = message.guild.settings.get(`muteRole`);
+                                    const muted = message.guild.settings.muteRole;
                                     const mutedRole = message.guild.roles.get(muted);
 
                                     // Add the mute role to the user, if the user is in the guild
@@ -186,12 +186,12 @@ Use number reactions to select an action, or stop to exit.`)
                                         guildMember.roles.remove(mutedRole, `Mute was appealed`);
                                     } else {
                                         // Otherwise, remove mutedRole to the list of roles for the user so it's applied when/if they return
-                                        user.settings.update(`${message.guild.id}.roles`, mutedRole.id, {action: 'remove'});
+                                        user.guildSettings(message.guild.id).update(`roles`, mutedRole.id, {action: 'remove'});
                                     }
                                 }
 
                                 // Remove incident if it is pending in the guild
-                                const pendIncidents = message.guild.settings.get('pendIncidents');
+                                const pendIncidents = message.guild.settings.pendIncidents;
                                 if (pendIncidents && pendIncidents.length > 0)
                                 {
                                     pendIncidents.forEach(function (incident) {
@@ -209,7 +209,7 @@ Use number reactions to select an action, or stop to exit.`)
                                     }
                                 }
 
-                                const channel2 = message.guild.channels.get(message.guild.settings.get('modLogChannel'));
+                                const channel2 = message.guild.channels.get(message.guild.settings.modLogChannel);
                                 if (channel2)
                                 {
                                     channel2.send(`:negative_squared_cross_mark: Case ${log.case} (A ${log.type} against ${log.user.tag}) was appealed by ${message.author.tag} (${message.author.id}), and all discipline reversed.`);

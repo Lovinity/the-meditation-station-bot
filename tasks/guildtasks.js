@@ -10,7 +10,7 @@ module.exports = class extends Task {
         if (_guild)
         {
             // Antispam cooldown
-            var cooldown = _guild.settings.get('antispamCooldown');
+            var cooldown = _guild.settings.antispamCooldown;
             _guild.members.each((guildMember) => {
                 var newscore = guildMember.settings.spamscore - cooldown;
                 if (newscore < 0)
@@ -19,8 +19,8 @@ module.exports = class extends Task {
             });
 
             // Do stats
-            const statsMessageChannel = _guild.settings.get('statsMessageChannel');
-            const statsMessage = _guild.settings.get('statsMessage');
+            const statsMessageChannel = _guild.settings.statsMessageChannel;
+            const statsMessage = _guild.settings.statsMessage;
 
             if (statsMessage && statsMessageChannel)
             {
@@ -41,11 +41,11 @@ module.exports = class extends Task {
 
             if (m === 0 && (h === 6 || h === 12 || h === 18 || h === 0))
             {
-                const iceBreakerChannel = _guild.settings.get('iceBreakerChannel');
+                const iceBreakerChannel = _guild.settings.iceBreakerChannel;
                 const _channel = this.client.channels.get(iceBreakerChannel);
                 if (_channel)
                 {
-                    var iceBreakers = _guild.settings.get('icebreakers');
+                    var iceBreakers = _guild.settings.icebreakers;
                     _channel.send(`:snowflake: **Time for another ice breaker question!** :snowflake:
                     
 ${iceBreakers[Math.floor(Math.random() * iceBreakers.length)]}
@@ -66,10 +66,10 @@ ${iceBreakers[Math.floor(Math.random() * iceBreakers.length)]}
             }
 
             // Raid score cool-down
-            var newscore = _guild.settings.raidscore - 1;
+            var newscore = _guild.settings.raidScore - 1;
             if (newscore < 0)
                 newscore = 0;
-            _guild.settings.update('raidscore', newscore);
+            _guild.settings.update('raidScore', newscore);
 
             // Raid mitigation ends
             if (newscore <= 0 && _guild.settings.raidMitigation > 0)
@@ -138,7 +138,7 @@ Level 3: **Please remember to re-generate invite links if mitigation level was 3
             if (m === 58 && h % 3 === 0)
             {
                 console.log(`trivia`);
-                const botGamesChannel = _guild.settings.get('botGamesChannel');
+                const botGamesChannel = _guild.settings.botGamesChannel;
                 const _channel = this.client.channels.get(botGamesChannel);
                 if (_channel)
                 {

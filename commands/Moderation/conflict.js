@@ -23,9 +23,9 @@ module.exports = class extends Command {
 
     async run(message, []) {
         // First, get configured settings
-        const conflict = message.channel.settings.get(`conflictResolution`);
-        const confMembers = message.guild.settings.get('conflictResolutionMembers') || 3;
-        const confTime = moment().add(parseInt(message.guild.settings.get('conflictResolutionTime')), 'minutes').toDate();
+        const conflict = message.channel.settings.conflictResolution;
+        const confMembers = message.guild.settings.conflictResolutionMembers || 3;
+        const confTime = moment().add(parseInt(message.guild.settings.conflictResolutionTime), 'minutes').toDate();
         const {permission} = await this.client.permissionLevels.run(message, 4);
 
         // Is there an active conflict resolution on this channel? If so, forfeit.
@@ -49,7 +49,7 @@ module.exports = class extends Command {
             // Not anough members reported yet to trigger conflict resolution? And member is not staff (level 4 permission)? Inform the channel.
             if (conflict.length < confMembers && !permission)
             {
-                return message.sendMessage(`:white_check_mark: ${confMembers - (conflict.length)} more members need to issue the command in this channel in the next ${message.guild.settings.get('conflictResolutionTime')} minutes for conflict resolution to activate.`);
+                return message.sendMessage(`:white_check_mark: ${confMembers - (conflict.length)} more members need to issue the command in this channel in the next ${message.guild.settings.conflictResolutionTime} minutes for conflict resolution to activate.`);
 
                 // Time to activate!
             } else {
@@ -80,7 +80,7 @@ In 5 minutes, I will re-enable message sending and provide some questions to aid
             }
             // Member already used the command recently in this channel.
         } else {
-            return message.sendMessage(`:x: You already issued the conflict command in this channel within the last ${message.guild.settings.get('conflictResolutionTime')} minutes.`);
+            return message.sendMessage(`:x: You already issued the conflict command in this channel within the last ${message.guild.settings.conflictResolutionTime} minutes.`);
     }
     }
 

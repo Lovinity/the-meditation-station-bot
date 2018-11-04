@@ -16,7 +16,7 @@ module.exports = class extends Task {
                 // Remove the ban
                 await _guild.members.unban(_user, `Temporary ban expired.`);
                 
-                const logchannel = _guild.channels.get(_guild.settings.get('modLogChannel'));
+                const logchannel = _guild.channels.get(_guild.settings.modLogChannel);
 
                 if (logchannel)
                 {

@@ -1,7 +1,7 @@
 {
   "name": "the-meditation-station-bot",
-  "version": "1.0.0",
-  "description": "This is a Klasa bot used for The Meditation Station Discord",
+  "version": "1.1.0",
+  "description": "This is a Klasa bot used for Thoughtversity Discord",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -21,15 +21,16 @@
     "discord.js": "github:discordjs/discord.js#master",
     "fantasy-names": "^2.0.1",
     "isprofanity": "^1.4.1",
-    "klasa": "github:dirigeants/klasa#a444a80",
-    "lodash": "^4.17.10",
+    "klasa": "github:dirigeants/klasa#master",
+    "klasa-member-gateway": "github:dirigeants/klasa-member-gateway",
+    "lodash": "^4.17.11",
     "moment": "^2.22.2",
     "moment-duration-format": "^2.2.2",
-    "mongodb": "^3.1.1",
-    "needle": "^2.2.2",
+    "mongodb": "^3.1.8",
+    "needle": "^2.2.4",
     "rethinkdb": "^2.3.3",
     "rethinkdbdash": "^2.3.31",
-    "string-similarity": "^1.2.0",
+    "string-similarity": "^1.2.2",
     "wait-for-stuff": "^1.4.0"
   }
 }

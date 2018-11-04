@@ -24,8 +24,6 @@ module.exports = class extends Command {
     }
 
     async init() {
-        const { schema } = this.client.gateways.guilds;
-        if (!schema.has('icebreakers')) await schema.add('icebreakers', { type: 'string', array: true });
     }
 
 };

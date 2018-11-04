@@ -22,7 +22,7 @@ module.exports = class extends Command {
             group = group.replace(" ", "_");
         if (individual)
             individual = individual.replace(" ", "_");
-        if (message.channel.id !== message.guild.settings.get('botChannel'))
+        if (message.channel.id !== message.guild.settings.botChannel)
             return message.send(`:x: Sorry, but this command may only be used in the bot channel.`);
 
         return message.send(gen(group, individual, quantity));

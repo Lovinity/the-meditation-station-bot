@@ -15,7 +15,7 @@ module.exports = class extends Event {
             });
 
             // Cycle through all the members without the verified role and assign them the stored roles
-            const verified = guild.settings.get(`verifiedRole`);
+            const verified = guild.settings.verifiedRole;
             const verifiedRole = guild.roles.get(verified);
             if (verifiedRole)
             {
@@ -28,11 +28,11 @@ module.exports = class extends Event {
                             if (role.id !== guild.defaultRole.id)
                                 roleArray.push(role.id);
                         });
-                        guildMember.user.settings.update(`${guild.id}.roles`, roleArray);
+                        guildMember.settings.update(`roles`, roleArray);
                         // Member does not have verified role, so add all roles from the database
                     } else {
                         // We have to lodash clone the roles before we start adding them, otherwise guildMemberUpdate will interfere with this process
-                        var _temp = guildMember.user.settings[guild.id].roles;
+                        var _temp = guildMember.settings.roles;
                         var temp = _.cloneDeep(_temp);
                         guildMember.roles.add(temp, `Re-assigning saved roles`);
 

@@ -73,7 +73,7 @@ module.exports = class ModLog {
     // Send the log to the modlog channel
 
     async send() {
-        const channel = this.guild.channels.get(this.guild.settings.get('modLogChannel'));
+        const channel = this.guild.channels.get(this.guild.settings.modLogChannel);
         await this.getCase();
         if (channel)
         {
@@ -105,7 +105,7 @@ module.exports = class ModLog {
     async getCase() {
         this.case = Date.now().toString(36) + (this.client.shard ? this.client.shard.id.toString(36) : '') + String.fromCharCode((1 % 26) + 97);
         const user = this.client.users.get(this.user.id);
-        await user.settings.update(`${this.guild.id}.modLogs`, this.pack, {action: 'add'});
+        await user.guildSettings(this.guild.id).update(`modLogs`, this.pack, {action: 'add'});
         return this.case;
     }
 

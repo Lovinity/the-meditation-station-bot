@@ -6,7 +6,7 @@ module.exports = class extends Event {
     run(guildMember) {
 
         // Get the configured modLog channel.
-        const modLog = guildMember.guild.settings.get('modLogChannel');
+        const modLog = guildMember.guild.settings.modLogChannel;
 
         // End if there is no configured channel or the channel is not a text channel
         if (!modLog)
@@ -18,7 +18,7 @@ module.exports = class extends Event {
         _channel.send(`:wave: The member <@!${guildMember.user.id}> just left the guild.`);
 
         // Finalize any bans if the member has them
-        const pendSuspensions = guildMember.guild.settings.get('pendSuspensions');
+        const pendSuspensions = guildMember.guild.settings.pendSuspensions;
         // Pending suspension
         if (pendSuspensions && pendSuspensions.length > 0)
         {
@@ -34,17 +34,17 @@ module.exports = class extends Event {
                         }
                     });
                     guildMember.guild.settings.update(`pendSuspensions`, suspension, {action: 'remove'});
-                    guildMember.user.settings.update(`${guildMember.guild.id}.modLogs`, suspension.case, {action: 'remove'})
+                    guildMember.settings.update(`modLogs`, suspension.case, {action: 'remove'})
                             .then(resp => {
                                 suspension.case.expiration = moment().add(suspension.duration, 'minutes').toISOString(true);
-                                guildMember.user.settings.update(`${guildMember.guild.id}.modLogs`, suspension.case, {action: 'add'});
+                                guildMember.settings.update(`modLogs`, suspension.case, {action: 'add'});
                             });
                 }
             });
         }
 
         // Finalize any bans if the member has them
-        const pendBans = guildMember.guild.settings.get('pendBans');
+        const pendBans = guildMember.guild.settings.pendBans;
         // Pending bans
         if (pendBans && pendBans.length > 0)
         {

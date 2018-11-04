@@ -30,7 +30,7 @@ module.exports = class extends Command {
         var msg = await message.send(`:hourglass_flowing_sand: Please wait...`);
         var response = ``;
         // Gather necessary config
-        const incidents = message.guild.settings.get(`incidentsCategory`);
+        const incidents = message.guild.settings.incidentsCategory;
 
         // First, handle if any member parameters were provided
         if (users && users.length > 0)
@@ -68,7 +68,7 @@ ${mute ? `**You have been muted until staff speak with you** in order to protect
                 // Mute the users if the mute parameter was provided in the command
                 if (mute)
                 {
-                    const muted = message.guild.settings.get(`muteRole`);
+                    const muted = message.guild.settings.muteRole;
                     const mutedRole = message.guild.roles.get(muted);
                     var guildMember = message.guild.members.get(user.id);
 
@@ -78,7 +78,7 @@ ${mute ? `**You have been muted until staff speak with you** in order to protect
                         {
                             guildMember.roles.add(mutedRole, `Mute via !staff command`);
                         } else {
-                            user.settings.update(`${message.guild.id}.roles`, mutedRole.id, {action: 'add'});
+                            user.guildSettings(message.guild.id).update(`roles`, mutedRole.id, {action: 'add'});
                         }
                     }
 
