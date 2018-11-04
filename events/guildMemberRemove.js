@@ -15,10 +15,11 @@ module.exports = class extends Event {
         const _channel = this.client.channels.get(modLog);
 
         // send a log to the channel
-        _channel.send(`:wave: The member <@!${guildMember.user.id}> just left the guild.`);
+        _channel.send(`:wave: The member <@!${guildMember.user.id}> (${guildMember.user.id}) just left the guild on ${moment().format('LLLL')} guild time.`);
 
         // Finalize any bans if the member has them
         const pendSuspensions = guildMember.guild.settings.pendSuspensions;
+
         // Pending suspension
         if (pendSuspensions && pendSuspensions.length > 0)
         {
@@ -56,6 +57,21 @@ module.exports = class extends Event {
                 }
             });
         }
+
+        // Remove any invites created by the member; this helps prevent raids (user enters guild, creates invite, leaves, stages raid with the invite)
+        const modLog = guildMember.guild.settings.modLogChannel;
+        const _channel = guildMember.guild.channels.get(modLog);
+        guildMember.guild.fetchInvites()
+                .then(invites => {
+                    invites
+                            .filter(invite => typeof invite.inviter === 'undefined' || invite.inviter === null || invite.inviter.id === guildMember.id)
+                            .each((invite) => {
+                                invite.delete('This invite has no inviter. Maybe the inviter left the guild?');
+                                if (modLog)
+                                    _channel.send(`:wastebasket: The invite ${invite.code} was deleted because an inviter did not exist. They probably left the guild.`);
+                            });
+
+                });
 
     }
 

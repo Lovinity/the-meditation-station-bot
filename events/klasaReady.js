@@ -46,6 +46,21 @@ module.exports = class extends Event {
                     }
                 });
             }
+
+            // Remove invites that have no inviter (raid prevention)
+            const modLog = guild.settings.modLogChannel;
+            const _channel = guild.channels.get(modLog);
+            guild.fetchInvites()
+                    .then(invites => {
+                        invites
+                                .filter(invite => typeof invite.inviter === 'undefined' || invite.inviter === null)
+                                .each((invite) => {
+                                    invite.delete('This invite has no inviter. Maybe the inviter left the guild?');
+                                    if (modLog)
+                                        _channel.send(`:wastebasket: The invite ${invite.code} was deleted because an inviter did not exist. They probably left the guild.`);
+                                });
+
+                    });
         });
 
 
