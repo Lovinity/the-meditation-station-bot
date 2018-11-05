@@ -47,7 +47,7 @@ Client.defaultMemberSchema
     .add('badRep', 'integer', {default: 0})
     .add('goodRep', 'integer', {default: 0})
     .add('spamScore', 'integer', {default: 0})
-    .add('profle', 'any', {array: true})
+    .add('profile', 'any', {array: true})
     .add('modLogs', 'any', {array: true})
     .add('reports', 'string', {array: true})
     .add('roles', 'string', {array: true});
