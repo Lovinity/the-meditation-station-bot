@@ -52,7 +52,7 @@ module.exports = class extends Command {
             // Next, ask for a duration if type is mute or tempban
             if (type === 'mute' || type === 'tempban')
             {
-                var duration = await message.awaitReply(`:question: How many ${type === 'mute' ? `minutes` : `days`} should this ${type} last? ${type === 'mute' ? `Answer "0" for indefinite.` : ``} You have 5 minutes to respond.`, 300000);
+                var duration = await message.awaitReply(`:question: How many ${type === 'mute' ? `hours` : `days`} should this ${type} last? ${type === 'mute' ? `Answer "0" for indefinite.` : ``} You have 5 minutes to respond.`, 300000);
                 if (!duration)
                 {
                     await discipline.cancel();
@@ -60,11 +60,11 @@ module.exports = class extends Command {
                 }
                 if (isNaN(parseInt(duration)))
                 {
-                    await message.send(`:x: An invalid number was provided. We will assume ${type === 'mute' ? `30 minutes` : `1 day`}.`);
-                    duration = (type === 'mute') ? 30 : 1;
+                    await message.send(`:x: An invalid number was provided. We will assume ${type === 'mute' ? `1 hour` : `1 day`}.`);
+                    duration = 1;
                 }
                 duration = parseInt(duration);
-                await discipline.setDuration((type === 'tempban') ? (60 * 24 * duration) : duration);
+                await discipline.setDuration((type === 'tempban') ? (60 * 24 * duration) : (60 * duration));
             }
 
             // Next, ask for a reason
