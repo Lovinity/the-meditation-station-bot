@@ -59,8 +59,6 @@ module.exports = class extends Event {
         }
 
         // Remove any invites created by the member; this helps prevent raids (user enters guild, creates invite, leaves, stages raid with the invite)
-        const modLog = guildMember.guild.settings.modLogChannel;
-        const _channel = guildMember.guild.channels.get(modLog);
         guildMember.guild.fetchInvites()
                 .then(invites => {
                     invites
