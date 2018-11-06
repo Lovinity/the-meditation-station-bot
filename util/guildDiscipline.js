@@ -292,7 +292,7 @@ Thank you for your understanding and cooperation.`)
                         .setFooter(`Reason for the warning: ${this.reason}`);
 
                 if (!guildMember)
-                    embed.addField(`This user is not currently in the guild` `<@!${this.responsible.id}>, I will add permissions to this channel if/when I detect them re-entering the guild.`);
+                    embed.addField(`This user is not currently in the guild <@!${this.responsible.id}>, I will add permissions to this channel if/when I detect them re-entering the guild.`);
 
                 await this.channel.send(`<@!${this.user.id}>`, {embed});
                 break;
@@ -306,7 +306,7 @@ Thank you for your understanding and cooperation.`)
                         .setFooter(`Reason for discipline: ${this.reason}`);
 
                 if (!guildMember)
-                    embed.addField(`This user is not currently in the guild` `<@!${this.responsible.id}>, I will add permissions to this channel if/when I detect them re-entering the guild.`);
+                    embed.addField(`This user is not currently in the guild <@!${this.responsible.id}>, I will add permissions to this channel if/when I detect them re-entering the guild.`);
 
                 await this.channel.send(`<@!${this.user.id}>`, {embed});
                 break;
@@ -321,7 +321,7 @@ Thank you for your understanding and cooperation.`)
                         .setFooter(`Reason for mute: ${this.reason}`);
 
                 if (!guildMember)
-                    embed.addField(`This user is not currently in the guild` `<@!${this.responsible.id}>, the mute will be applied if they re-enter the guild before it expires. I will add permissions to this channel if/when I detect them re-entering the guild.`);
+                    embed.addField(`This user is not currently in the guild <@!${this.responsible.id}>, the mute will be applied if they re-enter the guild before it expires. I will add permissions to this channel if/when I detect them re-entering the guild.`);
 
                 await this.channel.send(`<@!${this.user.id}>`, {embed});
                 break;
@@ -336,7 +336,7 @@ Thank you for your understanding and cooperation.`)
                         .setFooter(`Reason for suspension: ${this.reason}`);
 
                 if (!guildMember)
-                    embed.addField(`This user is not currently in the guild` `<@!${this.responsible.id}>, the suspension was applied immediately.`);
+                    embed.addField(`This user is not currently in the guild <@!${this.responsible.id}>, the suspension was applied immediately.`);
 
                 await this.channel.send(`<@!${this.user.id}>`, {embed});
                 break;
@@ -351,7 +351,7 @@ Thank you for your understanding and cooperation.`)
                         .setFooter(`Reason for ban: ${this.reason}`);
 
                 if (!guildMember)
-                    embed.addField(`This user is not currently in the guild` `<@!${this.responsible.id}>, the ban was applied immediately.`);
+                    embed.addField(`This user is not currently in the guild <@!${this.responsible.id}>, the ban was applied immediately.`);
 
                 await this.channel.send(`<@!${this.user.id}>`, {embed});
                 break;
