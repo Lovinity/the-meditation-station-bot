@@ -218,7 +218,7 @@ module.exports = class GuildDiscipline {
         }
         if (this.reputation > 0)
         {
-            embed.addField(`${this.reputation} bad reputation was assessed`, `Your reputation is now +${this.user.guildSettings(this.guild.id).goodRep} / -${(this.user.settings[this.guild.id].badRep + this.reputation)}`);
+            embed.addField(`${this.reputation} bad reputation was assessed`, `Your reputation is now +${this.user.guildSettings(this.guild.id).goodRep} / -${(this.user.guildSettings(this.guild.id).badRep + this.reputation)}`);
             this.user.guildSettings(this.guild.id).update(`badRep`, (this.user.guildSettings(this.guild.id).badRep + this.reputation));
         }
         if (this.other !== null)
