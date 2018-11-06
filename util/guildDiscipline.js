@@ -142,7 +142,8 @@ module.exports = class GuildDiscipline {
                 type: 'text',
                 topic: `Incident of ${this.user.username}#${this.user.discriminator}, responsible mod: ${this.responsible.username}#${this.responsible.discriminator}`,
                 parent: incidents,
-                overwrites: overwrites,
+                permissionOverwrites: overwrites,
+                rateLimitPerUser: 15,
                 reason: `Incident of ${this.user.username}#${this.user.discriminator}, responsible mod: ${this.responsible.username}#${this.responsible.discriminator}`
             });
 

@@ -150,7 +150,8 @@ Thank you, <@${message.author.id}>!
             type: 'text',
             topic: `Private staff channel initiated by ${message.author.username}#${message.author.discriminator}`,
             parent: incidents,
-            overwrites: overwrites,
+            permissionOverwrites: overwrites,
+            rateLimitPerUser: 15,
             reason: `!staff initiated by ${message.author.username}#${message.author.discriminator} (${message.author.id})`
         });
 
