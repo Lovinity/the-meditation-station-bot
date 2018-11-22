@@ -17,7 +17,7 @@ module.exports = class extends Monitor {
 
     run(message) {
         // Delete discord invites
-        if (message.content.contains("@everyone"))
+        if (message.content.includes("@everyone"))
         {
             if (message.guild.settings.modRole && !message.member.roles.get(message.guild.settings.modRole))
             {
