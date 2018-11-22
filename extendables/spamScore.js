@@ -57,6 +57,10 @@ module.exports = class extends Extendable {
         {
             score += 5;
         }
+        
+        // Add score for here and everyone mentions
+        if (this.content.includes("@here") || this.content.includes("@everyone"))
+            score += 40;
 
         // Add score if there are any mentions; mention spam
         var nummentions = this.mentions.users.size + this.mentions.roles.size;

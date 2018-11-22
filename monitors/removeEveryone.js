@@ -1,4 +1,4 @@
-const { Monitor } = require('klasa');
+const {Monitor} = require('klasa');
 
 module.exports = class extends Monitor {
 
@@ -17,10 +17,13 @@ module.exports = class extends Monitor {
 
     run(message) {
         // Delete discord invites
-        if (/(https?:\/\/)?(www\.)?(discord\.(gg|li|me|io)|discordapp\.com\/invite)\/.+/.test(message.content))
+        if (message.content.contains("@everyone"))
         {
-            message.channel.send(`:x: <@${message.author.id}>, please contact a staff member if you want to promote a server.`);
-            message.delete();
+            if (message.guild.settings.modRole && !message.member.roles.get(message.guild.settings.modRole))
+            {
+                message.channel.send(`:x: <@${message.author.id}>, only staff may use the everyone mention.`);
+                message.delete();
+            }
         }
     }
 

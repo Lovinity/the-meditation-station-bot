@@ -16,6 +16,7 @@ module.exports = class extends Monitor {
     }
 
     run(message) {
+        /*
         if (message.type !== 'DEFAULT')
             return null;
 
@@ -72,6 +73,7 @@ module.exports = class extends Monitor {
                 message.react("🐞");
             }, 5000);
         }
+        */
 
     }
 
