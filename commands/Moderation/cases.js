@@ -26,6 +26,8 @@ module.exports = class extends Command {
         // Get the modLogs
         const modLogs = user.guildSettings(message.guild.id).modLogs;
 
+        // Prepare organized variables
+        // NOTE: Reason we separate counts from arrays instead of just counting arrays is we do not want to count inactive cases, which are still added to the arrays
         var actions = {
             warn: 0,
             discipline: 0,
@@ -42,17 +44,20 @@ module.exports = class extends Command {
             ban: [],
         };
 
+        // Count each discipline type in actions, and place each log in its appropriate type in cases
         modLogs.forEach(function (log) {
             if (typeof actions[log.type] !== 'undefined' && log.valid)
                 actions[log.type]++;
-            if (typeof cases[log.type] !== 'undefined' && log.valid)
-                cases[log.type].push({id: log.case, issued: log.date, moderator: log.moderator.tag});
+            if (typeof cases[log.type] !== 'undefined')
+                cases[log.type].push({id: log.case, issued: log.date, moderator: log.moderator.tag, valid: log.valid});
         });
 
+        // Construct a rich menu, starting with the count of active cases in each discipline type
         var menu = new RichMenu(new MessageEmbed()
                 .setTitle(`ModLogs for ${user.tag}`)
                 .setDescription('Use the arrow reactions to scroll between pages.\nUse number reactions to view cases under that type of discipline.')
                 );
+        // Populate counts... each type is also an option in the menu
         Object.entries(actions).map(([key, value]) => {
             menu.addOption(key, `**${value}** active cases`);
         });
@@ -69,7 +74,7 @@ module.exports = class extends Command {
                         .setDescription('Use the arrow reactions to scroll between pages.\nUse number reactions to view that case and select from actions to take.')
                         );
                 cases[chosen].forEach(function (modLog) {
-                    menu.addOption(modLog.id, `Issued **${modLog.issued}** by **${modLog.moderator}**`);
+                    menu.addOption(modLog.id, `Issued **${modLog.issued}** by **${modLog.moderator}**. Active? ${modLog.valid}`);
                 });
                 var collector = await menu.run(await message.channel.send('Please wait...'), {time: 180000, filter: (reaction, user) => user.id === message.author.id});
                 var choice = await collector.selection;

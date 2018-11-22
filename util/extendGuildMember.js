@@ -22,8 +22,8 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                 var isMuted = (this.roles.get(this.guild.settings.muteRole));
 
                 // Update the score
-                var currentScore = this.settings.spamscore;
-                this.settings.update('spamscore', currentScore + score);
+                var currentScore = this.settings.spamScore;
+                this.settings.update('spamScore', currentScore + score);
                 var newScore = currentScore + score;
 
                 // Check if the score has been breached
@@ -33,7 +33,7 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                     if (this.spamScoreStamp === null || moment().subtract(30, 'seconds').isAfter(moment(this.spamScoreStamp)))
                     {
                         console.log(`Sent warning`);
-                        var response = `:warning: <@${message.author.id}> **Please take a break for about ${moment.duration(this.guild.settings.antispamCooldown > 0 ? (currentScore / this.guild.settings.antispamCooldown) : 0, 'minutes').format("m [Minutes]")}**; your spam score is high. `;
+                        var response = `:warning: <@${message.author.id}> **Please take a break from sending messages for about ${moment.duration(this.guild.settings.antispamCooldown > 0 ? (currentScore / this.guild.settings.antispamCooldown) : 0, 'minutes').format("m [Minutes]")}**.`;
                         if (isMuted)
                         {
                             response += `__**Ignoring this may result in getting kicked from the guild**__ and any pending bans being applied immediately.`;
@@ -57,7 +57,7 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                     console.log(`Antispam triggered!`);
 
                     // Reset the member's spam score
-                    this.settings.update('spamscore', 0);
+                    this.settings.update('spamScore', 0);
 
                     // If user is muted already, kick the user and end here
                     if (isMuted)

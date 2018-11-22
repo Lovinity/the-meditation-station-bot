@@ -12,10 +12,10 @@ module.exports = class extends Task {
             // Antispam cooldown
             var cooldown = _guild.settings.antispamCooldown;
             _guild.members.each((guildMember) => {
-                var newscore = guildMember.settings.spamscore - cooldown;
+                var newscore = guildMember.settings.spamScore - cooldown;
                 if (newscore < 0)
                     newscore = 0;
-                guildMember.settings.update('spamscore', newscore);
+                guildMember.settings.update('spamScore', newscore);
             });
 
             // Do stats

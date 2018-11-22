@@ -1,3 +1,5 @@
+// Uses npm fantasy-names
+
 const gen = require('fantasy-names');
 const {Command} = require('klasa');
 
