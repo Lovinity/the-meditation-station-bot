@@ -5,6 +5,9 @@ module.exports = class extends Event {
 
     run() {
 
+        var updateLevels = (guildMember) => {
+        }
+
         // Iterate through guild operations on bot startup
         this.client.guilds.each(function (guild) {
 
@@ -29,12 +32,14 @@ module.exports = class extends Event {
                             if (role.id !== guild.defaultRole.id)
                                 guildMember.settings.update(`roles`, role, guild, {action: 'add'});
                         });
+                        updateLevels(guildMember);
                         // Member does not have verified role, so add all roles from the database
                     } else {
                         // We have to lodash clone the roles before we start adding them, otherwise guildMemberUpdate will interfere with this process
                         var _temp = guildMember.settings.roles;
                         var temp = _.cloneDeep(_temp);
-                        guildMember.roles.add(temp, `Re-assigning saved roles`);
+                        guildMember.roles.add(temp, `Re-assigning saved roles`)
+                                .then(newMember => updateLevels(newMember));
 
                         // Also if the guild is under a raid mitigation level 2+, assign the mitigation role to the new member.
                         if (guildMember.guild.settings.raidMitigation > 1)

@@ -8,14 +8,11 @@ module.exports = class extends Event {
         // Get the configured modLog channel.
         const modLog = guildMember.guild.settings.modLogChannel;
 
-        // End if there is no configured channel or the channel is not a text channel
-        if (!modLog)
-            return;
-
         const _channel = this.client.channels.get(modLog);
 
         // send a log to the channel
-        _channel.send(`:tada: The member <@!${guildMember.user.id}> just joined the guild. They created their account on ${guildMember.user.createdAt.toUTCString()}`);
+        if (_channel)
+            _channel.send(`:tada: The member <@!${guildMember.user.id}> just joined the guild. They created their account on ${guildMember.user.createdAt.toUTCString()}`);
 
         // Reassign saved roles, if any, to the member. Also, creates a settings entry in the database for them if it doesn't exist
         // We have to lodash clone the roles before we start adding them, otherwise guildMemberUpdate will interfere with this process
@@ -23,13 +20,16 @@ module.exports = class extends Event {
         if (_temp.length > 0)
         {
             var temp = _.cloneDeep(_temp);
-            guildMember.roles.add(temp);
+
+            guildMember.roles.add(temp)
+                    .then(newMember => updateLevels(newMember));
             const _channel2 = this.client.channels.get(guildMember.guild.settings.generalChannel);
             if (_channel2)
             {
                 _channel2.send(`**Welcome back** <@${guildMember.id}>! I see you have been here before. I remembered your profile, XP, Yang, reputation, etc. I also re-assigned the roles that you had when you left. Be sure to check out the rules channel; they may have changed since you were last with us.`);
             }
         } else {
+            updateLevels(guildMember);
             const _channel2 = this.client.channels.get(guildMember.guild.settings.generalChannel);
             if (_channel2)
             {
@@ -84,6 +84,8 @@ module.exports = class extends Event {
                 guildMember.roles.add(raidRole, `Raid mitigation is active`);
         }
 
+        var updateLevels = (_guildMember) => {
+        };
     }
 
 };

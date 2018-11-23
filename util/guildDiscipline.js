@@ -210,7 +210,6 @@ module.exports = class GuildDiscipline {
         {
             embed.addField(`You lost ${this.xp} XP`, `Your XP is now at ${(this.user.guildSettings(this.guild.id).xp - this.xp)}`);
             this.user.guildSettings(this.guild.id).update(`xp`, (this.user.guildSettings(this.guild.id).xp - this.xp));
-            // TODO: Level down role removal
         }
         if (this.yang > 0)
         {

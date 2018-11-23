@@ -55,7 +55,7 @@ module.exports = class extends Event {
 
         // Write attachment URLs
         message.attachments.array().forEach(function (attachment) {
-            display.addField(`Contained Attachment`, attachment);
+            display.addField(`Contained Attachment`, JSON.stringify(attachment));
         });
         // Write embeds as JSON
         message.embeds.forEach(function (embed) {

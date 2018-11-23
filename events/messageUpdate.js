@@ -62,13 +62,13 @@ module.exports = class extends Event {
         });
 
         oldAttachments.forEach(function (attachment) {
-            if (newAttachments.indexOf(attachment) === -1)
-                display.addField(`Attachment removed`, attachment);
+            if (newAttachments.indexOf(attachment.url) === -1)
+                display.addField(`Attachment removed`, JSON.stringify(attachment));
         });
 
         newAttachments.forEach(function (attachment) {
-            if (oldAttachments.indexOf(attachment) === -1)
-                display.addField(`Attachment added`, attachment);
+            if (oldAttachments.indexOf(attachment.url) === -1)
+                display.addField(`Attachment added`, JSON.stringify(attachment));
         });
 
         // Next, determine embed changes
