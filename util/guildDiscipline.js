@@ -81,7 +81,7 @@ module.exports = class GuildDiscipline {
                 guildMember.roles.add(mutedRole, this.reason);
             } else {
                 // Otherwise, add mutedRole to the list of roles for the user so it's applied when/if they return
-                this.user.guildSettings(this.guild.id).update(`roles`, mutedRole.id, {action: 'add'});
+                this.user.guildSettings(this.guild.id).update(`roles`, mutedRole, this.guild, {action: 'add'});
             }
         }
 
@@ -210,6 +210,7 @@ module.exports = class GuildDiscipline {
         {
             embed.addField(`You lost ${this.xp} XP`, `Your XP is now at ${(this.user.guildSettings(this.guild.id).xp - this.xp)}`);
             this.user.guildSettings(this.guild.id).update(`xp`, (this.user.guildSettings(this.guild.id).xp - this.xp));
+            // TODO: Level down role removal
         }
         if (this.yang > 0)
         {
@@ -233,7 +234,7 @@ module.exports = class GuildDiscipline {
             if (this.type === 'tempban' || this.type === 'ban')
             {
                 await this.guild.members.ban(this.user, {days: 7, reason: this.reason});
-                this.user.guildSettings(this.guild.id).update(`roles`, mutedRole.id, {action: 'remove'});
+                this.user.guildSettings(this.guild.id).update(`roles`, mutedRole, this.guild, {action: 'remove'});
                 if (this.type === 'tempban')
                 {
                     // Add a schedule if the mute is limited duration
@@ -380,7 +381,7 @@ Thank you for your understanding and cooperation.`)
                 guildMember.roles.remove(mutedRole, `Staff did not complete discipline wizard.`);
             } else if (this.type === 'mute') {
                 // Otherwise, remove mutedRole to the list of roles for the user so it's applied when/if they return
-                this.user.guildSettings(this.guild.id).update(`roles`, mutedRole.id, {action: 'remove'});
+                this.user.guildSettings(this.guild.id).update(`roles`, mutedRole, this.guild, {action: 'remove'});
             }
         }
         await this.message.delete();

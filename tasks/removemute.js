@@ -9,16 +9,15 @@ module.exports = class extends Task {
         const _user = this.client.users.get(user);
         if (_user)
         {
-            // Remove the role from the user's database
-            _user.guildSettings(guild).update(`roles`, role, {action: 'remove'});
-
             const _guild = this.client.guilds.get(guild);
             if (_guild)
             {
-                // Remove the muted role
                 const _role = _guild.roles.get(role);
                 if (_role)
                 {
+                    // Remove the role from the user's database
+                    _user.guildSettings(guild).update(`roles`, _role, _guild, {action: 'remove'});
+                    // Remove the muted role
                     const _guildMember = _guild.members.get(user);
                     if (_guildMember)
                     {

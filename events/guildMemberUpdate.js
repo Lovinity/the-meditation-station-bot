@@ -5,12 +5,12 @@ module.exports = class extends Event {
     run(oldMember, newMember) {
 
         // Update the roles in the database
-        var roleArray = [];
+        newMember.settings.reset(`roles`);
         newMember.roles.each(function (role) {
             if (role.id !== newMember.guild.defaultRole.id)
-                roleArray.push(role.id);
+                newMember.settings.update(`roles`, role, newMember.guild, {action: 'add'});
         });
-        newMember.settings.update(`roles`, roleArray);
+
     }
 
 };

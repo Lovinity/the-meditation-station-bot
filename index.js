@@ -36,21 +36,23 @@ Client.defaultGuildSchema
         .add('antispamLessStrictChannels', 'textchannel', {array: true})
         .add('raidScore', 'integer', {default: 0, configurable: false})
         .add('raidMitigation', 'integer', {default: 0, configurable: false})
-        .add('selfRoles', 'role', {array: true});
+        .add('selfRoles', 'role', {array: true})
+        .add('levelRoles', 'any', {array: true, configurable: false})
+        .add('badges', 'any', {array: true, configurable: false});
 
 Client.use(require('klasa-member-gateway'));
 
 // Guild Member Schema
 Client.defaultMemberSchema
-    .add('xp', 'integer', {default: 0})
-    .add('yang', 'integer', {default: 0})
-    .add('badRep', 'integer', {default: 0})
-    .add('goodRep', 'integer', {default: 0})
-    .add('spamScore', 'integer', {default: 0})
-    .add('profile', 'any', {array: true})
-    .add('modLogs', 'any', {array: true})
-    .add('reports', 'string', {array: true})
-    .add('roles', 'string', {array: true});
+        .add('xp', 'integer', {default: 0})
+        .add('yang', 'integer', {default: 0})
+        .add('badRep', 'integer', {default: 0})
+        .add('goodRep', 'integer', {default: 0})
+        .add('spamScore', 'integer', {default: 0})
+        .add('profile', 'any', {array: true})
+        .add('modLogs', 'any', {array: true})
+        .add('reports', 'string', {array: true})
+        .add('roles', 'role', {array: true});
 
 // Prepare Klasa
 var client = new Client({

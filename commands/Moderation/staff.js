@@ -78,7 +78,7 @@ ${mute ? `**You have been muted until staff speak with you** in order to protect
                         {
                             guildMember.roles.add(mutedRole, `Mute via !staff command`);
                         } else {
-                            user.guildSettings(message.guild.id).update(`roles`, mutedRole.id, {action: 'add'});
+                            user.guildSettings(message.guild.id).update(`roles`, mutedRole, message.guild, {action: 'add'});
                         }
                     }
 

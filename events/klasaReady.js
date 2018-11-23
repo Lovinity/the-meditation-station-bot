@@ -24,11 +24,11 @@ module.exports = class extends Event {
                     if (guildMember.roles.get(verifiedRole.id))
                     {
                         var roleArray = [];
+                        guildMember.settings.reset(`roles`);
                         guildMember.roles.each(function (role) {
                             if (role.id !== guild.defaultRole.id)
-                                roleArray.push(role.id);
+                                guildMember.settings.update(`roles`, role, guild, {action: 'add'});
                         });
-                        guildMember.settings.update(`roles`, roleArray);
                         // Member does not have verified role, so add all roles from the database
                     } else {
                         // We have to lodash clone the roles before we start adding them, otherwise guildMemberUpdate will interfere with this process

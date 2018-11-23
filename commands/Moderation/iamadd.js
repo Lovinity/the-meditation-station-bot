@@ -29,7 +29,7 @@ module.exports = class extends Command {
 
         if (newRole)
         {
-            await message.guild.settings.update(`selfRoles`, newRole);
+            await message.guild.settings.update(`selfRoles`, newRole, message.guild);
             return message.send(`:white_check_mark: New self-assign role complete!`);
         } else {
             return message.send(`:x: There was a problem creating the self-assign role.`);

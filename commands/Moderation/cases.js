@@ -191,7 +191,7 @@ Use number reactions to select an action, or stop to exit.`)
                                         guildMember.roles.remove(mutedRole, `Mute was appealed`);
                                     } else {
                                         // Otherwise, remove mutedRole to the list of roles for the user so it's applied when/if they return
-                                        user.guildSettings(message.guild.id).update(`roles`, mutedRole.id, {action: 'remove'});
+                                        user.guildSettings(message.guild.id).update(`roles`, mutedRole, message.guild, {action: 'remove'});
                                     }
                                 }
 
