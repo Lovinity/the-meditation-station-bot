@@ -17,8 +17,6 @@ module.exports = class extends Command {
     async run(message, [level, role = null]) {
         if (role === null)
         {
-            console.log(`Deleting level`);
-
             // Remove the role from everyone who has it
             var temp = message.guild.settings.levelRoles[`level${level}`];
             if (temp && temp !== null)
@@ -31,8 +29,6 @@ module.exports = class extends Command {
 
             await message.guild.settings.reset(`levelRoles.level${level}`);
         } else {
-            console.log(`Saving level`);
-
             // In the case of overwriting level roles, make sure to remove the old one from members
             var temp = message.guild.settings.levelRoles[`level${level}`];
             if (temp && temp !== null)
@@ -42,8 +38,6 @@ module.exports = class extends Command {
                         guildMember.roles.remove(temp, `Level was deleted`);
                 });
             }
-
-            console.log(`Saving`);
             await message.guild.settings.update(`levelRoles.level${level}`, role, message.guild, {action: 'add'});
         }
 
@@ -63,27 +57,21 @@ module.exports = class extends Command {
         if (levelKeys.length > 0)
         {
             message.guild.members.each(guildMember => {
-                console.log(`Processing member ${guildMember.id} who has ${guildMember.settings.xp} XP.`);
                 var rolesToAdd = [];
                 var rolesToRemove = [];
                 levelKeys.map(levelKey => {
                     var xp = Math.ceil(((levelKey - 1) / 0.177) ** 2);
-                    console.log(`Processing level ${levelKey} with a threshold of ${xp} XP.`);
                     if (guildMember.guild.roles.has(levelRoles[levelKey]))
                     {
-                        console.log(`Guild has the level role.`);
                         if (guildMember.settings.xp >= xp && !guildMember.roles.has(levelRoles[levelKey]))
                         {
-                            console.log(`Member is to be awarded this role`);
                             rolesToAdd.push(levelRoles[levelKey]);
                         } else if (guildMember.settings.xp < xp && guildMember.roles.has(levelRoles[levelKey])) {
-                            console.log(`Member is to lose this role`);
                             rolesToRemove.push(levelRoles[levelKey]);
                         }
                     }
                 });
 
-                console.log(`Processing roles for member`);
                 if (rolesToAdd.length > 0)
                     guildMember.roles.add(rolesToAdd, `Level Update (Add roles)`)
                             .then(stuff => {

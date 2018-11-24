@@ -13,10 +13,10 @@ module.exports = class extends Extendable {
     get xp() {
         if (this.type !== 'DEFAULT')
             return null;
-        var botPrefixes = ["!", "p!", "r!"];
+        var botPrefixes = ["!", "p!", "r!", "t!", "t@"];
 
-        // Start with a base score of 1
-        var score = 1;
+        // Start with a base score of 0
+        var score = 0;
 
         // Add score for embeds
         var numembeds = this.embeds.length;
@@ -29,6 +29,8 @@ module.exports = class extends Extendable {
         //console.log(`${numattachments} attachments`);
 
         // Add score for length
+        if (this.content.length >= 1)
+            score += 1;
         if (this.content.length >= 128)
             score += 1;
         if (this.content.length >= 256)
@@ -102,10 +104,10 @@ module.exports = class extends Extendable {
         if (this.member && this.guild && this.member.roles.get(this.guild.settings.muteRole))
             score = 0;
 
-        // Activate reputation earning if XP score is at least 1, and the newstring (taking out repeat patterns) is at least 128 characters in length
+        // Activate reputation earning if XP score is at least 2
         if (this.member && !this.author.bot)
         {
-            if (score > 0 && newstring.length >= 128)
+            if (score > 1)
             {
                 this.react(this.guild.settings.repEmoji);
             } else if (!this.deleted) {
