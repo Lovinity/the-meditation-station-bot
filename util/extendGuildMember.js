@@ -137,48 +137,61 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                 if (prevLevel < curLevel)
                 {
                     console.log(`Increased level!`);
-                    for (var i = prevLevel + 1; i <= curLevel; i++)
+                    var levelRole = this.guild.settings.levelRoles[`level${curLevel}`];
+                    if (levelRole && levelRole !== null && this.guild.roles.has(levelRole) && !this.roles.has(levelRole))
                     {
-                        console.log(`Level ${i}.`);
-                        if (typeof config.levelRoles[i] === 'string')
+                        this.roles.add(levelRole, `Achieved level ${i}`);
+                        if (message !== null)
                         {
-                            console.log(`Role setting exists.`);
-                            var role = this.guild.roles.get(config.levelRoles[i]);
-                            if (role)
-                            {
-                                console.log(`Role exists. Adding role.`);
-                                this.roles.add(role, `Achieved level ${i}`);
-                                if (message !== null)
-                                {
-                                    message.channel.send(`:tada: **Congratulations <@${this.id}>, you earned the ${role.name} role!**`);
-                                } else {
-                                    var channel = this.guild.settings.generalChannel;
-                                    var _channel = this.guild.channels.get(channel);
-                                    if (channel)
-                                        channel.send(`:tada: **Congratulations <@${this.id}>, you earned the ${role.name} role!**`);
-                                }
-                            }
+                            message.channel.send(`:tada: **Congratulations <@${this.id}>, you earned the ${role.name} role!**`);
+                        } else {
+                            var channel = this.guild.settings.generalChannel;
+                            var _channel = this.guild.channels.get(channel);
+                            if (channel)
+                                channel.send(`:tada: **Congratulations <@${this.id}>, you earned the ${role.name} role!**`);
                         }
                     }
                 }
 
-                // Level was bumped down
+                // Level was bumped down. Do a full level role update for these, just to be sure
                 if (prevLevel > curLevel)
                 {
-                    console.log(`Decreased level!`);
-                    for (var i = prevLevel - 1; i >= curLevel; i--)
+                    // Update level roles
+                    var levelRoles = {};
+                    var levelRoles2 = this.guild.settings.levelRoles;
+                    for (var key in levelRoles2)
                     {
-                        console.log(`Level <${i}.`);
-                        if (typeof config.levelRoles[i + 1] === 'string')
+                        if (levelRoles2.hasOwnProperty(key))
                         {
-                            console.log(`Role setting exists.`);
-                            var role = this.guild.roles.get(config.levelRoles[i + 1]);
-                            if (role)
-                            {
-                                console.log(`Role exists. Removing role.`);
-                                this.roles.remove(role, `Demoted role for level ${i + 1}`);
-                            }
+                            if (levelRoles2[key] === null)
+                                continue;
+                            levelRoles[key.replace('level', '')] = levelRoles2[key];
                         }
+                    }
+                    var levelKeys = Object.keys(levelRoles);
+                    if (levelKeys.length > 0)
+                    {
+                        var rolesToAdd = [];
+                        var rolesToRemove = [];
+                        levelKeys.map(levelKey => {
+                            var xp = Math.ceil(((levelKey - 1) / 0.177) ** 2);
+                            if (this.guild.roles.has(levelRoles[levelKey]))
+                            {
+                                if (this.settings.xp >= xp && !this.roles.has(levelRoles[levelKey]))
+                                {
+                                    rolesToAdd.push(levelRoles[levelKey]);
+                                } else if (this.settings.xp < xp && this.roles.has(levelRoles[levelKey])) {
+                                    rolesToRemove.push(levelRoles[levelKey]);
+                                }
+                            }
+                        });
+
+                        if (rolesToAdd.length > 0)
+                            this.roles.add(rolesToAdd, `Level Update (add roles)`)
+                                    .then(stuff => {
+                                        if (rolesToRemove.length > 0)
+                                            this.roles.remove(rolesToRemove, `Level Update (remove roles)`);
+                                    });
                     }
             }
             };

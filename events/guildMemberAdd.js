@@ -85,6 +85,43 @@ module.exports = class extends Event {
         }
 
         var updateLevels = (_guildMember) => {
+            // Update level roles
+            var levelRoles = {};
+            var levelRoles2 = _guildMember.guild.settings.levelRoles;
+            for (var key in levelRoles2)
+            {
+                if (levelRoles2.hasOwnProperty(key))
+                {
+                    if (levelRoles2[key] === null)
+                        continue;
+                    levelRoles[key.replace('level', '')] = levelRoles2[key];
+                }
+            }
+            var levelKeys = Object.keys(levelRoles);
+            if (levelKeys.length > 0)
+            {
+                var rolesToAdd = [];
+                var rolesToRemove = [];
+                levelKeys.map(levelKey => {
+                    var xp = Math.ceil(((levelKey - 1) / 0.177) ** 2);
+                    if (_guildMember.guild.roles.has(levelRoles[levelKey]))
+                    {
+                        if (_guildMember.settings.xp >= xp && !_guildMember.roles.has(levelRoles[levelKey]))
+                        {
+                            rolesToAdd.push(levelRoles[levelKey]);
+                        } else if (_guildMember.settings.xp < xp && _guildMember.roles.has(levelRoles[levelKey])) {
+                            rolesToRemove.push(levelRoles[levelKey]);
+                        }
+                    }
+                });
+
+                if (rolesToAdd.length > 0)
+                    _guildMember.roles.add(rolesToAdd, `Level Update (add roles)`)
+                            .then(stuff => {
+                                if (rolesToRemove.length > 0)
+                                    _guildMember.roles.remove(rolesToRemove, `Level Update (remove roles)`);
+                            });
+            }
         };
     }
 

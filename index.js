@@ -37,7 +37,12 @@ Client.defaultGuildSchema
         .add('raidScore', 'integer', {default: 0, configurable: false})
         .add('raidMitigation', 'integer', {default: 0, configurable: false})
         .add('selfRoles', 'role', {array: true})
-        .add('levelRoles', 'any', {array: true, configurable: false})
+        .add('levelRoles', folder => {
+            for (var i = 2; i <= 100; i++)
+            {
+                folder.add(`level${i}`, 'role', {configurable: false});
+            }
+        }, {configurable: false})
         .add('badges', 'any', {array: true, configurable: false});
 
 Client.use(require('klasa-member-gateway'));

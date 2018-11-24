@@ -209,7 +209,49 @@ module.exports = class GuildDiscipline {
         if (this.xp > 0)
         {
             embed.addField(`You lost ${this.xp} XP`, `Your XP is now at ${(this.user.guildSettings(this.guild.id).xp - this.xp)}`);
-            this.user.guildSettings(this.guild.id).update(`xp`, (this.user.guildSettings(this.guild.id).xp - this.xp));
+            await this.user.guildSettings(this.guild.id).update(`xp`, (this.user.guildSettings(this.guild.id).xp - this.xp));
+
+            // Update level roles
+            var guildMember = this.guild.members.get(this.user);
+            if (guildMember)
+            {
+                var levelRoles = {};
+                var levelRoles2 = guildMember.guild.settings.levelRoles;
+                for (var key in levelRoles2)
+                {
+                    if (levelRoles2.hasOwnProperty(key))
+                    {
+                        if (levelRoles2[key] === null)
+                            continue;
+                        levelRoles[key.replace('level', '')] = levelRoles2[key];
+                    }
+                }
+                var levelKeys = Object.keys(levelRoles);
+                if (levelKeys.length > 0)
+                {
+                    var rolesToAdd = [];
+                    var rolesToRemove = [];
+                    levelKeys.map(levelKey => {
+                        var xp = Math.ceil(((levelKey - 1) / 0.177) ** 2);
+                        if (guildMember.guild.roles.has(levelRoles[levelKey]))
+                        {
+                            if (guildMember.settings.xp >= xp && !guildMember.roles.has(levelRoles[levelKey]))
+                            {
+                                rolesToAdd.push(levelRoles[levelKey]);
+                            } else if (guildMember.settings.xp < xp && guildMember.roles.has(levelRoles[levelKey])) {
+                                rolesToRemove.push(levelRoles[levelKey]);
+                            }
+                        }
+                    });
+
+                    if (rolesToAdd.length > 0)
+                        guildMember.roles.add(rolesToAdd, `Level Update (add roles)`)
+                                .then(stuff => {
+                                    if (rolesToRemove.length > 0)
+                                        guildMember.roles.remove(rolesToRemove, `Level Update (remove roles)`);
+                                });
+                }
+            }
         }
         if (this.yang > 0)
         {
