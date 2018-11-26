@@ -54,7 +54,25 @@ Client.defaultMemberSchema
         .add('badRep', 'integer', {default: 0})
         .add('goodRep', 'integer', {default: 0})
         .add('spamScore', 'integer', {default: 0})
-        .add('profile', 'any', {array: true})
+        .add('profile', folder => {
+            folder
+                    .add('title', 'string', {default: 'member'})
+                    .add('gender', 'string', {default: 'Human'})
+                    .add('pronouns', 'string', {default: 'Unspecified'})
+                    .add('dob', 'string', {default: '0000-00-00'})
+                    .add('location', 'string', {default: 'Earth'})
+                    .add('factions', 'string', {default: ''})
+                    .add('info', 'string', {default: ''})
+                    .add('donations', 'number', {default: 0})
+                    .add('badges', 'url', {array: true})
+                    .add('background', 'url')
+                    .add('profileColor', folder2 => {
+                        folder2
+                                .add('hue', 'number', {default: 0, min: 0, max: 0})
+                                .add('saturation', 'number', {default: 0, min: 0, max: 100})
+                                .add('lightness', 'number', {default: 100, min: 0, max: 1000});
+                    });
+        })
         .add('modLogs', 'any', {array: true})
         .add('reports', 'string', {array: true})
         .add('roles', 'role', {array: true});

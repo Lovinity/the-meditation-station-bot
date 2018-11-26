@@ -1,5 +1,5 @@
 const {Command} = require('klasa');
-
+        
 module.exports = class extends Command {
 
     constructor(...args) {
@@ -11,9 +11,7 @@ module.exports = class extends Command {
     }
 
     async run(message, []) {
-        return message.send('DONE');
+        return message.send('DONE', {files: [canvas.toBuffer()]});
     }
 
 };
-
-

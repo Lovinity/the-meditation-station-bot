@@ -140,15 +140,15 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                     var levelRole = this.guild.settings.levelRoles[`level${curLevel}`];
                     if (levelRole && levelRole !== null && this.guild.roles.has(levelRole) && !this.roles.has(levelRole))
                     {
-                        this.roles.add(levelRole, `Achieved level ${i}`);
+                        this.roles.add(levelRole, `Achieved level ${curLevel}`);
                         if (message !== null)
                         {
-                            message.channel.send(`:tada: **Congratulations <@${this.id}>, you earned the ${role.name} role!**`);
+                            message.channel.send(`:tada: **Congratulations <@${this.id}>, you earned the ${levelRole.name} role!**`);
                         } else {
                             var channel = this.guild.settings.generalChannel;
                             var _channel = this.guild.channels.get(channel);
-                            if (channel)
-                                channel.send(`:tada: **Congratulations <@${this.id}>, you earned the ${role.name} role!**`);
+                            if (_channel)
+                                _channel.send(`:tada: **Congratulations <@${this.id}>, you earned the ${levelRole.name} role!**`);
                         }
                     }
                 }
