@@ -10,7 +10,7 @@ module.exports = class extends Command {
             subcommands: true,
             runIn: ['text'],
             description: 'View your profile or the profile of another user; or, edit your profile info.',
-            usage: '<title|gender|pronouns|dob|location|factions|info|background|color|show:default> [user:username] [parameter:string]',
+            usage: '<title|gender|pronouns|dob|location|factions|info|background|color|show:default> [user:user] [parameter:string]',
             usageDelim: ' | ',
             cooldown: 30,
             requiredSettings: ["botChannel"],
