@@ -56,10 +56,10 @@ Client.defaultMemberSchema
         .add('spamScore', 'integer', {default: 0})
         .add('profile', folder => {
             folder
-                    .add('title', 'string', {default: 'member'})
-                    .add('gender', 'string', {default: 'Human'})
-                    .add('pronouns', 'string', {default: 'Unspecified'})
-                    .add('dob', 'string', {default: '0000-00-00'})
+                    .add('title', 'string', {default: 'Member'})
+                    .add('gender', 'string', {default: ''})
+                    .add('pronouns', 'string', {default: ''})
+                    .add('dob', 'string', {default: ''})
                     .add('location', 'string', {default: 'Earth'})
                     .add('factions', 'string', {default: ''})
                     .add('info', 'string', {default: ''})

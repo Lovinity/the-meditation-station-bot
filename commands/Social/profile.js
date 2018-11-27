@@ -99,6 +99,8 @@ module.exports = class extends Command {
         if (user === null || user.id === message.author.id)
         {
             user = message.author;
+            if (user.guildSettings(message.guild.id).profile.dob !== "")
+                return message.send(`:x: To protect the community, you cannot change nor clear your date of birth after having already set it without staff supervision.`);
         } else {
             const {permission} = await this.client.permissionLevels.run(message, 4);
             if (!permission)
