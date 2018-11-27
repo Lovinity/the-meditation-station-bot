@@ -34,16 +34,8 @@ module.exports = class extends Command {
         if (/[^\x20-\x7E]/g.test(parameter))
             return message.send(`:x: Titles may not contain special characters.`);
 
-        config.profanity.forEach((word) => {
-            var numbers = getIndicesOf(word, parameter, false);
-            if (numbers.length > 0)
-            {
-                return message.send(`:x: Titles may not contain profanity.`);
-            }
-        });
-
         // staff zone
-        if (user.id === message.author.id && message.guild.id === "503575540960067584")
+        if (user.id === message.author.id && message.guild.id === "503575540960067584" && parameter !== "")
         {
             if (message.member.settings.xp < 128)
                 return message.send(":x: Only members with 128 or more XP may change their profile title.");
@@ -77,14 +69,6 @@ module.exports = class extends Command {
         if (/[^\x20-\x7E]/g.test(parameter))
             return message.send(`:x: Genders may not contain special characters.`);
 
-        config.profanity.forEach((word) => {
-            var numbers = getIndicesOf(word, parameter, false);
-            if (numbers.length > 0)
-            {
-                return message.send(`:x: Genders may not contain profanity.`);
-            }
-        });
-
         await user.guildSettings(message.guild.id).update('profile.gender', parameter);
 
         return message.send(":white_check_mark: Gender has been updated.");
@@ -105,14 +89,6 @@ module.exports = class extends Command {
 
         if (/[^\x20-\x7E]/g.test(parameter))
             return message.send(`:x: pronouns may not contain special characters.`);
-
-        config.profanity.forEach((word) => {
-            var numbers = getIndicesOf(word, parameter, false);
-            if (numbers.length > 0)
-            {
-                return message.send(`:x: pronouns may not contain profanity.`);
-            }
-        });
 
         await user.guildSettings(message.guild.id).update('profile.pronouns', parameter);
 
@@ -153,14 +129,6 @@ module.exports = class extends Command {
         if (/[^\x20-\x7E]/g.test(parameter))
             return message.send(`:x: location may not contain special characters.`);
 
-        config.profanity.forEach((word) => {
-            var numbers = getIndicesOf(word, parameter, false);
-            if (numbers.length > 0)
-            {
-                return message.send(`:x: location may not contain profanity.`);
-            }
-        });
-
         await user.guildSettings(message.guild.id).update('profile.location', parameter);
 
         return message.send(":white_check_mark: location has been updated.");
@@ -182,14 +150,6 @@ module.exports = class extends Command {
         if (/[^\x20-\x7E]/g.test(parameter))
             return message.send(`:x: factions may not contain special characters.`);
 
-        config.profanity.forEach((word) => {
-            var numbers = getIndicesOf(word, parameter, false);
-            if (numbers.length > 0)
-            {
-                return message.send(`:x: factions may not contain profanity.`);
-            }
-        });
-
         await user.guildSettings(message.guild.id).update('profile.factions', parameter);
 
         return message.send(":white_check_mark: factions has been updated.");
@@ -210,14 +170,6 @@ module.exports = class extends Command {
 
         if (/[^\x20-\x7E]/g.test(parameter))
             return message.send(`:x: info may not contain special characters.`);
-
-        config.profanity.forEach((word) => {
-            var numbers = getIndicesOf(word, parameter, false);
-            if (numbers.length > 0)
-            {
-                return message.send(`:x: info may not contain profanity.`);
-            }
-        });
 
         await user.guildSettings(message.guild.id).update('profile.info', parameter);
 
