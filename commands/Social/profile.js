@@ -18,9 +18,10 @@ module.exports = class extends Command {
     }
 
     async title(message, [user = null, parameter = ""]) {
-        if (user === null)
+        if (user === null || user.id === message.author.id)
         {
             user = message.author;
+
         } else {
             const {permission} = await this.client.permissionLevels.run(message, 4);
             if (!permission)
@@ -41,13 +42,27 @@ module.exports = class extends Command {
             }
         });
 
+        // staff zone
+        if (user.id === message.author.id && message.guild.id === "503575540960067584")
+        {
+            if (message.member.settings.xp < 128)
+                return message.send(":x: Only members with 128 or more XP may change their profile title.");
+            if (message.member.settings.yang < 50)
+                return message.send(`:x: A title change costs 50 Yang. You only have ${message.member.settings.yang} Yang.`);
+            var response = await message.ask(`Changing your profile title will cost 50 Yang. You have ${message.member.settings.yang} Yang. Proceed?`);
+            if (!response)
+                return message.send(":x: Command has been canceled.");
+
+            await user.guildSettings(message.guild.id).update('yang', user.guildSettings(message.guild.id).yang - 50);
+        }
+
         await user.guildSettings(message.guild.id).update('profile.title', parameter);
 
         return message.send(":white_check_mark: Title has been updated.");
     }
 
     async gender(message, [user = null, parameter = ""]) {
-        if (user === null)
+        if (user === null || user.id === message.author.id)
         {
             user = message.author;
         } else {
@@ -76,7 +91,7 @@ module.exports = class extends Command {
     }
 
     async pronouns(message, [user = null, parameter = ""]) {
-        if (user === null)
+        if (user === null || user.id === message.author.id)
         {
             user = message.author;
         } else {
@@ -105,7 +120,7 @@ module.exports = class extends Command {
     }
 
     async dob(message, [user = null, parameter = ""]) {
-        if (user === null)
+        if (user === null || user.id === message.author.id)
         {
             user = message.author;
         } else {
@@ -123,7 +138,7 @@ module.exports = class extends Command {
     }
 
     async location(message, [user = null, parameter = ""]) {
-        if (user === null)
+        if (user === null || user.id === message.author.id)
         {
             user = message.author;
         } else {
@@ -152,7 +167,7 @@ module.exports = class extends Command {
     }
 
     async factions(message, [user = null, parameter = ""]) {
-        if (user === null)
+        if (user === null || user.id === message.author.id)
         {
             user = message.author;
         } else {
@@ -181,7 +196,7 @@ module.exports = class extends Command {
     }
 
     async info(message, [user = null, parameter = ""]) {
-        if (user === null)
+        if (user === null || user.id === message.author.id)
         {
             user = message.author;
         } else {
@@ -210,7 +225,7 @@ module.exports = class extends Command {
     }
 
     async background(message, [user = null, parameter = ""]) {
-        if (user === null)
+        if (user === null || user.id === message.author.id)
         {
             user = message.author;
         } else {
@@ -220,27 +235,40 @@ module.exports = class extends Command {
         }
 
         await message.send(`:question: Please send an attachment of the background you want to use. Or, send the word "clear" to remove your current background. You have 5 minutes to respond.`);
-        message.channel.awaitMessages(dmessage => dmessage.author.id === message.author.id && (dmessage.attachments.size > 0 || dmessage.content === "clear"),
-                {max: 1, time: 300000, errors: ['time']})
-                .then(messages => {
-                    var themessage = messages.first();
-                    if (themessage.content === "clear")
-                    {
-                        user.guildSettings(message.guild.id).reset('profile.background');
-                    } else {
-                        var url = themessage.attachments.first().url;
-                        user.guildSettings(message.guild.id).update('profile.background', url);
-                    }
-                    return message.send(":white_check_mark: background has been updated.");
-                })
-                .catch((err) => {
-                    message.send(`:x: An image was not provided; the profile background command was aborted.`);
-                    console.error(err);
-                });
+        try {
+            var messages = await message.channel.awaitMessages(dmessage => dmessage.author.id === message.author.id && (dmessage.attachments.size > 0 || dmessage.content === "clear"),
+                    {max: 1, time: 300000, errors: ['time']});
+        } catch (err) {
+            return message.send(`:x: An image was not provided; the profile background command was aborted.`);
+            console.error(err);
+        }
+        var themessage = messages.first();
+        if (themessage.content === "clear")
+        {
+            user.guildSettings(message.guild.id).reset('profile.background');
+        } else {
+            // staff zone
+            if (user.id === message.author.id && message.guild.id === "503575540960067584")
+            {
+                if (message.member.settings.xp < 511)
+                    return message.send(":x: Only members with 511 or more XP may change their profile background.");
+                if (message.member.settings.yang < 150)
+                    return message.send(`:x: A new profile background costs 150 Yang. You only have ${message.member.settings.yang} Yang.`);
+                var response = await message.ask(`Changing your profile background will cost 150 Yang. You have ${message.member.settings.yang} Yang. Proceed?`);
+                if (!response)
+                    return message.send(":x: Command has been canceled.");
+
+                await user.guildSettings(message.guild.id).update('yang', user.guildSettings(message.guild.id).yang - 150);
+            }
+
+            var url = themessage.attachments.first().url;
+            await user.guildSettings(message.guild.id).update('profile.background', url);
+        }
+        return message.send(":white_check_mark: background has been updated.");
     }
 
     async color(message, [user = null, parameter = ""]) {
-        if (user === null)
+        if (user === null || user.id === message.author.id)
         {
             user = message.author;
         } else {
@@ -285,6 +313,20 @@ module.exports = class extends Command {
         if (l < 0 || l > 1000)
             return message.send(`:x: lightness must be between 0 and 1000.`);
 
+        // staff zone
+        if (user.id === message.author.id && message.guild.id === "503575540960067584")
+        {
+            if (message.member.settings.xp < 128)
+                return message.send(":x: Only members with 128 or more XP may change their profile color.");
+            if (message.member.settings.yang < 50)
+                return message.send(`:x: A profile color change costs 50 Yang. You only have ${message.member.settings.yang} Yang.`);
+            var response = await message.ask(`Changing your profile color will cost 50 Yang. You have ${message.member.settings.yang} Yang. Proceed?`);
+            if (!response)
+                return message.send(":x: Command has been canceled.");
+
+            await user.guildSettings(message.guild.id).update('yang', user.guildSettings(message.guild.id).yang - 50);
+        }
+
         await user.guildSettings(message.guild.id).update('profile.profileColor.hue', hue);
         await user.guildSettings(message.guild.id).update('profile.profileColor.saturation', sat);
         await user.guildSettings(message.guild.id).update('profile.profileColor.lightness', l);
@@ -295,7 +337,7 @@ module.exports = class extends Command {
     async show(message, [user = null]) {
         const canvas = createCanvas(480, 360);
 
-        if (user === null)
+        if (user === null || user.id === message.author.id)
             user = message.author;
 
         var xp = user.guildSettings(message.guild.id).xp;
