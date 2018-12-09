@@ -10,7 +10,7 @@ module.exports = class extends Command {
             subcommands: true,
             runIn: ['text'],
             description: 'View your profile or the profile of another user; or, edit your profile info.',
-            usage: '<title|gender|pronouns|dob|location|factions|info|background|color|show:default> [user:user] [parameter:string]',
+            usage: '<title|gender|pronouns|dob|location|factions|info|background|color|badge|show:default> [user:user] [parameter:string]',
             usageDelim: ' | ',
             cooldown: 30,
             requiredSettings: ["botChannel"],
@@ -288,6 +288,47 @@ module.exports = class extends Command {
         return message.send(":white_check_mark: Profile colors have been updated.");
     }
 
+    async badge(message, [user = null, parameter = ""]) {
+        const {permission} = await this.client.permissionLevels.run(message, 4);
+        if (!permission)
+            return message.send(`:x: Only staff may edit the badges of other users.`);
+
+        if (user === null)
+            user = message.author;
+
+        if (parameter === "remove")
+        {
+            var toRemove = await message.awaitReply(`:question: Which badge do you want to remove from this user? Specify a number from 1 to 15, where 1 is the top left badge, counting right, and then counting down (the left badge in row 2 is 4).`, 60000);
+            if (!toRemove || toRemove < 1 || toRemove > 15)
+                return message.send(`:x: Command canceled. You must specify a number between 1 and 15 when determining which badge to remove.`);
+
+            var badges = user.guildSettings(message.guild.id).profile.badges;
+            if (badges.length > 0)
+                badges = badges.reverse();
+
+            await user.guildSettings(message.guild.id).update('profile.badges', badges[toRemove-1], {action: 'remove'});
+        } else {
+            await message.send(`:question: Please upload an attachment containing the badge you want to award this member. Or, send a message containing a link to it. It is highly advised to use square images. You have 3 minutes.`);
+            try {
+                var messages = await message.channel.awaitMessages(dmessage => dmessage.author.id === message.author.id && (dmessage.attachments.size > 0 || /(https?:\/\/[^\s]+)/g.test(dmessage.content)),
+                        {max: 1, time: 180000, errors: ['time']});
+            } catch (err) {
+                return message.send(`:x: An image was not provided; the profile badge command was aborted.`);
+                console.error(err);
+            }
+            var themessage = messages.first();
+            if (themessage.attachments.size > 0)
+            {
+                var url = themessage.attachments.first().url;
+            } else {
+                var url = themessage.cleanContent;
+            }
+            await user.guildSettings(message.guild.id).update('profile.badges', url, {action: 'add'});
+        }
+
+        return message.send(":white_check_mark: Badge has been updated.");
+    }
+
     async show(message, [user = null]) {
         const canvas = createCanvas(480, 360);
 
@@ -368,6 +409,94 @@ module.exports = class extends Command {
             console.error(e);
         }
         ctx.restore();
+        ctx.save();
+        if (profile.badges.length > 0)
+        {
+            var maps = profile.badges.reverse().map(async (badge, index) => {
+                ctx.shadowBlur = 2;
+                ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
+                try {
+                    var x = 0;
+                    var y = 0;
+                    // Determine location of the charm
+                    switch (index) {
+                        case 0:
+                            y = 153;
+                            x = 6;
+                            break;
+                        case 1:
+                            y = 153;
+                            x = 42;
+                            break;
+                        case 2:
+                            y = 153;
+                            x = 78;
+                            break;
+                        case 3:
+                            y = 189;
+                            x = 6;
+                            break;
+                        case 4:
+                            y = 189;
+                            x = 42;
+                            break;
+                        case 5:
+                            y = 189;
+                            x = 78;
+                            break;
+                        case 6:
+                            y = 225;
+                            x = 6;
+                            break;
+                        case 7:
+                            y = 225;
+                            x = 42;
+                            break;
+                        case 8:
+                            y = 225;
+                            x = 78;
+                            break;
+                        case 9:
+                            y = 261;
+                            x = 6;
+                            break;
+                        case 10:
+                            y = 261;
+                            x = 42;
+                            break;
+                        case 11:
+                            y = 261;
+                            x = 78;
+                            break;
+                        case 12:
+                            y = 297;
+                            x = 6;
+                            break;
+                        case 13:
+                            y = 297;
+                            x = 42;
+                            break;
+                        case 14:
+                            y = 297;
+                            x = 78;
+                            break;
+                        default:
+                            y = 0;
+                            x = 0;
+                            break;
+                    }
+                    var avatar = await loadImage(badge);
+                    ctx.drawImage(avatar, x, y, 32, 32);
+                    ctx.scale(1, 1);
+                    ctx.closePath();
+                } catch (e) {
+                    console.error(e);
+                }
+                return true;
+            });
+            await Promise.all(maps);
+            ctx.restore();
+        }
 
         var lines = wrapText(ctx, profile.info, 350);
 
