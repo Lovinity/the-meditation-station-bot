@@ -43,6 +43,15 @@ Client.defaultGuildSchema
                 folder.add(`level${i}`, 'role', {configurable: false});
             }
         }, {configurable: false})
+        .add('yangStore', folder => {
+            folder
+                    .add('generator', 'integer', {min: 0, default: 0})
+                    .add('nick', 'integer', {min: 0, default: 0})
+                    .add('profileTitle', 'integer', {min: 0, default: 0})
+                    .add('profileBackground', 'integer', {min: 0, default: 0})
+                    .add('profileColor', 'integer', {min: 0, default: 0})
+                    .add('remindme', 'integer', {min: 0, default: 0})
+        })
         .add('badges', 'any', {array: true, configurable: false});
 
 Client.use(require('klasa-member-gateway'));

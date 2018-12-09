@@ -2,6 +2,7 @@
 
 const gen = require('fantasy-names');
 const {Command} = require('klasa');
+const yangStore = require('../../util/yangStore');
 
 module.exports = class extends Command {
 
@@ -19,7 +20,7 @@ module.exports = class extends Command {
         });
     }
 
-    async run(message, [group, individual, quantity]) {
+    async run(message, [group, individual, quantity = 1]) {
         if (group)
             group = group.replace(" ", "_");
         if (individual)
@@ -27,7 +28,17 @@ module.exports = class extends Command {
         if (message.channel.id !== message.guild.settings.botChannel)
             return message.send(`:x: Sorry, but this command may only be used in the bot channel.`);
 
-        return message.send(gen(group, individual, quantity));
+        var response = ``;
+        try {
+            response = gen(group, individual, quantity);
+        } catch (e) {
+            return message.send(e);
+        }
+
+        if (await yangStore(message, 'generator', quantity))
+            return message.send(response);
+        return;
+        
     }
 
     async init() {
