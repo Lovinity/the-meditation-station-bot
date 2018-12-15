@@ -24,13 +24,13 @@
     "klasa": "github:dirigeants/klasa#master",
     "klasa-member-gateway": "github:dirigeants/klasa-member-gateway",
     "lodash": "^4.17.11",
-    "moment": "^2.22.2",
+    "moment": "^2.23.0",
     "moment-duration-format": "^2.2.2",
-    "mongodb": "^3.1.8",
+    "mysql2": "^1.6.4",
     "needle": "^2.2.4",
     "rethinkdb": "^2.3.3",
     "rethinkdbdash": "^2.3.31",
-    "string-similarity": "^1.2.2",
+    "string-similarity": "^3.0.0",
     "wait-for-stuff": "^1.4.0"
   }
 }

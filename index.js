@@ -98,11 +98,8 @@ var client = new Client({
     slowmode: 3000,
     slowmodeAggressive: true,
     providers: {
-        default: 'rethinkdb',
-        rethinkdb: {
-            pool: true,
-            servers: [{host: 'localhost', port: 28015}]
-        }
+        default: 'mysql',
+        mysql: config.providers.mysql
     },
     // Add custom permissions
     permissionLevels: new PermissionLevels()
@@ -123,13 +120,10 @@ var client = new Client({
 
 // Add a channels gateway
 client.gateways.register('channels', {
-    provider: 'rethinkdb',
+    provider: 'mysql',
     schema: new Schema()
             .add('conflictResolution', 'string', {array: true})
 });
-
-// Add a users gateway with no schema (there will be folders for each guild)
-client.gateways.register('user');
 
 // login the client
 client.login(config.botToken);
