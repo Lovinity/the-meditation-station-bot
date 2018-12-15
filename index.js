@@ -65,14 +65,14 @@ Client.defaultMemberSchema
         .add('spamScore', 'integer', {default: 0})
         .add('profile', folder => {
             folder
-                    .add('title', 'string', {default: 'Member'})
-                    .add('gender', 'string', {default: ''})
-                    .add('pronouns', 'string', {default: ''})
-                    .add('dob', 'string', {default: ''})
-                    .add('location', 'string', {default: 'Earth'})
-                    .add('factions', 'string', {default: ''})
-                    .add('info', 'string', {default: ''})
-                    .add('donations', 'float', {default: 0})
+                    .add('title', 'string')
+                    .add('gender', 'string')
+                    .add('pronouns', 'string')
+                    .add('dob', 'string')
+                    .add('location', 'string')
+                    .add('factions', 'string')
+                    .add('info', 'string')
+                    .add('donations', 'float')
                     .add('badges', 'url', {array: true})
                     .add('background', 'url')
                     .add('profileColor', folder2 => {
