@@ -120,7 +120,7 @@ var client = new Client({
 
 // Add a channels gateway
 client.gateways.register('channels', {
-    provider: 'mysql',
+    provider: 'mongodb',
     schema: new Schema()
             .add('conflictResolution', 'string', {array: true})
 });
