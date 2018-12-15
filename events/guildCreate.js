@@ -12,7 +12,6 @@ module.exports = class extends Event {
         }
 
         // Add a scheduled task to run every minute for the guild if it does not already exist
-        // BROKEN
         const guildTask = guild.settings.guildTasks;
         if (!guildTask || guildTask === null)
         {
