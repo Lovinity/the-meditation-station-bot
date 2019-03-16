@@ -110,7 +110,7 @@ class RichMenu extends RichDisplay {
 	 * @param {RichMenuRunOptions} options The options to use with this RichMenu
 	 * @returns {ReactionHandler}
 	 */
-	async run(message, options = {}) {
+	run(message, options = {}) {
 		if (!this.paginated) this._paginate();
 		return super.run(message, options);
 	}

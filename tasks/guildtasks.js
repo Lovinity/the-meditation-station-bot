@@ -26,9 +26,18 @@ module.exports = class extends Task {
             {
 
                 // Edit the message containing stats
+                var raidMitigation = `0 (Not Activated)`;
+                if (_guild.settings.raidScore === 1)
+                    raidMitigation = `1 (Verified Phone Number for New Members)`;
+                if (_guild.settings.raidScore === 2)
+                    raidMitigation = `2 (Verified Phone Number for New Members; New Member Isolation)`;
+                if (_guild.settings.raidScore === 3)
+                    raidMitigation = `3 (Verified Phone Number for New Members; New Member Isolation; Invite Links Deleted)`;
                 var themessage = `:chart_with_upwards_trend: **Current ${_guild.name} Statistics** (edited automatically every minute) :chart_with_upwards_trend: \n\n`;
                 themessage = themessage + `Current Guild Time:  **${moment().format('LLLL')}** \n`;
                 themessage = themessage + `Number of members in the guild: **${_guild.members.array().length}** \n`;
+                themessage = themessage + `Anti-raid mitigation: **${raidMitigation}** \n`;
+
 
                 _guild.channels.get(statsMessageChannel).messages.fetch(statsMessage)
                         .then(message => message.edit(themessage));
@@ -89,9 +98,6 @@ ${iceBreakers[Math.floor(Math.random() * iceBreakers.length)]}
                 // Reset verification level
                 _guild.setVerificationLevel(2);
 
-                // Disable mitigation in settings
-                _guild.settings.update('raidMitigation', 0);
-
                 // Send announcement
                 var channel = _guild.settings.announcementsChannel;
                 const _channel = this.client.channels.get(channel);
@@ -103,9 +109,12 @@ I do not detect raid activity anymore. Raid mitigation has ended.
                     
 All new members now have full access to the guild.
 Verification is now set down to medium.
-Level 3: **Please remember to re-generate invite links if mitigation level was 3**. I do not re-generate those automatically.`;
+${_guild.settings.raidMitigation >= 3 ? `**Please remember to re-generate invite links**. I do not re-generate those automatically.` : ``}`;
                     _channel.send(response);
                 }
+
+                // Disable mitigation in settings
+                _guild.settings.update('raidMitigation', 0);
             }
 
             // Check for voice channel listening and award XP for listeners
@@ -187,8 +196,9 @@ Level 3: **Please remember to re-generate invite links if mitigation level was 3
 function slugify(text)
 {
     return text.toString().toLowerCase()
-            .replace(/^(a |the |his |her |their |your )/, '')        // Remove a, the, his, her, their, your from the beginning
+            .replace(/^(a |an |the |his |her |their |your |it's |its)/, '')        // Remove a, an, the, his, her, their, your, it's, its from the beginning
             .replace(/ *\([^)]*\) */g, '')    // Remove anything in parenthesis
+            .replace(/(\<i\>|\<\/i\>)/g, '')    // Remove <i> and </i> HTML entities
             .replace('&', 'and')                // Replace & with "and"
             .replace(/\s+/g, '-')           // Replace spaces with -
             .replace(/[^\w\-]+/g, '')       // Remove all non-word chars

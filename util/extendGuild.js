@@ -27,7 +27,7 @@ Structures.extend('Guild', Guild => class MyGuild extends Guild {
                                 if (_channel)
                                     _channel.send(`:rotating_light: **Raid mitigation level 1 activated** :rotating_light:
     
-I have detected a potential raid. As a precaution, level 1 mitigation has been activated. All new members must have a verified phone number associated with their account until mitigation expires. In addition, antispam mutes issued during level 1 mitigation will last 60 minutes instead of 30 minutes. If no more activity is detected, mitigation should end in about one hour. If raid activity continues, higher levels will be activated.`);
+I have detected a potential raid. As a precaution, level 1 mitigation has been activated. All new members must have a verified phone number associated with their account until mitigation expires. In addition, antispam mutes issued during level 1 mitigation will last until staff manually remove them instead of 30 minutes. If no more activity is detected, mitigation should end in about one hour. If raid activity continues, higher levels will be activated.`);
                             });
                 } else if (newScore >= 90 && mitigation < 2)
                 {
@@ -35,8 +35,7 @@ I have detected a potential raid. As a precaution, level 1 mitigation has been a
                     if (_channel)
                         _channel.send(`:rotating_light: **Raid mitigation level 2 activated** :rotating_light:
     
-I continue to detect raid activity. As a further precaution, level 2 mitigation has been activated. All new members will be isolated in a channel with staff until mitigation ends. In addition, triggering the antispam system during level 2 mitigation will result in an automatic 1-day suspension. If no more raid-like activity is detected, mitigation should end in about 1.5 hours. If raid activity continues, higher levels will be activated.
-**Trolling or spamming is now a bannable offense until mitigation ends**.`);
+I continue to detect raid activity. As a further precaution, level 2 mitigation has been activated. All new members will be isolated in a channel with staff until mitigation ends. In addition, triggering the antispam system during level 2 mitigation will result in an automatic 1-day suspension. If no more raid-like activity is detected, mitigation should end in about 1.5 hours. If raid activity continues, higher levels will be activated.`);
                 } else if (newScore >= 120 && mitigation < 3) {
                     this.settings.update('raidMitigation', 3);
                     if (_channel)
