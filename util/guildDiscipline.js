@@ -329,6 +329,7 @@ module.exports = class GuildDiscipline {
                         .setDescription(`Everyone wants to enjoy their time here. But something you did recently was a bit out of line.
 Please review the below information. Staff would like to see you work on this concern, and learn from this encounter. Staff may need to issue discipline if this happens again.           
 If you need assistance, or have any questions or concerns about this warning, feel free to post in this private channel with staff. They will be happy to help you. But please remain respectful.
+**You have 48 hours to dispute this warning in this text channel if you feel it was wrongly issued**. Leaving the guild, being disrespectful towards staff, or trying to discuss the matter outside of this channel will automatically make this warning final and unappealable.
 Thank you for your understanding and cooperation.`)
                         .setColor(16564545)
                         .setFooter(`Reason for the warning: ${this.reason}`);
@@ -343,6 +344,7 @@ Thank you for your understanding and cooperation.`)
                         .setTitle(`:octagonal_sign: You have been issued discipline :octagonal_sign:`)
                         .setDescription(`We all make mistakes, but everyone wants to enjoy their experience here. Something you did recently was out of line. Please review the below information carefully, and work on improving your conduct.
 This channel is private between you and staff; you may communicate any questions or concerns you have here. If you need help resolving this incident, staff are happy to provide some tips and guidance. But please remain respectful.
+**You have 48 hours to dispute this discipline in this text channel if you feel it was wrongly issued**. Leaving the guild, being disrespectful towards staff, or trying to discuss the matter outside of this channel will automatically make this discipline final and unappealable.
 Thank you for your understanding and cooperation.`)
                         .setColor(8421631)
                         .setFooter(`Reason for discipline: ${this.reason}`);
@@ -357,8 +359,9 @@ Thank you for your understanding and cooperation.`)
                         .setTitle(`:mute: You have been muted :mute:`)
                         .setDescription(`We all make mistakes, but everyone wants to enjoy their experience here. Something you did recently was out of line. Please review the below information carefully, and work on improving your conduct.
 This channel is private between you and staff; you may communicate any questions or concerns you have here. If you need help resolving this incident, staff are happy to provide some tips and guidance. But please remain respectful.
+**You have until the mute expires to dispute it in this text channel if you feel it was wrongly issued**. Leaving the guild, being disrespectful towards staff, or trying to discuss the matter outside of this channel will automatically make this mute final and unappealable.
 Thank you for your understanding and cooperation.`)
-                        .addField(`Duration of Mute`, `The mute will expire ${this.duration === 0 ? 'when staff manually remove the muted role from you' : `at ${moment().add(this.duration, 'minutes').format("LLLL Z")}`}`)
+                        .addField(`Duration of Mute`, `The mute will expire ${this.duration === 0 ? 'when staff manually remove the muted role from you' : `at ${moment().add(this.duration, 'minutes').format("LLLL Z")}`} (${this.duration} minutes)`)
                         .setColor(15014476)
                         .setFooter(`Reason for mute: ${this.reason}`);
 
@@ -372,6 +375,7 @@ Thank you for your understanding and cooperation.`)
                         .setTitle(`:no_entry: You have been suspended from the guild temporarily :no_entry:`)
                         .setDescription(`We know you can do better than this. We are disappointed in your recent conduct. Please read the below information carefully and use this suspension time to reflect and improve your conduct.
 This channel is private between you and staff; you may communicate any questions or concerns you have here prior to leaving (once you leave, you will lose access to the server until the suspension ends). If you need help resolving this incident, staff are happy to provide some tips and guidance. But please remain respectful.
+**You have 48 hours to dispute this suspension in this text channel if you feel it was wrongly issued**. Leaving the guild, being disrespectful towards staff, or trying to discuss the matter outside of this channel will automatically make this suspension final and unappealable.
 Thank you for your understanding and cooperation.`)
                         .addField(`Suspension Duration / Procedure`, `Once you leave the guild, a ban will be placed on you, which will be removed by the bot in ${this.duration / (60 * 24)} days. Your suspension time will not begin until you leave the guild or get kicked; until then, you will remain muted.`)
                         .setColor(16573465)
@@ -387,6 +391,7 @@ Thank you for your understanding and cooperation.`)
                         .setTitle(`:no_entry_sign: You have been banned from the guild :no_entry_sign:`)
                         .setDescription(`Your conduct in the guild cannot be tolerated any longer. Therefore, for the safety of the community, you have been banned. We wish you the best in your adventures and hope you enjoyed your stay in this guild.
 This channel is private between you and staff; you may communicate any questions or concerns you have here prior to leaving (once you leave, you will lose access to the guild).
+**You have 48 hours to dispute this ban in this text channel if you feel it was wrongly issued**. Leaving the guild, being disrespectful towards staff, or trying to discuss the matter outside of this channel will automatically make this ban final and unappealable.
 Thank you for your understanding and cooperation.`)
                         .addField(`Ban Procedure`, `Once you leave the guild, a server ban will be placed on you. This ban will remain in place indefinitely or until staff manually remove it. Until you leave or staff kick you, you will remain muted.`)
                         .setColor(16724253)
