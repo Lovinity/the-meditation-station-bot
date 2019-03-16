@@ -123,15 +123,15 @@ Use number reactions to select an action, or stop to exit.`)
                                 log.valid = false;
                                 await user.guildSettings(message.guild.id).update(`modLogs`, log, {action: 'add'});
                                 // Now, appeal all discipline
-                                if (log.discipline.xp > 0)
+                                if (log.discipline.xp !== 0)
                                 {
                                     user.guildSettings(message.guild.id).update(`xp`, (user.guildSettings(message.guild.id).xp + log.discipline.xp));
                                 }
-                                if (log.discipline.yang > 0)
+                                if (log.discipline.yang !== 0)
                                 {
                                     user.guildSettings(message.guild.id).update(`yang`, (user.guildSettings(message.guild.id).yang + log.discipline.yang));
                                 }
-                                if (log.discipline.reputation > 0)
+                                if (log.discipline.reputation !== 0)
                                 {
                                     user.guildSettings(message.guild.id).update(`badRep`, (user.guildSettings(message.guild.id).badRep - log.discipline.reputation));
                                 }
@@ -143,7 +143,7 @@ Use number reactions to select an action, or stop to exit.`)
                                     if (log.discipline.schedule !== null)
                                         this.client.schedule.delete(log.discipline.schedule)
                                                 .catch(err => {
-
+                                                    // Do not error on problems
                                                 });
                                     await message.guild.members.unban(user, `Ban was appealed`);
 
@@ -178,7 +178,7 @@ Use number reactions to select an action, or stop to exit.`)
                                     if (log.discipline.schedule !== null)
                                         this.client.schedule.delete(log.discipline.schedule)
                                                 .catch(err => {
-
+                                                    // Do not error on problems
                                                 });
 
                                     // Get the configured muted role
