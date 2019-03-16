@@ -46,10 +46,10 @@ module.exports = class extends Command {
         {
             // Do not activate the mute if already muted, not in the guild, or not activated by staff and not enough reports made yet
             if (guildMember && guildMember.roles.get(mutedRole.id))
-                return message.sendMessage(`:warning: Thank you for your report. The member is already muted. Please use this channel to provide any further information or evidence of their misconduct.`);
+                return message.sendMessage(`:x: Thank you for your report. The member is already muted. Please use this channel to provide any further information or evidence of their misconduct.`);
 
             if (guildMember && guildMember.roles.get(noSelfModRole.id))
-                return message.sendMessage(`:warning: Thank you for your report. Unfortunately, you have the No Self Mod role, which means your report will not count towards muting the user. But you can continue to use this channel to provide information or evidence of their misconduct.`);
+                return message.sendMessage(`:x: Thank you for your report. Unfortunately, you have the No Self Mod role, which means your report will not count towards muting the user. But you can continue to use this channel to provide information or evidence of their misconduct.`);
 
             // By this point, the report is authorized
 
@@ -68,16 +68,18 @@ module.exports = class extends Command {
             // Add this report into the member's report records
             await user.guildSettings(message.guild.id).update(`reports`, `${message.author.id}`, {action: 'add'});
 
-            if (reports.length < reportMembers)
+            if ((reports.length + 1) < reportMembers)
                 return message.sendMessage(`:white_check_mark: Thank you for your report. I have not deemed a mute necessary yet. Please provide information and evidence to their misconduct in this channel. Not doing so could be deemed !report abuse, and you could lose reporting privileges.`);
 
             var discipline = new GuildDiscipline(user, message.guild, this.client.user)
                     .setType('mute')
-                    .setReason(`${reportMembers} have reported you for misconduct within the last ${reportTime} minutes. This does **not** guarantee you are in trouble; staff will investigate and determine. Please be patient.`);
+                    .setReason(`${reportMembers} members have reported you for misconduct within the last ${reportTime} minutes. This does **not** guarantee you are in trouble; staff will investigate and determine. Please be patient.`);
             discipline = await discipline.prepare();
             await discipline.finalize();
 
             return message.sendMessage(`:mute: Thank you for your report. I have deemed it necessary to mute the user until staff investigate. Please provide information and evidence in this channel of their misconduct. Not doing so could deem this !report as abuse, and you could lose reporting privileges.`);
+        } else {
+            return message.sendMessage(`:x: It looks like you already reported this user recently. Feel free to provide any / additional information and evidence of their misconduct in this channel.`);
     }
 
     }
