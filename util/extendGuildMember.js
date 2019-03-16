@@ -30,7 +30,7 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                 if (currentScore < 100 && newScore >= 100)
                 {
                     console.log(`Went over 100!`);
-                    if (this.spamScoreStamp === null || moment().subtract(30, 'seconds').isAfter(moment(this.spamScoreStamp)))
+                    if (this.spamScoreStamp === null || moment().subtract(60, 'seconds').isAfter(moment(this.spamScoreStamp)))
                     {
                         console.log(`Sent warning`);
                         var response = `:warning: <@${message.author.id}> **Please take a break from sending messages for about ${moment.duration(this.guild.settings.antispamCooldown > 0 ? (currentScore / this.guild.settings.antispamCooldown) : 0, 'minutes').format("m [Minutes]")}**.`;
