@@ -52,7 +52,7 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                         message.channel.send(response);
                         this.spamScoreStamp = moment();
                     }
-                } else if (currentScore >= 100 && moment().subtract(5, 'seconds').isAfter(moment(this.spamScoreStamp)))
+                } else if (currentScore >= 100 && moment().subtract(10, 'seconds').isAfter(moment(this.spamScoreStamp)))
                 {
                     console.log(`Antispam triggered!`);
 
