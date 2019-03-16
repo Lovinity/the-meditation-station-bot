@@ -426,7 +426,7 @@ Thank you for your understanding and cooperation.`)
             }
         }
         await this.message.delete();
-        await this.channel.send(`:cry: The responsible staff canceled the discipline wizard, so no action will be taken. We apologize for the inconvenience this caused you.`);
+        await this.channel.send(`:ok_hand: The staff member who was working on your discipline has decided against issuing any discipline. We apologize for any inconvenience this caused you. If you were muted, the mute was removed.`);
         return this;
     }
 
