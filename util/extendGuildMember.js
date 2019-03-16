@@ -33,7 +33,7 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                     if (this.spamScoreStamp === null || moment().subtract(60, 'seconds').isAfter(moment(this.spamScoreStamp)))
                     {
                         console.log(`Sent warning`);
-                        var response = `:warning: <@${message.author.id}> **Please take a break from sending messages for about ${moment.duration(this.guild.settings.antispamCooldown > 0 ? (currentScore / this.guild.settings.antispamCooldown) : 0, 'minutes').format("m [Minutes]")}**.`;
+                        var response = `:warning: <@${message.author.id}> **Please take a break from sending messages for about ${moment.duration(this.guild.settings.antispamCooldown > 0 ? (currentScore / this.guild.settings.antispamCooldown) : 0, 'minutes').format("m [Minutes]")}**. `;
                         if (isMuted)
                         {
                             response += `__**Ignoring this may result in getting kicked from the guild**__ and any pending bans being applied immediately.`;
@@ -42,12 +42,12 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                             response += `__**Ignoring this may result in a permanent ban**__`;
                         } else if (this.guild.settings.raidMitigation >= 2)
                         {
-                            response += `__**Ignoring this may result in a 24-hour ban**__`;
+                            response += `__**Ignoring this may result in a 24-hour suspension**__`;
                         } else if (this.guild.settings.raidMitigation >= 1)
                         {
                             response += `**Ignoring this may result in being muted until staff manually un-mute you.**`;
                         } else {
-                            response += `Ignoring this may result in a 30-minute mute.`;
+                            response += `**Ignoring this may result in a 30-minute mute.**`;
                         }
                         message.channel.send(response);
                         this.spamScoreStamp = moment();
