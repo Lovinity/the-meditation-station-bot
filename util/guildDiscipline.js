@@ -73,7 +73,7 @@ module.exports = class GuildDiscipline {
 
         var guildMember = this.guild.members.get(this.user.id);
 
-        if (this.type === 'mute' || this.type === 'preban' || this.type === 'ban')
+        if (this.type === 'mute' || this.type === 'preban' || this.type === 'tempban' || this.type === 'ban')
         {
             // Add the mute role to the user, if the user is in the guild
             if (guildMember)
@@ -151,7 +151,7 @@ module.exports = class GuildDiscipline {
             await this.channel.setName(`int_d_${this.channel.id}`, `Incident assigned ID ${this.channel.id}`);
 
             // Send an initial message to the channel
-            this.message = await this.channel.send(`:hourglass_flowing_sand: <@${this.user.id}>, a recent incident involving you occurred in the guild. ${(this.type === 'mute' || this.type === 'preban' || this.type === 'ban' ? "You have been muted in the guild for the time being for the safety of the community. " : "")}More information will be provided to you shortly; please wait while staff finish filling out information via the bot.`);
+            this.message = await this.channel.send(`:hourglass_flowing_sand: <@${this.user.id}>, a recent incident involving you occurred in the guild. ${(this.type === 'mute' || this.type === 'preban' || this.type === 'tempban' || this.type === 'ban' ? "You have been muted in the guild for the time being for the safety of the community. " : "")}More information will be provided to you shortly; please wait while staff finish filling out information via the bot.`);
         }
 
         return this;

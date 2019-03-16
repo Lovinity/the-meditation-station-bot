@@ -15,7 +15,8 @@ module.exports = class extends Event {
         const _channel = this.client.channels.get(modLog);
 
         // send a log to the channel
-        _channel.send(`:wave: The member <@!${guildMember.user.id}> (${guildMember.user.id}) just left the guild on ${moment().format('LLLL')} guild time.`);
+        if (_channel)
+            _channel.send(`:wave: The member <@!${guildMember.user.id}> (${guildMember.user.id}) just left the guild on ${moment().format('LLLL')} guild time.`);
 
         // Finalize any bans if the member has them
         const pendSuspensions = guildMember.guild.settings.pendSuspensions;
@@ -40,6 +41,8 @@ module.exports = class extends Event {
                                 suspension.case.expiration = moment().add(suspension.duration, 'minutes').toISOString(true);
                                 guildMember.settings.update(`modLogs`, suspension.case, {action: 'add'});
                             });
+                    if (_channel)
+                        _channel.send(`:wave: A pending suspension existed on <@!${guildMember.user.id}> (${guildMember.user.id}). It was applied.`);
                 }
             });
         }
@@ -54,6 +57,8 @@ module.exports = class extends Event {
                 {
                     guildMember.ban({days: 7, reason: ban.reason});
                     guildMember.guild.settings.update(`pendBans`, ban, {action: 'remove'});
+                    if (_channel)
+                        _channel.send(`:wave: A pending ban existed on <@!${guildMember.user.id}> (${guildMember.user.id}). It was applied.`);
                 }
             });
         }
@@ -65,7 +70,7 @@ module.exports = class extends Event {
                             .filter(invite => typeof invite.inviter === 'undefined' || invite.inviter === null || invite.inviter.id === guildMember.id)
                             .each((invite) => {
                                 invite.delete('This invite has no inviter. Maybe the inviter left the guild?');
-                                if (modLog)
+                                if (_channel)
                                     _channel.send(`:wastebasket: The invite ${invite.code} was deleted because an inviter did not exist. They probably left the guild.`);
                             });
 
