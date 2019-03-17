@@ -33,10 +33,10 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                     if (this.spamScoreStamp === null || moment().subtract(60, 'seconds').isAfter(moment(this.spamScoreStamp)))
                     {
                         console.log(`Sent warning`);
-                        var response = `:warning: <@${message.author.id}> **Please take a break from sending messages for about ${moment.duration(this.guild.settings.antispamCooldown > 0 ? (currentScore / this.guild.settings.antispamCooldown) : 0, 'minutes').format("m [Minutes]")}**. `;
+                        var response = `:warning: <@${message.author.id}> **__Antispam Verbal Warning__: Please take a break from sending messages for about ${moment.duration(this.guild.settings.antispamCooldown > 0 ? (currentScore / this.guild.settings.antispamCooldown) + 1 : 0, 'minutes').format("m [Minutes]")}**. `;
                         if (isMuted)
                         {
-                            response += `__**Ignoring this may result in getting kicked from the guild**__ and any pending bans being applied immediately.`;
+                            response += `__**Ignoring this may result in getting kicked from the guild and losing your freedom to argue an appeal to your discipline**__ .`;
                         } else if (this.guild.settings.raidMitigation >= 3)
                         {
                             response += `__**Ignoring this may result in a permanent ban**__`;
