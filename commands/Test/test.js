@@ -22,7 +22,7 @@ module.exports = class extends Command {
 
         let getMessages = () => {
             return new Promise(async (resolve, reject) => {
-                setTimeout(() => {
+                setTimeout(async () => {
                     var msgs = await message.channel.messages.fetch({ limit: 100 });
                     if (msgs) {
                         msgs.array().map(message => messageArray.push(message));
