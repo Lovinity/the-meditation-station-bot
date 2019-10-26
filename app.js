@@ -98,8 +98,8 @@ var client = new Client({
     slowmode: 3000,
     slowmodeAggressive: true,
     providers: {
-        default: 'mongodb',
-        mongodb: config.providers.mongodb
+        default: 'mysql',
+        mongodb: config.providers.mysql
     },
     // Add custom permissions
     permissionLevels: new PermissionLevels()
@@ -120,7 +120,7 @@ var client = new Client({
 
 // Add a channels gateway
 client.gateways.register('channels', {
-    provider: 'mongodb',
+    provider: 'mysql',
     schema: new Schema()
             .add('conflictResolution', 'string', {array: true})
 });
