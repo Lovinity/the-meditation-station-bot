@@ -91,7 +91,6 @@ var client = new Client({
     clientOptions: {
         fetchAllMembers: false
     },
-    prefix: '!',
     commandEditing: true,
     typing: true,
     ignoreBots: false,
