@@ -13,6 +13,7 @@ Client.defaultGuildSchema
     .add('iceBreakerChannel', 'textchannel')
     .add('announcementsChannel', 'textchannel')
     .add('generalChannel', 'textchannel')
+    .add('noXPChannels', 'textchannel', { array: true })
     .add('noSelfModRole', 'role')
     .add('repEmoji', 'string')
     .add('muteRole', 'role')

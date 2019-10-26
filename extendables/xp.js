@@ -1,19 +1,19 @@
-const {Extendable} = require('klasa');
+const { Extendable } = require('klasa');
 const config = require("../config");
 const moment = require("moment");
 const stringSimilarity = require("string-similarity");
-const {Message} = require('discord.js');
+const { Message } = require('discord.js');
 
 module.exports = class extends Extendable {
 
     constructor(...args) {
-        super(...args, {appliesTo: [Message]});
+        super(...args, { appliesTo: [ Message ] });
     }
 
-    get xp() {
+    get xp () {
         if (this.type !== 'DEFAULT')
             return null;
-        var botPrefixes = ["!", "p!", "r!", "t!", "t@"];
+        var botPrefixes = [ "!", "p!", "r!", "t!", "t@" ];
 
         // Start with a base score of 0
         var score = 0;
@@ -49,9 +49,8 @@ module.exports = class extends Extendable {
         var newstring = this.content;
         var regex = /(\W|^)(.+)\s\2/gmi;
         var matcher = regex.exec(this.content);
-        while (matcher !== null)
-        {
-            newstring = newstring.replace(matcher[2], ``);
+        while (matcher !== null) {
+            newstring = newstring.replace(matcher[ 2 ], ``);
             matcher = regex.exec(this.content);
         }
         var patternScore = (this.content.length > 0 ? (newstring.length / this.content.length) : 1);
@@ -70,23 +69,21 @@ module.exports = class extends Extendable {
 
         // Iterate through messages of this channel from the last 3 minutes by the same author
         var collection = this.channel.messages
-                .filter((message) => {
-                    return message.id !== this.id && message.author.id === this.author.id && moment(this.createdAt).subtract(3, 'minutes').isBefore(moment(message.createdAt)) && moment(this.createdAt).isAfter(moment(message.createdAt));
-                });
+            .filter((message) => {
+                return message.id !== this.id && message.author.id === this.author.id && moment(this.createdAt).subtract(3, 'minutes').isBefore(moment(message.createdAt)) && moment(this.createdAt).isAfter(moment(message.createdAt));
+            });
         //console.log(`${collection.size} messages`);
         collection.each((message) => {
 
             // If the current message was sent at a time that causes the typing speed to be more than 7 characters per second, no XP.
             var timediff = moment(this.createdAt).diff(moment(message.createdAt), 'seconds');
-            if (timediff <= messageTime && !this.author.bot)
-            {
+            if (timediff <= messageTime && !this.author.bot) {
                 score = 0;
             }
 
             // If the current message is 90% or more similar to the comparing message, no XP for this message.
             var similarity = stringSimilarity.compareTwoStrings(`${this.content}${JSON.stringify(this.embeds)}${JSON.stringify(this.attachments.array())}`, `${message.content}${JSON.stringify(message.embeds)}${JSON.stringify(message.attachments.array())}`);
-            if (similarity >= 0.9)
-            {
+            if (similarity >= 0.9) {
                 score = 0;
             }
         });
@@ -104,11 +101,13 @@ module.exports = class extends Extendable {
         if (this.member && this.guild && this.member.roles.get(this.guild.settings.muteRole))
             score = 0;
 
+        // If the message was posted in a no-XP channel, no XP!
+        if (this.guild.settings.noXPChannels.indexOf(this.channel.id) !== -1)
+            score = 0;
+
         // Activate reputation earning if XP score is at least 2
-        if (this.member && !this.author.bot)
-        {
-            if (score > 1)
-            {
+        if (this.member && !this.author.bot) {
+            if (score > 1) {
                 this.react(this.guild.settings.repEmoji);
             } else if (!this.deleted) {
                 this.reactions.removeAll();
@@ -121,7 +120,7 @@ module.exports = class extends Extendable {
 
 };
 
-function getIndicesOf(searchStr, str, caseSensitive) {
+function getIndicesOf (searchStr, str, caseSensitive) {
     var searchStrLen = searchStr.length;
     if (searchStrLen == 0) {
         return [];
