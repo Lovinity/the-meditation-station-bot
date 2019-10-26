@@ -105,15 +105,15 @@ var client = new Client({
         // everyone can use these commands
         .add(0, () => true)
         // Members can view audit logs
-        .add(4, (guild, member) => guild && member.permissions.has('VIEW_AUDIT_LOG'), { fetch: true })
+        .add(4, ({ guild, member }) => guild && member.permissions.has('VIEW_AUDIT_LOG'), { fetch: true })
         // Members of guilds must have 'MANAGE_GUILD' permission
-        .add(6, (guild, member) => guild && member.permissions.has('MANAGE_GUILD'), { fetch: true })
+        .add(6, ({ guild, member }) => guild && member.permissions.has('MANAGE_GUILD'), { fetch: true })
         // The member using this command must be the guild owner
-        .add(7, (guild, member) => guild && member === guild.owner, { fetch: true })
+        .add(7, ({ guild, member }) => guild && member === guild.owner, { fetch: true })
         // Bot owner
-        .add(9, (author, client) => author === client.owner, { break: true })
+        .add(9, ({ author, client }) => author === client.owner, { break: true })
         // Allows the bot owner to use Bot Owner only commands, which silently fail for other users.
-        .add(10, (author, client) => author === client.owner),
+        .add(10, ({ author, client }) => author === client.owner),
     readyMessage: (client) => `Ready to serve ${client.guilds.size} guilds and ${client.users.size} users`,
 });
 
