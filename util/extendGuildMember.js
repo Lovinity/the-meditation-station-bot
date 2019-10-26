@@ -19,7 +19,7 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                 if (message.author.id === this.client.user.id)
                     return null;
 
-                var isMuted = (this.roles.resolve(this.guild.settings.muteRole));
+                var isMuted = (this.roles.get(this.guild.settings.muteRole));
 
                 // Update the score
                 var currentScore = this.settings.spamScore;
