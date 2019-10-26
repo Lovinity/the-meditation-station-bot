@@ -45,10 +45,10 @@ module.exports = class extends Command {
         if (reports.indexOf(`${message.author.id}`) === -1)
         {
             // Do not activate the mute if already muted, not in the guild, or not activated by staff and not enough reports made yet
-            if (guildMember && guildMember.roles.resolve(mutedRole.id))
+            if (guildMember && guildMember.roles.get(mutedRole.id))
                 return message.sendMessage(`:x: Your report was acknowledged, but the member is already muted. Please provide reasoning / evidence why you reported this member.`);
 
-            if (guildMember && guildMember.roles.resolve(noSelfModRole.id))
+            if (guildMember && guildMember.roles.get(noSelfModRole.id))
                 return message.sendMessage(`:x: I could not acknowledge your report because you had abused the report command in the past. You can still tell us here why you're reporting the member.`);
 
             // By this point, the report is authorized

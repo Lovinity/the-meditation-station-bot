@@ -77,7 +77,7 @@ module.exports = class extends Event {
             if (verifiedRole) {
                 guild.members.each((guildMember) => {
                     // Member has the verified role. Update database with the current roles set in case anything changed since bot was down.
-                    if (guildMember.roles.resolve(verifiedRole.id)) {
+                    if (guildMember.roles.get(verifiedRole.id)) {
                         var roleArray = [];
                         guildMember.settings.reset(`roles`);
                         guildMember.roles.each((role) => {

@@ -23,7 +23,7 @@ module.exports = class extends Monitor {
         const verifiedRole = message.guild.roles.resolve(verified);
         if (verifiedRole)
         {
-            if (!message.member.roles.resolve(verifiedRole.id))
+            if (!message.member.roles.get(verifiedRole.id))
                 message.member.roles.add(verifiedRole, `Member is verified`);
         }
     }

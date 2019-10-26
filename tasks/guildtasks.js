@@ -88,7 +88,7 @@ ${iceBreakers[Math.floor(Math.random() * iceBreakers.length)]}
                     var raidRole = _guild.roles.resolve(_guild.settings.raidRole);
                     if (raidRole)
                     {
-                        if (guildMember.roles.resolve(raidRole.id))
+                        if (guildMember.roles.get(raidRole.id))
                         {
                             guildMember.roles.remove(raidRole, `Raid mitigation expired`);
                         }
