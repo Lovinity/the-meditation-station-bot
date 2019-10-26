@@ -38,19 +38,19 @@ module.exports = class extends Command {
             // Check to see if author is staff. If not, bail with an error message.
             const {permission} = await this.client.permissionLevels.run(message, 4);
             if (!permission)
-                return msg.edit(`:x: Sorry, but only staff may specify sapecific members to be added to the private channel. Try this command again without any arguments.`);
+                return msg.edit(`:x: No no, only staff can specify specific members to be added to an incidents channel. Please use the command without any arguments.`);
 
             // Create a proper response message
-            response = `:eye_in_speech_bubble: **__You have been asked to speak with staff__** :eye_in_speech_bubble: 
+            response = `:eye_in_speech_bubble: **__Hey, the staff want to speak with you__** :eye_in_speech_bubble: 
 
 You are seeing this channel because a staff member asked to speak with you (via the !staff command). Please be patient until a staff member gets with you.
-Channels like this may or may not be created as a result of misconduct; being in this channel does not guarantee you are in trouble.
+This does not necessarily mean you're in trouble; the staff command is used for multiple purposes.
             
-${mute ? `**You have been muted until staff speak with you** in order to protect the safety of the community.` : ``}   
+${mute ? `**You have been muted from the rest of the guild until staff speak with you** in order to protect the safety of the community.` : ``}   
 `;
 
             // Process permission overwrites and response mentions
-            users.forEach(function (user) {
+            users.map((user) => {
                 response += `<@${user.id}> `;
                 overwrites.push({
                     id: user.id,
@@ -102,7 +102,7 @@ ${mute ? `**You have been muted until staff speak with you** in order to protect
             });
 
             // Create a proper response message
-            response = `:eye_in_speech_bubble: **__You have asked to speak privately with staff__** :eye_in_speech_bubble: 
+            response = `:eye_in_speech_bubble: **__You asked to speak with staff privately__** :eye_in_speech_bubble: 
 
 You are seeing this channel because you used the !staff command to request to speak with staff privately.
             

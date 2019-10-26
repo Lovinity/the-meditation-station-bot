@@ -1,7 +1,7 @@
 var config = require('../config.js');
 var profaneWords = 0;
 module.exports = function (string) {
-    config.profanity.forEach(function (word) {
+    config.profanity.map((word) => {
         var numbers = getIndicesOf(word, string, false);
         if (numbers.length > 0)
         {

@@ -15,28 +15,21 @@ module.exports = class extends Event {
 
         // Initiate data variable
         var data = `ARCHIVE of deleted text channel ${channel.name}, ID ${channel.id}\nCreated on ${moment(channel.createdAt).format()}\nDeleted on ${moment().format()}\n\n`;
-        data += `+++Members who could view this channel:+++ \n\n`;
-
-        // Write the list of participants to the data
-        channel.members.array().forEach(function (member) {
-            data += `${member.user.username}#${member.user.discriminator} (${member.id})\n`;
-        });
-        data += `\n\n`;
 
         // Iterate through the messages, sorting by ID, and add them to data
         var messages = channel.messages;
         messages.array().sort(function (a, b) {
             return a.id - b.id;
-        }).forEach(function (message) {
+        }).map((message) => {
             // Write each message to data
             data += `+++Message by ${message.author.username}#${message.author.discriminator} (${message.author.id}), ID ${message.id}+++\n`;
             data += `-Time: ${moment(message.createdAt).format()}\n`;
             // Write attachment URLs
-            message.attachments.array().forEach(function (attachment) {
+            message.attachments.array().map((attachment) => {
                 data += `-Attachment: ${attachment.url}\n`;
             });
             // Write embeds as JSON
-            message.embeds.forEach(function (embed) {
+            message.embeds.map((embed) => {
                 data += `-Embed: ${JSON.stringify(embed)}\n`;
             });
             // Write the clean version of the message content

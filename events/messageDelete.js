@@ -54,11 +54,11 @@ module.exports = class extends Event {
         const _channel = this.client.channels.get(modLog);
 
         // Write attachment URLs
-        message.attachments.array().forEach(function (attachment) {
+        message.attachments.array().map((attachment) => {
             display.addField(`Contained Attachment`, JSON.stringify(attachment));
         });
         // Write embeds as JSON
-        message.embeds.forEach(function (embed) {
+        message.embeds.map((embed) => {
             display.addField(`Contained Embed`, JSON.stringify(embed));
         });
 

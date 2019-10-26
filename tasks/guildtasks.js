@@ -28,11 +28,11 @@ module.exports = class extends Task {
                 // Edit the message containing stats
                 var raidMitigation = `0 (Not Activated)`;
                 if (_guild.settings.raidScore === 1)
-                    raidMitigation = `1 (Verified Phone Number for New Members)`;
+                    raidMitigation = `1 (Verified Phone Number required for New Members)`;
                 if (_guild.settings.raidScore === 2)
-                    raidMitigation = `2 (Verified Phone Number for New Members; New Member Isolation)`;
+                    raidMitigation = `2 (Verified Phone Number required for New Members; New Members Isolated)`;
                 if (_guild.settings.raidScore === 3)
-                    raidMitigation = `3 (Verified Phone Number for New Members; New Member Isolation; Invite Links Deleted)`;
+                    raidMitigation = `3 (Verified Phone Number required for New Members; New Members isolated; All Invite Links Deleted)`;
                 var themessage = `:chart_with_upwards_trend: **Current ${_guild.name} Statistics** (edited automatically every minute) :chart_with_upwards_trend: \n\n`;
                 themessage = themessage + `Current Guild Time:  **${moment().format('LLLL')}** \n`;
                 themessage = themessage + `Number of members in the guild: **${_guild.members.array().length}** \n`;
@@ -84,7 +84,7 @@ ${iceBreakers[Math.floor(Math.random() * iceBreakers.length)]}
             if (newscore <= 0 && _guild.settings.raidMitigation > 0)
             {
                 // Remove raidRole
-                _guild.members.each(function (guildMember) {
+                _guild.members.each((guildMember) => {
                     var raidRole = _guild.roles.get(_guild.settings.raidRole);
                     if (raidRole)
                     {
@@ -105,7 +105,7 @@ ${iceBreakers[Math.floor(Math.random() * iceBreakers.length)]}
                 {
                     var response = `:ballot_box_with_check: **Raid mitigation has ended** :ballot_box_with_check: 
 
-I do not detect raid activity anymore. Raid mitigation has ended.
+I do not detect raid activity anymore. Raid mitigation has ended. Thank you for your patience.
                     
 All new members now have full access to the guild.
 Verification is now set down to medium.
@@ -153,7 +153,7 @@ ${_guild.settings.raidMitigation >= 3 ? `**Please remember to re-generate invite
                 {
                     console.log(`channel`);
                     needle('get', 'http://jservice.io/api/random', {}, {json: true})
-                            .then(function (response) {
+                            .then((response) => {
                                 console.log(`response`);
                                 response = response.body[0];
                                 if (response && response.invalid_count === null)

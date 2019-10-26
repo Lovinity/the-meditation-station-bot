@@ -53,20 +53,20 @@ module.exports = class extends Event {
         var oldAttachments = [];
         var newAttachments = [];
 
-        old.attachments.array().forEach(function (attachment) {
+        old.attachments.array().map((attachment) => {
             oldAttachments.push(attachment.url);
         });
 
-        message.attachments.array().forEach(function (attachment) {
+        message.attachments.array().map((attachment) => {
             newAttachments.push(attachment.url);
         });
 
-        oldAttachments.forEach(function (attachment) {
+        oldAttachments.map((attachment) => {
             if (newAttachments.indexOf(attachment.url) === -1)
                 display.addField(`Attachment removed`, JSON.stringify(attachment));
         });
 
-        newAttachments.forEach(function (attachment) {
+        newAttachments.map((attachment) => {
             if (oldAttachments.indexOf(attachment.url) === -1)
                 display.addField(`Attachment added`, JSON.stringify(attachment));
         });
@@ -76,27 +76,27 @@ module.exports = class extends Event {
         var oldEmbeds = [];
         var newEmbeds = [];
 
-        old.embeds.forEach(function (embed) {
+        old.embeds.map((embed) => {
             oldEmbeds.push(JSON.stringify(embed));
         });
 
-        message.embeds.forEach(function (embed) {
+        message.embeds.map((embed) => {
             newEmbeds.push(JSON.stringify(embed));
         });
 
-        oldEmbeds.forEach(function (embed) {
+        oldEmbeds.map((embed) => {
             if (newEmbeds.indexOf(embed) === -1)
                 display.addField(`Embed removed`, embed);
         });
 
-        newEmbeds.forEach(function (embed) {
+        newEmbeds.map((embed) => {
             if (oldEmbeds.indexOf(embed) === -1)
                 display.addField(`Embed added`, embed);
         });
 
         // Get the differences between old and new content
         var diff = jsdiff.diffSentences(old.cleanContent, message.cleanContent);
-        diff.forEach(function (part) {
+        diff.map(function (part) {
             if (part.added) {
                 display.addField(`Part added`, part.value);
             } else if (part.removed) {

@@ -9,7 +9,7 @@ module.exports = async function (message, item, quantity = 1) {
     
     if (parseInt(yangBalance) < parseInt(yangPrice))
     {
-        message.channel.send(`:x: You do not have enough Yang to purchase ${quantity} ${item}. It costs ${yangPrice} Yang, but you only have ${yangBalance} yang.`);
+        message.channel.send(`:x: Aww, bummer! You do not have enough Yang to purchase ${quantity} ${item}. It costs ${yangPrice} Yang, but you only have ${yangBalance} yang.`);
         return false;
     }
     

@@ -19,26 +19,26 @@ module.exports = class extends Command {
 
     async run(message, [nick]) {
         if (message.channel.id !== message.guild.settings.botChannel)
-            return message.send(`:x: Sorry, but this command may only be used in the bot channel.`);
+            return message.send(`:x: No spammy whammy! Please use this command in the bot channel.`);
         
         // Test for profanity
         config.profanity.forEach((word) => {
             var numbers = getIndicesOf(word, nick, false);
             if (numbers.length > 0)
             {
-                return message.send(`:x: Sorry, but that nickname is not allowed; it contains profanity.`);
+                return message.send(`:x: Hey now, no naughty words in your nickname.`);
             }
         });
 
         // Test for special characters
         if (/[^\x20-\x7E]/g.test(nick))
         {
-            return message.send(`:x: Sorry, but that nickname is not allowed; it contains special characters.`);
+            return message.send(`:x: You don't need weird characters in your nickname.`);
         }
 
         await message.member.setNickname(nick, `Requested from the !nick command`);
 
-        return message.send(`:white_check_mark: Your nickname has been changed.`);
+        return message.send(`:white_check_mark: Your nickname has been changed. Yay!`);
     }
 
 };

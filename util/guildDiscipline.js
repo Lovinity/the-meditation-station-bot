@@ -140,18 +140,18 @@ module.exports = class GuildDiscipline {
             // Create the incidents channel
             this.channel = await this.guild.channels.create('int_d', {
                 type: 'text',
-                topic: `Incident of ${this.user.username}#${this.user.discriminator}, responsible mod: ${this.responsible.username}#${this.responsible.discriminator}`,
+                topic: `Discipline ${this.user.username}#${this.user.discriminator}, responsible mod: ${this.responsible.username}#${this.responsible.discriminator}`,
                 parent: incidents,
                 permissionOverwrites: overwrites,
                 rateLimitPerUser: 15,
-                reason: `Incident of ${this.user.username}#${this.user.discriminator}, responsible mod: ${this.responsible.username}#${this.responsible.discriminator}`
+                reason: `Discipline ${this.user.username}#${this.user.discriminator}, responsible mod: ${this.responsible.username}#${this.responsible.discriminator}`
             });
 
             // rename it to its own ID
             await this.channel.setName(`int_d_${this.channel.id}`, `Incident assigned ID ${this.channel.id}`);
 
             // Send an initial message to the channel
-            this.message = await this.channel.send(`:hourglass_flowing_sand: <@${this.user.id}>, a recent incident involving you occurred in the guild. ${(this.type === 'mute' || this.type === 'preban' || this.type === 'tempban' || this.type === 'ban' ? "You have been muted in the guild for the time being for the safety of the community. " : "")}More information will be provided to you shortly; please wait while staff finish filling out information via the bot.`);
+            this.message = await this.channel.send(`:hourglass_flowing_sand: <@${this.user.id}>, staff are filling out an incident report regarding something you recently did in the guild. ${(this.type === 'mute' || this.type === 'preban' || this.type === 'tempban' || this.type === 'ban' ? "You have been muted in the guild for the time being for the safety of the community. " : "It is advised to refrain from engaging elsewhere in the guild for the moment. ")}More information will be provided to you shortly; please wait while staff finish telling me all the information to pass to you.`);
         }
 
         return this;
@@ -327,7 +327,7 @@ module.exports = class GuildDiscipline {
                 embed
                         .setTitle(`:warning: You have been issued a warning :warning:`)
                         .setDescription(`Everyone wants to enjoy their time here. But something you did recently was a bit out of line.
-Please review the below information. Staff would like to see you work on this concern, and learn from this encounter. Staff may need to issue discipline if this happens again.           
+Please review the below information. Staff would like to see you work on this concern and learn from this encounter. Staff may need to issue discipline if this happens again.           
 If you need assistance, or have any questions or concerns about this warning, feel free to post in this private channel with staff. They will be happy to help you. But please remain respectful.
 **You have 48 hours to dispute this warning in this text channel if you feel it was wrongly issued**. Leaving the guild, being disrespectful towards staff, or trying to discuss the matter outside of this channel will automatically make this warning final and unappealable.
 Thank you for your understanding and cooperation.`)
@@ -388,8 +388,8 @@ Thank you for your understanding and cooperation.`)
                 break;
             case 'ban':
                 embed
-                        .setTitle(`:no_entry_sign: You have been banned from the guild :no_entry_sign:`)
-                        .setDescription(`Your conduct in the guild cannot be tolerated any longer. Therefore, for the safety of the community, you have been banned. We wish you the best in your adventures and hope you enjoyed your stay in this guild.
+                        .setTitle(`:no_entry_sign: You have been banned from the guild indefinitely :no_entry_sign:`)
+                        .setDescription(`Your conduct in the guild cannot be tolerated any longer. Therefore, for the safety of the community, you are asked to leave the guild indefinitely. We wish you the best in your adventures and hope you enjoyed your stay in this guild.
 This channel is private between you and staff; you may communicate any questions or concerns you have here prior to leaving (once you leave, you will lose access to the guild).
 **You have 48 hours to dispute this ban in this text channel if you feel it was wrongly issued**. Leaving the guild, being disrespectful towards staff, or trying to discuss the matter outside of this channel will automatically make this ban final and unappealable.
 Thank you for your understanding and cooperation.`)

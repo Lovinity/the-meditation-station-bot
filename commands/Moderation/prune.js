@@ -16,9 +16,9 @@ module.exports = class extends Command {
     }
 
     async run(message, [limit = 50, filter = null]) {
-        var message = await message.send(`:hourglass_flowing_sand: Pruning messages (depending on the specified limit, this could take a while)...`);
+        var message = await message.send(`:hourglass_flowing_sand: Pruning messages (This might take a while)...`);
         await this.process(message, limit, filter);
-        return message.send(`:white_check_mark: Prune is complete!`);
+        return message.send(`:white_check_mark: I'm done pruning! All clean!`);
     }
 
     getFilter(message, filter, user) {

@@ -24,7 +24,7 @@ module.exports = class extends Event {
         // Pending suspension
         if (pendSuspensions && pendSuspensions.length > 0)
         {
-            pendSuspensions.forEach(function (suspension) {
+            pendSuspensions.map((suspension) => {
                 if (suspension.user === guildMember.id)
                 {
                     guildMember.ban({days: 7, reason: suspension.reason});
@@ -42,7 +42,7 @@ module.exports = class extends Event {
                                 guildMember.settings.update(`modLogs`, suspension.case, {action: 'add'});
                             });
                     if (_channel)
-                        _channel.send(`:wave: A pending suspension existed on <@!${guildMember.user.id}> (${guildMember.user.id}). It was applied.`);
+                        _channel.send(`:wave: A pending suspension / tempban existed on <@!${guildMember.user.id}> (${guildMember.user.id}). It was applied.`);
                 }
             });
         }
@@ -52,7 +52,7 @@ module.exports = class extends Event {
         // Pending bans
         if (pendBans && pendBans.length > 0)
         {
-            pendBans.forEach(function (ban) {
+            pendBans.map((ban) => {
                 if (ban.user === guildMember.id)
                 {
                     guildMember.ban({days: 7, reason: ban.reason});

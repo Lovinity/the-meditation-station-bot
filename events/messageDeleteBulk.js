@@ -15,7 +15,7 @@ module.exports = class extends Event {
         var data = ``;
         messages.array().sort(function (a, b) {
             return a.id - b.id;
-        }).forEach(function (message) {
+        }).map((message) => {
 
             // Remove XP/Yang
             if (typeof message.member !== 'undefined')
@@ -35,11 +35,11 @@ module.exports = class extends Event {
             data += `+++Message by ${message.author.username}#${message.author.discriminator} (${message.author.id}), ID ${message.id}, channel ${message.channel.name}+++\n`;
             data += `-Time: ${moment(message.createdAt).format()}\n`;
             // Write attachment URLs
-            message.attachments.array().forEach(function (attachment) {
+            message.attachments.array().map((attachment) => {
                 data += `-Attachment: ${attachment.url}\n`;
             });
             // Write embeds as JSON
-            message.embeds.forEach(function (embed) {
+            message.embeds.forEach((embed) => {
                 data += `-Embed: ${JSON.stringify(embed)}\n`;
             });
             // Write the clean version of the message content

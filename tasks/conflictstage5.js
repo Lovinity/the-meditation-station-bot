@@ -14,7 +14,7 @@ module.exports = class extends Task {
             await _channel.send(`:star: Give yourselves a pat on the back for taking the time to process this conflict in a civil way.
 
 If this conflict resolved peacefully, staff may, at their discretion, reward all parties involved for their effort in this.
-Thank you everyone for taking the time to resolve this conflict.
+Thank you everyone for taking the time to resolve this conflict. Conflict resolution has now ended and you may carry normal activity in this channel.
 `);
     }
     }

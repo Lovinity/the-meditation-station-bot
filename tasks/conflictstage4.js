@@ -19,7 +19,9 @@ module.exports = class extends Task {
             await _channel.send(`:four: Finally, now that we all have a better understanding of each other and the conflict, take these last 5 minutes to answer the following as a group:
             
 *What steps will you take, either now and/or in the future, to resolve this conflict and prevent it in the future?
-            `);   
+
+Those who were not involved in the conflict may also provide respectful input to the above question.
+`);   
     }
     }
 

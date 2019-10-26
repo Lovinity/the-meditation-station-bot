@@ -41,7 +41,7 @@ module.exports = class extends Event {
         const pendIncidents = guildMember.guild.settings.pendIncidents;
         if (pendIncidents && pendIncidents.length > 0)
         {
-            pendIncidents.forEach(function (incident) {
+            pendIncidents.map((incident) => {
                 if (incident.user === guildMember.id)
                 {
                     const channel = this.client.channels.get(incident.channel);

@@ -39,10 +39,10 @@ module.exports = class extends Command {
 
         messageArray.sort(function (a, b) {
             return a.id - b.id;
-        }).forEach(function (message) {
+        }).forEach((message) => {
 
             // Write attachments
-            message.attachments.array().forEach(function (attachment) {
+            message.attachments.array().forEach((attachment) => {
                 data += `<!+${attachment.url}>`;
             });
 

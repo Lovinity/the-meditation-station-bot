@@ -70,17 +70,19 @@ module.exports = class extends Command {
                 message.guild.raidScore(20);
 
                 // Send a message
-                return message.sendMessage(`:warning: **__Everyone, please take the next 5 minutes to calm down with this breathing exercise__** :warning:
+                return message.sendMessage(`Hey everyone, I understand there's a conflict going on here. We need to take a break; I've muted this channel for 5 minutes. 
+                
+                :warning: **__Please take the next 5 minutes to do this breathing exercise__** to help calm you down. :warning:
                 
 Take a deep, slow inhale through your nose for 4 counts. Hold for a count of 4. Then slowly exhale through your mouth for a count of 6. Repeat for the next 5 minutes, counting on each exhale.
 Use this gif to help you with the breathing exercise: https://giphy.com/gifs/breathing-8YfwmT1T8PsfC .
                 
-In 5 minutes, I will re-enable message sending and provide some questions to aid in resolving this conflict. Continuing this conversation elsewhere before the 5 minutes may result in staff intervention / discipline.
+In 5 minutes, I will re-enable message sending and provide some questions to aid in resolving this conflict. **Please make the staff's job easy and do not continue this discussion elsewhere**. Thank you!
 `);
             }
             // Member already used the command recently in this channel.
         } else {
-            return message.sendMessage(`:x: You already issued the conflict command in this channel within the last ${message.guild.settings.conflictResolutionTime} minutes.`);
+            return message.sendMessage(`:x: Oops, you can't issue the conflict command more than once within ${message.guild.settings.conflictResolutionTime} minutes.`);
     }
     }
 

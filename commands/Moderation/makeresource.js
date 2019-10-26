@@ -17,13 +17,13 @@ module.exports = class extends Command {
 
     async run(message, []) {
         if (message.attachments.size < 1)
-            return message.send(`:x: You need to provide a txt file with this command so I know how to generate the channel!`);
+            return message.send(`:x: I need a txt file to generate a channel!`);
 
         var data = [];
         var maps = message.attachments.array().map(attachment => {
             return new Promise((resolve, reject) => {
                 needle('get', attachment.url, {decode_response: false})
-                        .then(function (response) {
+                        .then((response) => {
                             var arr = response.body.split("<!NEW>");
                             arr.map((msg, index) => {
                                 var regExp = /<\!\+([^>]+)\>/g;

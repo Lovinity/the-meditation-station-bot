@@ -26,7 +26,7 @@ module.exports = class extends Command {
         // Error if this command was not executed in an incidents channel, and delete the message for user's confidentiality
         if (message.channel.parent && message.channel.parent.id !== message.guild.settings.incidentsCategory)
         {
-            await message.send(`:x: For your confidentiality, the report command may only be used in an incident channel (private channel between you and the staff). Please use the command !staff to create one.`);
+            await message.send(`:x: I don't want others knowing you're reporting someone. Please use the !report command in an incidents channel. You can use the command !staff to create one.`);
             return message.delete({reason: `Use of !report ourside an incidents channel. Deleted for confidentiality.`});
         }
 
@@ -46,10 +46,10 @@ module.exports = class extends Command {
         {
             // Do not activate the mute if already muted, not in the guild, or not activated by staff and not enough reports made yet
             if (guildMember && guildMember.roles.get(mutedRole.id))
-                return message.sendMessage(`:x: Thank you for your report. The member is already muted. Please use this channel to provide any further information or evidence of their misconduct.`);
+                return message.sendMessage(`:x: Your report was acknowledged, but the member is already muted. Please provide reasoning / evidence why you reported this member.`);
 
             if (guildMember && guildMember.roles.get(noSelfModRole.id))
-                return message.sendMessage(`:x: Thank you for your report. Unfortunately, you have the No Self Mod role, which means your report will not count towards muting the user. But you can continue to use this channel to provide information or evidence of their misconduct.`);
+                return message.sendMessage(`:x: I could not acknowledge your report because you had abused the report command in the past. You can still tell us here why you're reporting the member.`);
 
             // By this point, the report is authorized
 
@@ -69,17 +69,17 @@ module.exports = class extends Command {
             await user.guildSettings(message.guild.id).update(`reports`, `${message.author.id}`, {action: 'add'});
 
             if ((reports.length + 1) < reportMembers)
-                return message.sendMessage(`:white_check_mark: Thank you for your report. I have not deemed a mute necessary yet. Please provide information and evidence to their misconduct in this channel. Not doing so could be deemed !report abuse, and you could lose reporting privileges.`);
+                return message.sendMessage(`:white_check_mark: Your report was acknowledged. Not enough reports have been made yet for an auto-mute. Please explain why you reported the user here with evidence. Staff may revoke your !report privileges if you do not do so.`);
 
             var discipline = new GuildDiscipline(user, message.guild, this.client.user)
                     .setType('mute')
-                    .setReason(`${reportMembers} members have reported you for misconduct within the last ${reportTime} minutes. This does **not** guarantee you are in trouble; staff will investigate and determine. Please be patient.`);
+                    .setReason(`${reportMembers} members have reported you for misconduct within the last ${reportTime} minutes. This does **not** guarantee you are in trouble; staff will investigate and determine what to do. Please be patient.`);
             discipline = await discipline.prepare();
             await discipline.finalize();
 
-            return message.sendMessage(`:mute: Thank you for your report. I have deemed it necessary to mute the user until staff investigate. Please provide information and evidence in this channel of their misconduct. Not doing so could deem this !report as abuse, and you could lose reporting privileges.`);
+            return message.sendMessage(`:mute: Your report was acknowledged. Other members reported this user, therefore I muted them. Please explain why you reported the user here with evidence. Staff may revoke your !report privileges if you do not do so.`);
         } else {
-            return message.sendMessage(`:x: It looks like you already reported this user recently. Feel free to provide any / additional information and evidence of their misconduct in this channel.`);
+            return message.sendMessage(`:x: It looks like you already reported this user recently, so I could not acknowledge your report. Feel free to provide any / additional information and evidence of their misconduct in this channel.`);
     }
 
     }

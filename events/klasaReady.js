@@ -41,7 +41,7 @@ module.exports = class extends Event {
         }
 
         // Iterate through guild operations on bot startup
-        this.client.guilds.each(function (guild) {
+        this.client.guilds.each((guild) => {
 
             // Kick self if the guild is black listed
             if (!guild.available)
@@ -66,7 +66,7 @@ module.exports = class extends Event {
             }
 
             // Cache the last (default #) messages in all channels
-            guild.channels.each(function (channel) {
+            guild.channels.each((channel) => {
                 if (channel.type === 'text')
                     channel.messages.fetch();
             });
@@ -75,12 +75,12 @@ module.exports = class extends Event {
             const verified = guild.settings.verifiedRole;
             const verifiedRole = guild.roles.get(verified);
             if (verifiedRole) {
-                guild.members.each(function (guildMember) {
+                guild.members.each((guildMember) => {
                     // Member has the verified role. Update database with the current roles set in case anything changed since bot was down.
                     if (guildMember.roles.get(verifiedRole.id)) {
                         var roleArray = [];
                         guildMember.settings.reset(`roles`);
-                        guildMember.roles.each(function (role) {
+                        guildMember.roles.each((role) => {
                             if (role.id !== guild.defaultRole.id)
                                 guildMember.settings.update(`roles`, role, guild, { action: 'add' });
                         });
@@ -102,7 +102,7 @@ module.exports = class extends Event {
                     }
                 });
             } else {
-                guild.members.each(function (guildMember) {
+                guild.members.each((guildMember) => {
                     updateLevels(guildMember);
                 });
             }

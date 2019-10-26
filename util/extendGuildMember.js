@@ -33,21 +33,21 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                     if (this.spamScoreStamp === null || moment().subtract(60, 'seconds').isAfter(moment(this.spamScoreStamp)))
                     {
                         console.log(`Sent warning`);
-                        var response = `:warning: <@${message.author.id}> **__Antispam Verbal Warning__: Please take a break from sending messages for about ${moment.duration(this.guild.settings.antispamCooldown > 0 ? (currentScore / this.guild.settings.antispamCooldown) + 1 : 0, 'minutes').format("m [Minutes]")}**. `;
+                        var response = `:warning: <@${message.author.id}> **__Antispam__: Woah now! Please take a break from sending messages for about ${moment.duration(this.guild.settings.antispamCooldown > 0 ? (currentScore / this.guild.settings.antispamCooldown) + 1 : 0, 'minutes').format("m [Minutes]")}**. `;
                         if (isMuted)
                         {
-                            response += `__**Ignoring this may result in getting kicked from the guild and losing your freedom to argue an appeal to your discipline**__ .`;
+                            response += `__**Otherwise, I'll have to kick you from the guild, causing any bans to apply and you to lose any opportunity to appeal active discipline**__ .`;
                         } else if (this.guild.settings.raidMitigation >= 3)
                         {
-                            response += `__**Ignoring this may result in a permanent ban**__`;
+                            response += `__**Otherwise, I'll have to ban you indefinitely.**__`;
                         } else if (this.guild.settings.raidMitigation >= 2)
                         {
-                            response += `__**Ignoring this may result in a 24-hour suspension**__`;
+                            response += `__**Otherwise, I'll have to ban you for 24 hours.**__`;
                         } else if (this.guild.settings.raidMitigation >= 1)
                         {
-                            response += `**Ignoring this may result in being muted until staff manually un-mute you.**`;
+                            response += `**Otherwise, I'll have to mute you until staff speak with and manually unmute you.**`;
                         } else {
-                            response += `**Ignoring this may result in a 30-minute mute.**`;
+                            response += `**Otherwise, I'll have to mute you for 30 minutes.**`;
                         }
                         message.channel.send(response);
                         this.spamScoreStamp = moment();

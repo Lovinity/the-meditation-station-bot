@@ -20,6 +20,8 @@ module.exports = class extends Task {
 
 *Empathize with the other members involved. Write up what your own understanding is of the other members' perspectives. This is about **them**, not you. Stay objective and leave personal bias, insults, and blaming out.
 *When a misunderstanding is noticed, politely and objectively correct the misunderstandings without using insults, blames, nor defensive language.
+
+Those not involved in the conflict, please be patient and remain silent.
 `);   
     }
     }

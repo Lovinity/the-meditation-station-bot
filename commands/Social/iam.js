@@ -18,14 +18,14 @@ module.exports = class extends Command {
 
     async run(message, [role]) {
         if (message.channel.id !== message.guild.settings.botChannel)
-            return message.send(`:x: Sorry, but this command may only be used in the bot channel.`);
+            return message.send(`:x: No spammy whammy! Please use this command in the bot channel.`);
         
         if (message.guild.settings.selfRoles.indexOf(role.id) === -1)
-            return message.send(`:x: The provided role cannot be self-assigned.`);
+            return message.send(`:x: Worthy effort, but you can't give yourself that role.`);
         
         await message.member.roles.add(role, `!iam command`);
         
-        return message.send(`:white_check_mark: I attempted to add the role to you.`);
+        return message.send(`:white_check_mark: I added that role to you.`);
     }
 
 };

@@ -60,7 +60,7 @@ module.exports = class extends Extendable {
         score = Math.ceil(parseInt(score));
 
         // If the message begins with any bot prefixes, consider it a bot command and do not score XP for it.
-        botPrefixes.forEach((prefix) => {
+        botPrefixes.map((prefix) => {
             if (this.content.startsWith(prefix))
                 score = 0;
         });

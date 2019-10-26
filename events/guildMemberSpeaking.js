@@ -9,8 +9,7 @@ module.exports = class extends Event {
     }
 
     run(guildMember, speaking) {
-        // This event is not firing at this time
-        // TODO: when this event starts firing again correctly, program speaking XP
+        console.log(`Speaking ${guildMember.id}? ${speaking}`)
     }
 
 };
