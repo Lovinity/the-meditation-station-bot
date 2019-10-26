@@ -99,7 +99,7 @@ var client = new Client({
     slowmodeAggressive: true,
     providers: {
         default: 'mysql',
-        mongodb: config.providers.mysql
+        mysql: config.providers.mysql
     },
     // Add custom permissions
     permissionLevels: new PermissionLevels()
