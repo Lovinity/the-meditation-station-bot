@@ -12,7 +12,7 @@ module.exports = class extends Event {
         if (!modLog)
             return;
 
-        const _channel = this.client.channels.get(modLog);
+        const _channel = this.client.channels.resolve(modLog);
 
         // send a log to the channel
         if (_channel)

@@ -6,7 +6,7 @@ Structures.extend('TextChannel', TextChannel => {
 		constructor(...args) {
 			super(...args);
 
-			this.settings = this.client.gateways.channels.get(`${this.guild.id}-${this.id}`, true);
+			this.settings = this.client.gateways.channels.resolve(`${this.guild.id}-${this.id}`, true);
 		}
 
 	}
@@ -20,7 +20,7 @@ Structures.extend('CategoryChannel', CategoryChannel => {
 		constructor(...args) {
 			super(...args);
 
-			this.settings = this.client.gateways.channels.get(`${this.guild.id}-${this.id}`, true);
+			this.settings = this.client.gateways.channels.resolve(`${this.guild.id}-${this.id}`, true);
 		}
 
 	}
@@ -34,7 +34,7 @@ Structures.extend('VoiceChannel', VoiceChannel => {
 		constructor(...args) {
 			super(...args);
 
-			this.settings = this.client.gateways.channels.get(`${this.guild.id}-${this.id}`, true);
+			this.settings = this.client.gateways.channels.resolve(`${this.guild.id}-${this.id}`, true);
 		}
 
 	}

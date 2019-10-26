@@ -17,7 +17,7 @@ module.exports = class extends Monitor {
 
     run(message) {
         // Delete discord invites
-        if (/(https?:\/\/)?(www\.)?(discord\.(gg|li|me|io)|discordapp\.com\/invite)\/.+/.test(message.content) && !message.member.roles.get(message.guild.settings.modRole))
+        if (/(https?:\/\/)?(www\.)?(discord\.(gg|li|me|io)|discordapp\.com\/invite)\/.+/.test(message.content) && !message.member.roles.resolve(message.guild.settings.modRole))
         {
             message.channel.send(`:x: <@${message.author.id}>, please contact a staff member if you want to promote a server.`);
             message.delete();

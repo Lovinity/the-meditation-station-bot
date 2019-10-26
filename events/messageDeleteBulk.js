@@ -50,7 +50,7 @@ module.exports = class extends Event {
         if (!modLog)
             return;
 
-        const _channel = this.client.channels.get(modLog);
+        const _channel = this.client.channels.resolve(modLog);
 
         // Create a buffer with the data
         var buffer = new Buffer(data, "utf-8");

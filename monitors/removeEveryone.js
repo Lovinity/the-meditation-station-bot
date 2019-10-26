@@ -19,7 +19,7 @@ module.exports = class extends Monitor {
         // Delete discord invites
         if (message.content.includes("@everyone"))
         {
-            if (message.guild.settings.modRole && !message.member.roles.get(message.guild.settings.modRole))
+            if (message.guild.settings.modRole && !message.member.roles.resolve(message.guild.settings.modRole))
             {
                 message.channel.send(`:x: <@${message.author.id}>, only staff may use the everyone mention.`);
                 message.delete();

@@ -6,7 +6,7 @@ const moment = require('moment');
 module.exports = class extends Task {
 
     async run( { channel }) {
-        const _channel = this.client.channels.get(channel);
+        const _channel = this.client.channels.resolve(channel);
         if (_channel) {
             // Set a 5 minute timer for the closing message
             const conflictstage5 = await this.client.schedule.create('conflictstage5', moment().add(5, 'minutes').toDate(), {

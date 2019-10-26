@@ -6,17 +6,17 @@ module.exports = class extends Task {
 
     async run( { user, guild, incidentsChannel }) {
         // Get the user
-        const _user = this.client.users.get(user);
+        const _user = this.client.users.resolve(user);
         if (_user)
         {
 
-            const _guild = this.client.guilds.get(guild);
+            const _guild = this.client.guilds.resolve(guild);
             if (_guild)
             {
                 // Remove the ban
                 await _guild.members.unban(_user, `Temporary ban expired.`);
                 
-                const logchannel = _guild.channels.get(_guild.settings.modLogChannel);
+                const logchannel = _guild.channels.resolve(_guild.settings.modLogChannel);
 
                 if (logchannel)
                 {
@@ -26,7 +26,7 @@ module.exports = class extends Task {
                 // Announce in the inbcidents channel that the mute is expired
                 if (incidentsChannel !== null)
                 {
-                    const channel = _guild.channels.get(incidentsChannel);
+                    const channel = _guild.channels.resolve(incidentsChannel);
                     if (channel)
                     {
                         channel.send(`:speech_left: Your temp ban has expired.`);

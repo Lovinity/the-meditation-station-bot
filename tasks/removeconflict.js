@@ -5,7 +5,7 @@ const { Task } = require('klasa');
 module.exports = class extends Task {
 
 	async run({ channel, user }) {
-		const _channel = this.client.channels.get(channel);
+		const _channel = this.client.channels.resolve(channel);
 		if (_channel) await _channel.settings.update('conflictResolution', `${channel}-${user}`, {action: 'remove'});
 	}
 

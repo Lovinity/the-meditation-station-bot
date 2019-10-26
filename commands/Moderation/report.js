@@ -30,25 +30,25 @@ module.exports = class extends Command {
             return message.delete({reason: `Use of !report ourside an incidents channel. Deleted for confidentiality.`});
         }
 
-        // First, get configured settings
+        // First, resolve configured settings
         const reports = user.guildSettings(message.guild.id).reports;
         const reportMembers = message.guild.settings.reportMembers || 3;
         const reportTime = moment().add(parseInt(message.guild.settings.reportTime), 'minutes').toDate();
         const muted = message.guild.settings.muteRole;
-        const mutedRole = message.guild.roles.get(muted);
+        const mutedRole = message.guild.roles.resolve(muted);
         const noSelfMod = message.guild.settings.noSelfModRole;
-        const noSelfModRole = message.guild.roles.get(noSelfMod);
-        const guildMember = message.guild.members.get(user.id);
+        const noSelfModRole = message.guild.roles.resolve(noSelfMod);
+        const guildMember = message.guild.members.resolve(user.id);
         const incidents = message.guild.settings.incidentsCategory;
 
         // Check if this specific member used the conflict command on the user recently. If not, add an entry.
         if (reports.indexOf(`${message.author.id}`) === -1)
         {
             // Do not activate the mute if already muted, not in the guild, or not activated by staff and not enough reports made yet
-            if (guildMember && guildMember.roles.get(mutedRole.id))
+            if (guildMember && guildMember.roles.resolve(mutedRole.id))
                 return message.sendMessage(`:x: Your report was acknowledged, but the member is already muted. Please provide reasoning / evidence why you reported this member.`);
 
-            if (guildMember && guildMember.roles.get(noSelfModRole.id))
+            if (guildMember && guildMember.roles.resolve(noSelfModRole.id))
                 return message.sendMessage(`:x: I could not acknowledge your report because you had abused the report command in the past. You can still tell us here why you're reporting the member.`);
 
             // By this point, the report is authorized

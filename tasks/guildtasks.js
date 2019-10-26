@@ -6,7 +6,7 @@ const {MessageEmbed} = require('discord.js');
 module.exports = class extends Task {
 
     async run( { guild }) {
-        const _guild = this.client.guilds.get(guild);
+        const _guild = this.client.guilds.resolve(guild);
         if (_guild)
         {
             // Antispam cooldown
@@ -39,7 +39,7 @@ module.exports = class extends Task {
                 themessage = themessage + `Anti-raid mitigation: **${raidMitigation}** \n`;
 
 
-                _guild.channels.get(statsMessageChannel).messages.fetch(statsMessage)
+                _guild.channels.resolve(statsMessageChannel).messages.fetch(statsMessage)
                         .then(message => message.edit(themessage));
             }
 
@@ -51,7 +51,7 @@ module.exports = class extends Task {
             if (m === 0 && (h === 6 || h === 12 || h === 18 || h === 0))
             {
                 const iceBreakerChannel = _guild.settings.iceBreakerChannel;
-                const _channel = this.client.channels.get(iceBreakerChannel);
+                const _channel = this.client.channels.resolve(iceBreakerChannel);
                 if (_channel)
                 {
                     var iceBreakers = _guild.settings.icebreakers;
@@ -85,10 +85,10 @@ ${iceBreakers[Math.floor(Math.random() * iceBreakers.length)]}
             {
                 // Remove raidRole
                 _guild.members.each((guildMember) => {
-                    var raidRole = _guild.roles.get(_guild.settings.raidRole);
+                    var raidRole = _guild.roles.resolve(_guild.settings.raidRole);
                     if (raidRole)
                     {
-                        if (guildMember.roles.get(raidRole.id))
+                        if (guildMember.roles.resolve(raidRole.id))
                         {
                             guildMember.roles.remove(raidRole, `Raid mitigation expired`);
                         }
@@ -100,7 +100,7 @@ ${iceBreakers[Math.floor(Math.random() * iceBreakers.length)]}
 
                 // Send announcement
                 var channel = _guild.settings.announcementsChannel;
-                const _channel = this.client.channels.get(channel);
+                const _channel = this.client.channels.resolve(channel);
                 if (_channel)
                 {
                     var response = `:ballot_box_with_check: **Raid mitigation has ended** :ballot_box_with_check: 
@@ -148,7 +148,7 @@ ${_guild.settings.raidMitigation >= 3 ? `**Please remember to re-generate invite
             {
                 console.log(`trivia`);
                 const botGamesChannel = _guild.settings.botGamesChannel;
-                const _channel = this.client.channels.get(botGamesChannel);
+                const _channel = this.client.channels.resolve(botGamesChannel);
                 if (_channel)
                 {
                     console.log(`channel`);

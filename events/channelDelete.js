@@ -11,7 +11,7 @@ module.exports = class extends Event {
         if (!modLog || channel.type !== 'text')
             return;
         
-        const _channel = this.client.channels.get(modLog);
+        const _channel = this.client.channels.resolve(modLog);
 
         // Initiate data variable
         var data = `ARCHIVE of deleted text channel ${channel.name}, ID ${channel.id}\nCreated on ${moment(channel.createdAt).format()}\nDeleted on ${moment().format()}\n\n`;

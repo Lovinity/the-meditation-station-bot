@@ -19,7 +19,7 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                 if (message.author.id === this.client.user.id)
                     return null;
 
-                var isMuted = (this.roles.get(this.guild.settings.muteRole));
+                var isMuted = (this.roles.resolve(this.guild.settings.muteRole));
 
                 // Update the score
                 var currentScore = this.settings.spamScore;
@@ -146,7 +146,7 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                             message.channel.send(`:tada: **Congratulations <@${this.id}>, you earned the ${levelRole.name} role!**`);
                         } else {
                             var channel = this.guild.settings.generalChannel;
-                            var _channel = this.guild.channels.get(channel);
+                            var _channel = this.guild.channels.resolve(channel);
                             if (_channel)
                                 _channel.send(`:tada: **Congratulations <@${this.id}>, you earned the ${levelRole.name} role!**`);
                         }

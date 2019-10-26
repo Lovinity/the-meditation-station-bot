@@ -65,13 +65,13 @@ module.exports = class GuildDiscipline {
     async prepare() {
         // Get the configured muted role
         const muted = this.guild.settings.muteRole;
-        const mutedRole = this.guild.roles.get(muted);
+        const mutedRole = this.guild.roles.resolve(muted);
 
         // error if there is no muted role
         if (!mutedRole)
             throw `muteRole must be configured for this guild before discipline can be issued.`;
 
-        var guildMember = this.guild.members.get(this.user.id);
+        var guildMember = this.guild.members.resolve(this.user.id);
 
         if (this.type === 'mute' || this.type === 'preban' || this.type === 'tempban' || this.type === 'ban')
         {
@@ -161,13 +161,13 @@ module.exports = class GuildDiscipline {
     async finalize() {
         // Get the configured muted role
         const muted = this.guild.settings.muteRole;
-        const mutedRole = this.guild.roles.get(muted);
+        const mutedRole = this.guild.roles.resolve(muted);
 
         // error if there is no muted role
         if (!mutedRole)
             throw `muteRole must be configured for this guild before discipline can be issued.`;
 
-        var guildMember = this.guild.members.get(this.user.id);
+        var guildMember = this.guild.members.resolve(this.user.id);
 
         // Init the message embed
         const embed = new MessageEmbed();
@@ -212,7 +212,7 @@ module.exports = class GuildDiscipline {
             await this.user.guildSettings(this.guild.id).update(`xp`, (this.user.guildSettings(this.guild.id).xp - this.xp));
 
             // Update level roles
-            var guildMember = this.guild.members.get(this.user);
+            var guildMember = this.guild.members.resolve(this.user);
             if (guildMember)
             {
                 var levelRoles = {};
@@ -411,14 +411,14 @@ Thank you for your understanding and cooperation.`)
     async cancel() {
         // Get the configured muted role
         const muted = this.guild.settings.muteRole;
-        const mutedRole = this.guild.roles.get(muted);
+        const mutedRole = this.guild.roles.resolve(muted);
 
         // error if there is no muted role
         if (!mutedRole)
             throw `muteRole must be configured for this guild before discipline can be issued.`;
 
         // Remove the mute role
-        var guildMember = this.guild.members.get(this.user.id);
+        var guildMember = this.guild.members.resolve(this.user.id);
 
         if (this.type === 'ban' || this.type === 'tempban' || this.type === 'mute')
         {

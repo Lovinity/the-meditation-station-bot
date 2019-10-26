@@ -69,8 +69,8 @@ ${mute ? `**You have been muted from the rest of the guild until staff speak wit
                 if (mute)
                 {
                     const muted = message.guild.settings.muteRole;
-                    const mutedRole = message.guild.roles.get(muted);
-                    var guildMember = message.guild.members.get(user.id);
+                    const mutedRole = message.guild.roles.resolve(muted);
+                    var guildMember = message.guild.members.resolve(user.id);
 
                     if (mutedRole)
                     {

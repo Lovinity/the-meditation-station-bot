@@ -104,7 +104,7 @@ Use number reactions to select an action, or stop to exit.`)
                                 await user.guildSettings(message.guild.id).update(`modLogs`, log, { action: 'remove' });
                                 log.valid = false;
                                 await user.guildSettings(message.guild.id).update(`modLogs`, log, { action: 'add' });
-                                const channel2 = message.guild.channels.get(message.guild.settings.modLogChannel);
+                                const channel2 = message.guild.channels.resolve(message.guild.settings.modLogChannel);
                                 if (channel2) {
                                     channel2.send(`:negative_squared_cross_mark: Case ${log.case} (A ${log.type} against ${log.user.tag}) was removed by ${message.author.tag} (${message.author.id}), but the discipline remains in place.`);
                                 }
@@ -124,7 +124,7 @@ Use number reactions to select an action, or stop to exit.`)
                                     user.guildSettings(message.guild.id).update(`badRep`, (user.guildSettings(message.guild.id).badRep - log.discipline.reputation));
                                 }
 
-                                const guildMember = message.guild.members.get(user.id);
+                                const guildMember = message.guild.members.resolve(user.id);
 
                                 if (log.type === 'tempban' || log.type === 'ban') {
                                     if (log.discipline.schedule !== null)
@@ -165,7 +165,7 @@ Use number reactions to select an action, or stop to exit.`)
 
                                     // Get the configured muted role
                                     const muted = message.guild.settings.muteRole;
-                                    const mutedRole = message.guild.roles.get(muted);
+                                    const mutedRole = message.guild.roles.resolve(muted);
 
                                     // Add the mute role to the user, if the user is in the guild
                                     if (guildMember) {
@@ -186,13 +186,13 @@ Use number reactions to select an action, or stop to exit.`)
                                 }
 
                                 if (log.channel !== null) {
-                                    const channel = message.guild.channels.get(log.channel);
+                                    const channel = message.guild.channels.resolve(log.channel);
                                     if (channel) {
                                         channel.send(`:negative_squared_cross_mark: This incident has been appealed by ${message.author.tag} (${message.author.id}), and issued discipline was reversed.`);
                                     }
                                 }
 
-                                const channel2 = message.guild.channels.get(message.guild.settings.modLogChannel);
+                                const channel2 = message.guild.channels.resolve(message.guild.settings.modLogChannel);
                                 if (channel2) {
                                     channel2.send(`:negative_squared_cross_mark: Case ${log.case} (A ${log.type} against ${log.user.tag}) was appealed by ${message.author.tag} (${message.author.id}), and all discipline reversed.`);
                                 }

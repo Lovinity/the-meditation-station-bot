@@ -73,11 +73,11 @@ module.exports = class extends Event {
 
             // Cycle through all the members without the verified role and assign them the stored roles
             const verified = guild.settings.verifiedRole;
-            const verifiedRole = guild.roles.get(verified);
+            const verifiedRole = guild.roles.resolve(verified);
             if (verifiedRole) {
                 guild.members.each((guildMember) => {
                     // Member has the verified role. Update database with the current roles set in case anything changed since bot was down.
-                    if (guildMember.roles.get(verifiedRole.id)) {
+                    if (guildMember.roles.resolve(verifiedRole.id)) {
                         var roleArray = [];
                         guildMember.settings.reset(`roles`);
                         guildMember.roles.each((role) => {
@@ -95,7 +95,7 @@ module.exports = class extends Event {
 
                         // Also if the guild is under a raid mitigation level 2+, assign the mitigation role to the new member.
                         if (guildMember.guild.settings.raidMitigation > 1) {
-                            const raidRole = guildMember.guild.roles.get(guildMember.guild.settings.raidRole);
+                            const raidRole = guildMember.guild.roles.resolve(guildMember.guild.settings.raidRole);
                             if (raidRole)
                                 guildMember.roles.add(raidRole, `Raid mitigation is active`);
                         }
@@ -109,7 +109,7 @@ module.exports = class extends Event {
 
             // Remove invites that have no inviter (raid prevention)
             const modLog = guild.settings.modLogChannel;
-            const _channel = guild.channels.get(modLog);
+            const _channel = guild.channels.resolve(modLog);
             guild.fetchInvites()
                 .then(invites => {
                     invites

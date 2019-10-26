@@ -16,7 +16,7 @@ Structures.extend('Guild', Guild => class MyGuild extends Guild {
 
                 // Get announcements channel
                 var channel = this.settings.announcementsChannel;
-                const _channel = this.client.channels.get(channel);
+                const _channel = this.client.channels.resolve(channel);
 
                 // Activate raid mitigation if necessary
                 if (newScore >= 60 && mitigation < 1)

@@ -6,7 +6,7 @@ const moment = require('moment');
 module.exports = class extends Task {
 
     async run( { channel }) {
-        const _channel = this.client.channels.get(channel);
+        const _channel = this.client.channels.resolve(channel);
         if (_channel) {
 // rename the channel to remove "-MUTED", taking the channel mute off
             await _channel.setName(_channel.name.replace("-muted", ""), 'Channel mute expired');

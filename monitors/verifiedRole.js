@@ -20,10 +20,10 @@ module.exports = class extends Monitor {
         if (message.type !== 'DEFAULT')
             return null;
         const verified = message.guild.settings.verifiedRole;
-        const verifiedRole = message.guild.roles.get(verified);
+        const verifiedRole = message.guild.roles.resolve(verified);
         if (verifiedRole)
         {
-            if (!message.member.roles.get(verifiedRole.id))
+            if (!message.member.roles.resolve(verifiedRole.id))
                 message.member.roles.add(verifiedRole, `Member is verified`);
         }
     }

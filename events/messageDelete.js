@@ -51,7 +51,7 @@ module.exports = class extends Event {
                 .setAuthor(message.author.tag, message.author.displayAvatarURL())
                 .setFooter(`Message created **${message.createdAt}** in channel **${message.channel.name}**`);
 
-        const _channel = this.client.channels.get(modLog);
+        const _channel = this.client.channels.resolve(modLog);
 
         // Write attachment URLs
         message.attachments.array().map((attachment) => {

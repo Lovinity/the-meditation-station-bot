@@ -7,7 +7,7 @@ function resolveRole(query, guild) {
     if (query instanceof Role)
         return guild.roles.has(query.id) ? query : null;
     if (typeof query === 'string' && ROLE_REGEXP.test(query))
-        return guild.roles.get(ROLE_REGEXP.exec(query)[1]);
+        return guild.roles.resolve(ROLE_REGEXP.exec(query)[1]);
     return null;
 }
 

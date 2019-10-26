@@ -101,7 +101,7 @@ module.exports = class extends Extendable {
             score = 0;
 
         // If the user is muted, no XP for them!
-        if (this.member && this.guild && this.member.roles.get(this.guild.settings.muteRole))
+        if (this.member && this.guild && this.member.roles.resolve(this.guild.settings.muteRole))
             score = 0;
 
         // Activate reputation earning if XP score is at least 2
