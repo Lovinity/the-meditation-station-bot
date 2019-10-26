@@ -1,8 +1,8 @@
 {
   "name": "the-meditation-station-bot",
   "version": "1.1.0",
-  "description": "This is a Klasa bot used for Thoughtversity Discord",
-  "main": "index.js",
+  "description": "This is a Klasa bot",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
