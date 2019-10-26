@@ -41,17 +41,3 @@ Structures.extend('VoiceChannel', VoiceChannel => {
 
 	return MyVoiceChannel;
 });
-
-Structures.extend('GuildChannel', GuildChannel => {
-	class MyGuildChannel extends GuildChannel {
-
-		constructor(...args) {
-			super(...args);
-
-			this.settings = this.client.gateways.channels.get(`${this.guild.id}-${this.id}`, true);
-		}
-
-	}
-
-	return MyGuildChannel;
-});
