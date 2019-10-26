@@ -109,7 +109,7 @@ module.exports = class GuildDiscipline {
 
             // Add deny permissions for @everyone
             overwrites.push({
-                id: this.guild.defaultRole,
+                id: this.guild.roles.everyone,
                 deny: [
                     "VIEW_CHANNEL",
                 ],

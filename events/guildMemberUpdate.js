@@ -7,7 +7,7 @@ module.exports = class extends Event {
         // Update the roles in the database
         newMember.settings.reset(`roles`);
         newMember.roles.each((role) => {
-            if (role.id !== newMember.guild.defaultRole.id)
+            if (role.id !== newMember.guild.roles.everyone.id)
                 newMember.settings.update(`roles`, role, newMember.guild, {action: 'add'});
         });
 

@@ -81,7 +81,7 @@ module.exports = class extends Event {
                         var roleArray = [];
                         guildMember.settings.reset(`roles`);
                         guildMember.roles.each((role) => {
-                            if (role.id !== guild.defaultRole.id)
+                            if (role.id !== guild.roles.everyone.id)
                                 guildMember.settings.update(`roles`, role, guild, { action: 'add' });
                         });
                         updateLevels(guildMember);

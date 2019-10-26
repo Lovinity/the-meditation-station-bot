@@ -118,7 +118,7 @@ Thank you, <@${message.author.id}>!
 
         // Add deny permissions for @everyone
         overwrites.push({
-            id: msg.channel.guild.defaultRole,
+            id: msg.channel.guild.roles.everyone,
             deny: [
                 "VIEW_CHANNEL",
             ],
