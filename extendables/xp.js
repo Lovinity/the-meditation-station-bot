@@ -64,6 +64,29 @@ module.exports = class extends Extendable {
                 score = 0;
         });
 
+        // If this message has more than 50% capitals, no XP
+        var uppercase = this.cleanContent.replace(/[^A-Z]/g, "").length;
+        var lowercase = this.cleanContent.replace(/[^a-z]/g, "").length;
+
+        if (uppercase >= lowercase)
+        {
+            score = 0;
+        }
+
+        // If the message contains 3 or more profane words, no XP
+        var profane = 0
+        config.profanity.map((word) => {
+            var numbers = getIndicesOf(word, this.cleanContent, false);
+            if (numbers.length > 0)
+            {
+                profane++;
+            }
+        });
+
+        if (profane >= 3) {
+            score = 0;
+        }
+
         // Calculate how many seconds this message took to type based off of 7 characters per second.
         var messageTime = (this.cleanContent.length / 7);
 
@@ -92,9 +115,9 @@ module.exports = class extends Extendable {
         if (/(.)\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1/.test(this.content.toLowerCase()))
             score = 0;
 
-        // If the message contains 10 or more new lines, consider it too spammy to earn any XP.
+        // If the message contains 20 or more new lines, consider it too spammy to earn any XP.
         var newlines = this.content.split(/\r\n|\r|\n/).length;
-        if (newlines > 9)
+        if (newlines > 19)
             score = 0;
 
         // If the user is muted, no XP for them!
