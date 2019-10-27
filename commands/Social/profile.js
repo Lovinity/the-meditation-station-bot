@@ -577,7 +577,7 @@ module.exports = class extends Command {
 
 
 function wrapText(ctx, text, maxWidth) {
-    const words = text.split(' ');
+    const words = text === null ? [] : text.split(' ');
     let lines = [];
     let line = '';
 
