@@ -163,9 +163,9 @@ module.exports = class GuildDiscipline {
         var guildMember = this.guild.members.resolve(this.user.id);
 
         // Init the message
-        const msg = ``; // Intro / reason
-        const msg2 = "The following discipline has been issued: \n\n"; // Discipline / Accountability
-        const msg3 = ``; // Appeals / Closing / not in the guild
+        var msg = ``; // Intro / reason
+        var msg2 = "The following discipline has been issued: \n\n"; // Discipline / Accountability
+        var msg3 = ``; // Appeals / Closing / not in the guild
 
         // Update the incidents channel with relevant information
         if (this.message !== null)
