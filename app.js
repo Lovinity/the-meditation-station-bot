@@ -65,21 +65,21 @@ Client.defaultMemberSchema
     .add('spamScore', 'integer', { default: 0 })
     .add('profile', folder => {
         folder
-            .add('title', 'string', { default: 'Member' })
-            .add('gender', 'string', { default: '' })
-            .add('pronouns', 'string', { default: '' })
-            .add('dob', 'string', { default: '' })
-            .add('location', 'string', { default: 'Earth' })
-            .add('factions', 'string', { default: '' })
-            .add('info', 'string', { default: '' })
-            .add('donations', 'number', { default: 0 })
+            .add('title', 'string')
+            .add('gender', 'string')
+            .add('pronouns', 'string')
+            .add('dob', 'string')
+            .add('location', 'string')
+            .add('factions', 'string')
+            .add('info', 'string')
+            .add('donations', 'float', { default: 0 })
             .add('badges', 'url', { array: true })
             .add('background', 'url')
             .add('profileColor', folder2 => {
                 folder2
-                    .add('hue', 'number', { default: 0, min: 0, max: 0 })
-                    .add('saturation', 'number', { default: 0, min: 0, max: 100 })
-                    .add('lightness', 'number', { default: 100, min: 0, max: 1000 });
+                    .add('hue', 'float', { default: 0, min: 0, max: 0 })
+                    .add('saturation', 'float', { default: 0, min: 0, max: 100 })
+                    .add('lightness', 'float', { default: 100, min: 0, max: 1000 });
             });
     })
     .add('modLogs', 'any', { array: true })
@@ -98,8 +98,8 @@ var client = new Client({
     slowmode: 3000,
     slowmodeAggressive: true,
     providers: {
-        default: 'rethinkdb',
-        rethinkdb: config.providers.rethinkdb
+        default: 'mysql',
+        mysql: config.providers.mysql
     },
     // Add custom permissions
     permissionLevels: new PermissionLevels()
@@ -120,7 +120,7 @@ var client = new Client({
 
 // Add a channels gateway
 client.gateways.register('channels', {
-    provider: 'rethinkdb',
+    provider: 'mysql',
     schema: new Schema()
         .add('conflictResolution', 'string', { array: true })
 });
