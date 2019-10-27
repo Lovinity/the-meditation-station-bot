@@ -88,7 +88,7 @@ module.exports = class extends Command {
         if (user === null || user.id === message.author.id)
         {
             user = message.author;
-            if (user.guildSettings(message.guild.id).profile.dob !== "")
+            if (user.guildSettings(message.guild.id).profile.dob !== "" && user.guildSettings(message.guild.id).profile.dob !== null)
                 return message.send(`:x: You already set your birthday. Please contact staff if you put the wrong birthday.`);
         } else {
             const {permission} = await this.client.permissionLevels.run(message, 4);
