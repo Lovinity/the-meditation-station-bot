@@ -15,7 +15,7 @@ module.exports = class extends Monitor {
         });
     }
 
-    run(message) {
+    async run(message) {
         // Delete discord invites
         const { permission } = await this.client.permissionLevels.run(message, 4);
         if (/(https?:\/\/)?(www\.)?(discord\.(gg|li|me|io)|discordapp\.com\/invite)\/.+/.test(message.content) && !permission)

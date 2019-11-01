@@ -15,7 +15,7 @@ module.exports = class extends Monitor {
         });
     }
 
-    run (message) {
+    async run (message) {
         if (message.type !== 'DEFAULT')
             return null;
         const { permission } = await this.client.permissionLevels.run(message, 4);
