@@ -112,8 +112,8 @@ module.exports = class extends SQLProvider {
 			value = key;
 			key = 'id';
 		}
-		return this.run(`SELECT * FROM ${sanitizeKeyName(table)} WHERE ${sanitizeKeyName(key)} = ${sanitizeInput(value)} LIMIT 1;`)
-			.then(result => this.parseEntry(table, result));
+		return JSON.parse(this.run(`SELECT * FROM ${sanitizeKeyName(table)} WHERE ${sanitizeKeyName(key)} = ${sanitizeInput(value)} LIMIT 1;`)
+			.then(result => this.parseEntry(table, result)));
 	}
 
 	has(table, id) {
