@@ -90,7 +90,7 @@ module.exports = class extends Event {
                         // We have to lodash clone the roles before we start adding them, otherwise guildMemberUpdate will interfere with this process
                         var _temp = guildMember.settings.roles;
                         var temp = _.cloneDeep(_temp);
-                        console.error(Array.isArray(temp))
+                        console.error(typeof temp)
                         guildMember.roles.add(temp, `Re-assigning saved roles`)
                             .then(newMember => updateLevels(newMember));
 
