@@ -88,6 +88,7 @@ module.exports = class extends Event {
                         // Member does not have verified role, so add all roles from the database
                     } else {
                         // We have to lodash clone the roles before we start adding them, otherwise guildMemberUpdate will interfere with this process
+                        console.error(guildMember.settings.roles)
                         var _temp = guildMember.settings.roles;
                         var temp = _.cloneDeep(_temp);
                         guildMember.roles.add(temp, `Re-assigning saved roles`)
