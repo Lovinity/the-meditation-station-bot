@@ -43,7 +43,7 @@ module.exports = class extends Command {
                 channel2.send(`:rep: User ${message.author.tag} (${message.author.id}) repped ${user.tag} (${user.id}) for the following reason: ${reason}`);
             }
             message.author.guildSettings(message.guild.id).update(`canRep`, false)
-            const timer = await this.client.schedule.create('repAgain', when, {
+            const timer = await this.client.schedule.create('repAgain', moment().add(24, 'hours').toDate(), {
                 data: {
                     guild: message.guild.id,
                     user: user.id
