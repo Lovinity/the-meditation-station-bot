@@ -1,5 +1,5 @@
 // Copyright (c) 2017-2019 dirigeants. All rights reserved. MIT license.
-const { SQLProvider, QueryBuilder, Timestamp, Type, util: { mergeDefault, isNumber, isObject } } = require('klasa');
+const { SQLProvider, QueryBuilder, Timestamp, Type, Gateway, util: { mergeDefault, isNumber, isObject } } = require('klasa');
 
 /**
  * NOTE: You need to install mysql2
