@@ -32,7 +32,7 @@ module.exports = class extends Command {
             return message.send(`:x: Sorry, but you have the No Rep role, therefore you cannot give good reputation to others.`);
 
         // Disallow repping if canRep is false
-        if (!user.guildSettings(message.guild.id).canRep)
+        if (!message.member.settings.canRep)
             return message.send(`:x: Sorry, you can only rep someone once every 24 hours.`);
 
         // Purchase repping
