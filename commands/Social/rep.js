@@ -37,7 +37,7 @@ module.exports = class extends Command {
 
         // Purchase repping
         if (await yangStore(message, 'repMember', 1)) {
-            user.guildSettings(message.guild.id).update(`goodRep`, user.guildSettings(message.guild.id).settings.goodRep + 10)
+            user.guildSettings(message.guild.id).update(`goodRep`, user.guildSettings(message.guild.id).goodRep + 10)
             const channel2 = message.guild.channels.resolve(message.guild.settings.modLogChannel);
             if (channel2) {
                 channel2.send(`:rep: User ${message.author.tag} (${message.author.id}) repped ${user.tag} (${user.id}) for the following reason: ${reason}`);
