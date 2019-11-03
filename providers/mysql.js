@@ -218,6 +218,24 @@ module.exports = class extends SQLProvider {
 		return this.db.query(sql);
 	}
 
+	// Use a custom parseEntry because the original one with SQLProvider is buggy
+	parseEntry(gateway, entry) {
+		if (!entry) return null;
+		console.dir(gateway)
+		if (typeof gateway === 'string') gateway = this.client.gateways[gateway];
+		if (!(gateway instanceof Gateway)) {
+			console.log(`NOT instanceof Gateway`)
+			return entry;
+		}
+
+		const object = { id: entry.id };
+		for (const piece of gateway.schema.values(true)) {
+			if (entry[piece.path]) makeObject(piece.path, this.parseValue(entry[piece.path], piece), object);
+		}
+
+		return object;
+	}
+
 };
 
 /**
