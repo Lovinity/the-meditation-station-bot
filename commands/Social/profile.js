@@ -252,7 +252,7 @@ module.exports = class extends Command {
             await user.guildSettings(message.guild.id).update('profile.profileColor.lightness', l);
 
             return message.send(":white_check_mark: Profile colors have been updated!");
-    }
+        }
     }
 
     async badge(message, [user = null, parameter = ""]) {

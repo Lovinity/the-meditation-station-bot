@@ -19,6 +19,7 @@ Client.defaultGuildSchema
     .add('muteRole', 'role')
     .add('modRole', 'role')
     .add('raidRole', 'role')
+    .add('noRepRole', 'role')
     .add('conflictResolutionMembers', 'integer', { default: 3, min: 1 })
     .add('conflictResolutionTime', 'integer', { default: 15, min: 1 })
     .add('verifiedRole', 'role')
@@ -45,12 +46,13 @@ Client.defaultGuildSchema
     }, { configurable: false })
     .add('yangStore', folder => {
         folder
-            .add('generator', 'integer', { min: 0, default: 0 })
-            .add('nick', 'integer', { min: 0, default: 0 })
-            .add('profileTitle', 'integer', { min: 0, default: 0 })
-            .add('profileBackground', 'integer', { min: 0, default: 0 })
-            .add('profileColor', 'integer', { min: 0, default: 0 })
-            .add('remindme', 'integer', { min: 0, default: 0 })
+            .add('generator', 'integer', { min: 0, default: 5 })
+            .add('nick', 'integer', { min: 0, default: 25 })
+            .add('profileTitle', 'integer', { min: 0, default: 50 })
+            .add('profileBackground', 'integer', { min: 0, default: 150 })
+            .add('profileColor', 'integer', { min: 0, default: 50 })
+            .add('remindme', 'integer', { min: 0, default: 25 })
+            .add('repMember', 'integer', { min: 0, default: 50 })
     })
     .add('badges', 'any', { array: true, configurable: false });
 
@@ -82,6 +84,7 @@ Client.defaultMemberSchema
                     .add('lightness', 'float', { default: 100, min: 0, max: 1000 });
             });
     })
+    .add('canRep', 'boolean', { default: true })
     .add('modLogs', 'any', { array: true })
     .add('reports', 'string', { array: true })
     .add('roles', 'role', { array: true });
