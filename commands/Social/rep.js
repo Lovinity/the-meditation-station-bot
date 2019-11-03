@@ -49,6 +49,7 @@ module.exports = class extends Command {
                     user: user.id
                 }
             });
+            return message.send(`:white_check_mark: You have repped that user. Thank you for sharing the love!`);
         }
     }
 
