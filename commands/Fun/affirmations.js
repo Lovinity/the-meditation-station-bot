@@ -14,7 +14,7 @@ module.exports = class extends Command {
 	async run (message) {
 		var category = await message.awaitReply(`:question: Please respond with one of the following affirmation categories you would like: ${Object.keys(affirmations).join(", ")}`, 180000);
 		if (category && typeof affirmations[category] !== 'undefined') {
-			if (await yangStore(message, 'affirmation', 1)) {
+			if (await yangStore(message, 'affirmations', 1)) {
 
 				setTimeout(() => {
 					message.reply(`:two: Take the next minute to embrace this first of three affirmations within your being as you continue to breathe: **${affirmations[category][Math.floor(Math.random() * affirmations[category].length)]}**`)
