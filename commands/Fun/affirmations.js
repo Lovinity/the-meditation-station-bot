@@ -1,5 +1,6 @@
 // Copyright (c) 2017-2019 dirigeants. All rights reserved. MIT license.
 const { Command } = require('klasa');
+const yangStore = require('../../util/yangStore');
 
 module.exports = class extends Command {
 
