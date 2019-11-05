@@ -12,8 +12,8 @@ module.exports = class extends Command {
         });
     }
 
-    run (msg, choices) {
-        if (choices.length === 1 && await yangStore(message, 'choice', 1)) {
+    async run (msg, choices) {
+        if (choices.length === 1 && await yangStore(msg, 'choice', 1)) {
             return msg.reply(`I think you should go with "${choices[ Math.floor(Math.random() * choices.length) ]}"`);
         }
         return msg.reply('You only gave me one choice, dummy.');

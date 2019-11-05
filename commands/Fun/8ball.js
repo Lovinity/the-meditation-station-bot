@@ -11,8 +11,8 @@ module.exports = class extends Command {
         });
     }
 
-    run (msg, [ question ]) {
-        if (question.endsWith('?') && await yangStore(message, '8ball', 1)) {
+    async run (msg, [ question ]) {
+        if (question.endsWith('?') && await yangStore(msg, '8ball', 1)) {
             return msg.reply(`🎱 ${answers[ Math.floor(Math.random() * answers.length) ]}`);
         }
         return msg.reply("🎱 That doesn't look like a question, try again please.");
