@@ -82,7 +82,7 @@ module.exports = class extends Task {
                 themessage = themessage + `Current Guild Time:  **${moment().format('LLLL')}** \n`;
                 themessage = themessage + `Number of members in the guild: **${_guild.members.array().length}** \n`;
                 themessage = themessage + `Most active member: **${mostActiveUser}** \n`;
-                themessage = themessage + `Guild Activity Level: **${parseInt(activityLevel / _guild.members.array().length)}** \n`;
+                themessage = themessage + `Guild Activity Index: **${parseInt(activityLevel / _guild.members.array().length)}** \n`;
                 themessage = themessage + `${raidMitigation} \n`;
 
 
