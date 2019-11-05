@@ -30,7 +30,7 @@ module.exports = class extends Task {
                 activityLevel += newScore
                 if (newScore > highestActivityScore) {
                     highestActivityScore = newScore
-                    mostActiveUser = `${guildMember.nickname}#${guildMember.user.discriminator}`
+                    mostActiveUser = guildMember.user.tag
                 }
             });
 
