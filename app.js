@@ -54,6 +54,8 @@ Client.defaultGuildSchema
             .add('profileColor', 'integer', { min: 0, default: 50 })
             .add('remindme', 'integer', { min: 0, default: 25 })
             .add('repMember', 'integer', { min: 0, default: 50 })
+            .add('8ball', 'integer', { min: 0, default: 5 })
+            .add('choice', 'integer', { min: 0, default: 5 })
     })
     .add('badges', 'any', { array: true, configurable: false });
 
