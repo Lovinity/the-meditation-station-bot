@@ -119,6 +119,10 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
             var prevLevel = Math.floor(0.177 * Math.sqrt(currentScore)) + 1;
             var curLevel = Math.floor(0.177 * Math.sqrt(newScore)) + 1;
 
+            // Update activity score
+            var currentActivity = this.settings.activityScore;
+            this.settings.update('activityScore', currentActivity + score);
+
             // TODO: use settings instead of config; at this time, object role settings for some stupid f***king reason erases itself on each reboot, so we cannot use it right now
 
             // Level was bumped up

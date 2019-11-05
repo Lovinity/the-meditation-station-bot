@@ -24,6 +24,7 @@ Client.defaultGuildSchema
     .add('conflictResolutionTime', 'integer', { default: 15, min: 1 })
     .add('verifiedRole', 'role')
     .add('guildTasks', 'string', { configurable: false })
+    .add('highestActivityScore', 'float', { configurable: false, default: 0, min: 0 })
     .add('statsMessageChannel', 'string')
     .add('statsMessage', 'string')
     .add('reportMembers', 'integer', { default: 3, min: 1 })
@@ -65,6 +66,7 @@ Client.defaultMemberSchema
     .add('badRep', 'integer', { default: 0 })
     .add('goodRep', 'integer', { default: 0 })
     .add('spamScore', 'integer', { default: 0 })
+    .add('activityScore', 'float', {min: 0, default: 0})
     .add('profile', folder => {
         folder
             .add('title', 'string')

@@ -8,14 +8,34 @@ module.exports = class extends Task {
     async run ({ guild }) {
         const _guild = this.client.guilds.resolve(guild);
         if (_guild) {
-            // Antispam cooldown
             var cooldown = _guild.settings.antispamCooldown;
+            var mostActiveUser = ``;
+            var highestActivityScore = 0;
+            var activityLevel = 0;
             _guild.members.each((guildMember) => {
-                var newscore = guildMember.settings.spamScore - cooldown;
-                if (newscore < 0)
-                    newscore = 0;
-                guildMember.settings.update('spamScore', newscore);
+                // Antispam cooldown
+                var newScore = guildMember.settings.spamScore - cooldown;
+                if (newScore < 0)
+                    newScore = 0;
+                guildMember.settings.update('spamScore', newScore);
+
+                // Activity score cooldown
+                var activityScore = guildMember.settings.activityScore;
+                if (activityScore > 0) {
+                    var newScore = activityScore * 0.999;
+                    guildMember.settings.update('activityScore', newScore);
+                }
+
+                // Calculate most active user and current activity level
+                activityLevel += newScore
+                if (newScore > highestActivityScore) {
+                    highestActivityScore = newScore
+                    mostActiveUser = `${guildMember.nickname}#${guildMember.user.discriminator}`
+                }
             });
+
+            // Update highest activity score
+            _guild.settings.update('highestActivityScore', highestActivityScore)
 
             // Do stats
             const statsMessageChannel = _guild.settings.statsMessageChannel;
@@ -61,6 +81,8 @@ module.exports = class extends Task {
                 var themessage = `:chart_with_upwards_trend: **Current ${_guild.name} Statistics** (edited automatically every minute) :chart_with_upwards_trend: \n\n`;
                 themessage = themessage + `Current Guild Time:  **${moment().format('LLLL')}** \n`;
                 themessage = themessage + `Number of members in the guild: **${_guild.members.array().length}** \n`;
+                themessage = themessage + `Most active member: **${mostActiveUser}** \n`;
+                themessage = themessage + `Guild Activity Level: **${parseInt(activityLevel / _guild.members.array().length)}** \n`;
                 themessage = themessage + `${raidMitigation} \n`;
 
 

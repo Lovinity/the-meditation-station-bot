@@ -1,1 +1,1 @@
-This bot is considered UNSTABLE at the moment... it will NOT work 100% if you set up your own instance.
+This bot is considered UNSTABLE and will probably not work out of the box. I do not expect to ever make it stable unless people request me to do so as they plan to use it in their guilds.

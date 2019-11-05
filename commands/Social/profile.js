@@ -513,13 +513,13 @@ module.exports = class extends Command {
         ctx.font = '14px Roboto';
         ctx.textAlign = 'center';
         ctx.fillStyle = '#000000';
-        ctx.fillText(profile.donations, 363, 130);
+        ctx.fillText('', 363, 130);
 
         // activity
         ctx.font = '14px Roboto';
         ctx.textAlign = 'center';
         ctx.fillStyle = '#000000';
-        ctx.fillText("NA", 440, 130);
+        ctx.fillText(`${parseInt(message.guild.settings.highestActivityScore > 0 ? user.guildSettings(message.guild.id).activityScore / message.guild.settings.highestActivityScore : 0)}%`, 440, 130);
 
         // joined
         var joined = await message.guild.members.fetch(user);
