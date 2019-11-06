@@ -14,7 +14,7 @@ module.exports = class extends Command {
     }
 
     async run (msg) {
-        if (await yangStore(message, 'markov', 1)) {
+        if (await yangStore(msg, 'markov', 1)) {
             let messageBank = await msg.channel.messages.fetch({ limit: 100 });
             for (let i = 1; i < messageLimitHundreds; i++) {
                 messageBank = messageBank.concat(await msg.channel.messages.fetch({ limit: 100, before: messageBank.last().id }));
