@@ -4,7 +4,7 @@ module.exports = class extends Event {
 
     async run (failure) {
         try {
-            const owner = await this.client.users.fetch(`637468753092804620`);
+            const owner = await this.client.users.fetch(this.client.application.owner.id);
             if (owner) {
                 owner.send(`:x: **ERROR** :x: 
 ${failure}`)

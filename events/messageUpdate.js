@@ -9,8 +9,8 @@ module.exports = class extends Event {
         // First, update spam score if new score is bigger than old score. Do NOT update if new score is less than old score; we don't want to lower it.
         if (typeof message.member !== 'undefined')
         {
-            var oldscore = old.spamScore;
-            var newscore = message.spamScore;
+            var oldscore = await old.spamScore;
+            var newscore = await message.spamScore;
             if (newscore > oldscore)
             {
                 var diff = newscore - oldscore;

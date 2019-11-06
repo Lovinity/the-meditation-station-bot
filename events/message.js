@@ -2,11 +2,11 @@ const { Event } = require('klasa');
 
 module.exports = class extends Event {
 
-	run(message) {
+	async run(message) {
             // First, do spam scoring and XP/Yang rewarding.
             if (typeof message.member !== 'undefined')
             {
-                var spamScore = message.spamScore;
+                var spamScore = await message.spamScore;
                 message.member.spamScore(spamScore, message);
                 var xp = message.xp;
                 message.member.xp(xp, message);

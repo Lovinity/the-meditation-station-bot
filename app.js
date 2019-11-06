@@ -25,6 +25,7 @@ Client.defaultGuildSchema
     .add('conflictResolutionTime', 'integer', { default: 15, min: 1 })
     .add('verifiedRole', 'role')
     .add('guildTasks', 'string', { configurable: false })
+    .add('perspectiveQueue', 'integer', { default: 0, min: 0, configurable: false })
     .add('highestActivityScore', 'float', { configurable: false, default: 0, min: 0 })
     .add('statsMessageChannel', 'string')
     .add('statsMessage', 'string')
@@ -105,8 +106,9 @@ var client = new Client({
     commandEditing: true,
     typing: true,
     ignoreBots: false,
-    slowmode: 3000,
+    slowmode: 5000,
     slowmodeAggressive: true,
+    schedule: { interval: 5000 },
     providers: {
         default: 'mysql',
         mysql: config.providers.mysql
