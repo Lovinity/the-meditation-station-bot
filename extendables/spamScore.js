@@ -241,38 +241,39 @@ module.exports = class extends Extendable {
                         }
                     }
                     var modLog = this.guild.settings.modLogChannel;
+                    const _channel = this.client.channels.resolve(modLog);
                     if (threatening) {
                         this.reply(`:bangbang: **Your message may be considered threatening**. Please do not threaten members of the guild; this is against the rules. Thank you!`)
-                        if (modLog) {
+                        if (_channel) {
                             var embed = new MessageEmbed()
                                 .setTitle(`Message flagged as threatening`)
                                 .setDescription(`${this.cleanContent}`)
                                 .setAuthor(this.author.tag, this.author.displayAvatarURL())
                                 .setFooter(`Message channel **${this.channel.name}**`)
                                 .setColor(`#ff7878`);
-                            modLog.sendEmbed(embed, `:bangbang: Please review message ${this.id}; it was flagged for being threatening.`)
+                            _channel.sendEmbed(embed, `:bangbang: Please review message ${this.id}; it was flagged for being threatening.`)
                         }
                     } else if (identityAttack) {
                         this.reply(`:bangbang: This guild is welcoming of people of all identities. Your message appears attacking of someone based on identity. Please do not attack members' identities; this is against the rules. Thank you!`)
-                        if (modLog) {
+                        if (_channel) {
                             var embed = new MessageEmbed()
                                 .setTitle(`Message flagged as attacking an identity`)
                                 .setDescription(`${this.cleanContent}`)
                                 .setAuthor(this.author.tag, this.author.displayAvatarURL())
                                 .setFooter(`Message channel **${this.channel.name}**`)
                                 .setColor(`#ff7878`);
-                            modLog.sendEmbed(embed, `:bangbang: Please review message ${this.id}; it was flagged for attacking someone based on identity.`)
+                            _channel.sendEmbed(embed, `:bangbang: Please review message ${this.id}; it was flagged for attacking someone based on identity.`)
                         }
                     } else if (severelyToxic) {
                         this.reply(`:bangbang: Your message may be considered emotionally provocative. Please be mindful what you say in the guild and follow our rules. Thank you!`)
-                        if (modLog) {
+                        if (_channel) {
                             var embed = new MessageEmbed()
                                 .setTitle(`Message flagged as severely toxic`)
                                 .setDescription(`${this.cleanContent}`)
                                 .setAuthor(this.author.tag, this.author.displayAvatarURL())
                                 .setFooter(`Message channel **${this.channel.name}**`)
                                 .setColor(`#ff7878`);
-                            modLog.sendEmbed(embed, `:bangbang: Please review message ${this.id}; it was flagged for being severely toxic.`)
+                            _channel.sendEmbed(embed, `:bangbang: Please review message ${this.id}; it was flagged for being severely toxic.`)
                         }
                     }
                     afterFunction()
