@@ -246,7 +246,7 @@ module.exports = class extends Extendable {
                     var modLog = this.guild.settings.modLogChannel;
                     const _channel = this.client.channels.resolve(modLog);
                     if (threatening) {
-                        this.reply(`:bangbang: **Your message may be considered threatening**. Please do not threaten members of the guild; this is strongly against the rules. Thank you!`)
+                        this.reply(`:bangbang: **Threats are not cool!** Please don't say stuff like that again; it's against the rules.`)
                         if (_channel) {
                             var embed = new MessageEmbed()
                                 .setTitle(`Message flagged as threatening`)
@@ -257,7 +257,7 @@ module.exports = class extends Extendable {
                             _channel.sendEmbed(embed, `:bangbang: Please review message ${this.id}; it was flagged for being threatening.`)
                         }
                     } else if (toxic) {
-                        this.reply(`:bangbang: Your message may be considered provocative / disrespectful. Please be mindful what you say in the guild and follow our rules. Thank you!`)
+                        this.reply(`:bangbang: Hey now, please be respectful.`)
                         if (_channel) {
                             var embed = new MessageEmbed()
                                 .setTitle(`Message flagged as provocative`)
