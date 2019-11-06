@@ -173,8 +173,7 @@ module.exports = class extends Extendable {
                 try {
                     var body = await perspective.analyze(this.cleanContent, { attributes: [ 'IDENTITY_ATTACK', 'TOXICITY', 'SEVERE_TOXICITY', 'PROFANITY', 'THREAT', 'SPAM', 'PROFANITY', 'SEXUALLY_EXPLICIT' ], doNotStore: false })
                     var threatening = false
-                    var severelyToxic = false
-                    var identityAttack = false
+                    var toxic = false
                     for (const key of Object.keys(body.attributeScores)) {
                         if (typeof body.attributeScores[ key ].spanScores !== 'undefined' && body.attributeScores[ key ].spanScores.length > 0) {
                             body.attributeScores[ key ].spanScores.map((spanScore) => {
@@ -182,28 +181,29 @@ module.exports = class extends Extendable {
                                 if (spanScore.score.value >= (0.95 - (this.cleanContent.length / 4000))) {
                                     switch (key) {
                                         case 'SEVERE_TOXICITY':
-                                            score += 20;
-                                            severelyToxic = true
+                                            score += 30;
+                                            toxic = true
                                             break;
                                         case 'TOXICITY':
-                                            score += 5;
+                                            score += 10;
+                                            toxic = true
                                             break;
                                         case 'THREAT':
                                             score += 50;
                                             threatening = true
                                             break;
                                         case 'SPAM':
-                                            score += 10;
+                                            score += 20;
                                             break;
                                         case 'PROFANITY':
-                                            score += 5;
+                                            score += 10;
                                             break;
                                         case 'SEXUALLY_EXPLICIT':
-                                            score += 5;
+                                            score += 10;
                                             break;
                                         case 'IDENTITY_ATTACK':
                                             score += 20;
-                                            identityAttack = true
+                                            toxic = true
                                             break;
 
                                     }
@@ -214,11 +214,12 @@ module.exports = class extends Extendable {
                             if (body.attributeScores[ key ].summaryScore.value >= (0.95 - (this.cleanContent.length / 4000))) {
                                 switch (key) {
                                     case 'SEVERE_TOXICITY':
-                                        score += 20;
-                                        severelyToxic = true
+                                        score += 30;
+                                        toxic = true
                                         break;
                                     case 'TOXICITY':
                                         score += 10;
+                                        toxic = true
                                         break;
                                     case 'PROFANITY':
                                         score += 10;
@@ -235,7 +236,7 @@ module.exports = class extends Extendable {
                                         break;
                                     case 'IDENTITY_ATTACK':
                                         score += 20;
-                                        identityAttack = true
+                                        toxic = true
                                         break;
 
                                 }
@@ -245,7 +246,7 @@ module.exports = class extends Extendable {
                     var modLog = this.guild.settings.modLogChannel;
                     const _channel = this.client.channels.resolve(modLog);
                     if (threatening) {
-                        this.reply(`:bangbang: **Your message may be considered threatening**. Please do not threaten members of the guild; this is against the rules. Thank you!`)
+                        this.reply(`:bangbang: **Your message may be considered threatening**. Please do not threaten members of the guild; this is strongly against the rules. Thank you!`)
                         if (_channel) {
                             var embed = new MessageEmbed()
                                 .setTitle(`Message flagged as threatening`)
@@ -255,27 +256,16 @@ module.exports = class extends Extendable {
                                 .setColor(`#ff7878`);
                             _channel.sendEmbed(embed, `:bangbang: Please review message ${this.id}; it was flagged for being threatening.`)
                         }
-                    } else if (identityAttack) {
-                        this.reply(`:bangbang: This guild is welcoming of people of all identities. Your message appears attacking of someone based on identity. Please do not attack members' identities; this is against the rules. Thank you!`)
+                    } else if (toxic) {
+                        this.reply(`:bangbang: Your message may be considered provocative / disrespectful. Please be mindful what you say in the guild and follow our rules. Thank you!`)
                         if (_channel) {
                             var embed = new MessageEmbed()
-                                .setTitle(`Message flagged as attacking an identity`)
+                                .setTitle(`Message flagged as provocative`)
                                 .setDescription(`${this.cleanContent}`)
                                 .setAuthor(this.author.tag, this.author.displayAvatarURL())
                                 .setFooter(`Message channel **${this.channel.name}**`)
                                 .setColor(`#ff7878`);
-                            _channel.sendEmbed(embed, `:bangbang: Please review message ${this.id}; it was flagged for attacking someone based on identity.`)
-                        }
-                    } else if (severelyToxic) {
-                        this.reply(`:bangbang: Your message may be considered emotionally provocative. Please be mindful what you say in the guild and follow our rules. Thank you!`)
-                        if (_channel) {
-                            var embed = new MessageEmbed()
-                                .setTitle(`Message flagged as severely toxic`)
-                                .setDescription(`${this.cleanContent}`)
-                                .setAuthor(this.author.tag, this.author.displayAvatarURL())
-                                .setFooter(`Message channel **${this.channel.name}**`)
-                                .setColor(`#ff7878`);
-                            _channel.sendEmbed(embed, `:bangbang: Please review message ${this.id}; it was flagged for being severely toxic.`)
+                            _channel.sendEmbed(embed, `:bangbang: Please review message ${this.id}; it was flagged for being provocative.`)
                         }
                     }
                     afterFunction()
