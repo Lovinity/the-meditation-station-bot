@@ -25,6 +25,7 @@
     "klasa": "github:dirigeants/klasa",
     "klasa-member-gateway": "github:dirigeants/klasa-member-gateway",
     "lodash": "^4.17.15",
+    "markovchain": "^1.0.2",
     "moment": "^2.24.0",
     "moment-duration-format": "^2.3.2",
     "mysql2": "^2.0.0",

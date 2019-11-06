@@ -57,6 +57,7 @@ Client.defaultGuildSchema
             .add('8ball', 'integer', { min: 0, default: 5 })
             .add('choice', 'integer', { min: 0, default: 5 })
             .add('affirmations', 'integer', { min: 0, default: 25 })
+            .add('markov', 'integer', { min: 0, default: 10 })
     })
     .add('badges', 'any', { array: true, configurable: false });
 
