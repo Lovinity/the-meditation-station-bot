@@ -6,10 +6,14 @@ module.exports = class extends Event {
             // First, do spam scoring and XP/Yang rewarding.
             if (message.type === 'DEFAULT' && typeof message.member !== 'undefined' && message !== null)
             {
+                try {
                 var spamScore = await message.spamScore;
                 message.member.spamScore(spamScore, message);
                 var xp = message.xp;
                 message.member.xp(xp, message);
+                } catch (e) {
+                    
+                }
             }
             
 		if (this.client.ready) this.client.monitors.run(message);

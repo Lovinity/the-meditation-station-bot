@@ -1,30 +1,31 @@
-const {Event} = require('klasa');
-const {MessageEmbed} = require('discord.js');
+const { Event } = require('klasa');
+const { MessageEmbed } = require('discord.js');
 var jsdiff = require('diff');
 const moment = require("moment");
 
 module.exports = class extends Event {
 
-    async run(old, message) {
+    async run (old, message) {
         // First, update spam score if new score is bigger than old score. Do NOT update if new score is less than old score; we don't want to lower it.
-        if (message.type === 'DEFAULT' && typeof message.member !== 'undefined' && message !== null)
-        {
-            var oldscore = await old.spamScore;
-            var newscore = await message.spamScore;
-            if (newscore > oldscore)
-            {
-                var diff = newscore - oldscore;
-                message.member.spamScore(diff, message);
+        try {
+            if (message.type === 'DEFAULT' && typeof message.member !== 'undefined' && message !== null) {
+                var oldscore = await old.spamScore;
+                var newscore = await message.spamScore;
+                if (newscore > oldscore) {
+                    var diff = newscore - oldscore;
+                    message.member.spamScore(diff, message);
+                }
             }
-        }
 
-        // Update XP/Yang
-        if (typeof message.member !== 'undefined')
-        {
-            var xp1 = old.xp;
-            var xp2 = message.xp;
-            if (xp2 - xp1 !== 0)
-                message.member.xp(xp2 - xp1, message);
+            // Update XP/Yang
+            if (typeof message.member !== 'undefined') {
+                var xp1 = old.xp;
+                var xp2 = message.xp;
+                if (xp2 - xp1 !== 0)
+                    message.member.xp(xp2 - xp1, message);
+            }
+        } catch (e) {
+
         }
 
         if (this.client.ready && old.content !== message.content)
@@ -42,10 +43,10 @@ module.exports = class extends Event {
             return;
 
         var display = new MessageEmbed()
-                .setTitle(`Old Message`)
-                .setDescription(`${old.cleanContent}`)
-                .setAuthor(message.author.tag, message.author.displayAvatarURL())
-                .setFooter(`Message created **${message.createdAt}** in channel **${message.channel.name}**`);
+            .setTitle(`Old Message`)
+            .setDescription(`${old.cleanContent}`)
+            .setAuthor(message.author.tag, message.author.displayAvatarURL())
+            .setFooter(`Message created **${message.createdAt}** in channel **${message.channel.name}**`);
 
         const _channel = this.client.channels.resolve(modLog);
 
