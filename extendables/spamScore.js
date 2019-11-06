@@ -178,6 +178,7 @@ module.exports = class extends Extendable {
                     for (const key of Object.keys(body.attributeScores)) {
                         if (typeof body.attributeScores[ key ].spanScores !== 'undefined' && body.attributeScores[ key ].spanScores.length > 0) {
                             body.attributeScores[ key ].spanScores.map((spanScore) => {
+                                console.log(`spanScore ${key}: ${spanScore.score.value} / 0.95`)
                                 if (spanScore.score.value >= 0.95) {
                                     switch (key) {
                                         case 'SEVERE_TOXICITY':
@@ -209,6 +210,7 @@ module.exports = class extends Extendable {
                                 }
                             })
                         } else {
+                            console.log(`summary ${key}: ${body.attributeScores[ key ].summaryScore.value} / ${(1 - (this.cleanContent.length / 4000))}`)
                             if (body.attributeScores[ key ].summaryScore.value >= (1 - (this.cleanContent.length / 4000))) {
                                 switch (key) {
                                     case 'SEVERE_TOXICITY':
