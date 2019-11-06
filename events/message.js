@@ -4,7 +4,7 @@ module.exports = class extends Event {
 
 	async run(message) {
             // First, do spam scoring and XP/Yang rewarding.
-            if (typeof message.member !== 'undefined')
+            if (message.type === 'DEFAULT' && typeof message.member !== 'undefined' && message !== null)
             {
                 var spamScore = await message.spamScore;
                 message.member.spamScore(spamScore, message);

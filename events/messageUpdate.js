@@ -7,7 +7,7 @@ module.exports = class extends Event {
 
     async run(old, message) {
         // First, update spam score if new score is bigger than old score. Do NOT update if new score is less than old score; we don't want to lower it.
-        if (typeof message.member !== 'undefined')
+        if (message.type === 'DEFAULT' && typeof message.member !== 'undefined' && message !== null)
         {
             var oldscore = await old.spamScore;
             var newscore = await message.spamScore;
