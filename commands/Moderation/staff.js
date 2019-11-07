@@ -146,7 +146,7 @@ Thank you, <@${message.author.id}>!
         }
 
         // Create the incidents channel
-        var channel = await message.guild.channels.create('int_i', {
+        var channel = await message.guild.channels.create(`discussion_${Date.now().toString(36) + (this.client.shard ? this.client.shard.id.toString(36) : '') + String.fromCharCode((1 % 26) + 97)}`, {
             type: 'text',
             topic: `Private staff channel initiated by ${message.author.username}#${message.author.discriminator}`,
             parent: incidents,
@@ -154,9 +154,6 @@ Thank you, <@${message.author.id}>!
             rateLimitPerUser: 15,
             reason: `!staff initiated by ${message.author.username}#${message.author.discriminator} (${message.author.id})`
         });
-
-        // rename it to its own ID
-        await channel.setName(`int_i_${channel.id}`, `Incident assigned ID ${channel.id}`);
 
         await channel.send(response);
 

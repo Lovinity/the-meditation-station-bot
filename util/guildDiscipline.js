@@ -18,6 +18,7 @@ module.exports = class GuildDiscipline {
         this.type = 'discipline';
         this.channel = null;
         this.message = null;
+        this.case = Date.now().toString(36) + (this.client.shard ? this.client.shard.id.toString(36) : '') + String.fromCharCode((1 % 26) + 97);
     }
 
     setReason (reason = null) {
@@ -131,7 +132,7 @@ module.exports = class GuildDiscipline {
 
 
             // Create the incidents channel
-            this.channel = await this.guild.channels.create('int_d', {
+            this.channel = await this.guild.channels.create(`discipline_${this.case}`, {
                 type: 'text',
                 topic: `Discipline ${this.user.username}#${this.user.discriminator}, responsible mod: ${this.responsible.username}#${this.responsible.discriminator}`,
                 parent: incidents,
@@ -139,9 +140,6 @@ module.exports = class GuildDiscipline {
                 rateLimitPerUser: 15,
                 reason: `Discipline ${this.user.username}#${this.user.discriminator}, responsible mod: ${this.responsible.username}#${this.responsible.discriminator}`
             });
-
-            // rename it to its own ID
-            await this.channel.setName(`int_d_${this.channel.id}`, `Incident assigned ID ${this.channel.id}`);
 
             // Send an initial message to the channel
             this.message = await this.channel.send(`:hourglass_flowing_sand: <@${this.user.id}>, staff are filling out an incident report regarding something you recently did in the guild. ${(this.type === 'mute' || this.type === 'preban' || this.type === 'tempban' || this.type === 'ban' ? "You have been muted in the guild for the time being for the safety of the community. " : "It is advised to refrain from engaging elsewhere in the guild for the moment. ")}More information will be provided to you shortly; please wait while staff finish telling me all the information to pass to you.`);
@@ -263,7 +261,8 @@ module.exports = class GuildDiscipline {
                 reputation: this.reputation,
                 schedule: null
             })
-            .setOtherDiscipline(this.other);
+            .setOtherDiscipline(this.other)
+            .setCase(this.case);
 
         // Add a schedule if a mute is in place
         if (this.duration > 0 && this.type === 'mute') {
