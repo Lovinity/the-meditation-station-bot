@@ -1,8 +1,5 @@
 const { Event } = require('klasa');
 const _ = require("lodash");
-const LavalinkClient = require("../util/LavalinkClient");
-const config = require('../config.js')
-const { post } = require("snekfetch");
 
 module.exports = class extends Event {
 
@@ -133,32 +130,7 @@ module.exports = class extends Event {
                 });
         });
 
-        // Setup lavalink
-        this.client.lavalink = new LavalinkClient(this.client, config.nodes, {
-            user: this.client.user,
-            shards: 1
-        });
 
-        // Spotify task
-        if (!this.client.settings.schedules.some(task => task.taskName === "spotify")) {
-            this.client.schedule.create("spotify", "*/30 * * * *");
-        }
-
-        // Get a token
-        if (config.spotify.id !== '' && config.spotify.secret !== '') {
-            const CREDENTIALS = Buffer.from(`${config.spotify.id}:${config.spotify.secret}`).toString("base64");
-            post(`https://accounts.spotify.com/api/token`, {
-                data: {
-                    grant_type: "client_credentials"
-                },
-                headers: {
-                    Authorization: `Basic ${CREDENTIALS}`,
-                    "Content-Type": "application/x-www-form-urlencoded"
-                }
-            }).then((res) => {
-                this.client.spotifyToken = res.body.access_token;
-            })
-        }
     }
 
 };

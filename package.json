@@ -4,8 +4,7 @@
   "description": "This is a Klasa bot",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "lavalink": "java -jar Lavalink.jar"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
@@ -21,7 +20,6 @@
     "canvas": "^2.2.0",
     "diff": "^4.0.1",
     "discord.js": "github:discordjs/discord.js#master",
-    "discord.js-lavalink": "^2.2.3",
     "fantasy-names": "^2.0.1",
     "isprofanity": "^1.4.1",
     "klasa": "github:dirigeants/klasa",
@@ -32,7 +30,6 @@
     "moment-duration-format": "^2.3.2",
     "mysql2": "^2.0.0",
     "needle": "^2.4.0",
-    "node-fetch": "^2.6.0",
     "perspective-api-client": "^3.1.0",
     "rethinkdb-ts": "^2.4.0-rc.16",
     "snekfetch": "^4.0.4",
