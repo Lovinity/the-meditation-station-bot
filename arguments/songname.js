@@ -128,7 +128,9 @@ ${msg.author}, Please select a track by replying from range \`1-5\` to add it to
     }
 
     async fetchTracks(search) {
+        console.log(search)
         const result = await this.client.lavalink.resolveTracks(search);
+        console.dir(result)
 
         if (result.loadType === "LOAD_FAILED") throw "There was an error trying to search for that song";
         return { tracks: result.tracks, playlist: "name" in result.playlistInfo ? result.playlistInfo.name : null };
