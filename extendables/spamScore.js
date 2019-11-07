@@ -265,6 +265,16 @@ module.exports = class extends Extendable {
                                 .setColor(`#ff7878`);
                             _channel.sendEmbed(embed, `:bangbang: Please review message ${this.id}; it was flagged for being provocative.`)
                         }
+                    } else if (score > this.guild.settings.antispamCooldown) {
+                        if (_channel) {
+                            var embed = new MessageEmbed()
+                                .setTitle(`Message flagged as spam`)
+                                .setDescription(`${this.cleanContent}`)
+                                .setAuthor(this.author.tag, this.author.displayAvatarURL())
+                                .setFooter(`Message channel **${this.channel.name}**`)
+                                .setColor(`#ff7878`);
+                            _channel.sendEmbed(embed, `:bangbang: Please review message ${this.id}; it was flagged for having a spam score (${score}) higher than antispamCooldown (${guild.settings.antispamCooldown}).`)
+                        }
                     }
                     afterFunction()
                     return resolve(score)

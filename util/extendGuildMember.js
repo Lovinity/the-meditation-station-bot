@@ -31,17 +31,17 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                 console.log(`Went over 100!`);
                 if (this.spamScoreStamp === null || moment().subtract(60, 'seconds').isAfter(moment(this.spamScoreStamp))) {
                     console.log(`Sent warning`);
-                    var response = `:warning: <@${message.author.id}> **__Antispam__: Woah now! Please take a break from sending messages for about ${moment.duration(this.guild.settings.antispamCooldown > 0 ? (currentScore / this.guild.settings.antispamCooldown) + 1 : 0, 'minutes').format("m [Minutes]")}**. `;
+                    var response = `:warning: <@${message.author.id}> **__Antispam__: You're being a bit rowdy. Please take a break from sending messages for about ${moment.duration(this.guild.settings.antispamCooldown > 0 ? (currentScore / this.guild.settings.antispamCooldown) + 1 : 0, 'minutes').format("m [Minutes]")}**. `;
                     if (isMuted) {
-                        response += `__**Otherwise, I'll have to kick you from the guild, causing any bans to apply and you to lose any opportunity to appeal active discipline**__ .`;
+                        response += `**Otherwise, I'll have to kick you from the guild, causing any pending bans to apply and you to lose any opportunity to appeal active discipline**.`;
                     } else if (this.guild.settings.raidMitigation >= 3) {
-                        response += `__**Otherwise, I'll have to ban you indefinitely.**__`;
+                        response += `__**Otherwise, I'll have to permanently ban you.**__`;
                     } else if (this.guild.settings.raidMitigation >= 2) {
-                        response += `__**Otherwise, I'll have to ban you for 24 hours.**__`;
+                        response += `**Otherwise, I'll have to temp ban you for 24 hours.**`;
                     } else if (this.guild.settings.raidMitigation >= 1) {
-                        response += `**Otherwise, I'll have to mute you until staff speak with and manually unmute you.**`;
+                        response += `Otherwise, I'll have to mute you until staff manually unmute you.`;
                     } else {
-                        response += `**Otherwise, I'll have to mute you for 30 minutes.**`;
+                        response += `Otherwise, I'll have to mute you for 30 minutes.`;
                     }
                     message.channel.send(response);
                     this.spamScoreStamp = moment();
