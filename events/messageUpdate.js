@@ -23,7 +23,7 @@ module.exports = class extends Event {
                 message.reactions.removeAll();
                 var xp1 = old.earnedXp;
                 var xp2 = message.xp;
-                if (spamScore > message.guild.settings.antispamCooldown) {
+                if (newscore > message.guild.settings.antispamCooldown) {
                     xp2 = 0;
                 } else if (message.member && !message.author.bot && xp2 >= 2) {
                     message.react(message.guild.settings.repEmoji);
