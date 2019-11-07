@@ -60,9 +60,8 @@ module.exports = class extends Command {
         Object.entries(actions).map(([ key, value ]) => {
             menu.addOption(key, `**${value}** active cases`);
         });
-        var collector = await menu.run(await message.channel.send('Please wait...'), { time: 180000, filter: (reaction, user) => user.id === message.author.id });
+        var collector = await menu.run(await message.send('Please wait...'), { time: 180000, filter: (reaction, user) => user.id === message.author.id });
         var choice = await collector.selection;
-        await collector.message.delete();
         if (menu.options[ choice ]) {
             var chosen = menu.options[ choice ].name;
             if (cases.hasOwnProperty(chosen)) {
@@ -73,9 +72,8 @@ module.exports = class extends Command {
                 cases[ chosen ].map((modLog) => {
                     menu.addOption(modLog.id, `Issued **${modLog.issued}** by **${modLog.moderator}**. Active? ${modLog.valid}`);
                 });
-                var collector = await menu.run(await message.channel.send('Please wait...'), { time: 180000, filter: (reaction, user) => user.id === message.author.id });
+                var collector = await menu.run(await message.send('Please wait...'), { time: 180000, filter: (reaction, user) => user.id === message.author.id });
                 var choice = await collector.selection;
-                await collector.message.delete();
                 if (menu.options[ choice ]) {
                     var chosen2 = menu.options[ choice ].name;
                     var log = modLogs.find((element) => {
@@ -95,9 +93,8 @@ Use number reactions to select an action, or stop to exit.`)
                         );
                         menu.addOption(`remove`, `Remove this case from user records, but do not reverse the discipline.`);
                         menu.addOption(`appeal`, `Remove this case from user records, AND reverse the discipline.`);
-                        var collector = await menu.run(await message.channel.send('Please wait...'), { time: 180000, filter: (reaction, user) => user.id === message.author.id });
+                        var collector = await menu.run(await message.send('Please wait...'), { time: 180000, filter: (reaction, user) => user.id === message.author.id });
                         var choice = await collector.selection;
-                        await collector.message.delete();
                         if (menu.options[ choice ]) {
                             var chosen3 = menu.options[ choice ].name;
                             if (chosen3 === 'remove') {
