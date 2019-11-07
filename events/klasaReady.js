@@ -145,7 +145,7 @@ module.exports = class extends Event {
 
         // Get a token
         if (config.spotify.id === '' || config.spotify.secret === '') return;
-        const res = await post(`https://accounts.spotify.com/api/token`, {
+        post(`https://accounts.spotify.com/api/token`, {
             data: {
                 grant_type: "client_credentials"
             },
@@ -153,10 +153,9 @@ module.exports = class extends Event {
                 Authorization: `Basic ${CREDENTIALS}`,
                 "Content-Type": "application/x-www-form-urlencoded"
             }
-        });
-
-        if (res.status !== 200) return;
-        this.client.spotifyToken = res.body.access_token;
+        }).then((res) => {
+            this.client.spotifyToken = res.body.access_token;
+        })
 
     }
 
