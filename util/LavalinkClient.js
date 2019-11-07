@@ -7,12 +7,12 @@ class LavalinkClient extends PlayerManager {
         super(...args);
     }
 
-    resolveTracks(identifier) {
+    resolveTracks (identifier) {
         const node = this.nodes.first();
+        console.log(identifier);
         return fetch(`http://${node.host}:${node.port}/loadtracks`, { query: { identifier }, headers: { Authorization: node.password } })
+            .then(res => res.json())
             .catch(error => {
-                Error.captureStackTrace(error);
-                this.client.emit("error", error);
                 throw error;
             });
     }
