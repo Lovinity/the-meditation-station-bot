@@ -1,5 +1,5 @@
 var exec = require('child_process').exec, child;
-child = exec('/usr/bin/java -jar ~/lovinity/Lavalink',
+child = exec('/usr/bin/java -jar ~/lovinity/Lavalink.jar',
     function (error, stdout, stderr) {
         console.log('stdout: ' + stdout);
         console.log('stderr: ' + stderr);
