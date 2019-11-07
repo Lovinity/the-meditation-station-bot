@@ -9,7 +9,7 @@ module.exports = async function (message, item, quantity = 1) {
     
     if (parseInt(yangBalance) < parseInt(yangPrice))
     {
-        message.channel.send(`:x: Aww, bummer! You do not have enough Yang to purchase ${quantity} ${item}. It costs ${yangPrice} Yang, but you only have ${yangBalance} yang.`);
+        message.send(`:x: Aww, bummer! You do not have enough Yang to purchase ${quantity} ${item}. It would cost ${yangPrice} Yang, but you only have ${yangBalance} yang.`);
         return false;
     }
     
@@ -19,7 +19,7 @@ module.exports = async function (message, item, quantity = 1) {
         await message.member.settings.update('yang', parseInt(yangBalance) - parseInt(yangPrice));
         return true;
     } else {
-        message.channel.send(`:x: Canceled.`);
+        message.send(`:x: Canceled.`);
         return false;
     }
     

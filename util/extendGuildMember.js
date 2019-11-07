@@ -43,7 +43,7 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                     } else {
                         response += `Otherwise, I'll have to mute you for 30 minutes.`;
                     }
-                    message.channel.send(response);
+                    message.send(response);
                     this.spamScoreStamp = moment();
                 }
             } else if (currentScore >= 100 && moment().subtract(10, 'seconds').isAfter(moment(this.spamScoreStamp))) {
@@ -132,7 +132,7 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                 if (levelRole && levelRole !== null && this.guild.roles.has(levelRole) && !this.roles.has(levelRole)) {
                     this.roles.add(levelRole, `Achieved level ${curLevel}`);
                     if (message !== null) {
-                        message.channel.send(`:tada: **Congratulations <@${this.id}>, you earned the ${levelRole.name} role!**`);
+                        message.send(`:tada: **Congratulations <@${this.id}>, you earned the ${levelRole.name} role!**`);
                     } else {
                         var channel = this.guild.settings.generalChannel;
                         var _channel = this.guild.channels.resolve(channel);

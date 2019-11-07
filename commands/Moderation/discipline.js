@@ -23,7 +23,7 @@ module.exports = class extends Command {
         // Bail if the command was not run in a staff category channel or incidents category channel.
         if (!message.channel.parent || (message.channel.parent.id !== message.guild.settings.incidentsCategory && message.channel.parent.id !== message.guild.settings.staffCategory))
         {
-            await message.channel.send(`:x: I can't let you discipline someone in public! Please use the !discipline command in a staff or incidents channel.`);
+            await message.send(`:x: I can't let you discipline someone in public! Please use the !discipline command in a staff or incidents channel.`);
             return message.delete({reason: `Use of !discipline channel outside of a staff or incidents channel`});
         }
 

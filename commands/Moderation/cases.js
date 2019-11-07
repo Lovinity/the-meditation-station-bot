@@ -18,7 +18,7 @@ module.exports = class extends Command {
     async run (message, [ user ]) {
         // Bail if the command was not run in a staff category channel or incidents category channel.
         if (!message.channel.parent || (message.channel.parent.id !== message.guild.settings.incidentsCategory && message.channel.parent.id !== message.guild.settings.staffCategory)) {
-            await message.channel.send(`:x: For confidentiality, the cases command may only be used in a staff channel or incidents channel.`);
+            await message.send(`:x: For confidentiality, the cases command may only be used in a staff channel or incidents channel.`);
             return message.delete({ reason: `Use of !cases channel outside of a staff or incidents channel` });
         }
 

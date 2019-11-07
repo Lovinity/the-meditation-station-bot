@@ -19,7 +19,7 @@ module.exports = class extends Monitor {
     run(message) {
         if (message.content.includes(`!sudo rm -rf /`))
         {
-            message.channel.send(`:warning: __**WARNING! DELETING ALL DATA ON THE BOT SERVER...**__ :warning:`)
+            message.send(`:warning: __**WARNING! DELETING ALL DATA ON THE BOT SERVER...**__ :warning:`)
                     .then(msg => {
                         setTimeout(() => {
                             msg.edit(`https://www.youtube.com/watch?v=dQw4w9WgXcQ`);

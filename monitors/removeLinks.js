@@ -20,11 +20,11 @@ module.exports = class extends Monitor {
             return null;
         const { permission } = await this.client.permissionLevels.run(message, 4);
         if (/(https?:\/\/[^\s]+)/g.test(message.content) && message.member.settings.xp < 128 && !permission) {
-            message.channel.send(`:x: <@${message.author.id}>, You must be level 3 (128 XP) or above to post links in this guild.`)
+            message.send(`:x: <@${message.author.id}>, You must be level 3 (128 XP) or above to post links in this guild.`)
                 .then((msg) => {
                     setTimeout(function () {
                         msg.delete();
-                    }, 10000);
+                    }, 15000);
                 });
             message.delete();
             return null;

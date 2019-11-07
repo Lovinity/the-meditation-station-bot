@@ -21,7 +21,7 @@ module.exports = class extends Monitor {
         {
             if (message.guild.settings.modRole && !message.member.roles.get(message.guild.settings.modRole))
             {
-                message.channel.send(`:x: <@${message.author.id}>, only staff may use the everyone mention.`);
+                message.send(`:x: <@${message.author.id}>, only staff may use the everyone mention.`);
                 message.delete();
             }
         }

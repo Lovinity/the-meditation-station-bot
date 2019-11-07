@@ -20,7 +20,7 @@ module.exports = class extends Monitor {
         // Someone mentions the mod role, have the bot respond to it regarding the staff command
         if (message.content.includes(`<@&${message.guild.settings.modRole || 0}>`))
         {
-            message.channel.send(`<@${message.author.id}>, instead of mentioning staff, please use the bot command \`!staff\` to create a private channel between you and staff.`);
+            message.send(`<@${message.author.id}>, instead of mentioning staff, please use the bot command \`!staff\` to create a private channel between you and staff.`);
         }
     }
 

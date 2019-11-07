@@ -20,11 +20,11 @@ module.exports = class extends Monitor {
         const { permission } = await this.client.permissionLevels.run(message, 4);
         if (/(https?:\/\/)?(www\.)?(discord\.(gg|li|me|io)|discordapp\.com\/invite)\/.+/.test(message.content) && !permission)
         {
-            message.channel.send(`:x: <@${message.author.id}>, please contact a staff member if you want to promote a server.`)
+            message.send(`:x: <@${message.author.id}>, please contact a staff member if you want to promote a server.`)
             .then((msg) => {
                 setTimeout(function () {
                     msg.delete();
-                }, 10000);
+                }, 15000);
             });
             message.delete();
         }
