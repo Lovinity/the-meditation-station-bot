@@ -20,7 +20,6 @@ module.exports = class extends Event {
                     }
                 }
             } catch (e) {
-                this.client.emit('error', e)
             }
         }
 
