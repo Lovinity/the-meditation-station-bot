@@ -135,7 +135,7 @@ module.exports = class extends Event {
         // Setup lavalink
         this.client.lavalink = new LavalinkClient(this.client, config.nodes, {
             user: this.client.user,
-            shards: this.client.shard.count
+            shards: 1
         });
 
 
