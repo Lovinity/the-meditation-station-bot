@@ -143,6 +143,20 @@ module.exports = class extends Event {
             this.client.schedule.create("spotify", "*/30 * * * *");
         }
 
+        // Get a token
+        if (config.spotify.id === '' || config.spotify.secret === '') return;
+        const res = await post(`https://accounts.spotify.com/api/token`, {
+            data: {
+                grant_type: "client_credentials"
+            },
+            headers: {
+                Authorization: `Basic ${CREDENTIALS}`,
+                "Content-Type": "application/x-www-form-urlencoded"
+            }
+        });
+
+        if (res.status !== 200) return;
+        this.client.spotifyToken = res.body.access_token;
 
     }
 
