@@ -11,7 +11,6 @@ class LavalinkClient extends PlayerManager {
         const node = this.nodes.first();
         console.log(identifier);
         return fetch(`http://${node.host}:${node.port}/loadtracks`, { query: { identifier }, headers: { Authorization: node.password } })
-            .then(res => res.json())
             .catch(error => {
                 throw error;
             });
