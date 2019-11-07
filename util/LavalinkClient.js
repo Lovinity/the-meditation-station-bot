@@ -5,9 +5,6 @@ class LavalinkClient extends PlayerManager {
 
     constructor(...args) {
         super(...args);
-
-        this.on("disconnect", (node, event) => this.client.console.log(`${node.host} has disconnected. Reason: ${event.reason || "No reason provided."} | Code: ${event.code} | Clean: ${event.wasClean}`));
-        this.on("error", (node, error) => this.client.emit(error));
     }
 
     resolveTracks(identifier) {
