@@ -24,8 +24,6 @@ module.exports = class extends Event {
                 console.log(`Remove rep`);
                 reaction.message.member.settings.update(`goodRep`, reaction.message.member.settings.goodRep - 1);
             }
-        } else {
-            reaction.message.reactions.removeAll();
         }
 
         // Starboard

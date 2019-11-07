@@ -19,7 +19,7 @@ module.exports = class extends Event {
             }
 
             // Update XP/Yang; remove all reputation and reactions as the message has been edited.
-            if (typeof message.member !== 'undefined') {
+            if (typeof message.member !== 'undefined' && message.author.id !== this.client.user.id) {
                 message.reactions.removeAll();
                 var xp1 = old.earnedXp;
                 var xp2 = message.xp;
