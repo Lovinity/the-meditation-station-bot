@@ -48,9 +48,8 @@ module.exports = class extends Argument {
                 querySearch.forEach(option => {
                     menu.addOption(option.id, option.name);
                 });
-                const collector = await menu.run(await message.channel.send('Please wait...'), {time: 60000, filter: (reaction, user) => user.id === message.author.id});
+                const collector = await menu.run(await message.send('Please wait...'), {time: 60000, filter: (reaction, user) => user.id === message.author.id});
                 const choice = await collector.selection;
-                collector.message.delete();
                 if (menu.options[choice])
                 {
                     return this.run(menu.options[choice].name, possible, message);
