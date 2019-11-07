@@ -2,6 +2,7 @@ const { Event } = require('klasa');
 const _ = require("lodash");
 const LavalinkClient = require("../util/LavalinkClient");
 const config = require('../config.js')
+const { post } = require("snekfetch");
 
 module.exports = class extends Event {
 
