@@ -1,5 +1,7 @@
 const { Event } = require('klasa');
 const _ = require("lodash");
+const LavalinkClient = require("../util/LavalinkClient");
+const config = require('../config.js')
 
 module.exports = class extends Event {
 
@@ -128,6 +130,12 @@ module.exports = class extends Event {
                         });
 
                 });
+        });
+
+        // Setup lavalink
+        this.client.lavalink = new LavalinkClient(this.client, config.nodes, {
+            user: this.client.user,
+            shards: this.client.shard.count
         });
 
 

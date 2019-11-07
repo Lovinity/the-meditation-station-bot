@@ -12,7 +12,7 @@ class MusicInterface {
     }
 
     join(voiceChannel) {
-        if (!this.idealNode) throw new Error("NO_NODES_AVAILABLE: There are no nodes available to use.");
+        if (!this.idealNode) throw new Error(":x: NO_NODES_AVAILABLE: There are no nodes available to use.");
         return this.client.lavalink.join({
             guild: this.guild.id,
             channel: voiceChannel,
@@ -26,8 +26,8 @@ class MusicInterface {
     }
 
     async play() {
-        if (!this.player) throw "Something went wrong, try again.";
-        else if (!this.queue.length) throw "Can't play songs from an empty queue. Queue up some songs!";
+        if (!this.player) throw ":x: Something went wrong, try again.";
+        else if (!this.queue.length) throw ":x: Can't play songs from an empty queue. Queue up some songs!";
 
         const [song] = this.queue;
         const volume = { volume: this.volume };
@@ -53,7 +53,7 @@ class MusicInterface {
     }
 
     async setVolume(volume) {
-        await this.guild.settings.update("misc.volume", volume);
+        await this.guild.settings.update("music.volume", volume);
         if (this.playing) await this.player.volume(volume);
         return volume;
     }
@@ -84,7 +84,7 @@ class MusicInterface {
     }
 
     get volume() {
-        return this.guild.settings.get("misc.volume");
+        return this.guild.settings.get("music.volume");
     }
 
     get idealNode() {

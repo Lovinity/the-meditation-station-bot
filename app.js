@@ -51,6 +51,10 @@ Client.defaultGuildSchema
             folder.add(`level${i}`, 'role', { configurable: false });
         }
     }, { configurable: false })
+    .add('music', folder => {
+        folder
+            .add('volume', 'integer', { min: 0, max: 100, default: 75 })
+    })
     .add('yangStore', folder => {
         folder
             .add('generator', 'integer', { min: 0, default: 5 })
