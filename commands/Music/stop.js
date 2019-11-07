@@ -1,12 +1,12 @@
-const Command = require("klasa");
+const { Command } = require("klasa");
 
 module.exports = class extends Command {
 
     constructor(...args) {
         super(...args, {
             cooldown: 8,
-            aliases: ["stopmusic", "musicstop"],
-            requiredPermissions: ["USE_EXTERNAL_EMOJIS"],
+            aliases: [ "stopmusic", "musicstop" ],
+            requiredPermissions: [ "USE_EXTERNAL_EMOJIS" ],
             description: "Stops playing music and leaves the voice channel.",
             extendedHelp: "No extended help available."
         });
@@ -14,7 +14,7 @@ module.exports = class extends Command {
         this.requireDJ = true;
     }
 
-    async run(msg) {
+    async run (msg) {
         const { music } = msg.guild;
         if (!music.queue || !music.queue.length) return msg.sendMessage(`:x: ***There are no songs in the queue at the moment.***`);
 
