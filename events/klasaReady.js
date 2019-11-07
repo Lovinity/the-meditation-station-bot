@@ -138,6 +138,11 @@ module.exports = class extends Event {
             shards: 1
         });
 
+        // Spotify task
+        if (!this.client.settings.schedules.some(task => task.taskName === "spotify")) {
+            await this.client.schedule.create("spotify", "*/30 * * * *");
+        }
+
 
     }
 

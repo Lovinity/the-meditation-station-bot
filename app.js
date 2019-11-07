@@ -67,6 +67,9 @@ setTimeout(() => {
         .add('music', folder => {
             folder
                 .add('volume', 'integer', { min: 0, max: 100, default: 75 })
+                .add('djMode', 'boolean', { default: false })
+                .add('djRole', 'role')
+                .add('dj', 'user', { array: true })
         })
         .add('yangStore', folder => {
             folder
@@ -125,6 +128,7 @@ setTimeout(() => {
 
             this.lavalink = null;
             this.music = new MusicManager();
+            this.spotifyToken = '';
         }
 
     }
@@ -148,6 +152,11 @@ setTimeout(() => {
         permissionLevels: new PermissionLevels()
             // everyone can use these commands
             .add(0, () => true)
+            // Music DJs
+            .add(2, ({ guild, member }) => {
+                if (!guild || !member) return false;
+                return member.roles.has(guild.settings.music.djRole) || guild.settings.music.dj.includes(member.id);
+            }, { fetch: true })
             // Members can view audit logs
             .add(4, ({ guild, member }) => guild && member.permissions.has('VIEW_AUDIT_LOG'), { fetch: true })
             // Members of guilds must have 'MANAGE_GUILD' permission
