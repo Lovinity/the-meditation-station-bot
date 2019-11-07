@@ -6,7 +6,7 @@ module.exports = class extends Event {
     run(guildMember) {
 
         // Get the configured modLog channel.
-        const modLog = guildMember.guild.settings.modLogChannel;
+        const modLog = guildMember.guild.settings.eventLogChannel;
 
         const _channel = this.client.channels.resolve(modLog);
 

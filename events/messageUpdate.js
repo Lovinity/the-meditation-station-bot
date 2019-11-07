@@ -36,7 +36,7 @@ module.exports = class extends Event {
             return;
 
         // Get the configured modLog channel.
-        const modLog = message.guild.settings.modLogChannel;
+        const modLog = message.guild.settings.eventLogChannel;
 
         // End if there is no configured channel
         if (!modLog)

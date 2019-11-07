@@ -28,7 +28,7 @@ module.exports = class extends Event {
             if (!modLog)
             {
                 if (typeof message.guild !== 'undefined')
-                    modLog = message.guild.settings.modLogChannel;
+                    modLog = message.guild.settings.eventLogChannel;
             }
 
             // Write each message to data

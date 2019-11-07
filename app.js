@@ -10,6 +10,8 @@ Client.defaultGuildSchema
     .add('botChannel', 'textchannel')
     .add('botGamesChannel', 'textchannel')
     .add('modLogChannel', 'textchannel')
+    .add('eventLogChannel', 'textchannel')
+    .add('flagLogChannel', 'textchannel')
     .add('iceBreakerChannel', 'textchannel')
     .add('announcementsChannel', 'textchannel')
     .add('generalChannel', 'textchannel')

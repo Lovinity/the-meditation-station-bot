@@ -4,7 +4,14 @@ const _ = require("lodash");
 module.exports = class extends Event {
 
     run () {
+        try {
+            const owner = this.client.application.owner;
+            if (owner) {
+                owner.send(`:arrows_counterclockwise: The bot was rebooted and is now ready.`)
+            }
+        } catch (e) {
 
+        }
         var updateLevels = (guildMember) => {
             // Update level roles
             var levelRoles = {};
@@ -108,7 +115,7 @@ module.exports = class extends Event {
             }
 
             // Remove invites that have no inviter (raid prevention)
-            const modLog = guild.settings.modLogChannel;
+            const modLog = guild.settings.eventLogChannel;
             const _channel = guild.channels.resolve(modLog);
             guild.fetchInvites()
                 .then(invites => {

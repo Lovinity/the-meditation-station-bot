@@ -243,7 +243,7 @@ module.exports = class extends Extendable {
                             }
                         }
                     }
-                    var modLog = this.guild.settings.modLogChannel;
+                    var modLog = this.guild.settings.flagLogChannel;
                     const _channel = this.client.channels.resolve(modLog);
                     if (threatening) {
                         if (_channel) {
