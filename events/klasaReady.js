@@ -145,19 +145,20 @@ module.exports = class extends Event {
         }
 
         // Get a token
-        if (config.spotify.id === '' || config.spotify.secret === '') return;
-        post(`https://accounts.spotify.com/api/token`, {
-            data: {
-                grant_type: "client_credentials"
-            },
-            headers: {
-                Authorization: `Basic ${CREDENTIALS}`,
-                "Content-Type": "application/x-www-form-urlencoded"
-            }
-        }).then((res) => {
-            this.client.spotifyToken = res.body.access_token;
-        })
-
+        if (config.spotify.id !== '' && config.spotify.secret !== '') {
+            const CREDENTIALS = Buffer.from(`${config.spotify.id}:${config.spotify.secret}`).toString("base64");
+            post(`https://accounts.spotify.com/api/token`, {
+                data: {
+                    grant_type: "client_credentials"
+                },
+                headers: {
+                    Authorization: `Basic ${CREDENTIALS}`,
+                    "Content-Type": "application/x-www-form-urlencoded"
+                }
+            }).then((res) => {
+                this.client.spotifyToken = res.body.access_token;
+            })
+        }
     }
 
 };
