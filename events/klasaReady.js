@@ -140,7 +140,7 @@ module.exports = class extends Event {
 
         // Spotify task
         if (!this.client.settings.schedules.some(task => task.taskName === "spotify")) {
-            await this.client.schedule.create("spotify", "*/30 * * * *");
+            this.client.schedule.create("spotify", "*/30 * * * *");
         }
 
 
