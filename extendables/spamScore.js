@@ -14,7 +14,7 @@ module.exports = class extends Extendable {
         this._earnedSpamScore = 0
     }
 
-    get spamScore() {
+    get spamScore () {
         return new Promise(async (resolve, reject) => {
             if (this.type !== 'DEFAULT' || this.author.id === this.client.user.id)
                 return resolve(0);
@@ -254,39 +254,37 @@ module.exports = class extends Extendable {
                             }
                         }
                     }
-                    if (doFlag) {
-                        var modLog = this.guild.settings.flagLogChannel;
-                        const _channel = this.client.channels.resolve(modLog);
-                        if (threatening) {
-                            if (_channel) {
-                                var embed = new MessageEmbed()
-                                    .setTitle(`Message flagged as threatening`)
-                                    .setDescription(`${this.cleanContent}`)
-                                    .setAuthor(this.author.tag, this.author.displayAvatarURL())
-                                    .setFooter(`Message channel **${this.channel.name}**`)
-                                    .setColor(`#ff7878`);
-                                _channel.sendEmbed(embed, `:bangbang: Please review message ${this.id}; it was flagged for being threatening.`)
-                            }
-                        } else if (toxic) {
-                            if (_channel) {
-                                var embed = new MessageEmbed()
-                                    .setTitle(`Message flagged as provocative`)
-                                    .setDescription(`${this.cleanContent}`)
-                                    .setAuthor(this.author.tag, this.author.displayAvatarURL())
-                                    .setFooter(`Message channel **${this.channel.name}**`)
-                                    .setColor(`#ff7878`);
-                                _channel.sendEmbed(embed, `:bangbang: Please review message ${this.id}; it was flagged for being provocative.`)
-                            }
-                        } else if (score > this.guild.settings.antispamCooldown) {
-                            if (_channel) {
-                                var embed = new MessageEmbed()
-                                    .setTitle(`Message flagged as spam`)
-                                    .setDescription(`${this.cleanContent}`)
-                                    .setAuthor(this.author.tag, this.author.displayAvatarURL())
-                                    .setFooter(`Message channel **${this.channel.name}**`)
-                                    .setColor(`#ff7878`);
-                                _channel.sendEmbed(embed, `:bangbang: Please review message ${this.id}; it was flagged for being spam.`)
-                            }
+                    var modLog = this.guild.settings.flagLogChannel;
+                    const _channel = this.client.channels.resolve(modLog);
+                    if (threatening) {
+                        if (_channel) {
+                            var embed = new MessageEmbed()
+                                .setTitle(`Message flagged as threatening`)
+                                .setDescription(`${this.cleanContent}`)
+                                .setAuthor(this.author.tag, this.author.displayAvatarURL())
+                                .setFooter(`Message channel **${this.channel.name}**`)
+                                .setColor(`#ff7878`);
+                            _channel.sendEmbed(embed, `:bangbang: Please review message ${this.id}; it was flagged for being threatening.`)
+                        }
+                    } else if (toxic) {
+                        if (_channel) {
+                            var embed = new MessageEmbed()
+                                .setTitle(`Message flagged as provocative`)
+                                .setDescription(`${this.cleanContent}`)
+                                .setAuthor(this.author.tag, this.author.displayAvatarURL())
+                                .setFooter(`Message channel **${this.channel.name}**`)
+                                .setColor(`#ff7878`);
+                            _channel.sendEmbed(embed, `:bangbang: Please review message ${this.id}; it was flagged for being provocative.`)
+                        }
+                    } else if (score > this.guild.settings.antispamCooldown) {
+                        if (_channel) {
+                            var embed = new MessageEmbed()
+                                .setTitle(`Message flagged as spam`)
+                                .setDescription(`${this.cleanContent}`)
+                                .setAuthor(this.author.tag, this.author.displayAvatarURL())
+                                .setFooter(`Message channel **${this.channel.name}**`)
+                                .setColor(`#ff7878`);
+                            _channel.sendEmbed(embed, `:bangbang: Please review message ${this.id}; it was flagged for being spam.`)
                         }
                     }
                     afterFunction()
@@ -303,11 +301,11 @@ module.exports = class extends Extendable {
         })
     }
 
-    get earnedSpamScore() {
+    get earnedSpamScore () {
         return this._earnedSpamScore;
     }
 
-    set earnedSpamScore(value) {
+    set earnedSpamScore (value) {
         this._earnedSpamScore = value;
     }
 
