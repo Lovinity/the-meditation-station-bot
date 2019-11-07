@@ -1,4 +1,5 @@
 const { Client, PermissionLevels, Schema } = require('klasa');
+const MusicManager = require("./util/MusicManager");
 const config = require('./config.js');
 require('./util/extendTextChannel');
 require('./util/extendUser');
@@ -75,7 +76,7 @@ Client.defaultMemberSchema
     .add('badRep', 'integer', { default: 0 })
     .add('goodRep', 'integer', { default: 0 })
     .add('spamScore', 'integer', { default: 0 })
-    .add('activityScore', 'float', {min: 0, default: 0})
+    .add('activityScore', 'float', { min: 0, default: 0 })
     .add('profile', folder => {
         folder
             .add('title', 'string')
@@ -100,8 +101,19 @@ Client.defaultMemberSchema
     .add('reports', 'string', { array: true })
     .add('roles', 'role', { array: true });
 
+class lavaClient extends Client {
+
+    constructor(...args) {
+        super(...args);
+
+        this.lavalink = null;
+        this.music = new MusicManager();
+    }
+
+}
+
 // Prepare Klasa
-var client = new Client({
+var client = new lavaClient({
     clientOptions: {
         fetchAllMembers: false
     },

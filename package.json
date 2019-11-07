@@ -20,6 +20,7 @@
     "canvas": "^2.2.0",
     "diff": "^4.0.1",
     "discord.js": "github:discordjs/discord.js#master",
+    "discord.js-lavalink": "^2.2.3",
     "fantasy-names": "^2.0.1",
     "isprofanity": "^1.4.1",
     "klasa": "github:dirigeants/klasa",

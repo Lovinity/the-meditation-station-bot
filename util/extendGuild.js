@@ -52,6 +52,10 @@ Serious raid activity continues to be detected. I activated the highest mitigati
             };
         }
 
+        get music() {
+            return this.client.music.add(this);
+        }
+
     });
 
 
