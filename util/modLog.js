@@ -73,6 +73,7 @@ module.exports = class ModLog {
 
     setCase(value) {
         this.case = value;
+        return this;
     }
 
     // Send the log to the modlog channel
