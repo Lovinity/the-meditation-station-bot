@@ -11,9 +11,10 @@ module.exports = class extends Extendable {
 
     constructor(...args) {
         super(...args, { appliesTo: [ Message ] });
+        this._earnedSpamScore = 0
     }
 
-    get spamScore () {
+    get spamScore() {
         return new Promise(async (resolve, reject) => {
             if (this.type !== 'DEFAULT' || this.author.id === this.client.user.id)
                 return resolve(0);
@@ -32,7 +33,7 @@ module.exports = class extends Extendable {
             });
             */
 
-            // Executed after finishing perspective
+            // Executed after finishing perspective; manages multipliers
             var afterFunction = () => {
                 // Start with a spam score multiplier of 0.5
                 // spam score 50% if less strict channel AND less strict role
@@ -65,20 +66,20 @@ module.exports = class extends Extendable {
 
                 //console.log(`${multiplier} multiplier`);
 
-                score *= multiplier;
+                score = parseInt(score * multiplier);
             }
 
-            // Add score if there are any mentions; mention spam
+            // Add 5 score for each mention; mention spam
             var nummentions = this.mentions.users.size + this.mentions.roles.size;
             score += (5 * nummentions);
             //console.log(`${nummentions} mentions`);
 
-            // Add score for embeds; link/embed spam
+            // Add 10 score for each embed; link/embed spam
             var numembeds = this.embeds.length;
             score += (10 * numembeds);
             //console.log(`${numembeds} embeds`);
 
-            // Add score for attachments; attachment spam
+            // Add 10 score for each attachment; attachment spam
             var numattachments = this.attachments.size;
             score += (10 * numattachments);
             //console.log(`${numattachments} attachments`);
@@ -95,17 +96,19 @@ module.exports = class extends Extendable {
             //console.log(`${collection.size} messages`);
             collection.each((message) => {
 
-                // If the current message was sent at a time that causes the typing speed to be more than 7 characters per second, add score for flooding / copypasting.
+                // If the current message was sent at a time that causes the typing speed to be more than 7 characters per second, 
+                // add score for flooding / copypasting. The faster / more characters typed, the more score added.
                 var timediff = moment(this.createdAt).diff(moment(message.createdAt), 'seconds');
                 if (timediff <= messageTime && !this.author.bot) {
-                    score += 10;
+                    score += parseInt((((messageTime - timediff) + 1) * 7));
                     //console.log(`Flooding`);
                 }
 
-                // If the current message is 90% or more similar to the comparing message, add score for duplicate message spamming.
+                // If the current message is more than 80% or more similar to the comparing message, 
+                // add 1 score for every (similarity % - 80); copy/paste spam.
                 var similarity = stringSimilarity.compareTwoStrings(`${this.content || ''}${JSON.stringify(this.embeds)}${JSON.stringify(this.attachments.array())}`, `${message.content || ''}${JSON.stringify(message.embeds)}${JSON.stringify(message.attachments.array())}`);
-                if (similarity >= 0.9) {
-                    score += 10;
+                if (similarity >= 0.8) {
+                    score += parseInt((20 - ((1 - similarity) * 100)));
                     //console.log(`String similarity`);
                 }
             });
@@ -123,31 +126,32 @@ module.exports = class extends Extendable {
                 var uppercase = this.cleanContent.replace(/[^A-Z]/g, "").length;
                 var lowercase = this.cleanContent.replace(/[^a-z]/g, "").length;
 
-                // If 50% or more of the characters are uppercase, consider it shout spam, and add 10 to the score.
+                // If 50% or more of the characters are uppercase, consider it shout spam,
+                // and add a score of 5, plus 1 for every 12.5 uppercase characters.
                 if (uppercase >= lowercase) {
-                    score += 10;
+                    score += parseInt(5 + (20 * (uppercase / 250)));
                     //console.log(`>50% uppercase`);
                 }
 
                 // Add score for repeating consecutive characters
-                // 25 or more consecutive repeating characters = extremely spammy
-                if (/(.)\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1/.test(this.cleanContent.toLowerCase())) {
+                // 20 or more consecutive repeating characters = extremely spammy. Add 20 score.
+                if (/(.)\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1/.test(this.cleanContent.toLowerCase())) {
                     score += 20;
-                    // 10 or more consecutive repeating characters = spammy
+                    // 10 or more consecutive repeating characters = spammy. Add 10 score.
                 } else if (/(.)\1\1\1\1\1\1\1\1\1\1/.test(this.cleanContent.toLowerCase())) {
                     score += 10;
-                    // 5 or more consecutive repeating characters = a little bit spammy
+                    // 5 or more consecutive repeating characters = a little bit spammy. Add 5 score.
                 } else if (/(.)\1\1\1\1\1/.test(this.cleanContent.toLowerCase())) {
                     score += 5;
                 }
 
-                // Add score for here and everyone mentions
+                // Add 40 score for here and everyone mentions as these are VERY spammy.
                 if (this.cleanContent.includes("@here") || this.cleanContent.includes("@everyone"))
                     score += 40;
 
-                // Add 1 score for every new line; scroll spam
+                // Add 2 score for every new line; scroll spam
                 var newlines = this.cleanContent.split(/\r\n|\r|\n/).length;
-                score += newlines;
+                score += (newlines * 2);
 
                 // Add score for repeating patterns
                 // TODO: improve this algorithm
@@ -160,16 +164,10 @@ module.exports = class extends Extendable {
                 }
                 var patternScore = (this.cleanContent.length > 0 ? (newstring.length / this.cleanContent.length) : 1);
 
-                // 60% or lower means lots of repeating patterns, thus very spammy.
-                if (patternScore < 0.6) {
-                    score += 20;
-                } else if (patternScore < 0.8) {
-                    score += 10;
-                } else if (patternScore < 0.9) {
-                    score += 5;
-                }
+                // Pattern score of 100% means no repeating patterns. For every 2% less than 100%, add 1 score.
+                score += parseInt((1 - patternScore) * 50)
 
-                // Perspective API check
+                // Perspective API check and score add
                 try {
                     var body = await perspective.analyze(this.cleanContent, { attributes: [ 'IDENTITY_ATTACK', 'TOXICITY', 'SEVERE_TOXICITY', 'PROFANITY', 'THREAT', 'SPAM', 'PROFANITY', 'SEXUALLY_EXPLICIT' ], doNotStore: false })
                     var threatening = false
@@ -177,36 +175,41 @@ module.exports = class extends Extendable {
                     for (const key of Object.keys(body.attributeScores)) {
                         if (typeof body.attributeScores[ key ].spanScores !== 'undefined' && body.attributeScores[ key ].spanScores.length > 0) {
                             body.attributeScores[ key ].spanScores.map((spanScore) => {
-                                console.log(`spanScore ${key}: ${spanScore.score.value} / ${(0.9 - (this.cleanContent.length / 4000))}`)
-                                if (spanScore.score.value >= (0.9 - (this.cleanContent.length / 4000))) {
-                                    switch (key) {
-                                        case 'SEVERE_TOXICITY':
-                                            score += 30;
+                                switch (key) {
+                                    case 'SEVERE_TOXICITY':
+                                        score += parseInt((0.2 + ((this.cleanContent.length / 2) / 500)) * 66 * spanScore.score.value)
+                                        if (spanScore.score.value >= (0.9 - (this.cleanContent.length / 4000))) {
                                             toxic = true
-                                            break;
-                                        case 'TOXICITY':
-                                            score += 10;
+                                        }
+                                        break;
+                                    case 'TOXICITY':
+                                        score += parseInt((0.2 + ((this.cleanContent.length / 2) / 500)) * 33 * spanScore.score.value)
+                                        if (spanScore.score.value >= (0.9 - (this.cleanContent.length / 4000))) {
                                             toxic = true
-                                            break;
-                                        case 'THREAT':
-                                            score += 50;
+                                        }
+                                        break;
+                                    case 'THREAT':
+                                        score += parseInt((0.2 + ((this.cleanContent.length / 2) / 500)) * 100 * spanScore.score.value)
+                                        if (spanScore.score.value >= (0.9 - (this.cleanContent.length / 4000))) {
                                             threatening = true
-                                            break;
-                                        case 'SPAM':
-                                            score += 20;
-                                            break;
-                                        case 'PROFANITY':
-                                            score += 10;
-                                            break;
-                                        case 'SEXUALLY_EXPLICIT':
-                                            score += 10;
-                                            break;
-                                        case 'IDENTITY_ATTACK':
-                                            score += 20;
+                                        }
+                                        break;
+                                    case 'SPAM':
+                                        score += parseInt((0.2 + ((this.cleanContent.length / 2) / 500)) * 50 * spanScore.score.value)
+                                        break;
+                                    case 'PROFANITY':
+                                        score += parseInt((0.2 + ((this.cleanContent.length / 2) / 500)) * 33 * spanScore.score.value)
+                                        break;
+                                    case 'SEXUALLY_EXPLICIT':
+                                        score += parseInt((0.2 + ((this.cleanContent.length / 2) / 500)) * 33 * spanScore.score.value)
+                                        break;
+                                    case 'IDENTITY_ATTACK':
+                                        score += parseInt((0.2 + ((this.cleanContent.length / 2) / 500)) * 66 * spanScore.score.value)
+                                        if (spanScore.score.value >= (0.9 - (this.cleanContent.length / 4000))) {
                                             toxic = true
-                                            break;
+                                        }
+                                        break;
 
-                                    }
                                 }
                             })
                         } else {
@@ -214,72 +217,82 @@ module.exports = class extends Extendable {
                             if (body.attributeScores[ key ].summaryScore.value >= (0.9 - (this.cleanContent.length / 4000))) {
                                 switch (key) {
                                     case 'SEVERE_TOXICITY':
-                                        score += 30;
-                                        toxic = true
+                                        score += parseInt((0.2 + ((this.cleanContent.length / 2) / 500)) * 66 * body.attributeScores[ key ].summaryScore.value)
+                                        if (body.attributeScores[ key ].summaryScore.value >= (0.9 - (this.cleanContent.length / 4000))) {
+                                            toxic = true
+                                        }
                                         break;
                                     case 'TOXICITY':
-                                        score += 10;
-                                        toxic = true
-                                        break;
-                                    case 'PROFANITY':
-                                        score += 10;
+                                        score += parseInt((0.2 + ((this.cleanContent.length / 2) / 500)) * 33 * body.attributeScores[ key ].summaryScore.value)
+                                        if (body.attributeScores[ key ].summaryScore.value >= (0.9 - (this.cleanContent.length / 4000))) {
+                                            toxic = true
+                                        }
                                         break;
                                     case 'THREAT':
-                                        score += 50;
-                                        threatening = true
+                                        score += parseInt((0.2 + ((this.cleanContent.length / 2) / 500)) * 100 * body.attributeScores[ key ].summaryScore.value)
+                                        if (body.attributeScores[ key ].summaryScore.value >= (0.9 - (this.cleanContent.length / 4000))) {
+                                            threatening = true
+                                        }
                                         break;
                                     case 'SPAM':
-                                        score += 20;
+                                        score += parseInt((0.2 + ((this.cleanContent.length / 2) / 500)) * 50 * body.attributeScores[ key ].summaryScore.value)
+                                        break;
+                                    case 'PROFANITY':
+                                        score += parseInt((0.2 + ((this.cleanContent.length / 2) / 500)) * 33 * body.attributeScores[ key ].summaryScore.value)
                                         break;
                                     case 'SEXUALLY_EXPLICIT':
-                                        score += 5;
+                                        score += parseInt((0.2 + ((this.cleanContent.length / 2) / 500)) * 33 * body.attributeScores[ key ].summaryScore.value)
                                         break;
                                     case 'IDENTITY_ATTACK':
-                                        score += 20;
-                                        toxic = true
+                                        score += parseInt((0.2 + ((this.cleanContent.length / 2) / 500)) * 66 * body.attributeScores[ key ].summaryScore.value)
+                                        if (body.attributeScores[ key ].summaryScore.value >= (0.9 - (this.cleanContent.length / 4000))) {
+                                            toxic = true
+                                        }
                                         break;
 
                                 }
                             }
                         }
                     }
-                    var modLog = this.guild.settings.flagLogChannel;
-                    const _channel = this.client.channels.resolve(modLog);
-                    if (threatening) {
-                        if (_channel) {
-                            var embed = new MessageEmbed()
-                                .setTitle(`Message flagged as threatening`)
-                                .setDescription(`${this.cleanContent}`)
-                                .setAuthor(this.author.tag, this.author.displayAvatarURL())
-                                .setFooter(`Message channel **${this.channel.name}**`)
-                                .setColor(`#ff7878`);
-                            _channel.sendEmbed(embed, `:bangbang: Please review message ${this.id}; it was flagged for being threatening.`)
-                        }
-                    } else if (toxic) {
-                        if (_channel) {
-                            var embed = new MessageEmbed()
-                                .setTitle(`Message flagged as provocative`)
-                                .setDescription(`${this.cleanContent}`)
-                                .setAuthor(this.author.tag, this.author.displayAvatarURL())
-                                .setFooter(`Message channel **${this.channel.name}**`)
-                                .setColor(`#ff7878`);
-                            _channel.sendEmbed(embed, `:bangbang: Please review message ${this.id}; it was flagged for being provocative.`)
-                        }
-                    } else if (score > this.guild.settings.antispamCooldown) {
-                        if (_channel) {
-                            var embed = new MessageEmbed()
-                                .setTitle(`Message flagged as spam`)
-                                .setDescription(`${this.cleanContent}`)
-                                .setAuthor(this.author.tag, this.author.displayAvatarURL())
-                                .setFooter(`Message channel **${this.channel.name}**`)
-                                .setColor(`#ff7878`);
-                            _channel.sendEmbed(embed, `:bangbang: Please review message ${this.id}; it was flagged for having a spam score (${score}) higher than antispamCooldown (${guild.settings.antispamCooldown}).`)
+                    if (doFlag) {
+                        var modLog = this.guild.settings.flagLogChannel;
+                        const _channel = this.client.channels.resolve(modLog);
+                        if (threatening) {
+                            if (_channel) {
+                                var embed = new MessageEmbed()
+                                    .setTitle(`Message flagged as threatening`)
+                                    .setDescription(`${this.cleanContent}`)
+                                    .setAuthor(this.author.tag, this.author.displayAvatarURL())
+                                    .setFooter(`Message channel **${this.channel.name}**`)
+                                    .setColor(`#ff7878`);
+                                _channel.sendEmbed(embed, `:bangbang: Please review message ${this.id}; it was flagged for being threatening.`)
+                            }
+                        } else if (toxic) {
+                            if (_channel) {
+                                var embed = new MessageEmbed()
+                                    .setTitle(`Message flagged as provocative`)
+                                    .setDescription(`${this.cleanContent}`)
+                                    .setAuthor(this.author.tag, this.author.displayAvatarURL())
+                                    .setFooter(`Message channel **${this.channel.name}**`)
+                                    .setColor(`#ff7878`);
+                                _channel.sendEmbed(embed, `:bangbang: Please review message ${this.id}; it was flagged for being provocative.`)
+                            }
+                        } else if (score > this.guild.settings.antispamCooldown) {
+                            if (_channel) {
+                                var embed = new MessageEmbed()
+                                    .setTitle(`Message flagged as spam`)
+                                    .setDescription(`${this.cleanContent}`)
+                                    .setAuthor(this.author.tag, this.author.displayAvatarURL())
+                                    .setFooter(`Message channel **${this.channel.name}**`)
+                                    .setColor(`#ff7878`);
+                                _channel.sendEmbed(embed, `:bangbang: Please review message ${this.id}; it was flagged for being spam.`)
+                            }
                         }
                     }
                     afterFunction()
                     return resolve(score)
                 } catch (e) {
-                    this.client.console.error(e);
+                    this.client.emit('error', e)
                     afterFunction()
                     return resolve(score)
                 }
@@ -288,6 +301,14 @@ module.exports = class extends Extendable {
                 return resolve(score)
             }
         })
+    }
+
+    get earnedSpamScore() {
+        return this._earnedSpamScore;
+    }
+
+    set earnedSpamScore(value) {
+        this._earnedSpamScore = value;
     }
 
 };

@@ -14,8 +14,9 @@ module.exports = class extends Event {
         // Remove XP/Yang
         if (typeof message.member !== 'undefined')
         {
-            var xp = 0 - message.xp;
+            var xp = 0 - message.earnedXp;
             message.member.xp(xp, message);
+            message.earnedXp = 0;
         }
 
         // Remove good rep

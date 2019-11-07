@@ -183,7 +183,6 @@ module.exports = class extends Command {
                     {max: 1, time: 300000, errors: ['time']});
         } catch (err) {
             return message.send(`:x: I didn't hear back from you. I canceled your !profile background command.`);
-            console.error(err);
         }
         var themessage = messages.first();
         if (themessage.content === "clear")
@@ -281,7 +280,6 @@ module.exports = class extends Command {
                         {max: 1, time: 180000, errors: ['time']});
             } catch (err) {
                 return message.send(`:x: I didn't receive a valid image from you for the badge. The command was canceled.`);
-                console.error(err);
             }
             var themessage = messages.first();
             if (themessage.attachments.size > 0)
@@ -325,7 +323,7 @@ module.exports = class extends Command {
                 ctx.shadowOffsetY = 2;
                 ctx.shadowBlur = 2;
             } catch (e) {
-
+                this.client.emit('error', e)
             }
         }
         ctx.restore();
@@ -360,7 +358,7 @@ module.exports = class extends Command {
             ctx.globalCompositeOperation = "destination-in";
             ctx.drawImage(image, 0, 0, 480, 360);
         } catch (e) {
-
+            this.client.emit('error', e)
         }
         // reset comp. mode to default
         ctx.globalCompositeOperation = "source-over";
@@ -373,7 +371,7 @@ module.exports = class extends Command {
             var avatar = await loadImage(user.displayAvatarURL({format: 'png'}));
             ctx.drawImage(avatar, 9, 13, 100, 100);
         } catch (e) {
-            console.error(e);
+            this.client.emit('error', e)
         }
         ctx.restore();
         ctx.save();
@@ -457,7 +455,7 @@ module.exports = class extends Command {
                     ctx.scale(1, 1);
                     ctx.closePath();
                 } catch (e) {
-                    console.error(e);
+                    this.client.emit('error', e)
                 }
                 return true;
             });

@@ -9,23 +9,32 @@ module.exports = class extends Event {
         // First, update spam score if new score is bigger than old score. Do NOT update if new score is less than old score; we don't want to lower it.
         try {
             if (message.type === 'DEFAULT' && typeof message.member !== 'undefined' && message !== null) {
-                var oldscore = await old.spamScore;
+                var oldscore = old.earnedSpamScore;
                 var newscore = await message.spamScore;
+                message.earnedSpamScore = newscore;
                 if (newscore > oldscore) {
                     var diff = newscore - oldscore;
                     message.member.spamScore(diff, message);
                 }
             }
 
-            // Update XP/Yang
+            // Update XP/Yang; remove all reputation and reactions as the message has been edited.
             if (typeof message.member !== 'undefined') {
-                var xp1 = old.xp;
+                message.reactions.removeAll();
+                var xp1 = old.earnedXp;
                 var xp2 = message.xp;
-                if (xp2 - xp1 !== 0)
+                if (spamScore > message.guild.settings.antispamCooldown) {
+                    xp2 = 0;
+                } else if (message.member && !message.author.bot && xp2 >= 2) {
+                    message.react(message.guild.settings.repEmoji);
+                }
+                message.earnedXp = xp2;
+                if (xp2 - xp1 !== 0) {
                     message.member.xp(xp2 - xp1, message);
+                }
             }
         } catch (e) {
-
+            this.client.emit('error', e);
         }
 
         if (this.client.ready && old.content !== message.content)
