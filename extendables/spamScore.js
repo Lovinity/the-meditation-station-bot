@@ -118,11 +118,13 @@ module.exports = class extends Extendable {
             // Score checks only if message content exists
             if (this.cleanContent && this.cleanContent.length > 0) {
 
+                /* DISABLED; many false positives for emojis etc
                 // If the message contains any off-the-wall characters, consider it spam and add 10 to the score.
                 if (/[^\x20-\x7E]/g.test(this.cleanContent || '')) {
                     score += 10;
                     console.log(`special characters: 10`);
                 }
+                */
 
                 // Count uppercase and lowercase letters
                 var uppercase = this.cleanContent.replace(/[^A-Z]/g, "").length;
@@ -158,7 +160,7 @@ module.exports = class extends Extendable {
                 }
 
                 // Add 2 score for every new line; scroll spam
-                var newlines = this.cleanContent.split(/\r\n|\r|\n/).length;
+                var newlines = this.cleanContent.split(/\r\n|\r|\n/).length - 1;
                 score += (newlines * 2);
                 console.log(`Newlines: ${newlines * 2}`)
 
