@@ -22,6 +22,8 @@ module.exports = class extends Extendable {
             // Start with a base score of 2
             var score = 2;
             var preScore = 0;
+            var scoreReasons = {};
+            var preScoreReasons = {};
 
             /*
             // Add 3 points for every profane word used; excessive profanity spam
@@ -67,6 +69,27 @@ module.exports = class extends Extendable {
 
                 //console.log(`${multiplier} multiplier`);
 
+                // Flag messages with a high spam score
+                var modLog = this.guild.settings.flagLogChannel;
+                const _channel = this.client.channels.resolve(modLog);
+                if (score > this.guild.settings.antispamCooldown) {
+                    if (_channel) {
+                        var embed = new MessageEmbed()
+                            .setTitle(`Flagged message`)
+                            .setDescription(`${this.cleanContent}`)
+                            .setAuthor(this.author.tag, this.author.displayAvatarURL())
+                            .setFooter(`Message channel **${this.channel.name}**`)
+                            .addField(`Total Spam Score`, `Base: ${score}; multiplier: ${multiplier}; total: ${score * multiplier}`)
+                            .setColor(`#ff7878`);
+                        for (var key in scoreReasons) {
+                            if (Object.prototype.hasOwnProperty.call(scoreReasons, key)) {
+                                embed.addField(key, scoreReasons[ key ]);
+                            }
+                        }
+                        _channel.sendEmbed(embed, `:bangbang: Please review message ${this.id}; it was flagged for having a high spam score.`)
+                    }
+                }
+
                 score = parseInt(score * multiplier);
 
                 console.log(`Total score: ${score}`)
@@ -75,17 +98,17 @@ module.exports = class extends Extendable {
             // Add 5 score for each mention; mention spam
             var nummentions = this.mentions.users.size + this.mentions.roles.size;
             score += (5 * nummentions);
-            console.log(`mentions: ${5 * nummentions}`);
+            if (nummentions > 0) { scoreReasons[ "Mentions" ] = (nummentions * 5) }
 
             // Add 10 score for each embed; link/embed spam
             var numembeds = this.embeds.length;
             score += (10 * numembeds);
-            console.log(`Embeds: 10 * ${numembeds}`);
+            if (numembeds > 0) { scoreReasons[ "Embeds" ] = (nummembeds * 10) }
 
             // Add 10 score for each attachment; attachment spam
             var numattachments = this.attachments.size;
             score += (10 * numattachments);
-            console.log(`Attachments: ${10 * numattachments}`);
+            if (numattachments > 0) { scoreReasons[ "Attachments" ] = (numattachments * 10) }
 
             // Calculate how many seconds this message took to type based off of 7 characters per second.
             var messageTime = (this.cleanContent.length / 7);
@@ -104,7 +127,7 @@ module.exports = class extends Extendable {
                 var timediff = moment(this.createdAt).diff(moment(message.createdAt), 'seconds');
                 if (timediff <= messageTime && !this.author.bot) {
                     score += parseInt((messageTime - timediff) + 1);
-                    console.log(`Flooding: ${parseInt((messageTime - timediff) + 1)}`);
+                    scoreReasons[ "Flooding / Rapid Typing" ] = parseInt((messageTime - timediff) + 1)
                 }
 
                 // If the current message is more than 80% or more similar to the comparing message, 
@@ -112,7 +135,7 @@ module.exports = class extends Extendable {
                 var similarity = stringSimilarity.compareTwoStrings(`${this.content || ''}${JSON.stringify(this.embeds)}${JSON.stringify(this.attachments.array())}`, `${message.content || ''}${JSON.stringify(message.embeds)}${JSON.stringify(message.attachments.array())}`);
                 if (similarity >= 0.8) {
                     score += parseInt((10 - ((1 - similarity) * 50)) * (1 + (0.1 * (this.cleanContent ? this.cleanContent.length / 100 : 0))));
-                    console.log(`String similarity: ${parseInt((10 - ((1 - similarity) * 50)) * (1 + (0.1 * (this.cleanContent ? this.cleanContent.length / 100 : 0))))}`);
+                    scoreReasons[ "Copy-Pasting" ] = parseInt((10 - ((1 - similarity) * 50)) * (1 + (0.1 * (this.cleanContent ? this.cleanContent.length / 100 : 0))))
                 }
             });
 
@@ -136,7 +159,7 @@ module.exports = class extends Extendable {
                 // This is a preScore and only used if perspective fails.
                 if (uppercase >= lowercase) {
                     preScore += parseInt(5 + (20 * (uppercase / 250)));
-                    console.log(`>50% uppercase: ${parseInt(5 + (20 * (uppercase / 250)))}`);
+                    preScoreReasons[ "Uppercase / Shouting" ] = parseInt(5 + (20 * (uppercase / 250)))
                 }
 
                 // Add score for repeating consecutive characters
@@ -144,27 +167,27 @@ module.exports = class extends Extendable {
                 // This is a preScore and only used if perspective fails.
                 if (/(.)\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1/.test(this.cleanContent.toLowerCase())) {
                     preScore += 20;
-                    console.log(`20+ repeat characters: 20`)
+                    preScoreReasons[ "Repeating Characters" ] = 20
                     // 10 or more consecutive repeating characters = spammy. Add 10 score.
                 } else if (/(.)\1\1\1\1\1\1\1\1\1\1/.test(this.cleanContent.toLowerCase())) {
                     preScore += 10;
-                    console.log(`10-19 repeat characters: 10`)
+                    preScoreReasons[ "Repeating Characters" ] = 10
                     // 5 or more consecutive repeating characters = a little bit spammy. Add 5 score.
                 } else if (/(.)\1\1\1\1\1/.test(this.cleanContent.toLowerCase())) {
                     preScore += 5;
-                    console.log(`5-9 repeat characters: 5`)
+                    preScoreReasons[ "Repeating Characters" ] = 5
                 }
 
                 // Add 40 score for here and everyone mentions as these are VERY spammy.
                 if (this.cleanContent.includes("@here") || this.cleanContent.includes("@everyone")) {
                     score += 40;
-                    console.log(`Here / Everyone mention: 40`)
+                    scoreReasons[ "Here / Everyone Mention" ] = 40
                 }
 
                 // Add 2 score for every new line; scroll spam
                 var newlines = this.cleanContent.split(/\r\n|\r|\n/).length - 1;
                 score += (newlines * 2);
-                console.log(`Newlines: ${newlines * 2}`)
+                if (newlines > 0) { scoreReasons[ "New Lines / Scrolling" ] = (newlines * 2) }
 
                 // Add score for repeating patterns
                 // TODO: improve this algorithm
@@ -179,11 +202,11 @@ module.exports = class extends Extendable {
 
                 // Pattern score of 100% means no repeating patterns. For every 4% less than 100%, add 1 score. Multiply depending on content length.
                 score += parseInt(((1 - patternScore) * 25) * (1 + (0.1 * (this.cleanContent ? this.cleanContent.length / 100 : 0))))
-                console.log(`Repeat patterns: ${parseInt(((1 - patternScore) * 25) * (1 + (0.1 * (this.cleanContent ? this.cleanContent.length / 100 : 0))))}`)
+                if (patternScore < 1) { scoreReasons[ "Repeating Patterns" ] = parseInt(((1 - patternScore) * 25) * (1 + (0.1 * (this.cleanContent ? this.cleanContent.length / 100 : 0)))) }
 
                 // Perspective API check and score add
                 try {
-                    var body = await perspective.analyze(this.cleanContent, { attributes: [ 'IDENTITY_ATTACK', 'TOXICITY', 'SEVERE_TOXICITY', 'PROFANITY', 'THREAT', 'SPAM', 'PROFANITY', 'SEXUALLY_EXPLICIT' ], doNotStore: false })
+                    var body = await perspective.analyze(this.cleanContent, { attributes: [ 'SEVERE_TOXICITY', 'SPAM' ], doNotStore: false })
                     var threatening = false
                     var toxic = false
                     var hadAttributes = false
@@ -194,46 +217,16 @@ module.exports = class extends Extendable {
                             body.attributeScores[ key ].spanScores.map((spanScore) => {
                                 switch (key) {
                                     case 'SEVERE_TOXICITY':
-                                        score += parseInt((spanScore.score.value * 30) * perspectiveMultiplier)
-                                        console.log(`Severe toxicity: ${parseInt((spanScore.score.value * 30) * perspectiveMultiplier)}`)
-                                        if (spanScore.score.value >= (0.9 - (this.cleanContent.length / 4000))) {
-                                            toxic = true
-                                        }
-                                        break;
-                                    case 'TOXICITY':
-                                        score += parseInt((spanScore.score.value * 15) * perspectiveMultiplier)
-                                        console.log(`Toxicity: ${parseInt((spanScore.score.value * 15) * perspectiveMultiplier)}`)
-                                        if (spanScore.score.value >= (0.9 - (this.cleanContent.length / 4000))) {
-                                            toxic = true
-                                        }
-                                        break;
-                                    case 'THREAT':
                                         score += parseInt((spanScore.score.value * 50) * perspectiveMultiplier)
-                                        console.log(`Threat: ${parseInt((spanScore.score.value * 50) * perspectiveMultiplier)}`)
+                                        scoreReasons[ "Perspective Toxicity / Provocative Nature" ] = parseInt((spanScore.score.value * 50) * perspectiveMultiplier)
                                         if (spanScore.score.value >= (0.9 - (this.cleanContent.length / 4000))) {
-                                            threatening = true
+                                            toxic = true
                                         }
                                         break;
                                     case 'SPAM':
                                         score += parseInt((spanScore.score.value * 25) * perspectiveMultiplier)
-                                        console.log(`Spam: ${parseInt((spanScore.score.value * 25) * perspectiveMultiplier)}`)
+                                        scoreReasons[ "Perspective Spam" ] = parseInt((spanScore.score.value * 25) * perspectiveMultiplier)
                                         break;
-                                    case 'PROFANITY':
-                                        score += parseInt((spanScore.score.value * 15) * perspectiveMultiplier)
-                                        console.log(`Profanity: ${parseInt((spanScore.score.value * 15) * perspectiveMultiplier)}`)
-                                        break;
-                                    case 'SEXUALLY_EXPLICIT':
-                                        score += parseInt((spanScore.score.value * 15) * perspectiveMultiplier)
-                                        console.log(`Sexually Explicit: ${parseInt((spanScore.score.value * 15) * perspectiveMultiplier)}`)
-                                        break;
-                                    case 'IDENTITY_ATTACK':
-                                        score += parseInt((spanScore.score.value * 30) * perspectiveMultiplier)
-                                        console.log(`Identity Attack: ${parseInt((spanScore.score.value * 30) * perspectiveMultiplier)}`)
-                                        if (spanScore.score.value >= (0.9 - (this.cleanContent.length / 4000))) {
-                                            toxic = true
-                                        }
-                                        break;
-
                                 }
                             })
                         } else if (typeof body.attributeScores[ key ].summaryScore !== 'undefined') {
@@ -241,76 +234,21 @@ module.exports = class extends Extendable {
                             hadAttributes = true
                             switch (key) {
                                 case 'SEVERE_TOXICITY':
-                                    score += parseInt((body.attributeScores[ key ].summaryScore.value * 30) * perspectiveMultiplier)
-                                    if (body.attributeScores[ key ].summaryScore.value >= (0.9 - (this.cleanContent.length / 4000))) {
-                                        toxic = true
-                                    }
-                                    break;
-                                case 'TOXICITY':
-                                    score += parseInt((body.attributeScores[ key ].summaryScore.value * 15) * perspectiveMultiplier)
-                                    if (body.attributeScores[ key ].summaryScore.value >= (0.9 - (this.cleanContent.length / 4000))) {
-                                        toxic = true
-                                    }
-                                    break;
-                                case 'THREAT':
                                     score += parseInt((body.attributeScores[ key ].summaryScore.value * 50) * perspectiveMultiplier)
+                                    scoreReasons[ "Perspective Toxicity / Provocative Nature" ] = parseInt((body.attributeScores[ key ].summaryScore.value * 50) * perspectiveMultiplier)
                                     if (body.attributeScores[ key ].summaryScore.value >= (0.9 - (this.cleanContent.length / 4000))) {
-                                        threatening = true
+                                        toxic = true
                                     }
                                     break;
                                 case 'SPAM':
                                     score += parseInt((body.attributeScores[ key ].summaryScore.value * 25) * perspectiveMultiplier)
+                                    scoreReasons[ "Perspective Spam" ] = parseInt((body.attributeScores[ key ].summaryScore.value * 25) * perspectiveMultiplier)
                                     break;
-                                case 'PROFANITY':
-                                    score += parseInt((body.attributeScores[ key ].summaryScore.value * 15) * perspectiveMultiplier)
-                                    break;
-                                case 'SEXUALLY_EXPLICIT':
-                                    score += parseInt((body.attributeScores[ key ].summaryScore.value * 15) * perspectiveMultiplier)
-                                    break;
-                                case 'IDENTITY_ATTACK':
-                                    score += parseInt((body.attributeScores[ key ].summaryScore.value * 30) * perspectiveMultiplier)
-                                    if (body.attributeScores[ key ].summaryScore.value >= (0.9 - (this.cleanContent.length / 4000))) {
-                                        toxic = true
-                                    }
-                                    break;
-
                             }
                         } else {
                             // perspective score failed; use preScore instead.
                             score += preScore;
-                        }
-                    }
-                    var modLog = this.guild.settings.flagLogChannel;
-                    const _channel = this.client.channels.resolve(modLog);
-                    if (threatening) {
-                        if (_channel) {
-                            var embed = new MessageEmbed()
-                                .setTitle(`Message flagged as threatening`)
-                                .setDescription(`${this.cleanContent}`)
-                                .setAuthor(this.author.tag, this.author.displayAvatarURL())
-                                .setFooter(`Message channel **${this.channel.name}**`)
-                                .setColor(`#ff7878`);
-                            _channel.sendEmbed(embed, `:bangbang: Please review message ${this.id}; it was flagged for being threatening.`)
-                        }
-                    } else if (toxic) {
-                        if (_channel) {
-                            var embed = new MessageEmbed()
-                                .setTitle(`Message flagged as provocative`)
-                                .setDescription(`${this.cleanContent}`)
-                                .setAuthor(this.author.tag, this.author.displayAvatarURL())
-                                .setFooter(`Message channel **${this.channel.name}**`)
-                                .setColor(`#ff7878`);
-                            _channel.sendEmbed(embed, `:bangbang: Please review message ${this.id}; it was flagged for being provocative.`)
-                        }
-                    } else if (score > this.guild.settings.antispamCooldown) {
-                        if (_channel) {
-                            var embed = new MessageEmbed()
-                                .setTitle(`Message flagged as spam`)
-                                .setDescription(`${this.cleanContent}`)
-                                .setAuthor(this.author.tag, this.author.displayAvatarURL())
-                                .setFooter(`Message channel **${this.channel.name}**`)
-                                .setColor(`#ff7878`);
-                            _channel.sendEmbed(embed, `:bangbang: Please review message ${this.id}; it was flagged for being spam.`)
+                            scoreReasons = { ...scoreReasons, ...preScoreReasons }
                         }
                     }
                     afterFunction()
@@ -318,6 +256,7 @@ module.exports = class extends Extendable {
                 } catch (e) {
                     // Perspective score failed; use preScore
                     score += preScore
+                    scoreReasons = { ...scoreReasons, ...preScoreReasons }
                     this.client.emit('error', e)
                     afterFunction()
                     return resolve(score)
@@ -325,6 +264,7 @@ module.exports = class extends Extendable {
             } else {
                 // Perspective score will not work when there's no message content; use preScore instead.
                 score += preScore
+                scoreReasons = { ...scoreReasons, ...preScoreReasons }
                 afterFunction()
                 return resolve(score)
             }
