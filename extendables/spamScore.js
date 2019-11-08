@@ -21,6 +21,7 @@ module.exports = class extends Extendable {
 
             // Start with a base score of 2
             var score = 2;
+            var preScore = 0;
 
             /*
             // Add 3 points for every profane word used; excessive profanity spam
@@ -107,11 +108,11 @@ module.exports = class extends Extendable {
                 }
 
                 // If the current message is more than 80% or more similar to the comparing message, 
-                // add 1 score for every (similarity % - 80); copy/paste spam.
+                // add 1 score for every (similarity % - 80) / 2; copy/paste spam. Multiply by 1 + (0.1 * (numcharacters / 100))
                 var similarity = stringSimilarity.compareTwoStrings(`${this.content || ''}${JSON.stringify(this.embeds)}${JSON.stringify(this.attachments.array())}`, `${message.content || ''}${JSON.stringify(message.embeds)}${JSON.stringify(message.attachments.array())}`);
                 if (similarity >= 0.8) {
-                    score += parseInt((20 - ((1 - similarity) * 100)));
-                    console.log(`String similarity: ${parseInt((20 - ((1 - similarity) * 100)))}`);
+                    score += parseInt((10 - ((1 - similarity) * 50)) * (1 + (0.1 * (this.cleanContent ? this.cleanContent.length / 100 : 0))));
+                    console.log(`String similarity: ${parseInt((10 - ((1 - similarity) * 50)) * (1 + (0.1 * (this.cleanContent ? this.cleanContent.length / 100 : 0))))}`);
                 }
             });
 
@@ -132,29 +133,30 @@ module.exports = class extends Extendable {
 
                 // If 50% or more of the characters are uppercase, consider it shout spam,
                 // and add a score of 5, plus 1 for every 12.5 uppercase characters.
+                // This is a preScore and only used if perspective fails.
                 if (uppercase >= lowercase) {
-                    score += parseInt(5 + (20 * (uppercase / 250)));
+                    preScore += parseInt(5 + (20 * (uppercase / 250)));
                     console.log(`>50% uppercase: ${parseInt(5 + (20 * (uppercase / 250)))}`);
                 }
 
                 // Add score for repeating consecutive characters
                 // 20 or more consecutive repeating characters = extremely spammy. Add 20 score.
+                // This is a preScore and only used if perspective fails.
                 if (/(.)\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1/.test(this.cleanContent.toLowerCase())) {
-                    score += 20;
+                    preScore += 20;
                     console.log(`20+ repeat characters: 20`)
                     // 10 or more consecutive repeating characters = spammy. Add 10 score.
                 } else if (/(.)\1\1\1\1\1\1\1\1\1\1/.test(this.cleanContent.toLowerCase())) {
-                    score += 10;
+                    preScore += 10;
                     console.log(`10-19 repeat characters: 10`)
                     // 5 or more consecutive repeating characters = a little bit spammy. Add 5 score.
                 } else if (/(.)\1\1\1\1\1/.test(this.cleanContent.toLowerCase())) {
-                    score += 5;
+                    preScore += 5;
                     console.log(`5-9 repeat characters: 5`)
                 }
 
                 // Add 40 score for here and everyone mentions as these are VERY spammy.
-                if (this.cleanContent.includes("@here") || this.cleanContent.includes("@everyone"))
-                {
+                if (this.cleanContent.includes("@here") || this.cleanContent.includes("@everyone")) {
                     score += 40;
                     console.log(`Here / Everyone mention: 40`)
                 }
@@ -175,17 +177,19 @@ module.exports = class extends Extendable {
                 }
                 var patternScore = (this.cleanContent.length > 0 ? (newstring.length / this.cleanContent.length) : 1);
 
-                // Pattern score of 100% means no repeating patterns. For every 2% less than 100%, add 1 score.
-                score += parseInt((1 - patternScore) * 50)
-                console.log(`Repeat patterns: ${parseInt((1 - patternScore) * 50)}`)
+                // Pattern score of 100% means no repeating patterns. For every 4% less than 100%, add 1 score. Multiply depending on content length.
+                score += parseInt(((1 - patternScore) * 25) * (1 + (0.1 * (this.cleanContent ? this.cleanContent.length / 100 : 0))))
+                console.log(`Repeat patterns: ${parseInt(((1 - patternScore) * 25) * (1 + (0.1 * (this.cleanContent ? this.cleanContent.length / 100 : 0))))}`)
 
                 // Perspective API check and score add
                 try {
                     var body = await perspective.analyze(this.cleanContent, { attributes: [ 'IDENTITY_ATTACK', 'TOXICITY', 'SEVERE_TOXICITY', 'PROFANITY', 'THREAT', 'SPAM', 'PROFANITY', 'SEXUALLY_EXPLICIT' ], doNotStore: false })
                     var threatening = false
                     var toxic = false
+                    var hadAttributes = false
                     for (const key of Object.keys(body.attributeScores)) {
                         if (typeof body.attributeScores[ key ].spanScores !== 'undefined' && body.attributeScores[ key ].spanScores.length > 0) {
+                            hadAttributes = true
                             body.attributeScores[ key ].spanScores.map((spanScore) => {
                                 switch (key) {
                                     case 'SEVERE_TOXICITY':
@@ -231,46 +235,48 @@ module.exports = class extends Extendable {
 
                                 }
                             })
-                        } else {
+                        } else if (typeof body.attributeScores[ key ].summaryScore !== 'undefined') {
                             console.log(`summary ${key}: ${body.attributeScores[ key ].summaryScore.value} / ${(0.9 - (this.cleanContent.length / 4000))}`)
-                            if (body.attributeScores[ key ].summaryScore.value >= (0.9 - (this.cleanContent.length / 4000))) {
-                                switch (key) {
-                                    case 'SEVERE_TOXICITY':
-                                        score += parseInt((0.2 + ((this.cleanContent.length / 2) / 500)) * 66 * body.attributeScores[ key ].summaryScore.value)
-                                        if (body.attributeScores[ key ].summaryScore.value >= (0.9 - (this.cleanContent.length / 4000))) {
-                                            toxic = true
-                                        }
-                                        break;
-                                    case 'TOXICITY':
-                                        score += parseInt((0.2 + ((this.cleanContent.length / 2) / 500)) * 33 * body.attributeScores[ key ].summaryScore.value)
-                                        if (body.attributeScores[ key ].summaryScore.value >= (0.9 - (this.cleanContent.length / 4000))) {
-                                            toxic = true
-                                        }
-                                        break;
-                                    case 'THREAT':
-                                        score += parseInt((0.2 + ((this.cleanContent.length / 2) / 500)) * 100 * body.attributeScores[ key ].summaryScore.value)
-                                        if (body.attributeScores[ key ].summaryScore.value >= (0.9 - (this.cleanContent.length / 4000))) {
-                                            threatening = true
-                                        }
-                                        break;
-                                    case 'SPAM':
-                                        score += parseInt((0.2 + ((this.cleanContent.length / 2) / 500)) * 50 * body.attributeScores[ key ].summaryScore.value)
-                                        break;
-                                    case 'PROFANITY':
-                                        score += parseInt((0.2 + ((this.cleanContent.length / 2) / 500)) * 33 * body.attributeScores[ key ].summaryScore.value)
-                                        break;
-                                    case 'SEXUALLY_EXPLICIT':
-                                        score += parseInt((0.2 + ((this.cleanContent.length / 2) / 500)) * 33 * body.attributeScores[ key ].summaryScore.value)
-                                        break;
-                                    case 'IDENTITY_ATTACK':
-                                        score += parseInt((0.2 + ((this.cleanContent.length / 2) / 500)) * 66 * body.attributeScores[ key ].summaryScore.value)
-                                        if (body.attributeScores[ key ].summaryScore.value >= (0.9 - (this.cleanContent.length / 4000))) {
-                                            toxic = true
-                                        }
-                                        break;
+                            hadAttributes = true
+                            switch (key) {
+                                case 'SEVERE_TOXICITY':
+                                    score += parseInt((0.2 + ((this.cleanContent.length / 2) / 500)) * 66 * body.attributeScores[ key ].summaryScore.value)
+                                    if (body.attributeScores[ key ].summaryScore.value >= (0.9 - (this.cleanContent.length / 4000))) {
+                                        toxic = true
+                                    }
+                                    break;
+                                case 'TOXICITY':
+                                    score += parseInt((0.2 + ((this.cleanContent.length / 2) / 500)) * 33 * body.attributeScores[ key ].summaryScore.value)
+                                    if (body.attributeScores[ key ].summaryScore.value >= (0.9 - (this.cleanContent.length / 4000))) {
+                                        toxic = true
+                                    }
+                                    break;
+                                case 'THREAT':
+                                    score += parseInt((0.2 + ((this.cleanContent.length / 2) / 500)) * 100 * body.attributeScores[ key ].summaryScore.value)
+                                    if (body.attributeScores[ key ].summaryScore.value >= (0.9 - (this.cleanContent.length / 4000))) {
+                                        threatening = true
+                                    }
+                                    break;
+                                case 'SPAM':
+                                    score += parseInt((0.2 + ((this.cleanContent.length / 2) / 500)) * 50 * body.attributeScores[ key ].summaryScore.value)
+                                    break;
+                                case 'PROFANITY':
+                                    score += parseInt((0.2 + ((this.cleanContent.length / 2) / 500)) * 33 * body.attributeScores[ key ].summaryScore.value)
+                                    break;
+                                case 'SEXUALLY_EXPLICIT':
+                                    score += parseInt((0.2 + ((this.cleanContent.length / 2) / 500)) * 33 * body.attributeScores[ key ].summaryScore.value)
+                                    break;
+                                case 'IDENTITY_ATTACK':
+                                    score += parseInt((0.2 + ((this.cleanContent.length / 2) / 500)) * 66 * body.attributeScores[ key ].summaryScore.value)
+                                    if (body.attributeScores[ key ].summaryScore.value >= (0.9 - (this.cleanContent.length / 4000))) {
+                                        toxic = true
+                                    }
+                                    break;
 
-                                }
                             }
+                        } else {
+                            // perspective score failed; use preScore instead.
+                            score += preScore;
                         }
                     }
                     var modLog = this.guild.settings.flagLogChannel;
@@ -309,11 +315,15 @@ module.exports = class extends Extendable {
                     afterFunction()
                     return resolve(score)
                 } catch (e) {
+                    // Perspective score failed; use preScore
+                    score += preScore
                     this.client.emit('error', e)
                     afterFunction()
                     return resolve(score)
                 }
             } else {
+                // Perspective score will not work when there's no message content; use preScore instead.
+                score += preScore
                 afterFunction()
                 return resolve(score)
             }
