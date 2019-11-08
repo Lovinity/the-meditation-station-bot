@@ -31,7 +31,7 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                 console.log(`Went over 100!`);
                 if (this.spamScoreStamp === null || moment().subtract(60, 'seconds').isAfter(moment(this.spamScoreStamp))) {
                     console.log(`Sent warning`);
-                    var response = `:warning: <@${message.author.id}> **__Antispam__: You're being a bit rowdy. Please take a break from sending messages for about ${moment.duration(this.guild.settings.antispamCooldown > 0 ? (currentScore / this.guild.settings.antispamCooldown) + 1 : 0, 'minutes').format("m [Minutes]")}**. `;
+                    var response = `:warning: <@${message.author.id}> **__Antispam__: You're being a bit rowdy. Please take a break from sending messages for about ${moment.duration(this.guild.settings.antispamCooldown > 0 ? (newScore / this.guild.settings.antispamCooldown) + 1 : 0, 'minutes').format("m [Minutes]")}**. `;
                     if (isMuted) {
                         response += `**Otherwise, I'll have to kick you from the guild, causing any pending bans to apply and you to lose any opportunity to appeal active discipline**.`;
                     } else if (this.guild.settings.raidMitigation >= 3) {
