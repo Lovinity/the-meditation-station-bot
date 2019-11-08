@@ -67,22 +67,24 @@ module.exports = class extends Extendable {
                 //console.log(`${multiplier} multiplier`);
 
                 score = parseInt(score * multiplier);
-            }
 
+                console.log(`Total score: ${score}`)
+            }
+            console.log('Message spam score ' + this.id)
             // Add 5 score for each mention; mention spam
             var nummentions = this.mentions.users.size + this.mentions.roles.size;
             score += (5 * nummentions);
-            //console.log(`${nummentions} mentions`);
+            console.log(`mentions: ${5 * nummentions}`);
 
             // Add 10 score for each embed; link/embed spam
             var numembeds = this.embeds.length;
             score += (10 * numembeds);
-            //console.log(`${numembeds} embeds`);
+            console.log(`Embeds: 10 * ${numembeds}`);
 
             // Add 10 score for each attachment; attachment spam
             var numattachments = this.attachments.size;
             score += (10 * numattachments);
-            //console.log(`${numattachments} attachments`);
+            console.log(`Attachments: ${10 * numattachments}`);
 
             // Calculate how many seconds this message took to type based off of 7 characters per second.
             var messageTime = (this.cleanContent.length / 7);
@@ -101,7 +103,7 @@ module.exports = class extends Extendable {
                 var timediff = moment(this.createdAt).diff(moment(message.createdAt), 'seconds');
                 if (timediff <= messageTime && !this.author.bot) {
                     score += parseInt((((messageTime - timediff) + 1) * 7));
-                    //console.log(`Flooding`);
+                    console.log(`Flooding: ${parseInt((((messageTime - timediff) + 1) * 7))}`);
                 }
 
                 // If the current message is more than 80% or more similar to the comparing message, 
@@ -109,7 +111,7 @@ module.exports = class extends Extendable {
                 var similarity = stringSimilarity.compareTwoStrings(`${this.content || ''}${JSON.stringify(this.embeds)}${JSON.stringify(this.attachments.array())}`, `${message.content || ''}${JSON.stringify(message.embeds)}${JSON.stringify(message.attachments.array())}`);
                 if (similarity >= 0.8) {
                     score += parseInt((20 - ((1 - similarity) * 100)));
-                    //console.log(`String similarity`);
+                    console.log(`String similarity: ${parseInt((20 - ((1 - similarity) * 100)))}`);
                 }
             });
 
@@ -119,7 +121,7 @@ module.exports = class extends Extendable {
                 // If the message contains any off-the-wall characters, consider it spam and add 10 to the score.
                 if (/[^\x20-\x7E]/g.test(this.cleanContent || '')) {
                     score += 10;
-                    //console.log(`special characters`);
+                    console.log(`special characters: 10`);
                 }
 
                 // Count uppercase and lowercase letters
@@ -130,28 +132,35 @@ module.exports = class extends Extendable {
                 // and add a score of 5, plus 1 for every 12.5 uppercase characters.
                 if (uppercase >= lowercase) {
                     score += parseInt(5 + (20 * (uppercase / 250)));
-                    //console.log(`>50% uppercase`);
+                    console.log(`>50% uppercase: ${parseInt(5 + (20 * (uppercase / 250)))}`);
                 }
 
                 // Add score for repeating consecutive characters
                 // 20 or more consecutive repeating characters = extremely spammy. Add 20 score.
                 if (/(.)\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1/.test(this.cleanContent.toLowerCase())) {
                     score += 20;
+                    console.log(`20+ repeat characters: 20`)
                     // 10 or more consecutive repeating characters = spammy. Add 10 score.
                 } else if (/(.)\1\1\1\1\1\1\1\1\1\1/.test(this.cleanContent.toLowerCase())) {
                     score += 10;
+                    console.log(`10-19 repeat characters: 10`)
                     // 5 or more consecutive repeating characters = a little bit spammy. Add 5 score.
                 } else if (/(.)\1\1\1\1\1/.test(this.cleanContent.toLowerCase())) {
                     score += 5;
+                    console.log(`5-9 repeat characters: 5`)
                 }
 
                 // Add 40 score for here and everyone mentions as these are VERY spammy.
                 if (this.cleanContent.includes("@here") || this.cleanContent.includes("@everyone"))
+                {
                     score += 40;
+                    console.log(`Here / Everyone mention: 40`)
+                }
 
                 // Add 2 score for every new line; scroll spam
                 var newlines = this.cleanContent.split(/\r\n|\r|\n/).length;
                 score += (newlines * 2);
+                console.log(`Newlines: ${newlines * 2}`)
 
                 // Add score for repeating patterns
                 // TODO: improve this algorithm
@@ -166,6 +175,7 @@ module.exports = class extends Extendable {
 
                 // Pattern score of 100% means no repeating patterns. For every 2% less than 100%, add 1 score.
                 score += parseInt((1 - patternScore) * 50)
+                console.log(`Repeat patterns: ${parseInt((1 - patternScore) * 50)}`)
 
                 // Perspective API check and score add
                 try {
@@ -178,33 +188,40 @@ module.exports = class extends Extendable {
                                 switch (key) {
                                     case 'SEVERE_TOXICITY':
                                         score += parseInt((0.2 + ((this.cleanContent.length / 2) / 500)) * 66 * spanScore.score.value)
+                                        console.log(`Severe toxicity: ${parseInt((0.2 + ((this.cleanContent.length / 2) / 500)) * 66 * spanScore.score.value)}`)
                                         if (spanScore.score.value >= (0.9 - (this.cleanContent.length / 4000))) {
                                             toxic = true
                                         }
                                         break;
                                     case 'TOXICITY':
                                         score += parseInt((0.2 + ((this.cleanContent.length / 2) / 500)) * 33 * spanScore.score.value)
+                                        console.log(`Toxicity: ${parseInt((0.2 + ((this.cleanContent.length / 2) / 500)) * 33 * spanScore.score.value)}`)
                                         if (spanScore.score.value >= (0.9 - (this.cleanContent.length / 4000))) {
                                             toxic = true
                                         }
                                         break;
                                     case 'THREAT':
                                         score += parseInt((0.2 + ((this.cleanContent.length / 2) / 500)) * 100 * spanScore.score.value)
+                                        console.log(`Threat: ${parseInt((0.2 + ((this.cleanContent.length / 2) / 500)) * 100 * spanScore.score.value)}`)
                                         if (spanScore.score.value >= (0.9 - (this.cleanContent.length / 4000))) {
                                             threatening = true
                                         }
                                         break;
                                     case 'SPAM':
                                         score += parseInt((0.2 + ((this.cleanContent.length / 2) / 500)) * 50 * spanScore.score.value)
+                                        console.log(`Spam: ${parseInt((0.2 + ((this.cleanContent.length / 2) / 500)) * 50 * spanScore.score.value)}`)
                                         break;
                                     case 'PROFANITY':
                                         score += parseInt((0.2 + ((this.cleanContent.length / 2) / 500)) * 33 * spanScore.score.value)
+                                        console.log(`Profanity: ${parseInt((0.2 + ((this.cleanContent.length / 2) / 500)) * 33 * spanScore.score.value)}`)
                                         break;
                                     case 'SEXUALLY_EXPLICIT':
                                         score += parseInt((0.2 + ((this.cleanContent.length / 2) / 500)) * 33 * spanScore.score.value)
+                                        console.log(`Sexually Explicit: ${parseInt((0.2 + ((this.cleanContent.length / 2) / 500)) * 33 * spanScore.score.value)}`)
                                         break;
                                     case 'IDENTITY_ATTACK':
                                         score += parseInt((0.2 + ((this.cleanContent.length / 2) / 500)) * 66 * spanScore.score.value)
+                                        console.log(`Identity Attack: ${parseInt((0.2 + ((this.cleanContent.length / 2) / 500)) * 66 * spanScore.score.value)}`)
                                         if (spanScore.score.value >= (0.9 - (this.cleanContent.length / 4000))) {
                                             toxic = true
                                         }
