@@ -187,47 +187,48 @@ module.exports = class extends Extendable {
                     var threatening = false
                     var toxic = false
                     var hadAttributes = false
+                    var perspectiveMultiplier = 1 + (this.cleanContent.length / 1000)
                     for (const key of Object.keys(body.attributeScores)) {
                         if (typeof body.attributeScores[ key ].spanScores !== 'undefined' && body.attributeScores[ key ].spanScores.length > 0) {
                             hadAttributes = true
                             body.attributeScores[ key ].spanScores.map((spanScore) => {
                                 switch (key) {
                                     case 'SEVERE_TOXICITY':
-                                        score += parseInt((0.2 + ((this.cleanContent.length / 2) / 1000)) * 66 * spanScore.score.value)
-                                        console.log(`Severe toxicity: ${parseInt((0.2 + ((this.cleanContent.length / 2) / 1000)) * 66 * spanScore.score.value)}`)
+                                        score += parseInt((spanScore.score.value * 30) * perspectiveMultiplier)
+                                        console.log(`Severe toxicity: ${parseInt((spanScore.score.value * 30) * perspectiveMultiplier)}`)
                                         if (spanScore.score.value >= (0.9 - (this.cleanContent.length / 4000))) {
                                             toxic = true
                                         }
                                         break;
                                     case 'TOXICITY':
-                                        score += parseInt((0.2 + ((this.cleanContent.length / 2) / 1000)) * 33 * spanScore.score.value)
-                                        console.log(`Toxicity: ${parseInt((0.2 + ((this.cleanContent.length / 2) / 1000)) * 33 * spanScore.score.value)}`)
+                                        score += parseInt((spanScore.score.value * 15) * perspectiveMultiplier)
+                                        console.log(`Toxicity: ${parseInt((spanScore.score.value * 15) * perspectiveMultiplier)}`)
                                         if (spanScore.score.value >= (0.9 - (this.cleanContent.length / 4000))) {
                                             toxic = true
                                         }
                                         break;
                                     case 'THREAT':
-                                        score += parseInt((0.2 + ((this.cleanContent.length / 2) / 1000)) * 100 * spanScore.score.value)
-                                        console.log(`Threat: ${parseInt((0.2 + ((this.cleanContent.length / 2) / 1000)) * 100 * spanScore.score.value)}`)
+                                        score += parseInt((spanScore.score.value * 50) * perspectiveMultiplier)
+                                        console.log(`Threat: ${parseInt((spanScore.score.value * 50) * perspectiveMultiplier)}`)
                                         if (spanScore.score.value >= (0.9 - (this.cleanContent.length / 4000))) {
                                             threatening = true
                                         }
                                         break;
                                     case 'SPAM':
-                                        score += parseInt((0.2 + ((this.cleanContent.length / 2) / 1000)) * 50 * spanScore.score.value)
-                                        console.log(`Spam: ${parseInt((0.2 + ((this.cleanContent.length / 2) / 1000)) * 50 * spanScore.score.value)}`)
+                                        score += parseInt((spanScore.score.value * 25) * perspectiveMultiplier)
+                                        console.log(`Spam: ${parseInt((spanScore.score.value * 25) * perspectiveMultiplier)}`)
                                         break;
                                     case 'PROFANITY':
-                                        score += parseInt((0.2 + ((this.cleanContent.length / 2) / 1000)) * 33 * spanScore.score.value)
-                                        console.log(`Profanity: ${parseInt((0.2 + ((this.cleanContent.length / 2) / 1000)) * 33 * spanScore.score.value)}`)
+                                        score += parseInt((spanScore.score.value * 15) * perspectiveMultiplier)
+                                        console.log(`Profanity: ${parseInt((spanScore.score.value * 15) * perspectiveMultiplier)}`)
                                         break;
                                     case 'SEXUALLY_EXPLICIT':
-                                        score += parseInt((0.2 + ((this.cleanContent.length / 2) / 1000)) * 33 * spanScore.score.value)
-                                        console.log(`Sexually Explicit: ${parseInt((0.2 + ((this.cleanContent.length / 2) / 1000)) * 33 * spanScore.score.value)}`)
+                                        score += parseInt((spanScore.score.value * 15) * perspectiveMultiplier)
+                                        console.log(`Sexually Explicit: ${parseInt((spanScore.score.value * 15) * perspectiveMultiplier)}`)
                                         break;
                                     case 'IDENTITY_ATTACK':
-                                        score += parseInt((0.2 + ((this.cleanContent.length / 2) / 1000)) * 66 * spanScore.score.value)
-                                        console.log(`Identity Attack: ${parseInt((0.2 + ((this.cleanContent.length / 2) / 1000)) * 66 * spanScore.score.value)}`)
+                                        score += parseInt((spanScore.score.value * 30) * perspectiveMultiplier)
+                                        console.log(`Identity Attack: ${parseInt((spanScore.score.value * 30) * perspectiveMultiplier)}`)
                                         if (spanScore.score.value >= (0.9 - (this.cleanContent.length / 4000))) {
                                             toxic = true
                                         }
@@ -240,34 +241,34 @@ module.exports = class extends Extendable {
                             hadAttributes = true
                             switch (key) {
                                 case 'SEVERE_TOXICITY':
-                                    score += parseInt((0.2 + ((this.cleanContent.length / 2) / 1000)) * 66 * body.attributeScores[ key ].summaryScore.value)
+                                    score += parseInt((body.attributeScores[ key ].summaryScore.value * 30) * perspectiveMultiplier)
                                     if (body.attributeScores[ key ].summaryScore.value >= (0.9 - (this.cleanContent.length / 4000))) {
                                         toxic = true
                                     }
                                     break;
                                 case 'TOXICITY':
-                                    score += parseInt((0.2 + ((this.cleanContent.length / 2) / 1000)) * 33 * body.attributeScores[ key ].summaryScore.value)
+                                    score += parseInt((body.attributeScores[ key ].summaryScore.value * 15) * perspectiveMultiplier)
                                     if (body.attributeScores[ key ].summaryScore.value >= (0.9 - (this.cleanContent.length / 4000))) {
                                         toxic = true
                                     }
                                     break;
                                 case 'THREAT':
-                                    score += parseInt((0.2 + ((this.cleanContent.length / 2) / 1000)) * 100 * body.attributeScores[ key ].summaryScore.value)
+                                    score += parseInt((body.attributeScores[ key ].summaryScore.value * 50) * perspectiveMultiplier)
                                     if (body.attributeScores[ key ].summaryScore.value >= (0.9 - (this.cleanContent.length / 4000))) {
                                         threatening = true
                                     }
                                     break;
                                 case 'SPAM':
-                                    score += parseInt((0.2 + ((this.cleanContent.length / 2) / 1000)) * 50 * body.attributeScores[ key ].summaryScore.value)
+                                    score += parseInt((body.attributeScores[ key ].summaryScore.value * 25) * perspectiveMultiplier)
                                     break;
                                 case 'PROFANITY':
-                                    score += parseInt((0.2 + ((this.cleanContent.length / 2) / 1000)) * 33 * body.attributeScores[ key ].summaryScore.value)
+                                    score += parseInt((body.attributeScores[ key ].summaryScore.value * 15) * perspectiveMultiplier)
                                     break;
                                 case 'SEXUALLY_EXPLICIT':
-                                    score += parseInt((0.2 + ((this.cleanContent.length / 2) / 1000)) * 33 * body.attributeScores[ key ].summaryScore.value)
+                                    score += parseInt((body.attributeScores[ key ].summaryScore.value * 15) * perspectiveMultiplier)
                                     break;
                                 case 'IDENTITY_ATTACK':
-                                    score += parseInt((0.2 + ((this.cleanContent.length / 2) / 1000)) * 66 * body.attributeScores[ key ].summaryScore.value)
+                                    score += parseInt((body.attributeScores[ key ].summaryScore.value * 30) * perspectiveMultiplier)
                                     if (body.attributeScores[ key ].summaryScore.value >= (0.9 - (this.cleanContent.length / 4000))) {
                                         toxic = true
                                     }
