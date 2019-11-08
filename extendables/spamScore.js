@@ -193,40 +193,40 @@ module.exports = class extends Extendable {
                             body.attributeScores[ key ].spanScores.map((spanScore) => {
                                 switch (key) {
                                     case 'SEVERE_TOXICITY':
-                                        score += parseInt((0.2 + ((this.cleanContent.length / 2) / 500)) * 66 * spanScore.score.value)
+                                        score += parseInt((0.2 + ((this.cleanContent.length / 2) / 1000)) * 66 * spanScore.score.value)
                                         console.log(`Severe toxicity: ${parseInt((0.2 + ((this.cleanContent.length / 2) / 1000)) * 66 * spanScore.score.value)}`)
                                         if (spanScore.score.value >= (0.9 - (this.cleanContent.length / 4000))) {
                                             toxic = true
                                         }
                                         break;
                                     case 'TOXICITY':
-                                        score += parseInt((0.2 + ((this.cleanContent.length / 2) / 500)) * 33 * spanScore.score.value)
+                                        score += parseInt((0.2 + ((this.cleanContent.length / 2) / 1000)) * 33 * spanScore.score.value)
                                         console.log(`Toxicity: ${parseInt((0.2 + ((this.cleanContent.length / 2) / 1000)) * 33 * spanScore.score.value)}`)
                                         if (spanScore.score.value >= (0.9 - (this.cleanContent.length / 4000))) {
                                             toxic = true
                                         }
                                         break;
                                     case 'THREAT':
-                                        score += parseInt((0.2 + ((this.cleanContent.length / 2) / 500)) * 100 * spanScore.score.value)
+                                        score += parseInt((0.2 + ((this.cleanContent.length / 2) / 1000)) * 100 * spanScore.score.value)
                                         console.log(`Threat: ${parseInt((0.2 + ((this.cleanContent.length / 2) / 1000)) * 100 * spanScore.score.value)}`)
                                         if (spanScore.score.value >= (0.9 - (this.cleanContent.length / 4000))) {
                                             threatening = true
                                         }
                                         break;
                                     case 'SPAM':
-                                        score += parseInt((0.2 + ((this.cleanContent.length / 2) / 500)) * 50 * spanScore.score.value)
+                                        score += parseInt((0.2 + ((this.cleanContent.length / 2) / 1000)) * 50 * spanScore.score.value)
                                         console.log(`Spam: ${parseInt((0.2 + ((this.cleanContent.length / 2) / 1000)) * 50 * spanScore.score.value)}`)
                                         break;
                                     case 'PROFANITY':
-                                        score += parseInt((0.2 + ((this.cleanContent.length / 2) / 500)) * 33 * spanScore.score.value)
+                                        score += parseInt((0.2 + ((this.cleanContent.length / 2) / 1000)) * 33 * spanScore.score.value)
                                         console.log(`Profanity: ${parseInt((0.2 + ((this.cleanContent.length / 2) / 1000)) * 33 * spanScore.score.value)}`)
                                         break;
                                     case 'SEXUALLY_EXPLICIT':
-                                        score += parseInt((0.2 + ((this.cleanContent.length / 2) / 500)) * 33 * spanScore.score.value)
+                                        score += parseInt((0.2 + ((this.cleanContent.length / 2) / 1000)) * 33 * spanScore.score.value)
                                         console.log(`Sexually Explicit: ${parseInt((0.2 + ((this.cleanContent.length / 2) / 1000)) * 33 * spanScore.score.value)}`)
                                         break;
                                     case 'IDENTITY_ATTACK':
-                                        score += parseInt((0.2 + ((this.cleanContent.length / 2) / 500)) * 66 * spanScore.score.value)
+                                        score += parseInt((0.2 + ((this.cleanContent.length / 2) / 1000)) * 66 * spanScore.score.value)
                                         console.log(`Identity Attack: ${parseInt((0.2 + ((this.cleanContent.length / 2) / 1000)) * 66 * spanScore.score.value)}`)
                                         if (spanScore.score.value >= (0.9 - (this.cleanContent.length / 4000))) {
                                             toxic = true
