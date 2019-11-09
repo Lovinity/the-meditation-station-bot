@@ -47,29 +47,14 @@ module.exports = class extends Event {
                     const channel = this.client.channels.resolve(incident.channel);
                     if (channel)
                     {
-                        var overwrites = [];
-                        overwrites.push({
-                            id: guildMember.id,
-                            allow: [
-                                "ADD_REACTIONS",
-                                "VIEW_CHANNEL",
-                                "SEND_MESSAGES",
-                                "EMBED_LINKS",
-                                "ATTACH_FILES",
-                                "READ_MESSAGE_HISTORY"
-                            ],
-                            type: 'member'
-                        });
-                        // Add deny permissions for @everyone
-                        overwrites.push({
-                            id: this.guild.roles.everyone,
-                            deny: [
-                                "VIEW_CHANNEL",
-                            ],
-                            type: 'role'
-                        });
-
-                        channel.overwritePermissions(overwrites);
+                        channel.createOverwrite(guildMember, {
+                            ADD_REACTIONS: true,
+                            VIEW_CHANNEL: true,
+                            SEND_MESSAGES: true,
+                            EMBED_LINKS: true,
+                            ATTACH_FILES: true,
+                            READ_MESSAGE_HISTORY: true
+                        }, "Active incident channel; user re-entered the guild.");
                         guildMember.guild.settings.update(`pendIncidents`, incident, {action: 'remove'});
                     }
                 }
