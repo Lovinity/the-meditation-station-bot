@@ -87,7 +87,7 @@ module.exports = class extends Command {
             var rules = await message.awaitReply(`:question: Please state which rule number(s) pertain to this discipline. Separate multiple rule numbers with a dash without spaces (example: 1-5-12). You have 5 minutes to respond.`, 300000);
             if (!rules) {
                 await discipline.cancel();
-                return message.send(`:x: The wizard timed out and was canceled.`);
+                return message.channel.send(`:x: The wizard timed out and was canceled.`);
             }
             rules = rules.split("-");
             rules.map((rule) => discipline.addRule(rule));
@@ -96,7 +96,7 @@ module.exports = class extends Command {
             var reason = await message.awaitReply(`:question: Please state the reason(s) for this action concisely but completely (eg. explain the violation even though you specified the rule numbers; muted users probably cannot see the rules channel). Keep the length under 512 characters. Please do not provide additional instruction/discipline here; that will be asked later. You have 5 minutes to respond.`, 300000);
             if (!reason) {
                 await discipline.cancel();
-                return message.send(`:x: The wizard timed out and was canceled.`);
+                return message.channel.send(`:x: The wizard timed out and was canceled.`);
             }
             discipline.setReason(reason);
 
@@ -107,10 +107,10 @@ module.exports = class extends Command {
                     var duration = await message.awaitReply(`:question: How many ${type === 'mute' ? `hours` : `days`} should this ${type} last? ${type === 'mute' ? `Answer "0" if the mute should remain until staff manually unmute.` : ``} You have 5 minutes to respond.`, 300000);
                     if (!duration) {
                         await discipline.cancel();
-                        return message.send(`:x: The wizard timed out and was canceled.`);
+                        return message.channel.send(`:x: The wizard timed out and was canceled.`);
                     }
                     if (isNaN(parseInt(duration))) {
-                        await message.send(`:x: An invalid number was provided. We will assume ${type === 'mute' ? `1 hour` : `1 day`}.`);
+                        await message.channel.send(`:x: An invalid number was provided. We will assume ${type === 'mute' ? `1 hour` : `1 day`}.`);
                         duration = 1;
                     }
                     duration = parseInt(duration);
@@ -121,10 +121,10 @@ module.exports = class extends Command {
                 var badRep = await message.awaitReply(`:question: How much bad reputation should be assigned to this user? Use "0" for none. You have 5 minutes to respond.`, 300000);
                 if (!badRep) {
                     await discipline.cancel();
-                    return message.send(`:x: The wizard timed out and was canceled.`);
+                    return message.channel.send(`:x: The wizard timed out and was canceled.`);
                 }
                 if (isNaN(parseInt(badRep))) {
-                    await message.send(`:x: An invalid number was provided. We will assume ${type === 'mute' ? `0` : `25`} bad rep.`);
+                    await message.channel.send(`:x: An invalid number was provided. We will assume ${type === 'mute' ? `0` : `25`} bad rep.`);
                     badRep = (type === 'mute') ? 0 : 25;
                 }
                 badRep = parseInt(badRep);
@@ -134,10 +134,10 @@ module.exports = class extends Command {
                 var yang = await message.awaitReply(`:question: How much Yang should be charged from this user? Use "0" for none. You have 5 minutes to respond.`, 300000);
                 if (!yang) {
                     await discipline.cancel();
-                    return message.send(`:x: The wizard timed out and was canceled.`);
+                    return message.channel.send(`:x: The wizard timed out and was canceled.`);
                 }
                 if (isNaN(parseInt(yang))) {
-                    await message.send(`:x: An invalid number was provided. We will assume ${type === 'mute' ? `0` : `250`} Yang.`);
+                    await message.channel.send(`:x: An invalid number was provided. We will assume ${type === 'mute' ? `0` : `250`} Yang.`);
                     yang = (type === 'mute') ? 0 : 250;
                 }
                 yang = parseInt(yang);
@@ -147,10 +147,10 @@ module.exports = class extends Command {
                 var xp = await message.awaitReply(`:question: How much XP should be removed from the user? **You should ONLY remove XP that was earned through abuse; do not charge XP as punishment** Use "0" for none. You have 5 minutes to respond.`, 300000);
                 if (!xp) {
                     await discipline.cancel();
-                    return message.send(`:x: The wizard timed out and was canceled.`);
+                    return message.channel.send(`:x: The wizard timed out and was canceled.`);
                 }
                 if (isNaN(parseInt(xp))) {
-                    await message.send(`:x: An invalid number was provided. We will assume 0 XP.`);
+                    await message.channel.send(`:x: An invalid number was provided. We will assume 0 XP.`);
                     xp = 0;
                 }
                 xp = parseInt(xp);
@@ -161,15 +161,15 @@ module.exports = class extends Command {
             var other = await message.awaitReply(`:question: If there is any other discipline or instructions for the user, such as requiring the user to make an apology, please state so here. Keep the length under 512 characters. If there is no other further discipline or instruction, send "none". You have 5 minutes to respond.`, 300000);
             if (!other) {
                 await discipline.cancel();
-                return message.send(`:x: The wizard timed out and was canceled.`);
+                return message.channel.send(`:x: The wizard timed out and was canceled.`);
             }
             if (other.toLowerCase() !== 'none')
                 discipline.setOther(other);
 
             await discipline.finalize();
-            return message.send(`:white_check_mark: Discipline has been sent!`);
+            return message.channel.send(`:white_check_mark: Discipline has been sent!`);
         } else {
-            return message.send(`:stop_button: The request was canceled.`);
+            return message.channel.send(`:stop_button: The request was canceled.`);
         }
     }
 
