@@ -178,7 +178,8 @@ module.exports = class GuildDiscipline {
             case 'warn':
                 msg += ":warning: **__You have been issued a formal warning__** :warning: \n\n"
                 msg += "Everyone wants to enjoy their time here. But something you did recently was a bit out of line. You are being issued a formal warning for the following: \n"
-                msg += `**${this.reason}**` + "\n\n"
+                msg += `**Rule numbers:** ${this.rules.join(", ")}` + "\n"
+                msg += `**Further Information:** ${this.reason}` + "\n\n"
                 msg += "Staff would like to see you work on this concern and learn from this encounter. Staff may need to issue discipline if this happens again."
 
                 msg2 = ""
@@ -194,7 +195,8 @@ module.exports = class GuildDiscipline {
             case 'discipline':
                 msg += ":octagonal_sign: **__You have been issued discipline__** :octagonal_sign: \n\n"
                 msg += "We all make mistakes, but everyone wants to enjoy their experience here. Something you did recently was out of line. You are being issued discipline for the following: \n"
-                msg += `**${this.reason}**` + "\n\n"
+                msg += `**Rule numbers:** ${this.rules.join(", ")}` + "\n"
+                msg += `**Further Information:** ${this.reason}` + "\n\n"
                 msg += "Staff would like to see you work on this concern and learn from this encounter. Staff may need to issue more severe discipline if this happens again."
 
                 msg3 += "This channel is private between you and staff; you may communicate any questions or concerns you have here. If you need help resolving this incident, staff are happy to provide some tips and guidance. But please remain respectful. \n"
@@ -206,9 +208,10 @@ module.exports = class GuildDiscipline {
 
                 break;
             case 'mute':
-                msg += ":mute: **__You have been muted for a while__** :mute: \n\n"
+                msg += ":mute: **__You have been muted__** :mute: \n\n"
                 msg += "We all make mistakes, but everyone wants to enjoy their experience here. Something you did recently was out of line. You are being issued an extended mute for the following: \n"
-                msg += `**${this.reason}**` + "\n\n"
+                msg += `**Rule numbers:** ${this.rules.join(", ")}` + "\n"
+                msg += `**Further Information:** ${this.reason}` + "\n\n"
                 msg += "Staff would like to see you work on this concern and learn from this encounter. Staff may need to issue more severe discipline if this happens again."
 
                 msg2 += "**Mute** \n"
@@ -225,7 +228,8 @@ module.exports = class GuildDiscipline {
             case 'tempban':
                 msg += ":no_entry: **__You have been banned temporarily from the guild__** :no_entry: \n\n"
                 msg += "We know you can do better than this. We are disappointed we have had to go as far as to temp-ban you. You are being temp-banned for the following: \n"
-                msg += `**${this.reason}**` + "\n\n"
+                msg += `**Rule numbers:** ${this.rules.join(", ")}` + "\n"
+                msg += `**Further Information:** ${this.reason}` + "\n\n"
                 msg += "Staff would like to see you work on this concern and learn from this encounter. Staff may need to issue a permanent ban if this happens again."
 
                 msg2 += "**Temporary Ban** \n"
@@ -241,7 +245,8 @@ module.exports = class GuildDiscipline {
             case 'ban':
                     msg += ":no_entry_sign: **__You have been banned from the guild indefinitely__** :no_entry_sign: \n\n"
                     msg += "Your conduct in the guild cannot be tolerated any longer. Therefore, for the safety of the community, you are being indefinitely removed from the guild. We wish you the best in your adventures and hope you enjoyed your stay in this guild. You are being banned for the following: \n"
-                    msg += `**${this.reason}**`
+                    msg += `**Rule numbers:** ${this.rules.join(", ")}` + "\n"
+                    msg += `**Further Information:** ${this.reason}` + "\n\n"
     
                     msg2 += "**Ban** \n"
                     msg2 += `Once you leave the guild, a server ban will be placed on you. This ban will remain in place indefinitely or until staff manually remove it. Until you leave or staff kick you, you will remain muted.` + "\n\n"
@@ -256,7 +261,7 @@ module.exports = class GuildDiscipline {
         }
 
         // prepare a modLog
-        var modLog = await new ModLog(this.guild)
+        var modLog = new ModLog(this.guild)
             .setType(this.type)
             .setModerator(this.responsible)
             .setUser(this.user)
@@ -267,6 +272,7 @@ module.exports = class GuildDiscipline {
                 reputation: this.reputation,
                 schedule: null
             })
+            .setRules(this.rules)
             .setOtherDiscipline(this.other)
             .setCase(this.case);
 
@@ -280,14 +286,14 @@ module.exports = class GuildDiscipline {
                     incidentsChannel: (this.channel !== null && this.channel.id) ? this.channel.id : null
                 }
             });
-            await modLog.setDiscipline({
+            modLog.setDiscipline({
                 xp: this.xp,
                 yang: this.yang,
                 reputation: this.reputation,
                 schedule: removemute.id
             });
             if (this.duration > 0)
-                await modLog.setExpiration(moment().add(this.duration, 'minutes').toISOString(true));
+                modLog.setExpiration(moment().add(this.duration, 'minutes').toISOString(true));
         }
 
         // Issue discipline
@@ -367,13 +373,13 @@ module.exports = class GuildDiscipline {
                                 incidentsChannel: (this.channel !== null && this.channel.id) ? this.channel.id : null
                             }
                         });
-                        await modLog.setDiscipline({
+                        modLog.setDiscipline({
                             xp: this.xp,
                             yang: this.yang,
                             reputation: this.reputation,
                             schedule: removeban.id
                         });
-                        await modLog.setExpiration(moment().add(this.duration, 'minutes').toISOString(true));
+                        modLog.setExpiration(moment().add(this.duration, 'minutes').toISOString(true));
                     }
                 }
             }
@@ -387,7 +393,7 @@ module.exports = class GuildDiscipline {
         if (this.type === 'mute')
             this.guild.raidScore(20);
 
-        modLog = await modLog.setChannel(this.channel)
+        modLog = modLog.setChannel(this.channel)
 
         // Push out the mod log
         modLog = await modLog.send();

@@ -42,6 +42,7 @@ Client.defaultGuildSchema
     .add('antispamCooldown', 'integer', { default: 33, min: 0, max: 100 })
     .add('antispamLessStrictRoles', 'role', { array: true })
     .add('antispamLessStrictChannels', 'textchannel', { array: true })
+    .add('antispamRuleNumber', 'integer', { default: 1, min: 0 })
     .add('raidScore', 'integer', { default: 0, configurable: false })
     .add('raidMitigation', 'integer', { default: 0, configurable: false })
     .add('selfRoles', 'role', { array: true })

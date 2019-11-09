@@ -68,7 +68,7 @@ module.exports = class extends Command {
                 return message.send(`:x: The wizard timed out and was canceled.`);
             }
             rules = rules.split("-");
-            rules.map((rule) => discipline.setRule(rule));
+            rules.map((rule) => discipline.addRule(rule));
 
             // Next, ask for a reason
             var reason = await message.awaitReply(`:question: Please state the reason for this action concisely but completely. Please do not provide additional instruction here; that will be asked later. You have 5 minutes to respond.`, 300000);
