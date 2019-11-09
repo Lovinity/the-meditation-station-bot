@@ -18,7 +18,7 @@ module.exports = class extends Command {
         {
             users.map((user) => {
 
-                await message.channel.createOverwrite(user, {
+                message.channel.createOverwrite(user, {
                     ADD_REACTIONS: true,
                     VIEW_CHANNEL: true,
                     SEND_MESSAGES: true,
@@ -26,7 +26,7 @@ module.exports = class extends Command {
                     ATTACH_FILES: true,
                     READ_MESSAGE_HISTORY: true
                 }, "Use of the !grant command");
-                
+
             });
         }
 
