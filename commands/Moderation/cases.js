@@ -57,9 +57,9 @@ module.exports = class extends Command {
         // Populate counts... each type is also an option in the menu
         Object.entries(cases).map(([ key, value ]) => {
             if (value.length > 0) {
-                let valueB = value.filter(record => record.valid)
+                value = value.filter(record => record.valid)
             }
-            menu.addOption(key, `**${valueB.length}** active cases`);
+            menu.addOption(key, `**${value.length}** active cases`);
         });
         menu.addOption(`View by Rule Number`, `Choose this option to instead see/view cases sorted by rule number violated.`);
         var collector = await menu.run(await message.send('Please wait...'), { time: 180000, filter: (reaction, user) => user.id === message.author.id });
@@ -73,9 +73,9 @@ module.exports = class extends Command {
                 );
                 Object.entries(rules).map(([ key, value ]) => {
                     if (value.length > 0) {
-                        let valueB = value.filter(record => record.valid)
+                        value = value.filter(record => record.valid)
                     }
-                    menu.addOption(key, `**${valueB.length}** active cases`);
+                    menu.addOption(key, `**${value.length}** active cases`);
                 });
                 var collector = await menu.run(await message.send('Please wait...'), { time: 180000, filter: (reaction, user) => user.id === message.author.id });
                 var choice = await collector.selection;
