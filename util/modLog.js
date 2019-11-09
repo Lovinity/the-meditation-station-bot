@@ -16,6 +16,7 @@ module.exports = class ModLog {
         this.channel = null;
         this.case = null;
         this.expiration = null;
+        this.rules = [];
     }
 
     setType(type) {
@@ -76,6 +77,11 @@ module.exports = class ModLog {
         return this;
     }
 
+    setRules (array) {
+        this.rules = array;
+        return this;
+    }
+
     // Send the log to the modlog channel
 
     async send() {
@@ -97,6 +103,7 @@ module.exports = class ModLog {
                 .setAuthor(this.user.tag, this.user.avatar)
                 .setColor(ModLog.colour(this.type))
                 .setDescription(this.reason)
+                .addField(`Rule Numbers Violated`, this.rules.join(", "))
                 .addField(`Issued By`, this.moderator.tag)
                 .addField(`Standard Discpline`, JSON.stringify(this.discipline))
                 .addField(`Additional Discpline`, this.otherDiscipline)
@@ -118,6 +125,7 @@ module.exports = class ModLog {
             user: this.user,
             moderator: this.moderator,
             reason: this.reason,
+            rules: this.rules,
             discipline: this.discipline,
             otherDiscipline: this.otherDiscipline,
             channel: this.channel,

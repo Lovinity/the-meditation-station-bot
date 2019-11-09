@@ -18,6 +18,7 @@ module.exports = class GuildDiscipline {
         this.type = 'discipline';
         this.channel = null;
         this.message = null;
+        this.rules = [];
         this.case = Date.now().toString(36) + (this.client.shard ? this.client.shard.id.toString(36) : '') + String.fromCharCode((1 % 26) + 97);
     }
 
@@ -57,6 +58,11 @@ module.exports = class GuildDiscipline {
 
     setType (type) {
         this.type = type;
+        return this;
+    }
+
+    addRule (number) {
+        this.rules.push(number);
         return this;
     }
 
