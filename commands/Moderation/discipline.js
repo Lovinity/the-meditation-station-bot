@@ -58,9 +58,9 @@ module.exports = class extends Command {
             }
         });
 
-        response += `**Current Bad Reputation**: ${user.guildSettings(message.guild).badRep}`
-        response += `**Current Yang**: ${user.guildSettings(message.guild).yang}`
-        response += `**Current XP**: ${user.guildSettings(message.guild).xp}`
+        response += `**Current Bad Reputation**: ${user.guildSettings(message.guild).badRep}` + "\n"
+        response += `**Current Yang**: ${user.guildSettings(message.guild).yang}` + "\n"
+        response += `**Current XP**: ${user.guildSettings(message.guild).xp}` + "\n"
 
         var separateMessage = await message.channel.send(response, {split: true});
 
