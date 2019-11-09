@@ -71,7 +71,7 @@ module.exports = class extends Command {
             rules.map((rule) => discipline.addRule(rule));
 
             // Next, ask for a reason
-            var reason = await message.awaitReply(`:question: Please state the reason for this action concisely but completely. Please do not provide additional instruction here; that will be asked later. You have 5 minutes to respond.`, 300000);
+            var reason = await message.awaitReply(`:question: Please state the reason(s) for this action concisely but completely (eg. explain the violation even though you specified the rule numbers; muted users probably cannot see the rules channel). Please do not provide additional instruction/discipline here; that will be asked later. You have 5 minutes to respond.`, 300000);
             if (!reason) {
                 await discipline.cancel();
                 return message.send(`:x: The wizard timed out and was canceled.`);
