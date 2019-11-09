@@ -11,6 +11,15 @@ module.exports = class extends Event {
                 newMember.settings.update(`roles`, role, newMember.guild, {action: 'add'});
         });
 
+        // Update voice mutes according to whether or not the user is muted.
+        var isMuted = (newMember.roles.get(newMember.guild.settings.muteRole));
+        if (isMuted) {
+            newMember.voice.setDeaf(true);
+            newMember.voice.setMute(true);
+        } else {
+            newMember.voice.setDeaf(false);
+            newMember.voice.setMute(false);
+        }
     }
 
 };
