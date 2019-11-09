@@ -62,7 +62,7 @@ module.exports = class extends Command {
         response += `**Current Yang**: ${user.guildSettings(message.guild).yang}` + "\n"
         response += `**Current XP**: ${user.guildSettings(message.guild).xp}` + "\n"
 
-        var separateMessage = await message.channel.send(response, {split: true});
+        var separateMessage = await message.channel.send(response, { split: true });
 
         // First, ask what kind of discipline to issue
         var menu = new RichMenu(new MessageEmbed()
@@ -83,21 +83,6 @@ module.exports = class extends Command {
             discipline.setType(type);
             discipline.prepare();
 
-            // Next, ask for a duration if type is mute or tempban
-            if (type === 'mute' || type === 'tempban') {
-                var duration = await message.awaitReply(`:question: How many ${type === 'mute' ? `hours` : `days`} should this ${type} last? ${type === 'mute' ? `Answer "0" if the mute should remain until staff manually unmute.` : ``} You have 5 minutes to respond.`, 300000);
-                if (!duration) {
-                    await discipline.cancel();
-                    return message.send(`:x: The wizard timed out and was canceled.`);
-                }
-                if (isNaN(parseInt(duration))) {
-                    await message.send(`:x: An invalid number was provided. We will assume ${type === 'mute' ? `1 hour` : `1 day`}.`);
-                    duration = 1;
-                }
-                duration = parseInt(duration);
-                discipline.setDuration((type === 'tempban') ? (60 * 24 * duration) : (60 * duration));
-            }
-
             // Ask for the rule numbers violated
             var rules = await message.awaitReply(`:question: Please state which rule number(s) pertain to this discipline. Separate multiple rule numbers with a dash without spaces (example: 1-5-12). You have 5 minutes to respond.`, 300000);
             if (!rules) {
@@ -117,6 +102,21 @@ module.exports = class extends Command {
 
             // Continue with the additional questions only if type is not warning
             if (type !== 'warn') {
+                // Next, ask for a duration if type is mute or tempban
+                if (type === 'mute' || type === 'tempban') {
+                    var duration = await message.awaitReply(`:question: How many ${type === 'mute' ? `hours` : `days`} should this ${type} last? ${type === 'mute' ? `Answer "0" if the mute should remain until staff manually unmute.` : ``} You have 5 minutes to respond.`, 300000);
+                    if (!duration) {
+                        await discipline.cancel();
+                        return message.send(`:x: The wizard timed out and was canceled.`);
+                    }
+                    if (isNaN(parseInt(duration))) {
+                        await message.send(`:x: An invalid number was provided. We will assume ${type === 'mute' ? `1 hour` : `1 day`}.`);
+                        duration = 1;
+                    }
+                    duration = parseInt(duration);
+                    discipline.setDuration((type === 'tempban') ? (60 * 24 * duration) : (60 * duration));
+                }
+
                 // Ask for bad reputation
                 var badRep = await message.awaitReply(`:question: How much bad reputation should be assigned to this user? Use "0" for none. You have 5 minutes to respond.`, 300000);
                 if (!badRep) {
