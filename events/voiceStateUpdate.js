@@ -9,7 +9,7 @@ module.exports = class extends Event {
     }
 
     async run (oldState, newState) {
-        if (newState.member && oldState.channelID !== newState.channelID) {
+        if (newState.member && oldState.channelID !== newState.channelID && newState.channelID) {
 
             // Check if the member is muted. If so, update voice mute as well.
             var isMuted = (newState.member.roles.get(newState.guild.settings.muteRole));
