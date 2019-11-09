@@ -136,6 +136,7 @@ async function runCase (message, user, modLogs, chosen, chosen2) {
             .setTitle(`ModLog ${chosen2} (${chosen}) for ${user.tag}`)
             .setDescription(`Date      : ${log.date}
 Moderator : ${log.moderator.tag} (${log.moderator.id})
+Rules : ${log.rules.join(", ")}
 Reason:   : ${log.reason}
 Expiration: ${log.expiration}
 Discipline: ${JSON.stringify(log.discipline)}

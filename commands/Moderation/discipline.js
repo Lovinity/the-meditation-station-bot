@@ -71,7 +71,7 @@ module.exports = class extends Command {
             rules.map((rule) => discipline.addRule(rule));
 
             // Next, ask for a reason
-            var reason = await message.awaitReply(`:question: Please state the reason(s) for this action concisely but completely (eg. explain the violation even though you specified the rule numbers; muted users probably cannot see the rules channel). Please do not provide additional instruction/discipline here; that will be asked later. You have 5 minutes to respond.`, 300000);
+            var reason = await message.awaitReply(`:question: Please state the reason(s) for this action concisely but completely (eg. explain the violation even though you specified the rule numbers; muted users probably cannot see the rules channel). Keep the length under 512 characters. Please do not provide additional instruction/discipline here; that will be asked later. You have 5 minutes to respond.`, 300000);
             if (!reason) {
                 await discipline.cancel();
                 return message.send(`:x: The wizard timed out and was canceled.`);
@@ -121,7 +121,7 @@ module.exports = class extends Command {
             }
 
             // Ask for any additional discipline or instruction
-            var other = await message.awaitReply(`:question: If there is any other discipline or instructions for the user, such as requiring the user to make an apology, please state so here. If there is no other further discipline or instruction, send "none". You have 5 minutes to respond.`, 300000);
+            var other = await message.awaitReply(`:question: If there is any other discipline or instructions for the user, such as requiring the user to make an apology, please state so here. Keep the length under 512 characters. If there is no other further discipline or instruction, send "none". You have 5 minutes to respond.`, 300000);
             if (!other) {
                 await discipline.cancel();
                 return message.send(`:x: The wizard timed out and was canceled.`);
