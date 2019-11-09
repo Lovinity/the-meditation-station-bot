@@ -58,12 +58,28 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                     return null;
                 }
 
+                // Determine if a mute should be untimed based on bad Reputation
+                var badRepThreshold = (this.settings.badRep >= 90 && this.settings.badRep < 100) || (this.settings.badRep >= 140 && this.settings.badRep < 150) || (this.settings.badRep >= 190 && this.settings.badRep < 200) || (this.settings.badRep >= 240 && this.settings.badRep < 250) || (this.settings.badRep >= 290 && this.settings.badRep < 300)
+
                 // Issue the mute
-                if (this.guild.settings.raidMitigation < 1) {
+                if (this.guild.settings.raidMitigation < 1 && !badRepThreshold) {
                     var discipline = new GuildDiscipline(this.user, this.guild, this.client.user)
                         .setType('mute')
                         .setReason(`Triggered the antispam system and ignored the warnings by the bot.`)
-                        .setDuration(30);
+                        .setDuration(30)
+                        .setYang(100)
+                        .setReputation(10);
+                    discipline.prepare()
+                        .then(prepared => {
+                            prepared.finalize();
+                        });
+                } else if (this.guild.settings.raidMitigation < 1 && badRepThreshold) {
+                    var discipline = new GuildDiscipline(this.user, this.guild, this.client.user)
+                        .setType('mute')
+                        .setReason(`Triggered the antispam system and ignored the warnings by the bot. Bad reputation has reached potential ban level, which will be determined by staff.`)
+                        .setDuration(0)
+                        .setYang(100)
+                        .setReputation(10);
                     discipline.prepare()
                         .then(prepared => {
                             prepared.finalize();
@@ -72,7 +88,9 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                     var discipline = new GuildDiscipline(this.user, this.guild, this.client.user)
                         .setType('mute')
                         .setReason(`Triggered the antispam system and ignored the warnings by the bot. Level 1 raid mitigation was in effect.`)
-                        .setDuration(0);
+                        .setDuration(0)
+                        .setYang(100)
+                        .setReputation(10);
                     discipline.prepare()
                         .then(prepared => {
                             prepared.finalize();
