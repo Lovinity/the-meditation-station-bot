@@ -59,13 +59,13 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                 }
 
                 // Determine if a mute should be untimed based on bad Reputation
-                var badRepThreshold = (this.settings.badRep >= 90 && this.settings.badRep < 100) || (this.settings.badRep >= 140 && this.settings.badRep < 150) || (this.settings.badRep >= 190 && this.settings.badRep < 200) || (this.settings.badRep >= 240 && this.settings.badRep < 250) || (this.settings.badRep >= 290 && this.settings.badRep < 300)
+                var badRepThreshold = this.settings.badRep > 100
 
                 // Issue the mute
                 if (this.guild.settings.raidMitigation < 1 && !badRepThreshold) {
                     var discipline = new GuildDiscipline(this.user, this.guild, this.client.user)
                         .setType('mute')
-                        .setReason(`Triggered the antispam system and ignored the warnings by the bot.`)
+                        .setReason(`You were asked via my antispam system to take a short break from sending messages, but you did not do so.`)
                         .setDuration(30)
                         .setYang(100)
                         .setReputation(10)
@@ -77,11 +77,12 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                 } else if (this.guild.settings.raidMitigation < 1 && badRepThreshold) {
                     var discipline = new GuildDiscipline(this.user, this.guild, this.client.user)
                         .setType('mute')
-                        .setReason(`Triggered the antispam system and ignored the warnings by the bot. Bad reputation has reached potential ban level, which will be determined by staff.`)
+                        .setReason(`You were asked via my antispam system to take a short break from sending messages, but you did not do so.`)
                         .setDuration(0)
                         .setYang(100)
                         .setReputation(10)
-                        .addRule(this.guild.settings.antispamRuleNumber);
+                        .addRule(this.guild.settings.antispamRuleNumber)
+                        .setOther(`Your bad reputation is above 100, which may necessitate a temporary or permanent ban. Staff will review the incident and make a decision.`);
                     discipline.prepare()
                         .then(prepared => {
                             prepared.finalize();
@@ -94,6 +95,7 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                         .setYang(100)
                         .setReputation(10)
                         .addRule(this.guild.settings.antispamRuleNumber);
+                    if (badRepThreshold) { discipline.setOther(`Your bad reputation is above 100, which may necessitate a temporary or permanent ban. Staff will review the incident and make a decision.`) }
                     discipline.prepare()
                         .then(prepared => {
                             prepared.finalize();
@@ -104,6 +106,7 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                         .setReason(`Triggered the antispam system and ignored the warnings by the bot. Level 2 raid mitigation was in effect.`)
                         .setDuration((1 * 60 * 24))
                         .addRule(this.guild.settings.antispamRuleNumber);
+                    if (badRepThreshold) { discipline.setOther(`Your bad reputation is above 100, which may necessitate a permanent ban. Staff will review the incident and make a decision.`) }
                     discipline.prepare()
                         .then(prepared => {
                             prepared.finalize();

@@ -1,6 +1,7 @@
 const { Command, util, RichMenu } = require('klasa');
 const { MessageEmbed } = require('discord.js');
 const GuildDiscipline = require('../../util/guildDiscipline');
+const moment = require('moment');
 
 module.exports = class extends Command {
 
@@ -26,16 +27,52 @@ module.exports = class extends Command {
             return message.delete({ reason: `Use of !discipline channel outside of a staff or incidents channel` });
         }
 
-        // First, ask what kind of discipline to issue
+        // Send a message containing information about the user's disciplinary records
+        // Get the modLogs
+        const modLogs = user.guildSettings(message.guild.id).modLogs;
 
+        var rules = {};
+
+        // Count each discipline type in actions, and place each log in its appropriate type in cases
+        modLogs.map((log) => {
+            if (typeof log.rules !== 'undefined' && log.rules.length > 0) {
+                log.rules.map((rule) => {
+                    if (typeof rules[ `Rule ${rule}` ] === 'undefined')
+                        rules[ `Rule ${rule}` ] = [];
+                    rules[ `Rule ${rule}` ].push({ type: log.type, id: log.case, issued: log.date, moderator: log.moderator.tag, valid: log.valid });
+                })
+            }
+        });
+
+        var response = `__**Relevant Disciplinary Information**__` + "\n\n"
+        Object.entries(rules).map(([ key, value ]) => {
+            if (value.length > 0) {
+                value = value.filter(record => record.valid)
+            }
+            if (value.length > 0) {
+                response += `**Actions issued regarding ${key}**: ` + "\n"
+                value.map((record) => {
+                    response += `🔹${record.type} on ${moment(log.date).format("LLLL Z")}` + "\n"
+                })
+                response += "\n"
+            }
+        });
+
+        response += `**Current Bad Reputation**: ${user.guildSettings(message.guild).badRep}`
+        response += `**Current Yang**: ${user.guildSettings(message.guild).yang}`
+        response += `**Current XP**: ${user.guildSettings(message.guild).xp}`
+
+        var separateMessage = await message.channel.send(response, {split: true});
+
+        // First, ask what kind of discipline to issue
         var menu = new RichMenu(new MessageEmbed()
             .setTitle(`Choose a discipline for ${user.tag}`)
             .setDescription(`Use number reactions to select which kind of discipline to issue.`)
         );
-        menu.addOption(`warn`, `Warns the user of unacceptable behaviour, but does not issue any disciplinary action.`);
+        menu.addOption(`warn`, `Formally warns the user of unacceptable behaviour, but does not issue any disciplinary action.`);
         menu.addOption(`discipline`, `Issue Yang fines, take away XP, and/or apply bad reputation.`);
         menu.addOption(`mute`, `Add the muteRole to the user, temporarily or indefinitely. Optionally, also add discipline.`);
-        menu.addOption(`tempban`, `Suspend/ban the user from the guild temporarily. Optionally, also add discipline.`);
+        menu.addOption(`tempban`, `Ban the user from the guild temporarily. Optionally, also add discipline.`);
         menu.addOption(`ban`, `Permanently ban the user from the guild. Optionally, also add discipline.`);
         var collector = await menu.run(await message.send('Please wait...'), { time: 300000, filter: (reaction, user) => user.id === message.author.id });
         var choice = await collector.selection;
