@@ -68,7 +68,8 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                         .setReason(`Triggered the antispam system and ignored the warnings by the bot.`)
                         .setDuration(30)
                         .setYang(100)
-                        .setReputation(10);
+                        .setReputation(10)
+                        .addRule(this.guild.settings.antispamRuleNumber);
                     discipline.prepare()
                         .then(prepared => {
                             prepared.finalize();
@@ -79,7 +80,8 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                         .setReason(`Triggered the antispam system and ignored the warnings by the bot. Bad reputation has reached potential ban level, which will be determined by staff.`)
                         .setDuration(0)
                         .setYang(100)
-                        .setReputation(10);
+                        .setReputation(10)
+                        .addRule(this.guild.settings.antispamRuleNumber);
                     discipline.prepare()
                         .then(prepared => {
                             prepared.finalize();
@@ -90,7 +92,8 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                         .setReason(`Triggered the antispam system and ignored the warnings by the bot. Level 1 raid mitigation was in effect.`)
                         .setDuration(0)
                         .setYang(100)
-                        .setReputation(10);
+                        .setReputation(10)
+                        .addRule(this.guild.settings.antispamRuleNumber);
                     discipline.prepare()
                         .then(prepared => {
                             prepared.finalize();
@@ -99,7 +102,8 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                     var discipline = new GuildDiscipline(this.user, this.guild, this.client.user)
                         .setType('tempban')
                         .setReason(`Triggered the antispam system and ignored the warnings by the bot. Level 2 raid mitigation was in effect.`)
-                        .setDuration((1 * 60 * 24));
+                        .setDuration((1 * 60 * 24))
+                        .addRule(this.guild.settings.antispamRuleNumber);
                     discipline.prepare()
                         .then(prepared => {
                             prepared.finalize();
@@ -107,7 +111,8 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                 } else if (this.guild.settings.raidMitigation >= 3) {
                     var discipline = new GuildDiscipline(this.user, this.guild, this.client.user)
                         .setType('ban')
-                        .setReason(`Triggered the antispam system and ignored the warnings by the bot. Level 3 raid mitigation was in effect.`);
+                        .setReason(`Triggered the antispam system and ignored the warnings by the bot. Level 3 raid mitigation was in effect.`)
+                        .addRule(this.guild.settings.antispamRuleNumber);
                     discipline.prepare()
                         .then(prepared => {
                             prepared.finalize();
