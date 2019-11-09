@@ -50,7 +50,7 @@ module.exports = class extends Command {
 
             // Indicate new message
             data += `<!NEW>
-            `;
+`;
         });
 
         // Create a buffer with the data
