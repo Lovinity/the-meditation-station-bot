@@ -42,7 +42,7 @@ module.exports = class extends Command {
                 cases[ log.type ].push({ id: log.case, issued: log.date, moderator: log.moderator.tag, valid: log.valid });
             if (typeof log.rules !== 'undefined' && log.rules.length > 0) {
                 log.rules.map((rule) => {
-                    if (typeof rules[ `Rule ${rule}` ] !== 'undefined')
+                    if (typeof rules[ `Rule ${rule}` ] === 'undefined')
                         rules[ `Rule ${rule}` ] = [];
                     rules[ `Rule ${rule}` ].push({ id: log.case, issued: log.date, moderator: log.moderator.tag, valid: log.valid });
                 })
