@@ -201,7 +201,8 @@ module.exports = class GuildDiscipline {
 
                 msg3 += "This channel is private between you and staff; you may communicate any questions or concerns you have here. If you need help resolving this incident, staff are happy to provide some tips and guidance. But please remain respectful. \n"
                 msg3 += "**You have 48 hours to dispute this discipline in this text channel if you feel it was wrongly issued**. Leaving the guild, being disrespectful towards staff, or trying to discuss the matter outside of this channel will automatically make this discipline final and unappealable."
-                msg3 += "Thank you for your understanding and cooperation."
+                msg3 += "Thank you for your understanding and cooperation." + "\n\n"
+                msg3 += "**Staff**: Do not delete this channel until the appeal deadline has passed, or an appeal has been granted or denied. Also, if a member loses access to this channel, you can grant access back with the command `!grant username/mention/snowflake`."
 
                 if (!guildMember)
                     msg3 += "\n\n**User not in the guild**\nI will add permissions to this channel if/when I detect them re-entering the guild."
@@ -219,7 +220,8 @@ module.exports = class GuildDiscipline {
 
                 msg3 += "This channel is private between you and staff; you may communicate any questions or concerns you have here. If you need help resolving this incident, staff are happy to provide some tips and guidance. But please remain respectful. \n"
                 msg3 += "**You have 48 hours to dispute this discipline in this text channel if you feel it was wrongly issued**. Leaving the guild, being disrespectful towards staff, or trying to discuss the matter outside of this channel will automatically make this discipline final and unappealable."
-                msg3 += "Thank you for your understanding and cooperation."
+                msg3 += "Thank you for your understanding and cooperation." + "\n\n"
+                msg3 += "**Staff**: Do not delete this channel until the appeal deadline has passed, or an appeal has been granted or denied. Also, if a member loses access to this channel, you can grant access back with the command `!grant username/mention/snowflake`."
 
                 if (!guildMember)
                     msg3 += "\n\n**User not in the guild**\nI will add the mute and permissions to this channel if/when I detect them re-entering the guild."
@@ -233,30 +235,32 @@ module.exports = class GuildDiscipline {
                 msg += "During your temporary ban, the staff would like to see you reflect on your mistakes and put a plan of action in place to improve your behavior. Staff may need to issue a permanent ban if this happens again."
 
                 msg2 += "**Temporary Ban** \n"
-                msg2 += `Once you leave the guild, a ban will be placed on you, which will be removed by the bot in ${this.duration / (60 * 24)} days (${moment().add(this.duration, 'minutes').format("LLLL Z")}). Your temp-ban time will not begin until you leave the guild or get kicked; until then, you will remain muted.` + "\n\n"
+                msg2 += `Once you leave the guild, a ban will be placed on you, which will be removed by the bot in ${this.duration / (60 * 24)} days. Your temp-ban time will not begin until you leave the guild or get kicked; until then, you will remain muted.` + "\n\n"
 
                 msg3 += "This channel is private between you and staff; you may communicate any questions or concerns you have here prior to leaving (once you leave, you will lose access to the server until the suspension ends). If you need help resolving this incident, staff are happy to provide some tips and guidance. But please remain respectful. \n"
                 msg3 += "**You have 48 hours to dispute this temp ban in this text channel if you feel it was wrongly issued**. Leaving the guild, being disrespectful towards staff, or trying to discuss the matter outside of this channel will automatically make this temp ban final and unappealable."
-                msg3 += "Thank you for your understanding and cooperation."
+                msg3 += "Thank you for your understanding and cooperation." + "\n\n"
+                msg3 += "**Staff**: Do not delete this channel until the appeal deadline has passed, or an appeal has been granted or denied. Please kick the user if they are still in the guild when the appeal deadline passes. Also, if a member loses access to this channel, you can grant access back with the command `!grant username/mention/snowflake`."
 
                 if (!guildMember)
                     msg3 += "\n\n**User not in the guild**\nThe temp ban was applied immediately."
                 break;
             case 'ban':
-                    msg += ":no_entry_sign: **__PERMANENT BAN ISSUED__** :no_entry_sign: \n\n"
-                    msg += "Your conduct in the guild cannot be tolerated any longer. Therefore, for the safety of the community, you are being asked to leave the guild and not to return. We wish you the best in your adventures and hope you enjoyed your stay in this guild. You are being banned for the following: \n"
-                    msg += `**Rule number(s) violated:** ${this.rules.join(", ")}` + "\n"
-                    msg += `**Further Information:** ${this.reason}` + "\n\n"
-    
-                    msg2 += "**Permanent Ban** \n"
-                    msg2 += `Once you leave the guild, a ban will be placed on you. This ban will remain in place indefinitely or until staff manually remove it. Until you leave or staff kick you, you will remain muted.` + "\n\n"
-    
-                    msg3 += "This channel is private between you and staff; you may communicate any questions or concerns you have here prior to leaving (once you leave, you will lose access to the guild). If you need help resolving this incident, staff are happy to provide some tips and guidance. But please remain respectful. \n"
-                    msg3 += "**You have 48 hours to dispute this ban in this text channel if you feel it was wrongly issued**. Leaving the guild, being disrespectful towards staff, or trying to discuss the matter outside of this channel will automatically make this ban final and unappealable."
-                    msg3 += "Thank you for your understanding and cooperation."
-    
-                    if (!guildMember)
-                        msg3 += "\n\n**User not in the guild**\nThe ban was applied immediately."
+                msg += ":no_entry_sign: **__PERMANENT BAN ISSUED__** :no_entry_sign: \n\n"
+                msg += "Your conduct in the guild cannot be tolerated any longer. Therefore, for the safety of the community, you are being asked to leave the guild and not to return. We wish you the best in your adventures and hope you enjoyed your stay in this guild. You are being banned for the following: \n"
+                msg += `**Rule number(s) violated:** ${this.rules.join(", ")}` + "\n"
+                msg += `**Further Information:** ${this.reason}` + "\n\n"
+
+                msg2 += "**Permanent Ban** \n"
+                msg2 += `Once you leave the guild, a ban will be placed on you. This ban will remain in place indefinitely or until staff manually remove it. Until you leave or staff kick you, you will remain muted.` + "\n\n"
+
+                msg3 += "This channel is private between you and staff; you may communicate any questions or concerns you have here prior to leaving (once you leave, you will lose access to the guild). If you need help resolving this incident, staff are happy to provide some tips and guidance. But please remain respectful. \n"
+                msg3 += "**You have 48 hours to dispute this ban in this text channel if you feel it was wrongly issued**. Leaving the guild, being disrespectful towards staff, or trying to discuss the matter outside of this channel will automatically make this ban final and unappealable."
+                msg3 += "Thank you for your understanding and cooperation." + "\n\n"
+                msg3 += "**Staff**: Do not delete this channel until the appeal deadline has passed, or an appeal has been granted or denied. Please kick the user if they are still in the guild when the appeal deadline passes. Also, if a member loses access to this channel, you can grant access back with the command `!grant username/mention/snowflake`."
+
+                if (!guildMember)
+                    msg3 += "\n\n**User not in the guild**\nThe ban was applied immediately."
                 break;
         }
 
