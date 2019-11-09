@@ -14,11 +14,7 @@ module.exports = class extends Event {
             // Check if the member is muted. If so, update voice mute as well.
             var isMuted = (newState.member.roles.get(newState.guild.settings.muteRole));
             if (isMuted) {
-                newState.setDeaf(true);
-                newState.setMute(true);
-            } else {
-                newState.setDeaf(false);
-                newState.setMute(false);
+                newState.kick(`User is muted`)
             }
         }
     }
