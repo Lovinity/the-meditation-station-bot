@@ -91,7 +91,7 @@ module.exports = class extends Command {
                     var collector = await menu.run(await message.send('Please wait...'), { time: 180000, filter: (reaction, user) => user.id === message.author.id });
                     var choice = await collector.selection;
                     if (menu.options[ choice ]) {
-                        return runCase(message, user, menu.options[ choice ].name);
+                        return runCase(message, user, modLogs, menu.options[ choice ].name);
                     } else {
                         return message.send(`:stop_button: The request was canceled.`);
                     }
@@ -109,7 +109,7 @@ module.exports = class extends Command {
                 var collector = await menu.run(await message.send('Please wait...'), { time: 180000, filter: (reaction, user) => user.id === message.author.id });
                 var choice = await collector.selection;
                 if (menu.options[ choice ]) {
-                    return runCase(message, user, menu.options[ choice ].name);
+                    return runCase(message, user, modLogs, menu.options[ choice ].name);
                 } else {
                     return message.send(`:stop_button: The request was canceled.`);
                 }
@@ -127,7 +127,7 @@ module.exports = class extends Command {
 };
 
 
-async function runCase (message, user, chosen2) {
+async function runCase (message, user, modLogs, chosen2) {
     var log = modLogs.find((element) => {
         return element.case === chosen2;
     });
