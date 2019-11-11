@@ -8,12 +8,12 @@ module.exports = class extends Command {
             permLevel: 4,
             runIn: [ 'text' ],
             description: 'Add a self-role in a self-role group',
-            usage: '<rolereaction:rolereaction> <messageID:string>',
+            usage: '<messageID:string> <role:rolename> <emoji:emoji>',
             usageDelim: ' | '
         });
     }
 
-    async run (message, [ rolereaction, messageID ]) {
+    async run (message, [ messageID, role, emoji ]) {
         var _selfRolesChannel = message.guild.settings.get('selfRolesChannel');
         var selfRolesChannel = this.client.channels.resolve(_selfRolesChannel);
         if (selfRolesChannel) {
@@ -21,16 +21,16 @@ module.exports = class extends Command {
             if (msg) {
                 var selfRole = this.client.gateways.selfrolegroups.get(`${selfRolesChannel.id}-${msg.id}`);
                 if (selfRole) {
-                    selfRole.update('selfRoles', rolereaction, {action: 'add'});
+                    selfRole.update('selfRoles', {role: role, emoji: emoji}, {action: 'add'});
 
                     var selfRoles = selfRole.selfRoles;
-                    var newMessage = `**__${selfRole.description} ROLES__** (ID: ${msg.id})` + "\n"
+                    var newMessage = `**__${selfRole.groupDescription} ROLES__** (ID: ${msg.id})` + "\n"
                     selfRoles.map((role) => {
-                        newMessage += "\n" + `${role.rolereaction.emoji} | ${role.rolereaction.name}`
+                        newMessage += "\n" + `${role.emoji} | ${role.name}`
                     })
 
                     msg.edit(newMessage);
-                    msg.react(rolereaction.emoji);
+                    msg.react(emoji);
                     return message.send(`:white_check_mark: The self role has been added to the list of roles.`)
                 } else {
                     return message.send(`:x: The provided message ID is not a self roles group.`)

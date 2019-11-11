@@ -1,11 +1,11 @@
 // Copyright (c) 2017-2019 dirigeants. All rights reserved. MIT license.
-const { Role, Emoji } = require('discord.js');
+const { Role, Emoji, GuildEmoji } = require('discord.js');
 const { Serializer } = require('klasa');
 
 module.exports = class extends Serializer {
 
 	deserialize(data, piece, language, guild) {
-        if (data.role && data.role instanceof Role && data.emoji && data.emoji instanceof Emoji) return data;
+        if (data.role && data.role instanceof Role && data.emoji && (data.emoji instanceof Emoji || data.emoji instanceof GuildEmoji || data.emoji instanceof ReactionEmoji)) return data;
 		if (typeof data !== 'string') throw `Invalid rolereaction role/emoji`;
 		const [roleID, emojiID] = data.split('/', 2);
 		if (!(roleID && emojiID)) throw `Invalid rolereaction role/emoji`;
