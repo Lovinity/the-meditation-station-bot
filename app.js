@@ -4,6 +4,8 @@ require('./util/extendTextChannel');
 require('./util/extendUser');
 require('./util/extendGuildMember');
 require('./util/extendGuild');
+require('./util/extendMessage');
+require('./util/extendMessageReaction');
 
 // Guild schema
 Client.defaultGuildSchema
@@ -16,6 +18,7 @@ Client.defaultGuildSchema
     .add('announcementsChannel', 'textchannel')
     .add('generalChannel', 'textchannel')
     .add('starboardChannel', 'textchannel')
+    .add('selfRolesChannel', 'textchannel')
     .add('noXPChannels', 'textchannel', { array: true })
     .add('noSelfModRole', 'role')
     .add('repEmoji', 'string')
@@ -46,7 +49,6 @@ Client.defaultGuildSchema
     .add('antispamRuleNumber', 'integer', { default: 1, min: 0 })
     .add('raidScore', 'integer', { default: 0, configurable: false })
     .add('raidMitigation', 'integer', { default: 0, configurable: false })
-    .add('selfRoles', 'role', { array: true })
     .add('levelRoles', folder => {
         for (var i = 2; i <= 100; i++) {
             folder.add(`level${i}`, 'role', { configurable: false });
@@ -77,7 +79,7 @@ Client.defaultMemberSchema
     .add('badRep', 'integer', { default: 0 })
     .add('goodRep', 'integer', { default: 0 })
     .add('spamScore', 'integer', { default: 0 })
-    .add('activityScore', 'float', {min: 0, default: 0})
+    .add('activityScore', 'float', { min: 0, default: 0 })
     .add('profile', folder => {
         folder
             .add('title', 'string')
@@ -139,6 +141,14 @@ client.gateways.register('channels', {
     provider: 'mysql',
     schema: new Schema()
         .add('conflictResolution', 'string', { array: true })
+});
+
+// Add a self roles gateway
+client.gateways.register('selfrolegroups', {
+    provider: 'mysql',
+    schema: new Schema()
+        .add('groupDescription', 'string')
+        .add('selfRoles', 'rolereaction', { array: true })
 });
 
 // login the client
