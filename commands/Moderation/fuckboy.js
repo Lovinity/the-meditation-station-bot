@@ -47,7 +47,7 @@ module.exports = class extends Command {
                             setTimeout(() => {
                                 var discipline = new GuildDiscipline(user, message.guild, message.author)
                                     .setType('mute')
-                                    .setRule(message.guild.settings.fuckboyRuleNumber)
+                                    .addRule(message.guild.settings.fuckboyRuleNumber)
                                     .setReason(`Being a fuckboy (someone who is only interested in hitting on members or sexually objectifying others)`)
                                     .setDuration(0)
                                     .setYang(500)
@@ -58,9 +58,9 @@ module.exports = class extends Command {
                                         prepared.finalize();
                                         msg.edit(`**__POOF!__**`)
                                     });
-                            }, 2000 + totalDuration)
-                        }, 2000 + totalDuration)
-                    }, 2000 + totalDuration)
+                            }, 2000)
+                        }, 2000)
+                    }, 2000)
                 })
         }, 3000  + totalDuration)
     }
