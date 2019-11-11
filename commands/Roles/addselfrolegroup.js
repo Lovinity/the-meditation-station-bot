@@ -19,7 +19,7 @@ module.exports = class extends Command {
         if (selfRolesChannel) {
             var newMessage = await selfRolesChannel.send(`**__${description} ROLES__**`)
             newMessage.edit(`**__${description} ROLES__** (ID: ${newMessage.id})`)
-            var selfRole = this.client.selfrolegroups.get(`${selfRolesChannel.channel.id}-${newMessage.id}`, true);
+            var selfRole = this.client.gateways.selfrolegroups.get(`${selfRolesChannel.channel.id}-${newMessage.id}`, true);
             selfRole.update('groupDescription', description)
             return message.send(`:white_check_mark: Self roles group added. You can now add assignable self roles to this group with the !addselfrole command using the message ID ${newMessage.id}`)
         } else {

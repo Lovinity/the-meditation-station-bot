@@ -19,7 +19,7 @@ module.exports = class extends Command {
         if (selfRolesChannel) {
             var msg = await selfRolesChannel.messages.fetch(messageID)
             if (msg) {
-                var selfRole = this.client.selfrolegroups.get(`${selfRolesChannel.id}-${msg.id}`);
+                var selfRole = this.client.gateways.selfrolegroups.get(`${selfRolesChannel.id}-${msg.id}`);
                 if (selfRole) {
                     selfRole.update('selfRoles', rolereaction, {action: 'add'});
 
