@@ -272,7 +272,7 @@ function parseRange(min, max) {
  */
 function sanitizeInteger(value) {
 	if (!isNumber(value)) throw new TypeError(`%MySQL.sanitizeNumber expects an integer, got ${value}`);
-	if (value < 0) throw new TypeError(`%MySQL.sanitizeNumber expects a positive integer, got ${value}`);
+	// if (value < 0) throw new TypeError(`%MySQL.sanitizeNumber expects a positive integer, got ${value}`);
 	return String(value);
 }
 
