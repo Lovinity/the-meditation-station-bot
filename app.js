@@ -34,6 +34,7 @@ Client.defaultGuildSchema
     .add('reportMembers', 'integer', { default: 3, min: 1 })
     .add('reportTime', 'integer', { default: 60, min: 1 })
     .add('starboardRequired', 'integer', { default: 3, min: 1 })
+    .add('fuckboyRuleNumber', 'integer', { default: 1, min: 0 })
     .add('pendSuspensions', 'any', { array: true, configurable: false })
     .add('pendBans', 'any', { array: true, configurable: false })
     .add('pendIncidents', 'any', { array: true, configurable: false })

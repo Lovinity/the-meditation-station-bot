@@ -16,44 +16,52 @@ module.exports = class extends Command {
     }
 
     async run (message, [ user ]) {
-        message.channel.send(`uhh ohh!`)
-        setTimeout(() => {
-            message.channel.send(`**__UHH OHH!!!!!__**`)
-            setTimeout(() => {
-                message.channel.send({ files: [ { attachment: `https://img.playbuzz.com/image/upload/ar_1.5,c_pad,f_jpg,b_auto/q_auto:good,f_auto,fl_lossy,w_640,c_limit/cdn/fcd52a6a-8df5-4f36-8477-7ec5d9fd02f0/18db4e36-ae84-43af-a350-aba32540a31a.jpg`, name: `isthatafuckboy.jpg` } ] })
-                setTimeout(() => {
-                    message.channel.send(`**__MAYDAY! MAYDAY! FUCKBOY ALERT!__**`)
-                    setTimeout(() => {
-                        message.channel.send({ files: [ { attachment: `https://media1.tenor.com/images/22b5140d5606c3e3dce22dc40bbd204b/tenor.gif?itemid=13844448`, name: `fuckboy-alert.gif` } ] })
-                        setTimeout(() => {
-                            message.channel.send(`**__ <@${user.id}> IS A FUCKBOY! I REPEAT, <@${user.id}> IS A FUCKBOY! __** MUST EXTERMINATE! MUST EXTERMINATE!`)
-                            setTimeout(() => {
-                                message.channel.send(`Exterminating fuckboy <@${user.id}> in **__3__**`)
-                                    .then((msg) => {
-                                        setTimeout(() => {
-                                            msg.edit(`Exterminating fuckboy <@${user.id}> in **__2__**`)
-                                            setTimeout(() => {
-                                                msg.edit(`Exterminating fuckboy <@${user.id}> in **__1__**`)
-                                                setTimeout(() => {
-                                                    var discipline = new GuildDiscipline(user, message.guild, message.author)
-                                                        .setType('mute')
-                                                        .setReason(`Being a fuckboy`)
-                                                        .setDuration(0);
-                                                    discipline.prepare()
-                                                        .then(prepared => {
-                                                            prepared.finalize();
-                                                            msg.edit(`**__POOF!__** Fuckboy gone.`)
-                                                        });
-                                                }, 2000)
-                                            }, 2000)
-                                        }, 2000)
-                                    })
-                            }, 5000)
-                        }, 5000)
-                    }, 3000)
-                }, 5000)
-            }, 2000)
-        }, 2000)
-    }
 
+        var messages = [
+            { text: `**__UHH OHH!!!!!__**`, duration: 3000 },
+            { text: { files: [ { attachment: `https://img.playbuzz.com/image/upload/ar_1.5,c_pad,f_jpg,b_auto/q_auto:good,f_auto,fl_lossy,w_640,c_limit/cdn/fcd52a6a-8df5-4f36-8477-7ec5d9fd02f0/18db4e36-ae84-43af-a350-aba32540a31a.jpg`, name: `isthatafuckboy.jpg` } ] }, duration: 3000 },
+            { text: { files: [ { attachment: `https://media1.tenor.com/images/22b5140d5606c3e3dce22dc40bbd204b/tenor.gif?itemid=13844448`, name: `fuckboy-alert.gif` } ] }, duration: 3000 },
+            { text: `**__ <@${user.id}> IS A FUCKBOY! I REPEAT, <@${user.id}> IS A FUCKBOY! __**`, duration: 3000 },
+            { text: `Fuckboys don't know how to love; they only know how to lust.`, duration: 3000 },
+            { text: `Fuckboys only care about themselves and can't keep their pants up.`, duration: 3000 },
+            { text: `Fuckboys poison society's view on sex and make people (especially women and transgender individuals) fear for their safety.`, duration: 3000 },
+            { text: `If a fuckboy is not stopped, it's only a matter of time before they become a rapist (if they're not one already).`, duration: 3000 },
+            { text: `Sorry, <@${user.id}>. But fuckboys are not welcome here. **I must exterminate you**.`, duration: 3000 }
+        ];
+
+        var totalDuration = 0
+        messages.map((msg) => {
+            setTimeout(() => {
+                message.channel.send(msg.text)
+            }, msg.duration + totalDuration)
+            totalDuration += msg.duration
+        })
+
+        setTimeout(() => {
+            message.channel.send(`Exterminating fuckboy <@${user.id}> in **__3__**`)
+                .then((msg) => {
+                    setTimeout(() => {
+                        msg.edit(`Exterminating fuckboy <@${user.id}> in **__2__**`)
+                        setTimeout(() => {
+                            msg.edit(`Exterminating fuckboy <@${user.id}> in **__1__**`)
+                            setTimeout(() => {
+                                var discipline = new GuildDiscipline(user, message.guild, message.author)
+                                    .setType('mute')
+                                    .setRule(message.guild.settings.fuckboyRuleNumber)
+                                    .setReason(`Being a fuckboy (someone who is only interested in hitting on members or sexually objectifying others)`)
+                                    .setDuration(0)
+                                    .setYang(500)
+                                    .setReputation(50)
+                                    .setOther(`In order to remain in the guild without being permanently banned, you must pass a fuckboy interrogation process which staff will perform here. You will be subject to several tests in which you must pass without acting like a fuckboy. If you act like a fuckboy even once during this test, you will fail and will be permanently banned from the guild.`)
+                                discipline.prepare()
+                                    .then(prepared => {
+                                        prepared.finalize();
+                                        msg.edit(`**__POOF!__**`)
+                                    });
+                            }, 2000 + totalDuration)
+                        }, 2000 + totalDuration)
+                    }, 2000 + totalDuration)
+                })
+        }, 3000  + totalDuration)
+    }
 };
