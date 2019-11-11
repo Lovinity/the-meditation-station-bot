@@ -21,9 +21,7 @@ module.exports = class extends Extendable {
 
             // Start with a base score of 2
             var score = 2;
-            var preScore = 0;
             var scoreReasons = {};
-            var preScoreReasons = {};
 
             /*
             // Add 3 points for every profane word used; excessive profanity spam
@@ -156,26 +154,24 @@ module.exports = class extends Extendable {
 
                 // If 50% or more of the characters are uppercase, consider it shout spam,
                 // and add a score of 5, plus 1 for every 12.5 uppercase characters.
-                // This is a preScore and only used if perspective fails.
                 if (uppercase >= lowercase) {
-                    preScore += parseInt(5 + (20 * (uppercase / 250)));
-                    preScoreReasons[ "Uppercase / Shouting" ] = parseInt(5 + (20 * (uppercase / 250)))
+                    score += parseInt(5 + (20 * (uppercase / 250)));
+                    scoreReasons[ "Uppercase / Shouting" ] = parseInt(5 + (20 * (uppercase / 250)))
                 }
 
                 // Add score for repeating consecutive characters
                 // 20 or more consecutive repeating characters = extremely spammy. Add 20 score.
-                // This is a preScore and only used if perspective fails.
                 if (/(.)\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1\1/.test(this.cleanContent.toLowerCase())) {
-                    preScore += 20;
-                    preScoreReasons[ "Repeating Characters" ] = 20
+                    score += 20;
+                    scoreReasons[ "Repeating Characters" ] = 20
                     // 10 or more consecutive repeating characters = spammy. Add 10 score.
                 } else if (/(.)\1\1\1\1\1\1\1\1\1\1/.test(this.cleanContent.toLowerCase())) {
-                    preScore += 10;
-                    preScoreReasons[ "Repeating Characters" ] = 10
+                    score += 10;
+                    scoreReasons[ "Repeating Characters" ] = 10
                     // 5 or more consecutive repeating characters = a little bit spammy. Add 5 score.
                 } else if (/(.)\1\1\1\1\1/.test(this.cleanContent.toLowerCase())) {
-                    preScore += 5;
-                    preScoreReasons[ "Repeating Characters" ] = 5
+                    score += 5;
+                    scoreReasons[ "Repeating Characters" ] = 5
                 }
 
                 // Add 40 score for here and everyone mentions as these are VERY spammy.
@@ -206,7 +202,7 @@ module.exports = class extends Extendable {
 
                 // Perspective API check and score add
                 try {
-                    var body = await perspective.analyze(this.cleanContent, { attributes: [ 'SEVERE_TOXICITY', 'SPAM' ], doNotStore: false })
+                    var body = await perspective.analyze(this.cleanContent, { attributes: [ 'SEVERE_TOXICITY' ], doNotStore: false })
                     var threatening = false
                     var toxic = false
                     var hadAttributes = false
@@ -223,10 +219,6 @@ module.exports = class extends Extendable {
                                             toxic = true
                                         }
                                         break;
-                                    case 'SPAM':
-                                        score += parseInt((spanScore.score.value * 25) * perspectiveMultiplier)
-                                        scoreReasons[ "Perspective Spam" ] = parseInt((spanScore.score.value * 25) * perspectiveMultiplier)
-                                        break;
                                 }
                             })
                         } else if (typeof body.attributeScores[ key ].summaryScore !== 'undefined') {
@@ -240,31 +232,18 @@ module.exports = class extends Extendable {
                                         toxic = true
                                     }
                                     break;
-                                case 'SPAM':
-                                    score += parseInt((body.attributeScores[ key ].summaryScore.value * 25) * perspectiveMultiplier)
-                                    scoreReasons[ "Perspective Spam" ] = parseInt((body.attributeScores[ key ].summaryScore.value * 25) * perspectiveMultiplier)
-                                    break;
                             }
                         } else {
-                            // perspective score failed; use preScore instead.
-                            score += preScore;
-                            scoreReasons = { ...scoreReasons, ...preScoreReasons }
                         }
                     }
                     afterFunction()
                     return resolve(score)
                 } catch (e) {
-                    // Perspective score failed; use preScore
-                    score += preScore
-                    scoreReasons = { ...scoreReasons, ...preScoreReasons }
                     this.client.emit('error', e)
                     afterFunction()
                     return resolve(score)
                 }
             } else {
-                // Perspective score will not work when there's no message content; use preScore instead.
-                score += preScore
-                scoreReasons = { ...scoreReasons, ...preScoreReasons }
                 afterFunction()
                 return resolve(score)
             }
