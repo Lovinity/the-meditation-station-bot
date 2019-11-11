@@ -5,7 +5,6 @@ require('./util/extendUser');
 require('./util/extendGuildMember');
 require('./util/extendGuild');
 require('./util/extendMessage');
-require('./util/extendMessageReaction');
 
 // Guild schema
 Client.defaultGuildSchema

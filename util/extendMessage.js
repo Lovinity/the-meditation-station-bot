@@ -16,5 +16,5 @@ Structures.extend('Message', Message => {
 
     }
 
-    return MyTextChannel;
+    return MyMessage;
 });
