@@ -147,7 +147,7 @@ client.gateways.register('selfrolegroups', {
     provider: 'mysql',
     schema: new Schema()
         .add('groupDescription', 'string')
-        .add('selfRoles', 'rolereaction', { array: true })
+        .add('selfRoles', 'guildrolereaction', { array: true })
 });
 
 // login the client
