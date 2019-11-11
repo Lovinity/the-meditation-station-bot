@@ -26,7 +26,6 @@ module.exports = class extends SQLProvider {
 			integer: ({ max }) => max >= 2 ** 32 ? 'BIGINT' : 'INTEGER',
 			json: { type: 'JSON', resolver: (input) => sanitizeObject(input) },
 			null: 'NULL',
-			guildrolereaction: { type: 'VARCHAR(37)' },
 			time: { type: 'DATETIME', resolver: (input) => TIMEPARSERS.DATETIME.display(input) },
 			timestamp: { type: 'TIMESTAMP', resolver: (input) => TIMEPARSERS.DATE.display(input) },
 			array: () => 'ARRAY',
@@ -38,7 +37,7 @@ module.exports = class extends SQLProvider {
 		this.db = null;
 	}
 
-	async init () {
+	async init() {
 		const connection = mergeDefault({
 			host: 'localhost',
 			port: 3306,
@@ -61,19 +60,19 @@ module.exports = class extends SQLProvider {
 
 	/* Table methods */
 
-	hasTable (table) {
+	hasTable(table) {
 		return this.run(`SHOW TABLES LIKE '${table}';`)
 			.then(result => !!result)
 			.catch(() => false);
 	}
 
-	createTable (table, rows) {
+	createTable(table, rows) {
 		if (rows) return this.runAll(`CREATE TABLE ${sanitizeKeyName(table)} (${rows});`);
 
-		const gateway = this.client.gateways[ table ];
+		const gateway = this.client.gateways[table];
 		if (!gateway) throw new Error(`There is no gateway defined with the name ${table} nor an array of rows with datatypes have been given. Expected any of either.`);
 
-		const schemaValues = [ ...gateway.schema.values(true) ];
+		const schemaValues = [...gateway.schema.values(true)];
 		return this.run(`
 			CREATE TABLE ${sanitizeKeyName(table)} (
 				id VARCHAR(${gateway.idLength || 18}) NOT NULL UNIQUE${schemaValues.length ? `, ${schemaValues.map(this.qb.parse.bind(this.qb)).join(', ')}` : ''},
@@ -82,18 +81,18 @@ module.exports = class extends SQLProvider {
 		);
 	}
 
-	deleteTable (table) {
+	deleteTable(table) {
 		return this.exec(`DROP TABLE ${sanitizeKeyName(table)};`);
 	}
 
-	countRows (table) {
+	countRows(table) {
 		return this.run(`SELECT COUNT(*) FROM ${sanitizeKeyName(table)};`)
-			.then(result => result[ 'COUNT(*)' ]);
+			.then(result => result['COUNT(*)']);
 	}
 
 	/* Row methods */
 
-	getAll (table, entries = []) {
+	getAll(table, entries = []) {
 		if (entries.length) {
 			return this.runAll(`SELECT * FROM ${sanitizeKeyName(table)} WHERE id IN ('${entries.join("', '")}');`)
 				.then(results => results.map(output => this.parseEntry(table, output)));
@@ -102,12 +101,12 @@ module.exports = class extends SQLProvider {
 			.then(results => results.map(output => this.parseEntry(table, output)));
 	}
 
-	getKeys (table) {
+	getKeys(table) {
 		return this.runAll(`SELECT id FROM ${sanitizeKeyName(table)};`)
 			.then(rows => rows.map(row => row.id));
 	}
 
-	get (table, key, value) {
+	get(table, key, value) {
 		// If a key is given (id), swap it and search by id - value
 		if (typeof value === 'undefined') {
 			value = key;
@@ -117,17 +116,17 @@ module.exports = class extends SQLProvider {
 			.then(result => this.parseEntry(table, result));
 	}
 
-	has (table, id) {
+	has(table, id) {
 		return this.run(`SELECT id FROM ${sanitizeKeyName(table)} WHERE id = ${sanitizeString(id)} LIMIT 1;`)
 			.then(Boolean);
 	}
 
-	getRandom (table) {
+	getRandom(table) {
 		return this.run(`SELECT * FROM ${sanitizeKeyName(table)} ORDER BY RAND() LIMIT 1;`)
 			.then(result => this.parseEntry(table, result));
 	}
 
-	async getSorted (table, key, order = 'DESC', limitMin, limitMax) {
+	async getSorted(table, key, order = 'DESC', limitMin, limitMax) {
 		if (order !== 'DESC' && order !== 'ASC') {
 			throw new TypeError(`MySQL#getSorted 'order' parameter expects either 'DESC' or 'ASC'. Got: ${order}`);
 		}
@@ -136,8 +135,8 @@ module.exports = class extends SQLProvider {
 			.then(results => results.map(output => this.parseEntry(table, output)));
 	}
 
-	create (table, id, data) {
-		const [ keys, values ] = this.parseUpdateInput(data, false);
+	create(table, id, data) {
+		const [keys, values] = this.parseUpdateInput(data, false);
 
 		// Push the id to the inserts.
 		if (!keys.includes('id')) {
@@ -147,19 +146,19 @@ module.exports = class extends SQLProvider {
 		return this.exec(`INSERT INTO ${sanitizeKeyName(table)} (${keys.map(sanitizeKeyName).join(', ')}) VALUES (${values.map(sanitizeInput).join(', ')});`);
 	}
 
-	update (table, id, data) {
-		const [ keys, values ] = this.parseUpdateInput(data, false);
+	update(table, id, data) {
+		const [keys, values] = this.parseUpdateInput(data, false);
 		const update = new Array(keys.length);
-		for (let i = 0; i < keys.length; i++) update[ i ] = `${sanitizeKeyName(keys[ i ])} = ${sanitizeInput(values[ i ])}`;
+		for (let i = 0; i < keys.length; i++) update[i] = `${sanitizeKeyName(keys[i])} = ${sanitizeInput(values[i])}`;
 
 		return this.exec(`UPDATE ${sanitizeKeyName(table)} SET ${update.join(', ')} WHERE id = ${sanitizeString(id)};`);
 	}
 
-	replace (...args) {
+	replace(...args) {
 		return this.update(...args);
 	}
 
-	incrementValue (table, id, key, amount = 1) {
+	incrementValue(table, id, key, amount = 1) {
 		if (amount < 0 || !isNumber(amount)) {
 			throw new TypeError(`MySQL#incrementValue expects the parameter 'amount' to be an integer greater or equal than zero. Got: ${amount}`);
 		}
@@ -167,7 +166,7 @@ module.exports = class extends SQLProvider {
 		return this.exec(`UPDATE ${sanitizeKeyName(table)} SET ${key} = ${key} + ${amount} WHERE id = ${sanitizeString(id)};`);
 	}
 
-	decrementValue (table, id, key, amount = 1) {
+	decrementValue(table, id, key, amount = 1) {
 		if (amount < 0 || !isNumber(amount)) {
 			throw new TypeError(`MySQL#incrementValue expects the parameter 'amount' to be an integer greater or equal than zero. Got: ${amount}`);
 		}
@@ -175,28 +174,28 @@ module.exports = class extends SQLProvider {
 		return this.exec(`UPDATE ${sanitizeKeyName(table)} SET ${key} = GREATEST(0, ${key} - ${amount}) WHERE id = ${sanitizeString(id)};`);
 	}
 
-	delete (table, id) {
+	delete(table, id) {
 		return this.exec(`DELETE FROM ${sanitizeKeyName(table)} WHERE id = ${sanitizeString(id)};`);
 	}
 
-	addColumn (table, piece) {
+	addColumn(table, piece) {
 		return this.exec(piece.type !== 'Folder' ?
 			`ALTER TABLE ${sanitizeKeyName(table)} ADD COLUMN ${this.qb.parse(piece)};` :
-			`ALTER TABLE ${sanitizeKeyName(table)} ${[ ...piece.values(true) ].map(subpiece => `ADD COLUMN ${this.qb.parse(subpiece)}`).join(', ')};`);
+			`ALTER TABLE ${sanitizeKeyName(table)} ${[...piece.values(true)].map(subpiece => `ADD COLUMN ${this.qb.parse(subpiece)}`).join(', ')};`);
 	}
 
-	removeColumn (table, key) {
+	removeColumn(table, key) {
 		if (typeof key === 'string') return this.exec(`ALTER TABLE ${sanitizeKeyName(table)} DROP COLUMN ${sanitizeKeyName(key)};`);
 		if (Array.isArray(key)) return this.exec(`ALTER TABLE ${sanitizeKeyName(table)} DROP ${key.map(sanitizeKeyName).join(', ')};`);
 		throw new TypeError('Invalid usage of MySQL#removeColumn. Expected a string or string[].');
 	}
 
-	updateColumn (table, piece) {
-		const [ column, ...datatype ] = this.qb.parse(piece).split(' ');
+	updateColumn(table, piece) {
+		const [column, ...datatype] = this.qb.parse(piece).split(' ');
 		return this.exec(`ALTER TABLE ${sanitizeKeyName(table)} MODIFY COLUMN ${sanitizeKeyName(column)} TYPE ${datatype};`);
 	}
 
-	getColumns (table) {
+	getColumns(table) {
 		return this.runAll(`
 			SELECT \`COLUMN_NAME\`
 			FROM \`INFORMATION_SCHEMA\`.\`COLUMNS\`
@@ -205,29 +204,29 @@ module.exports = class extends SQLProvider {
 		`).then(result => result.map(row => row.COLUMN_NAME));
 	}
 
-	run (sql) {
+	run(sql) {
 		return this.db.query(sql)
-			.then(([ rows ]) => rows[ 0 ]);
+			.then(([rows]) => rows[0]);
 	}
 
-	runAll (sql) {
+	runAll(sql) {
 		return this.db.query(sql)
-			.then(([ rows ]) => rows);
+			.then(([rows]) => rows);
 	}
 
-	exec (sql) {
+	exec(sql) {
 		return this.db.query(sql);
 	}
 
 	// Use a custom parseEntry because the original one with SQLProvider is buggy
-	parseEntry (gateway, entry) {
+	parseEntry(gateway, entry) {
 		if (!entry) return null;
-		if (typeof gateway === 'string') gateway = this.client.gateways[ gateway ];
+		if (typeof gateway === 'string') gateway = this.client.gateways[gateway];
 		// if (!(gateway instanceof Gateway)) return entry;
 
 		const object = { id: entry.id };
 		for (const piece of gateway.schema.values(true)) {
-			if (entry[ piece.path ]) makeObject(piece.path, this.parseValue(entry[ piece.path ], piece), object);
+			if (entry[piece.path]) makeObject(piece.path, this.parseValue(entry[piece.path], piece), object);
 		}
 
 		return object;
@@ -241,7 +240,7 @@ module.exports = class extends SQLProvider {
  * @returns {string}
  * @private
  */
-function parseRange (min, max) {
+function parseRange(min, max) {
 	// Min value validation
 	if (typeof min === 'undefined') return '';
 	if (!isNumber(min)) {
@@ -271,7 +270,7 @@ function parseRange (min, max) {
  * @returns {string}
  * @private
  */
-function sanitizeInteger (value) {
+function sanitizeInteger(value) {
 	if (!isNumber(value)) throw new TypeError(`%MySQL.sanitizeNumber expects an integer, got ${value}`);
 	// if (value < 0) throw new TypeError(`%MySQL.sanitizeNumber expects a positive integer, got ${value}`);
 	return String(value);
@@ -282,7 +281,7 @@ function sanitizeInteger (value) {
  * @returns {string}
  * @private
  */
-function sanitizeString (value) {
+function sanitizeString(value) {
 	return `'${String(value).replace(/'/g, "''")}'`;
 }
 
@@ -291,7 +290,7 @@ function sanitizeString (value) {
  * @returns {string}
  * @private
  */
-function sanitizeKeyName (value) {
+function sanitizeKeyName(value) {
 	if (typeof value !== 'string') throw new TypeError(`%MySQL.sanitizeString expects a string, got: ${new Type(value)}`);
 	if (/`/.test(value)) throw new TypeError(`Invalid input (${value}).`);
 	return `\`${value}\``;
@@ -302,7 +301,7 @@ function sanitizeKeyName (value) {
  * @returns {string}
  * @private
  */
-function sanitizeObject (value) {
+function sanitizeObject(value) {
 	if (value === null) return 'NULL';
 	if (Array.isArray(value) || isObject(value)) return sanitizeString(JSON.stringify(value));
 	throw new TypeError(`%MySQL.sanitizeObject expects NULL, an array, or an object. Got: ${new Type(value)}`);
@@ -313,7 +312,7 @@ function sanitizeObject (value) {
  * @returns {string}
  * @private
  */
-function sanitizeBoolean (value) {
+function sanitizeBoolean(value) {
 	return value ? '1' : '0';
 }
 
@@ -323,7 +322,7 @@ function sanitizeBoolean (value) {
  * @returns {string}
  * @private
  */
-function sanitizeInput (value) {
+function sanitizeInput(value) {
 	switch (typeof value) {
 		case 'string': return sanitizeString(value);
 		case 'number': return sanitizeInteger(value);
