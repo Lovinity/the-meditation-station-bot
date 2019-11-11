@@ -109,6 +109,7 @@ var client = new Client({
         fetchAllMembers: false
     },
     commandEditing: true,
+    commandLogging: true,
     typing: true,
     ignoreBots: false,
     slowmode: 5000,
