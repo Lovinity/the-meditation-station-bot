@@ -68,7 +68,7 @@ Sensitive or triggering information might also be discussed.
 
             // Add deny permissions for @everyone and for the muted role
             overwrites.push({
-                id: msg.channel.guild.roles.everyone,
+                id: message.channel.guild.roles.everyone,
                 deny: [
                     "VIEW_CHANNEL",
                 ],
