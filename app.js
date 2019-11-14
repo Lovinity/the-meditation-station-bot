@@ -141,5 +141,16 @@ client.gateways.register('channels', {
         .add('conflictResolution', 'string', { array: true })
 });
 
+// Add a selfroles gateway - NOT READY YET
+/*
+client.gateways.register('selfroles', {
+    provider: 'mysql',
+    schema: new Schema()
+        .add('role', 'role')
+        .add('message', 'messagepromise')
+        .add('reaction', 'emoji')
+});
+*/
+
 // login the client
 client.login(config.botToken);

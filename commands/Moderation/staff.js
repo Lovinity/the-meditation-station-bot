@@ -146,13 +146,13 @@ Thank you, <@${message.author.id}>!
         }
 
         // Create the incidents channel
-        var channel = await message.guild.channels.create(`discussion_${Date.now().toString(36) + (this.client.shard ? this.client.shard.id.toString(36) : '') + String.fromCharCode((1 % 26) + 97)}`, {
+        var channel = await message.guild.channels.create(`intervention_${Date.now().toString(36) + (this.client.shard ? this.client.shard.id.toString(36) : '') + String.fromCharCode((1 % 26) + 97)}`, {
             type: 'text',
-            topic: `Private staff channel initiated by ${message.author.username}#${message.author.discriminator}`,
+            topic: `Private staff channel initiated by ${message.author.tag}`,
             parent: incidents,
             permissionOverwrites: overwrites,
             rateLimitPerUser: 15,
-            reason: `!staff initiated by ${message.author.username}#${message.author.discriminator} (${message.author.id})`
+            reason: `!staff initiated by ${message.author.tag} (${message.author.id})`
         });
 
         await channel.send(response);
