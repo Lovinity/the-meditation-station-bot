@@ -32,7 +32,7 @@ module.exports = class extends Command {
             var ID = Date.now().toString(36) + (this.client.shard ? this.client.shard.id.toString(36) : '') + String.fromCharCode((1 % 26) + 97);
             const embed = new MessageEmbed()
                 .setTitle(`A member has requested support from other members`)
-                .setAuthor(message.author.tag, message.author.avatar)
+                .setAuthor(message.author.tag)
                 .setColor('#FBFB70')
                 .setDescription("This member has requested support from the community. If you would like to offer support, use the bot command below to be added to the private text channel. We greatly appreciate your willingness to be a friend.")
                 .addField(`Use this command to be added to the channel`, `!support ${ID}`)
