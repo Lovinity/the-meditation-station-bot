@@ -1,8 +1,8 @@
-const { GuildMemberStore } = require('discord.js');
+const { DataStore } = require('discord.js');
 
 /**
  * Adds our extensions to d.js's MemberStore
- * @extends external:GuildMemberStore
+ * @extends external:DataStore
  */
 class KlasaGuildSelfRolesStore extends DataStore {
 
