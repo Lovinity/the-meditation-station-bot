@@ -31,12 +31,12 @@ module.exports = class extends Command {
         if (!reaction) {
             return message.send(`:x: The selfroles command timed out, or no reaction was provided.`);
         }
-        var settings = message.client.gateways.selfroles.get(`${role.id}`, true);
+        var settings = this.client.gateways.selfroles.get(`${role.id}`, true);
         if (!settings) {
             return message.send(`:x: There was an error getting settings for the provided role.`);
         }
-        settings.update('category', category.cleanContent)
-        settings.update('reaction', reaction.emoji)
+        await settings.update('category', category.cleanContent)
+        await settings.update('reaction', reaction.emoji)
         return message.send(':white_check_mark: Self role added/edited! Once you have made all your changes, you must use the selfroles command with no parameters to re-generate the messages in the selfRolesChannel.')
     }
 
@@ -44,7 +44,7 @@ module.exports = class extends Command {
         if (!role) {
             return message.send(`:x: Role id/name/mention is required.`);
         }
-        var settings = message.client.gateways.selfroles.get(`${role.id}`);
+        var settings = this.client.gateways.selfroles.get(`${role.id}`);
         if (settings) { await settings.destroy() }
         return message.send(':white_check_mark: Self role removed! Once you have made all your changes, you must use the selfroles command with no parameters to re-generate the messages in the selfRolesChannel.')
     }
@@ -70,7 +70,7 @@ async function generateMessages (message, selfRolesChannel) {
     var selfRoles = {}
     message.guild.roles.each((role) => {
         console.log(`Checking role ${role.id}`)
-        var settings = message.client.gateways.selfroles.get(`${role.id}`);
+        var settings = this.client.gateways.selfroles.get(`${role.id}`);
         if (settings) {
             console.log(`Has settings!`)
             if (typeof selfRoles[ settings.category ] === 'undefined')
