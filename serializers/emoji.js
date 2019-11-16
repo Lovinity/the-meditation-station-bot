@@ -9,7 +9,7 @@ module.exports = class extends Serializer {
     }
 
     async deserialize (data, piece, language, guild) {
-        // if (data instanceof Emoji || data instanceof GuildEmoji || data instanceof ReactionEmoji) return data;
+        if (data instanceof Emoji || data instanceof GuildEmoji || data instanceof ReactionEmoji) return data;
         if (typeof data !== 'string') throw this.constructor.error(language, piece.key);
 
         console.log(`Data string`)

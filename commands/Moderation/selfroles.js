@@ -75,7 +75,7 @@ async function generateMessages (message, selfRolesChannel) {
             console.log(`Has settings!`)
             if (typeof selfRoles[ settings.self.category ] === 'undefined')
                 selfRoles[ settings.self.category ] = []
-            selfRoles[ settings.self.category ].push({ role: role, reaction: settings.self.reaction })
+            selfRoles[ settings.self.category ].push({settings, role})
         }
     })
 
@@ -86,16 +86,14 @@ async function generateMessages (message, selfRolesChannel) {
             setTimeout(async () => {
                 console.log(`Executing category ${category}`)
                 var response = `**__${category} self roles__**` + "\n"
-                selfRoles[ category ].map((role) => {
-                    console.dir(role.reaction);
-                    response += "\n" + `${role.reaction.name} | ${role.role.name}`
+                selfRoles[ category ].map((setting) => {
+                    response += "\n" + `${setting.settings.self.reaction.name} | ${setting.role.name}`
                 })
                 var msg = await selfRolesChannel.send(response)
-                selfRoles[ category ].map((role, index) => {
-                    var settings = role.role.settings;
-                    if (settings) { settings.update(`self.message`, msg) }
+                selfRoles[ category ].map((setting, index) => {
+                    if (setting.setting) { setting.settings.update(`self.message`, msg) }
                     setTimeout(() => {
-                        msg.react(role.reaction);
+                        msg.react(setting.settings.role.reaction);
                     }, index * 1000)
                     i++;
                 })
