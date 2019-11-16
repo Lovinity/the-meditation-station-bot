@@ -13,7 +13,7 @@ module.exports = class extends Serializer {
         if (data.length > 1) {
             data = { name: data[ 0 ], id: data[ 1 ] }
         } else {
-            data = { name: String.fromCodePoint(data[ 0 ]) }
+            data = { name: String.fromCodePoint(parseInt(data[ 0 ])) }
         }
 
         return new GuildEmoji(this.client, data, this.client.guilds.get(guild));
