@@ -68,7 +68,7 @@ module.exports = class extends Command {
 async function generateMessages (message, selfRolesChannel) {
     await pruneMessageChannel(selfRolesChannel);
     var selfRoles = {}
-    message.guild.roles.map((role) => {
+    message.guild.roles.each((role) => {
         var settings = message.client.gateways.selfroles.get(`${role.id}`);
         if (settings) {
             if (typeof selfRoles[ settings.category ] === 'undefined')
@@ -77,22 +77,28 @@ async function generateMessages (message, selfRolesChannel) {
         }
     })
 
+    var i = 0;
     for (const category in selfRoles) {
         if (Object.prototype.hasOwnProperty.call(selfRoles, category)) {
-            var response = `**__${category} self roles__**` + "\n"
-            selfRoles[ category ].map((role) => {
-                response += "\n" + `${role.reaction.identifier} | ${role.role.name}`
-            })
-            var msg = await selfRolesChannel.send(response)
-            selfRoles[ category ].map((role, index) => {
-                var settings = message.client.gateways.selfroles.get(`${role.role.id}`);
-                if (settings) { settings.update(`message`, msg) }
-                setTimeout(() => {
-                    msg.react(role.reaction.identifier);
-                }, index * 1000)
-            })
+            setTimeout(() => {
+                var response = `**__${category} self roles__**` + "\n"
+                selfRoles[ category ].map((role) => {
+                    response += "\n" + `${role.reaction.identifier} | ${role.role.name}`
+                })
+                var msg = await selfRolesChannel.send(response)
+                selfRoles[ category ].map((role, index) => {
+                    var settings = message.client.gateways.selfroles.get(`${role.role.id}`);
+                    if (settings) { settings.update(`message`, msg) }
+                    setTimeout(() => {
+                        msg.react(role.reaction.identifier);
+                    }, index * 1000)
+                    i++;
+                })
+            }, i * 1000);
+            i++;
         }
     }
+
 }
 
 async function pruneMessageChannel (channel, limit = 1000) {
