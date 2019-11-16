@@ -87,6 +87,7 @@ async function generateMessages (message, selfRolesChannel) {
                 console.log(`Executing category ${category}`)
                 var response = `**__${category} self roles__**` + "\n"
                 selfRoles[ category ].map((role) => {
+                    console.dir(role.reaction);
                     response += "\n" + `${role.reaction.name} | ${role.role.name}`
                 })
                 var msg = await selfRolesChannel.send(response)
