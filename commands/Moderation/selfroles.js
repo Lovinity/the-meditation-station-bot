@@ -86,13 +86,14 @@ async function generateMessages (message, selfRolesChannel) {
             console.log(`Executing category ${category}`)
             var response = `**__${category} self roles__**` + "\n"
             selfRoles[ category ].map((setting) => {
+                wait.for.time(1);
                 var emoji = parseEmoji(setting.settings.self.reaction)
                 response += "\n" + `${emoji.name} | ${setting.role.name}`
             })
             var msg = await selfRolesChannel.send(response)
             selfRoles[ category ].map((setting, index) => {
-                if (setting.setting) { setting.settings.update(`self.message`, msg) }
                 wait.for.time(1);
+                if (setting.settings) { setting.settings.update(`self.message`, msg) }
                 var emoji = parseEmoji(setting.settings.self.reaction)
                 msg.react(emoji.name);
             })
