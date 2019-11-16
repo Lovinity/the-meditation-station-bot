@@ -4,8 +4,12 @@ const { Serializer } = require('klasa');
 
 module.exports = class extends Serializer {
 
-    deserialize (data, piece, language, guild) {
-        if (data instanceof Emoji || data instanceof GuildEmoji || data instanceof ReactionEmoji) return data;
+    constructor(...args) {
+        super(...args, { aliases: [] });
+    }
+
+    async deserialize (data, piece, language, guild) {
+        // if (data instanceof Emoji || data instanceof GuildEmoji || data instanceof ReactionEmoji) return data;
         if (typeof data !== 'string') throw this.constructor.error(language, piece.key);
 
         console.log(`Data string`)
