@@ -16,6 +16,7 @@ Client.defaultGuildSchema
     .add('announcementsChannel', 'textchannel')
     .add('generalChannel', 'textchannel')
     .add('starboardChannel', 'textchannel')
+    .add('selfRolesChannel', 'textchannel')
     .add('noXPChannels', 'textchannel', { array: true })
     .add('noSelfModRole', 'role')
     .add('repEmoji', 'string')
@@ -46,7 +47,6 @@ Client.defaultGuildSchema
     .add('antispamRuleNumber', 'integer', { default: 1, min: 0 })
     .add('raidScore', 'integer', { default: 0, configurable: false })
     .add('raidMitigation', 'integer', { default: 0, configurable: false })
-    .add('selfRoles', 'role', { array: true })
     .add('levelRoles', folder => {
         for (var i = 2; i <= 100; i++) {
             folder.add(`level${i}`, 'role', { configurable: false });
@@ -77,7 +77,7 @@ Client.defaultMemberSchema
     .add('badRep', 'integer', { default: 0 })
     .add('goodRep', 'integer', { default: 0 })
     .add('spamScore', 'integer', { default: 0 })
-    .add('activityScore', 'float', {min: 0, default: 0})
+    .add('activityScore', 'float', { min: 0, default: 0 })
     .add('profile', folder => {
         folder
             .add('title', 'string')
@@ -141,16 +141,13 @@ client.gateways.register('channels', {
         .add('conflictResolution', 'string', { array: true })
 });
 
-// Add a selfroles gateway - NOT READY YET
-/*
 client.gateways.register('selfroles', {
     provider: 'mysql',
     schema: new Schema()
-        .add('role', 'role')
+        .add('category', 'string')
         .add('message', 'messagepromise')
         .add('reaction', 'emoji')
 });
-*/
 
 // login the client
 client.login(config.botToken);
