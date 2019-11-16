@@ -9,7 +9,7 @@ module.exports = class extends Command {
             runIn: [ 'text' ],
             permLevel: 4,
             description: 'Manage reaction-based self-assignable roles',
-            usage: '<regenerate:default|add|remove> <role:role>',
+            usage: '<regenerate:default|add|remove> <role:rolename>',
             usageDelim: ' | ',
             cooldown: 15,
             requiredSettings: [ "selfRolesChannel" ],
