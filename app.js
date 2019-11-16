@@ -149,5 +149,11 @@ client.gateways.register('selfroles', {
         .add('reaction', 'emoji')
 });
 
+client.gateways.register('dummy', {
+    provider: 'mysql',
+    schema: new Schema()
+        .add('text', 'string')
+});
+
 // login the client
 client.login(config.botToken);
