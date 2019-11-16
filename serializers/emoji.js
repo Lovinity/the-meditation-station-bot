@@ -14,7 +14,7 @@ module.exports = class extends Serializer {
     }
 
     serialize (data) {
-        return data.id;
+        return data.name;
     }
 
     stringify (data) {

@@ -31,7 +31,6 @@ module.exports = class extends Command {
         if (!reaction) {
             return message.send(`:x: The selfroles command timed out, or no reaction was provided.`);
         }
-        console.dir(reaction.emoji)
         var settings = message.client.gateways.selfroles.get(`${role.id}`, true);
         if (!settings) {
             return message.send(`:x: There was an error getting settings for the provided role.`);
