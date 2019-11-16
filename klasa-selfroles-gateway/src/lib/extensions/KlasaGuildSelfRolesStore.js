@@ -1,4 +1,4 @@
-const { DataStore } = require('discord.js');
+const { DataStore, Role } = require('discord.js');
 
 /**
  * Adds our extensions to d.js's MemberStore
@@ -7,7 +7,7 @@ const { DataStore } = require('discord.js');
 class KlasaGuildSelfRolesStore extends DataStore {
 
 	constructor(guild, iterable) {
-		super(guild.client, iterable, guild);
+		super(guild.client, iterable, Role);
 	}
 
 	async _fetchSingle(...args) {
