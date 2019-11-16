@@ -126,7 +126,7 @@ async function _pruneMessageChannel (channel, amount) {
 }
 
 function parseEmoji (data) {
-    var data = data.split(':');
+    var data = `${data}`.split(':');
 
     if (data.length > 1) {
         console.log(`length > 1`)
