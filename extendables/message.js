@@ -31,7 +31,7 @@ module.exports = class extends Extendable {
 	}
 
 	async awaitReaction(time = 60000) {
-		return this.awaitReactions((reaction, user) => user.id === message.author.id, { time, max: 1, errors: ['time'] })
+		return this.awaitReactions((reaction, user) => user.id === this.author.id, { time, max: 1, errors: ['time'] })
 		.then(reaction => reaction.first())
 		.catch(() => false);
 	}
