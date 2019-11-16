@@ -69,8 +69,10 @@ async function generateMessages (message, selfRolesChannel) {
     await pruneMessageChannel(selfRolesChannel);
     var selfRoles = {}
     message.guild.roles.each((role) => {
+        console.log(`Checking role ${role.id}`)
         var settings = message.client.gateways.selfroles.get(`${role.id}`);
         if (settings) {
+            console.log(`Has settings!`)
             if (typeof selfRoles[ settings.category ] === 'undefined')
                 selfRoles[ settings.category ] = []
             selfRoles[ settings.category ].push({ role: role, reaction: settings.reaction })
@@ -80,7 +82,9 @@ async function generateMessages (message, selfRolesChannel) {
     var i = 0;
     for (const category in selfRoles) {
         if (Object.prototype.hasOwnProperty.call(selfRoles, category)) {
+            console.log(`Checking category ${category}`)
             setTimeout(async () => {
+                console.log(`Executing category ${category}`)
                 var response = `**__${category} self roles__**` + "\n"
                 selfRoles[ category ].map((role) => {
                     response += "\n" + `${role.reaction.identifier} | ${role.role.name}`
