@@ -6,6 +6,10 @@ const { DataStore } = require('discord.js');
  */
 class KlasaGuildSelfRolesStore extends DataStore {
 
+	constructor(guild) {
+		super(guild.client, iterable, guild);
+	}
+
 	async _fetchSingle(...args) {
 		const selfRole = await super._fetchSingle(...args);
 		await selfRole.settings.sync();
