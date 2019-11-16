@@ -89,11 +89,11 @@ async function generateMessages (message, selfRolesChannel) {
     }
 }
 
-async function pruneMessageChannel (message, limit = 1000) {
+async function pruneMessageChannel (channel, limit = 1000) {
     wait.for.time(3);
     var iteration = 0;
     while (limit > 0 && iteration < 10) {
-        var filtered = await _pruneMessageChannel(message, limit);
+        var filtered = await _pruneMessageChannel(channel, limit);
         if (filtered <= 0)
             limit = -1;
         limit -= filtered;
@@ -103,11 +103,11 @@ async function pruneMessageChannel (message, limit = 1000) {
     return true;
 }
 
-async function _pruneMessageChannel (message, amount) {
-    let messages = await message.channel.messages.fetch({ limit: 100 });
+async function _pruneMessageChannel (channel, amount) {
+    let messages = await channel.messages.fetch({ limit: 100 });
     if (messages.array().length <= 0)
         return -1;
     messages = messages.array().slice(0, amount);
-    await message.channel.bulkDelete(messages);
+    await channel.bulkDelete(messages);
     return messages.length;
 }
