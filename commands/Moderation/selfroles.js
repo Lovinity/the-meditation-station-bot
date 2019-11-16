@@ -31,12 +31,12 @@ module.exports = class extends Command {
         if (!reaction) {
             return message.send(`:x: The selfroles command timed out, or no reaction was provided.`);
         }
-        var settings = role.selfrole;
+        var settings = role.settings;
         if (!settings) {
             return message.send(`:x: There was an error getting settings for the provided role.`);
         }
-        await settings.update('category', category.cleanContent)
-        await settings.update('reaction', reaction.emoji, message.guild)
+        await settings.update('self.category', category.cleanContent)
+        await settings.update('self.reaction', reaction.emoji, message.guild)
         return message.send(':white_check_mark: Self role added/edited! Once you have made all your changes, you must use the selfroles command with no parameters to re-generate the messages in the selfRolesChannel.')
     }
 
@@ -44,8 +44,8 @@ module.exports = class extends Command {
         if (!role) {
             return message.send(`:x: Role id/name/mention is required.`);
         }
-        var settings = role.selfrole;
-        if (settings) { await settings.reset() }
+        var settings = role.settings;
+        if (settings) { await settings.reset(['self.category', 'self.reaction', 'self.message']) }
         return message.send(':white_check_mark: Self role removed! Once you have made all your changes, you must use the selfroles command with no parameters to re-generate the messages in the selfRolesChannel.')
     }
 
@@ -70,12 +70,12 @@ async function generateMessages (message, selfRolesChannel) {
     var selfRoles = {}
     message.guild.roles.each((role) => {
         console.log(`Checking role ${role.id}`)
-        var settings = role.selfrole;
-        if (settings && settings.category !== null && settings.reaction !== null) {
+        var settings = role.settings;
+        if (settings && settings.self && settings.self.category !== null && settings.self.reaction !== null) {
             console.log(`Has settings!`)
-            if (typeof selfRoles[ settings.category ] === 'undefined')
-                selfRoles[ settings.category ] = []
-            selfRoles[ settings.category ].push({ role: role, reaction: settings.reaction })
+            if (typeof selfRoles[ settings.self.category ] === 'undefined')
+                selfRoles[ settings.self.category ] = []
+            selfRoles[ settings.self.category ].push({ role: role, reaction: settings.self.reaction })
         }
     })
 
@@ -87,12 +87,12 @@ async function generateMessages (message, selfRolesChannel) {
                 console.log(`Executing category ${category}`)
                 var response = `**__${category} self roles__**` + "\n"
                 selfRoles[ category ].map((role) => {
-                    response += "\n" + `${role.reaction.identifier} | ${role.role.name}`
+                    response += "\n" + `${role.reaction.name} | ${role.role.name}`
                 })
                 var msg = await selfRolesChannel.send(response)
                 selfRoles[ category ].map((role, index) => {
-                    var settings = role.role.selfrole;
-                    if (settings) { settings.update(`message`, msg) }
+                    var settings = role.role.settings;
+                    if (settings) { settings.update(`self.message`, msg) }
                     setTimeout(() => {
                         msg.react(role.reaction);
                     }, index * 1000)

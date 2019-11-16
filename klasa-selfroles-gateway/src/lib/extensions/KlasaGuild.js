@@ -1,5 +1,5 @@
 const { Structures } = require('discord.js');
-const KlasaGuildSelfRolesStore = require('./KlasaGuildSelfRolesStore');
+const KlasaGuildSelfRolesStore = require('./KlasaGuildMemberRoleStore');
 
 Structures.extend('Guild', Guild => {
 	/**
@@ -9,14 +9,16 @@ Structures.extend('Guild', Guild => {
 	class KlasaGuild extends Guild {
 
 		constructor(client, data) {
-			super(client, data);
+			// avoid double iteration by the super class populating the members collection
+			const { roles, ...restData } = data || {};
+			super(client, Object.keys(restData).length ? restData : undefined);
 
 			/**
 			 * Storage for KlasaMembers
 			 * @since 0.0.1
-			 * @type {KlasaGuildSelfRolesStore}
+			 * @type {KlasaGuildMemberStore}
 			 */
-			this.selfRoles = new KlasaGuildSelfRolesStore(this);
+			this.roles = new KlasaGuildSelfRolesStore(this, roles);
 		}
 
 	}

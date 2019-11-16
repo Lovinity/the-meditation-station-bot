@@ -5,7 +5,7 @@ const { Collection } = require('discord.js');
  * The Gateway class that manages the data input, parsing, and output, of an entire database, while keeping a cache system sync with the changes.
  * @extends GatewayStorage
  */
-class SelfrolesGateway extends GatewayStorage {
+class RoleGateway extends GatewayStorage {
 
 	/**
 	 * @since 0.0.1
@@ -73,8 +73,8 @@ class SelfrolesGateway extends GatewayStorage {
 
 		const guild = this.client.guilds.get(guildID);
 		if (guild) {
-			const role = guild.selfRoles.get(roleID);
-			return role;
+			const role = guild.roles.get(roleID);
+			return role && role.settings;
 		}
 
 		return undefined;
@@ -103,7 +103,7 @@ class SelfrolesGateway extends GatewayStorage {
 	 * @param {(Array<string>|string)} [input=Array<string>] An object containing a id property, like discord.js objects, or a string
 	 * @returns {?(MemberGateway|external:Settings)}
 	 */
-	async sync(input = this.client.guilds.reduce((keys, guild) => keys.concat(guild.roles.map(role => role.selfrole.id)), [])) {
+	async sync(input = this.client.guilds.reduce((keys, guild) => keys.concat(guild.roles.map(role => role.settings.id)), [])) {
 		if (Array.isArray(input)) {
 			if (!this._synced) this._synced = true;
 			const entries = await this.provider.getAll(this.type, input);
@@ -120,7 +120,7 @@ class SelfrolesGateway extends GatewayStorage {
 
 			// Set all the remaining settings from unknown status in DB to not exists.
 			for (const guild of this.client.guilds.values()) {
-				for (const role of guild.roles.values()) if (role.selfrole._existsInDB !== true) role.selfrole._existsInDB = false;
+				for (const role of guild.roles.values()) if (role.settings._existsInDB !== true) role.settings._existsInDB = false;
 			}
 			return this;
 		}
@@ -134,4 +134,4 @@ class SelfrolesGateway extends GatewayStorage {
 
 }
 
-module.exports = SelfrolesGateway;
+module.exports = RoleGateway;

@@ -1,6 +1,6 @@
 const { Client, Schema, util: { mergeDefault } } = require('klasa');
 const { CLIENT } = require('./util/constants');
-const SelfrolesGateway = require('./settings/SelfrolesGateway');
+const RoleGateway = require('./settings/RoleGateway');
 
 Client.defaultSelfRolesSchema = new Schema();
 
@@ -13,12 +13,12 @@ module.exports = class extends Client {
 
 	static [Client.plugin]() {
 		mergeDefault(CLIENT, this.options);
-		const { selfroles } = this.options.gateways;
-		const selfRolesSchema = 'schema' in selfroles ? selfroles.schema : this.constructor.defaultSelfRolesSchema;
+		const { roles } = this.options.gateways;
+		const roleSchema = 'schema' in roles ? roles.schema : this.constructor.defaultRoleSchema;
 
-		this.gateways.selfroles = new SelfrolesGateway(this.gateways, 'selfroles', selfRolesSchema, selfroles.provider || this.options.providers.default);
-		this.gateways.keys.add('selfroles');
-		this.gateways._queue.push(this.gateways.selfroles.init.bind(this.gateways.selfroles));
+		this.gateways.roles = new RoleGateway(this.gateways, 'roles', roleSchema, roles.provider || this.options.providers.default);
+		this.gateways.keys.add('roles');
+		this.gateways._queue.push(this.gateways.roles.init.bind(this.gateways.roles));
 	}
 
 };

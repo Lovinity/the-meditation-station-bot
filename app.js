@@ -103,10 +103,13 @@ Client.defaultMemberSchema
     .add('reports', 'string', { array: true })
     .add('roles', 'role', { array: true });
 
-Client.defaultSelfRolesSchema
-    .add('category', 'string')
-    .add('message', 'messagepromise')
-    .add('reaction', 'emoji');
+Client.defaultRoleSchema
+    .add('self', folder => {
+        folder
+            .add('category', 'string')
+            .add('message', 'messagepromise')
+            .add('reaction', 'emoji');
+    });
 
 // Prepare Klasa
 var client = new Client({

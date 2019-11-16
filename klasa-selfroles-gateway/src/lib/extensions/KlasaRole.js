@@ -23,7 +23,7 @@ module.exports = Structures.extend('Role', Role => {
 			 * @since 0.0.1
 			 * @type {external:Settings}
 			 */
-			this.selfrole = this.client.gateways.selfroles.create([this.guild.id, this.id]);
+			this.settings = this.client.gateways.roles.create([this.guild.id, this.id]);
 		}
 
 		/**
