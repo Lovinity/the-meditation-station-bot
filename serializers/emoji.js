@@ -4,21 +4,27 @@ const { Serializer } = require('klasa');
 
 module.exports = class extends Serializer {
 
-    deserialize (data, piece, language) {
+    deserialize (data, piece, language, guild) {
         if (data instanceof Emoji || data instanceof GuildEmoji || data instanceof ReactionEmoji) return data;
         if (typeof data !== 'string') throw this.constructor.error(language, piece.key);
 
-        const emoji = this.constructor.regex.snowflake.test(data) ? this.client.emojis.get(data) : null;
-        if (emoji) return emoji;
-        throw message.language.get('RESOLVER_INVALID_EMOJI', possible.name);
+        var data = data.split(':');
+
+        if (data.length > 1) {
+            data = { name: data[ 0 ], id: data[ 1 ] }
+        } else {
+            data = { name: String.fromCodePoint(data[ 0 ]) }
+        }
+
+        return new GuildEmoji(this.client, data, this.client.guilds.get(guild));
     }
 
     serialize (data) {
-        return data.name;
+        return (data.id) ? `${data.name}:${data.id}` : data.name.codePointAt(0);
     }
 
     stringify (data) {
-        return data.name;
+        return (data.id) ? `${data.name}:${data.id}` : data.name;
     }
 
 };
