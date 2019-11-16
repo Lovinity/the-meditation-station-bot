@@ -80,7 +80,7 @@ async function generateMessages (message, selfRolesChannel) {
     var i = 0;
     for (const category in selfRoles) {
         if (Object.prototype.hasOwnProperty.call(selfRoles, category)) {
-            setTimeout(() => {
+            setTimeout(async () => {
                 var response = `**__${category} self roles__**` + "\n"
                 selfRoles[ category ].map((role) => {
                     response += "\n" + `${role.reaction.identifier} | ${role.role.name}`
