@@ -45,7 +45,7 @@ module.exports = class extends Command {
             return message.send(`:x: Role id/name/mention is required.`);
         }
         var settings = message.client.gateways.selfroles.get(`${message.guild.id}.${role.id}`);
-        if (settings) { await settings.destroy() }
+        if (settings) { await settings.reset() }
         return message.send(':white_check_mark: Self role removed! Once you have made all your changes, you must use the selfroles command with no parameters to re-generate the messages in the selfRolesChannel.')
     }
 
