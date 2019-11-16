@@ -69,6 +69,7 @@ Client.defaultGuildSchema
     .add('badges', 'any', { array: true, configurable: false });
 
 Client.use(require('klasa-member-gateway'));
+Client.use(require('./klasa-selfroles-gateway'));
 
 // Guild Member Schema
 Client.defaultMemberSchema
@@ -101,6 +102,11 @@ Client.defaultMemberSchema
     .add('modLogs', 'any', { array: true })
     .add('reports', 'string', { array: true })
     .add('roles', 'role', { array: true });
+
+Client.defaultSelfRolesSchema
+    .add('category', 'string')
+    .add('message', 'messagepromise')
+    .add('reaction', 'emoji');
 
 // Prepare Klasa
 var client = new Client({
@@ -139,20 +145,6 @@ client.gateways.register('channels', {
     provider: 'mysql',
     schema: new Schema()
         .add('conflictResolution', 'string', { array: true })
-});
-
-client.gateways.register('selfroles', {
-    provider: 'mysql',
-    schema: new Schema()
-        .add('category', 'string')
-        .add('message', 'messagepromise')
-        .add('reaction', 'emoji')
-});
-
-client.gateways.register('dummy', {
-    provider: 'mysql',
-    schema: new Schema()
-        .add('text', 'string')
 });
 
 // login the client

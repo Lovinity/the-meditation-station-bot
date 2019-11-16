@@ -1,0 +1,18 @@
+{
+  "author": {
+    "name": "Patrick Schmalstig"
+  },
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "Add reaction based self roles capabilities.",
+  "engines": {
+    "node": ">=8.6.0"
+  },
+  "license": "MIT",
+  "main": "src/index.js",
+  "name": "klasa-selfroles-gateway",
+  "peerDependencies": {
+    "klasa": "github:dirigeants/klasa#master"
+  },
+  "version": "0.0.1-dev"
+}

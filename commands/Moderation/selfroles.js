@@ -31,7 +31,7 @@ module.exports = class extends Command {
         if (!reaction) {
             return message.send(`:x: The selfroles command timed out, or no reaction was provided.`);
         }
-        var settings = this.client.gateways.selfroles.get(`${role.id}`, true);
+        var settings = message.client.gateways.selfroles.create([message.guild.id, role.id]);
         if (!settings) {
             return message.send(`:x: There was an error getting settings for the provided role.`);
         }
@@ -44,7 +44,7 @@ module.exports = class extends Command {
         if (!role) {
             return message.send(`:x: Role id/name/mention is required.`);
         }
-        var settings = this.client.gateways.selfroles.get(`${role.id}`);
+        var settings = message.client.gateways.selfroles.get(`${message.guild.id}.${role.id}`);
         if (settings) { await settings.destroy() }
         return message.send(':white_check_mark: Self role removed! Once you have made all your changes, you must use the selfroles command with no parameters to re-generate the messages in the selfRolesChannel.')
     }
@@ -70,7 +70,7 @@ async function generateMessages (message, selfRolesChannel) {
     var selfRoles = {}
     message.guild.roles.each((role) => {
         console.log(`Checking role ${role.id}`)
-        var settings = this.client.gateways.selfroles.get(`${role.id}`);
+        var settings = this.client.gateways.selfroles.get(`${role.guild.id}.${role.id}`);
         if (settings) {
             console.log(`Has settings!`)
             if (typeof selfRoles[ settings.category ] === 'undefined')
@@ -91,10 +91,10 @@ async function generateMessages (message, selfRolesChannel) {
                 })
                 var msg = await selfRolesChannel.send(response)
                 selfRoles[ category ].map((role, index) => {
-                    var settings = message.client.gateways.selfroles.get(`${role.role.id}`);
+                    var settings = message.client.gateways.selfroles.get(`${role.role.guild.id}.${role.role.id}`);
                     if (settings) { settings.update(`message`, msg) }
                     setTimeout(() => {
-                        msg.react(role.reaction.identifier);
+                        msg.react(role.reaction);
                     }, index * 1000)
                     i++;
                 })
