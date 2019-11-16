@@ -45,7 +45,7 @@ module.exports = class extends Command {
             return message.send(`:x: Role id/name/mention is required.`);
         }
         var settings = role.settings;
-        if (settings) { await settings.reset(['self.category', 'self.reaction', 'self.message']) }
+        if (settings) { await settings.reset([ 'self.category', 'self.reaction', 'self.message' ]) }
         return message.send(':white_check_mark: Self role removed! Once you have made all your changes, you must use the selfroles command with no parameters to re-generate the messages in the selfRolesChannel.')
     }
 
@@ -75,32 +75,27 @@ async function generateMessages (message, selfRolesChannel) {
             console.log(`Has settings!`)
             if (typeof selfRoles[ settings.self.category ] === 'undefined')
                 selfRoles[ settings.self.category ] = []
-            selfRoles[ settings.self.category ].push({settings, role})
+            selfRoles[ settings.self.category ].push({ settings, role })
         }
     })
 
-    var i = 0;
     for (const category in selfRoles) {
         if (Object.prototype.hasOwnProperty.call(selfRoles, category)) {
             console.log(`Checking category ${category}`)
-            setTimeout(async () => {
-                console.log(`Executing category ${category}`)
-                var response = `**__${category} self roles__**` + "\n"
-                selfRoles[ category ].map((setting) => {
-                    var emoji = parseEmoji(setting.settings.self.reaction)
-                    response += "\n" + `${emoji.name} | ${setting.role.name}`
-                })
-                var msg = await selfRolesChannel.send(response)
-                selfRoles[ category ].map((setting, index) => {
-                    if (setting.setting) { setting.settings.update(`self.message`, msg) }
-                    setTimeout(() => {
-                        var emoji = parseEmoji(setting.settings.self.reaction)
-                        msg.react(emoji.name);
-                    }, index * 1000)
-                    i++;
-                })
-            }, i * 1000);
-            i++;
+            wait.for.time(1);
+            console.log(`Executing category ${category}`)
+            var response = `**__${category} self roles__**` + "\n"
+            selfRoles[ category ].map((setting) => {
+                var emoji = parseEmoji(setting.settings.self.reaction)
+                response += "\n" + `${emoji.name} | ${setting.role.name}`
+            })
+            var msg = await selfRolesChannel.send(response)
+            selfRoles[ category ].map((setting, index) => {
+                if (setting.setting) { setting.settings.update(`self.message`, msg) }
+                wait.for.time(1);
+                var emoji = parseEmoji(setting.settings.self.reaction)
+                msg.react(emoji.name);
+            })
         }
     }
 
@@ -129,7 +124,7 @@ async function _pruneMessageChannel (channel, amount) {
     return messages.length;
 }
 
-function parseEmoji(data) {
+function parseEmoji (data) {
     var data = data.split(':');
 
     if (data.length > 1) {
