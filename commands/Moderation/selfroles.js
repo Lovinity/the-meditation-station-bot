@@ -87,13 +87,15 @@ async function generateMessages (message, selfRolesChannel) {
                 console.log(`Executing category ${category}`)
                 var response = `**__${category} self roles__**` + "\n"
                 selfRoles[ category ].map((setting) => {
-                    response += "\n" + `${setting.settings.self.reaction.name} | ${setting.role.name}`
+                    var emoji = parseEmoji(setting.settings.self.reaction)
+                    response += "\n" + `${emoji.name} | ${setting.role.name}`
                 })
                 var msg = await selfRolesChannel.send(response)
                 selfRoles[ category ].map((setting, index) => {
                     if (setting.setting) { setting.settings.update(`self.message`, msg) }
                     setTimeout(() => {
-                        msg.react(setting.settings.self.reaction);
+                        var emoji = parseEmoji(setting.settings.self.reaction)
+                        msg.react(emoji.name);
                     }, index * 1000)
                     i++;
                 })
@@ -125,4 +127,20 @@ async function _pruneMessageChannel (channel, amount) {
     messages = messages.array().slice(0, amount);
     await channel.bulkDelete(messages);
     return messages.length;
+}
+
+function parseEmoji(data) {
+    var data = data.split(':');
+
+    if (data.length > 1) {
+        console.log(`length > 1`)
+        data = { name: data[ 0 ], id: data[ 1 ] }
+        console.dir(data)
+    } else {
+        console.log(`length 1`)
+        data = { name: String.fromCodePoint(parseInt(data[ 0 ])) }
+        console.dir(data)
+    }
+
+    return data;
 }
