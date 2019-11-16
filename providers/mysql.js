@@ -222,6 +222,8 @@ module.exports = class extends SQLProvider {
 
 	// Use a custom parseEntry because the original one with SQLProvider is buggy
 	parseEntry(gateway, entry) {
+		console.log(`parseEntry`);
+		console.dir(entry);
 		if (!entry) return null;
 		if (typeof gateway === 'string') gateway = this.client.gateways[gateway];
 		// if (!(gateway instanceof Gateway)) return entry;
@@ -231,6 +233,7 @@ module.exports = class extends SQLProvider {
 			if (entry[piece.path]) makeObject(piece.path, this.parseValue(entry[piece.path], piece), object);
 		}
 
+		console.dir(object);
 		return object;
 	}
 

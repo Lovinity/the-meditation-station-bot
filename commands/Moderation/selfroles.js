@@ -36,7 +36,7 @@ module.exports = class extends Command {
             return message.send(`:x: There was an error getting settings for the provided role.`);
         }
         await settings.update('category', category.cleanContent)
-        await settings.update('reaction', reaction.emoji)
+        await settings.update('reaction', reaction.emoji, message.guild)
         return message.send(':white_check_mark: Self role added/edited! Once you have made all your changes, you must use the selfroles command with no parameters to re-generate the messages in the selfRolesChannel.')
     }
 
