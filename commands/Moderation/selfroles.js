@@ -93,7 +93,7 @@ async function generateMessages (message, selfRolesChannel) {
                 selfRoles[ category ].map((setting, index) => {
                     if (setting.setting) { setting.settings.update(`self.message`, msg) }
                     setTimeout(() => {
-                        msg.react(setting.settings.role.reaction);
+                        msg.react(setting.settings.self.reaction);
                     }, index * 1000)
                     i++;
                 })
