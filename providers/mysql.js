@@ -29,7 +29,7 @@ module.exports = class extends SQLProvider {
 			time: { type: 'DATETIME', resolver: (input) => TIMEPARSERS.DATETIME.display(input) },
 			timestamp: { type: 'TIMESTAMP', resolver: (input) => TIMEPARSERS.DATE.display(input) },
 			messagepromise: 'VARCHAR(37)',
-			emoji: 'VARCHAR(18)',
+			emoji: 'VARCHAR(255)',
 			array: () => 'ARRAY',
 			arrayResolver: (values) => values.length && values !== null ? sanitizeObject(values) : "'[]'",
 			formatDatatype: (name, datatype, def = null) => datatype === 'ARRAY' ?
