@@ -70,7 +70,7 @@ async function generateMessages (message, selfRolesChannel) {
     var selfRoles = {}
     message.guild.roles.each((role) => {
         console.log(`Checking role ${role.id}`)
-        var settings = this.client.gateways.selfroles.get(`${role.guild.id}.${role.id}`);
+        var settings = message.client.gateways.selfroles.get(`${role.guild.id}.${role.id}`);
         if (settings) {
             console.log(`Has settings!`)
             if (typeof selfRoles[ settings.category ] === 'undefined')
