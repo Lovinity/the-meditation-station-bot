@@ -6,7 +6,7 @@ const { DataStore } = require('discord.js');
  */
 class KlasaGuildSelfRolesStore extends DataStore {
 
-	constructor(guild) {
+	constructor(guild, iterable) {
 		super(guild.client, iterable, guild);
 	}
 
