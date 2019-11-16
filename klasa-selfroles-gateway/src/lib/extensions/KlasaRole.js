@@ -37,5 +37,5 @@ module.exports = Structures.extend('Role', Role => {
 
 	}
 
-	return KlasaMember;
+	return KlasaRole;
 });
