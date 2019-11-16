@@ -2,7 +2,7 @@ const { Client, Schema, util: { mergeDefault } } = require('klasa');
 const { CLIENT } = require('./util/constants');
 const RoleGateway = require('./settings/RoleGateway');
 
-Client.defaultSelfRolesSchema = new Schema();
+Client.defaultRoleSchema = new Schema();
 
 module.exports = class extends Client {
 
