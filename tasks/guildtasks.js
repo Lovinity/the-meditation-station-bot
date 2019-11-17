@@ -77,13 +77,13 @@ module.exports = class extends Task {
                 }
                 var raidMitigation2;
                 if (_guild.settings.raidMitigation === 0)
-                    raidMitigation2 = `Level 0 (No mitigation; spamming = 30-minute mute) `
+                    raidMitigation2 = `**Level 0**` + "\n" + `:black_heart: New Member Verification: Medium Verification` + "\n" + `:black_heart: New Member Participation: Immediately on join` + "\n" + `:black_heart: Invite Links: Active` + "\n" + `:black_heart: Antispam Discipline: 30-minute mute`
                 if (_guild.settings.raidMitigation === 1)
-                    raidMitigation2 = `Level 1 (Verified Phone Numbers for new members; spamming = untimed mute) `
+                raidMitigation2 = `**Level 1**` + "\n" + `:red_heart: New Member Verification: Required Verified Phone Number` + "\n" + `:black_heart: New Member Participation: Immediately on join` + "\n" + `:black_heart: Invite Links: Active` + "\n" + `:yellow_heart: Antispam Discipline: Mute until staff remove it`
                 if (_guild.settings.raidMitigation === 2)
-                    raidMitigation2 = `Level 2 (Verified Phone Numbers + guild isolation for new members; spamming = 24-hour ban) `
+                raidMitigation2 = `**Level 2**` + "\n" + `:red_heart: New Member Verification: Required Verified Phone Number` + "\n" + `:red_heart: New Member Participation: Isolated until Mitigation Ends` + "\n" + `:black_heart: Invite Links: Active` + "\n" + `:orange_heart: Antispam Discipline: 24-hour temp ban`
                 if (_guild.settings.raidMitigation === 3)
-                    raidMitigation2 = `Level 3 (All invite links deleted; verified Phone Numbers + guild isolation for new members; spamming = permanent ban) `
+                raidMitigation2 = `**Level 3**` + "\n" + `:red_heart: New Member Verification: Required Verified Phone Number` + "\n" + `:red_heart: New Member Participation: Isolated until Mitigation Ends` + "\n" + `:red_heart: Invite Links: Deleted / Not Allowed` + "\n" + `:red_heart: Antispam Discipline: permanent ban`
                 embed.addField(`Raid Mitigation Status`, raidMitigation + "\n" + raidMitigation2);
                 embed.addField(`Guild Members`, _guild.members.array().length);
                 embed.addField(`Most Active Member`, mostActiveUser);
@@ -91,7 +91,7 @@ module.exports = class extends Task {
 
 
                 _guild.channels.resolve(statsMessageChannel).messages.fetch(statsMessage)
-                    .then(message => message.edit({ embed: embed }));
+                    .then(message => message.edit(``, { embed: embed }));
             }
 
             // Do icebreakers
