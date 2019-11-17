@@ -40,11 +40,16 @@ module.exports = class extends Task {
             // Do stats
             const statsMessageChannel = _guild.settings.statsMessageChannel;
             const statsMessage = _guild.settings.statsMessage;
+            const embed = new MessageEmbed()
+                .setTitle(`:chart_with_upwards_trend: **Current ${_guild.name} Statistics** :chart_with_upwards_trend:`)
+                .setColor('#ab47bc')
+                .setDescription("Statistics are automatically updated every minute.")
+                .addField(`Guild Time`, moment().format('LLLL'));
 
             if (statsMessage && statsMessageChannel) {
 
                 // Edit the message containing stats
-                var raidMitigation = `Anti-raid: `;
+                var raidMitigation = ``;
                 var score = _guild.settings.raidScore;
                 var minuses = 9;
                 while (score > 0) {
@@ -70,24 +75,23 @@ module.exports = class extends Task {
                         raidMitigation = `${raidMitigation} :three: `
                     }
                 }
+                var raidMitigation2;
                 if (_guild.settings.raidMitigation === 0)
-                    raidMitigation = `${raidMitigation} **Level 0 (No mitigation; spamming = 30-minute mute)** `
+                    raidMitigation2 = `Level 0 (No mitigation; spamming = 30-minute mute) `
                 if (_guild.settings.raidMitigation === 1)
-                    raidMitigation = `${raidMitigation} **Level 1 (Verified Phone Numbers for new members; spamming = untimed mute)** `
+                    raidMitigation2 = `Level 1 (Verified Phone Numbers for new members; spamming = untimed mute) `
                 if (_guild.settings.raidMitigation === 2)
-                    raidMitigation = `${raidMitigation} **Level 2 (Verified Phone Numbers + guild isolation for new members; spamming = 24-hour ban)** `
+                    raidMitigation2 = `Level 2 (Verified Phone Numbers + guild isolation for new members; spamming = 24-hour ban) `
                 if (_guild.settings.raidMitigation === 3)
-                    raidMitigation = `${raidMitigation} **Level 3 (All invite links deleted; verified Phone Numbers + guild isolation for new members; spamming = permanent ban)** `
-                var themessage = `:chart_with_upwards_trend: **Current ${_guild.name} Statistics** (edited automatically every minute) :chart_with_upwards_trend: \n\n`;
-                themessage = themessage + `Current Guild Time:  **${moment().format('LLLL')}** \n`;
-                themessage = themessage + `Number of members in the guild: **${_guild.members.array().length}** \n`;
-                themessage = themessage + `Most active member: **${mostActiveUser}** \n`;
-                themessage = themessage + `Guild Activity Index: **${parseInt(activityLevel / _guild.members.array().length)}** \n`;
-                themessage = themessage + `${raidMitigation} \n`;
+                    raidMitigation2 = `Level 3 (All invite links deleted; verified Phone Numbers + guild isolation for new members; spamming = permanent ban) `
+                embed.addField(`Raid Mitigation Status`, raidMitigation + "\n" + raidMitigation2);
+                embed.addField(`Guild Members`, _guild.members.array().length);
+                embed.addField(`Most Active Member`, mostActiveUser);
+                embed.addField(`Guild Activity Index`, parseInt(activityLevel / _guild.members.array().length));
 
 
                 _guild.channels.resolve(statsMessageChannel).messages.fetch(statsMessage)
-                    .then(message => message.edit(themessage));
+                    .then(message => message.edit({ embed: embed }));
             }
 
             // Do icebreakers
