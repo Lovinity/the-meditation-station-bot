@@ -67,14 +67,14 @@ module.exports = class extends Command {
         // First, ask what kind of discipline to issue
         var menu = new RichMenu(new MessageEmbed()
             .setTitle(`Choose the highest class discipline for ${user.tag}`)
-            .setDescription(`G is the highest class and A is the lowest class. Choose which class of discipline is the highest you are going to issue. You have 5 minutes to pick an option. Class C discipline cannot be issued manually as it is specific to the bot antispam system.`)
+            .setDescription(`G is the highest class and A is the lowest class. You have 5 minutes to pick an option.`)
         );
-        menu.addOption(`classA`, `Choose this for issuing a formal / final warning only without disciplinary action.`);
-        menu.addOption(`classB`, `Choose this if issuing a Yang fine, bad reputation, and/or loss of XP, but nothing else.`);
-        menu.addOption(`ClassD`, `Choose this if mandating an apology, research paper, or retraction statement. User will be muted until staff remove it after confirming tasks are done. Can also issue class B discipline.`);
-        menu.addOption(`classE`, `Choose this if issuing an indefinite or timed mute, channel restrictions, or roles that restrict permissions. Can also issue class B or D discipline. If issuing class D discipline, the mute will always be untimed / until staff remove it.`);
-        menu.addOption(`classF`, `Choose this if issuing a temporary or permanent ban. Can also issue discipline from class B, D, or E. If doing a temporary ban and issuing class E discipline, user will be muted upon re-joining the guild after the ban until staff remove the role (when the user completes their tasks).`);
-        menu.addOption(`classG`, `Choose this if the user is being investigated for a violation of the law or Discord's terms. User will be indefinitely muted until the investigation is concluded. No other classes can be issued with this; you should issue another appropriate discipline later after the user is reported and the investigation is finished.`);
+        menu.addOption(`classA`, `Formal / Final warning`);
+        menu.addOption(`classB`, `Yang fine, bad reputation, and/or loss of XP`);
+        menu.addOption(`ClassD`, `Require apology, research paper, and/or retraction statement.`);
+        menu.addOption(`classE`, `Indefinite or timed mute, channel restrictions, and/or roles that restrict permissions.`);
+        menu.addOption(`classF`, `Temporary or permanent ban.`);
+        menu.addOption(`classG`, `Investigation for a violation of the law or Discord's terms / guidelines.`);
         var collector = await menu.run(await message.send('Please wait...'), { time: 300000, filter: (reaction, user) => user.id === message.author.id });
         var choice = await collector.selection;
         if (menu.options[ choice ]) {

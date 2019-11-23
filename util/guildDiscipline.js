@@ -80,22 +80,18 @@ module.exports = class GuildDiscipline {
     }
 
     addChannelRestrictions (messageContent) {
-        console.log(messageContent);
         var regex = /(?:<#)?(\d{17,19})>?/g
         var snowflake;
         while ((snowflake = regex.exec(messageContent)) !== null) {
-            console.dir(snowflake)
             this.channelRestrictions.push(snowflake[ 1 ]);
         }
         return this;
     }
 
     addPermissions (messageContent) {
-        console.log(messageContent);
         var regex = /(?:<@&)?(\d{17,19})>?/g
         var snowflake;
         while ((snowflake = regex.exec(messageContent)) !== null) {
-            console.dir(snowflake)
             this.permissions.push(snowflake[ 1 ]);
         }
         return this;
@@ -232,10 +228,10 @@ module.exports = class GuildDiscipline {
                 if (this.banDuration === null) {
                     this.muteDuration = 0;
                     msg2 += "**Mute** \n"
-                    msg2 += `You have been muted from the guild until you complete the tasks outlined in this discipline section. Once all tasks are satisfied, your mute will be lifted. If you choose not to do the tasks, you will remain muted until / unless you do them.`
+                    msg2 += `You have been muted from the guild until you complete the tasks outlined in this discipline section. Once all tasks are satisfied, your mute will be lifted. If you choose not to do the tasks, you will remain muted until / unless you do them.` + "\n\n"
                 } else {
                     msg2 += "**Mute on Return** \n"
-                    msg2 += `Once you return to the guild, you will be muted until you complete the tasks outlined in this discipline section. Once all tasks are satisfied, your mute will be lifted. If you choose not to do the tasks, you will remain muted until / unless you do them.`
+                    msg2 += `Once you return to the guild, you will be muted until you complete the tasks outlined in this discipline section. Once all tasks are satisfied, your mute will be lifted. If you choose not to do the tasks, you will remain muted until / unless you do them.` + "\n\n"
                 }
                 // No class D discipline, but a mute was specified? Make a mute discipline message based on duration.
             } else if (this.muteDuration !== null) {
@@ -245,36 +241,30 @@ module.exports = class GuildDiscipline {
 
             // Make messages depending on class D discipline specified.
             if (this.classD.apology !== null) {
-                msg2 += "\n\n**Task: Formal, Reflective Apologies** \n"
+                msg2 += "**Task: Formal, Reflective Apologies** \n"
                 msg2 += `You are required to write formal reflective apologies addressed to each of the following people: **${this.classD.apology}**.
-
-Apology requirements:
 :small_blue_diamond: Each apology must be no less than 250 words long.
 :small_blue_diamond: You must state in each apology what you did wrong, that you acknowledge you did wrong, how your actions negatively impacted the person and/or the community, what you learned from this experience, and what you will do to ensure this doesn't happen again.
 :small_blue_diamond: Apologies __may not__ contain excuses, justifications, nor defenses. This apology is about the people affected, not you.
-Post your completed apologies in this text channel as an attachment of file type ODT, DOC/DOCX, RTF, TXT, or PDF. Once approved, staff will add the responsible members to this chat, and you will be required to present your apologies to those people (the staff will not do it; you must do it since you're the responsible one). After doing that, this task will be satisfied.`
+Post your completed apologies in this text channel as an attachment of file type ODT, DOC/DOCX, RTF, TXT, or PDF. Once approved, staff will add the responsible members to this chat, and you will be required to present your apologies to those people (the staff will not do it; you must do it since you're the responsible one). After doing that, this task will be satisfied.` + "\n\n"
             }
 
             if (this.classD.research !== null) {
-                msg2 += "\n\n**Task: Research Paper** \n"
+                msg2 += "**Task: Research Paper** \n"
                 msg2 += `You are required to write a research paper on each of the following topics: **${this.classD.research}**
-
-Paper requirements:
 :small_blue_diamond: Each research paper must be no less than 1,000 words long (about one page each of 12-point font)
 :small_blue_diamond: Each research paper must contain an introduction (thesis / main points), body (supporting details / evidence / sources to back the points stated in the introduction), and conclusion (what you learned by doing this research, and how you will apply this research to your life and how you conduct yourself).
 :small_blue_diamond: Each paper must contain at least 2 cited credible sources to demonstrate you actually did the research on the provided topics.
-Post your completed research paper(s) in this text channel as an attachment of file type ODT, DOC/DOCX, RTF, TXT, or PDF. Once staff approve your papers, this task is satisfied.`
+Post your completed research paper(s) in this text channel as an attachment of file type ODT, DOC/DOCX, RTF, TXT, or PDF. Once staff approve your papers, this task is satisfied.` + "\n\n"
             }
 
             if (this.classD.retraction !== null) {
-                msg2 += "\n\n**Task: Retraction Statement** \n"
+                msg2 += "**Task: Retraction Statement** \n"
                 msg2 += `You are required to write a retration statement retracting the following things you posted / said: **${this.classD.retraction}**
-
-Retraction requirements:
 :small_blue_diamond: Each retraction statement must be no less than 250 words long.
 :small_blue_diamond: Each retraction statement must include an introduction (what you originally said, and statement that it was wrong and you retract it), body (the correct information and evidence / sources), and conclusion (what you learned by doing this research / retraction, and what you will do to ensure you fact-check yourself in the future)
 :small_blue_diamond: Each retraction statement must contain at least 2 cited credible sources to act as evidence that your corrected information is indeed correct.
-Post your completed retraction statement(s) in this text channel as an attachment of file type ODT, DOC/DOCX, RTF, TXT, or PDF. Once staff approve your statements, you will be required to present your statement(s) to the rest of the guild. Once you do, this task is satisfied.`
+Post your completed retraction statement(s) in this text channel as an attachment of file type ODT, DOC/DOCX, RTF, TXT, or PDF. Once staff approve your statements, you will be required to present your statement(s) to the rest of the guild. Once you do, this task is satisfied.` + "\n\n"
             }
         }
 
@@ -453,6 +443,8 @@ Post your completed retraction statement(s) in this text channel as an attachmen
             .setClassD(this.classD)
             .setRules(this.rules)
             .setOtherDiscipline(this.other)
+            .setMuteDuration(this.muteDuration)
+            .setBanDuration(this.banDuration)
             .setCase(this.case);
 
         // Bans
