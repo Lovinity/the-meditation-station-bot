@@ -147,7 +147,7 @@ module.exports = class extends Command {
 // Helper functions
 async function askRulesReason (message, discipline) {
     // Ask for the rule numbers violated
-    var rules = await message.awaitReply(`:question: Please state which rule number(s) pertain to this discipline. Separate multiple rule numbers with a dash without spaces (example: 1-5-12). You have 5 minutes to respond.`, 300000);
+    var rules = await message.awaitReply(`:question: **Rule numbers violated**: Please state which rule number(s) pertain to this discipline. Separate multiple rule numbers with a dash without spaces (example: 1-5-12). You have 5 minutes to respond.`, 300000);
     if (!rules) {
         throw new Error("No rules specified")
     }
@@ -155,7 +155,7 @@ async function askRulesReason (message, discipline) {
     rules.map((rule) => discipline.addRule(rule));
 
     // Next, ask for a reason
-    var reason = await message.awaitReply(`:question: Please state the reason(s) for this action concisely but completely (eg. explain the violation even though you specified the rule numbers; muted users probably cannot see the rules channel). Keep the length under 256 characters. Please do not provide additional instruction/discipline here; that will be asked later. You have 5 minutes to respond.`, 300000);
+    var reason = await message.awaitReply(`:question: **Violation Explanation**: Please state the reason(s) for this action concisely but completely (eg. explain the violation even though you specified the rule numbers; muted users probably cannot see the rules channel). Keep the length under 256 characters. Please do not provide additional instruction/discipline here; that will be asked later. You have 5 minutes to respond.`, 300000);
     if (!reason) {
         throw new Error("No reasons specified")
     }
@@ -164,7 +164,7 @@ async function askRulesReason (message, discipline) {
 
 async function askOther (message, discipline) {
     // Ask for any additional discipline or instruction
-    var other = await message.awaitReply(`:question: If there is any other discipline or instructions for the user, such as requiring the user to make an apology, please state so here. Keep the length under 256 characters. If there is no other further discipline or instruction, send "none". You have 5 minutes to respond.`, 300000);
+    var other = await message.awaitReply(`:question: **Other discipline**: If there is any other discipline or instructions for the user, such as requiring the user to make an apology, please state so here. Keep the length under 256 characters. If there is no other further discipline or instruction, send "none". You have 5 minutes to respond.`, 300000);
     if (!other) {
         throw new Error("No other discipline specified")
     }
@@ -174,7 +174,7 @@ async function askOther (message, discipline) {
 
 async function askClassB (message, discipline) {
     // Ask for bad reputation
-    var badRep = await message.awaitReply(`:question: How much bad reputation should be assigned to this user? Use "0" for none. You have 5 minutes to respond.`, 300000);
+    var badRep = await message.awaitReply(`:question: **Bad Reputation**: How much bad reputation should be assigned to this user? Use "0" for none. You have 5 minutes to respond.`, 300000);
     if (!badRep) {
         throw new Error("No badRep specified")
     }
@@ -186,7 +186,7 @@ async function askClassB (message, discipline) {
     discipline.setReputation(badRep);
 
     // Ask for Yang charge
-    var yang = await message.awaitReply(`:question: How much Yang should be charged from this user? Use "0" for none. You have 5 minutes to respond.`, 300000);
+    var yang = await message.awaitReply(`:question: **Yang Fine**: How much Yang should be charged from this user? Use "0" for none. You have 5 minutes to respond.`, 300000);
     if (!yang) {
         throw new Error("No yang specified")
     }
@@ -198,7 +198,7 @@ async function askClassB (message, discipline) {
     discipline.setYang(yang);
 
     // Ask for XP charge
-    var xp = await message.awaitReply(`:question: How much XP should be removed from the user? **You should ONLY remove XP that was earned through abuse; do not charge XP as punishment** Use "0" for none. You have 5 minutes to respond.`, 300000);
+    var xp = await message.awaitReply(`:question: **XP Removal**: How much XP should be removed from the user? **You should ONLY remove XP that was earned through abuse; do not charge XP as punishment** Use "0" for none. You have 5 minutes to respond.`, 300000);
     if (!xp) {
         throw new Error("No XP specified")
     }
@@ -218,7 +218,7 @@ async function askClassD (message, discipline) {
         retraction: null
     }
 
-    var resp = await message.awaitReply(`:question: (class D) If this member should be required to write formal / reflective apologies, specify which member(s) the apologies should be addressed to. Specify "none" if the user does not have to write any apologies. You have 5 minutes to respond.`, 300000);
+    var resp = await message.awaitReply(`:question: **Apologies**: If this member should be required to write formal / reflective apologies, specify which member(s) the apologies should be addressed to. Specify "none" if the user does not have to write any apologies. You have 5 minutes to respond.`, 300000);
     if (!resp) {
         throw new Error("No apology specified")
     }
@@ -227,7 +227,7 @@ async function askClassD (message, discipline) {
         isAccountable = true;
     }
 
-    var resp = await message.awaitReply(`:question: (class D) If this member should be required to do a research paper, specify what topics / points the user should research. Clearly indicate/separate where the user should write a separate research paper if doing multiple. Do not include base research paper requirements; those are already included. Specify "none" if the user does not have to write any research papers. You have 5 minutes to respond.`, 300000);
+    var resp = await message.awaitReply(`:question: **Research papers**: If this member should be required to do a research paper, specify what topics / points the user should research. Clearly indicate/separate where the user should write a separate research paper if doing multiple. Do not include base research paper requirements; those are already included. Specify "none" if the user does not have to write any research papers. You have 5 minutes to respond.`, 300000);
     if (!resp) {
         throw new Error("No research specified")
     }
@@ -236,7 +236,7 @@ async function askClassD (message, discipline) {
         isAccountable = true;
     }
 
-    var resp = await message.awaitReply(`:question: (class D) If this member should be required to make a retraction statement, specify what the user must retract and correct. Clearly indicate/separate where the user should write a separate retraction statement if doing multiple. Do not include base retraction statement requirements; those are already included. Specify "none" if the user does not have to make any retraction statements. You have 5 minutes to respond.`, 300000);
+    var resp = await message.awaitReply(`:question: **Retraction Statements**: If this member should be required to make a retraction statement, specify what the user must retract and correct. Clearly indicate/separate where the user should write a separate retraction statement if doing multiple. Do not include base retraction statement requirements; those are already included. Specify "none" if the user does not have to make any retraction statements. You have 5 minutes to respond.`, 300000);
     if (!resp) {
         throw new Error("No research specified")
     }
@@ -252,7 +252,7 @@ async function askClassD (message, discipline) {
 
 async function askClassE (message, discipline, hasAccountability) {
     if (!hasAccountability) {
-        var duration = await message.awaitReply(`:question: If a mute should be issued, specify how long the mute should be in hours. Use "0" for indefinite / until staff remove it. Specify "none" if no mute is to be issued. You have 5 minutes to respond.`, 300000);
+        var duration = await message.awaitReply(`:question: **Mute**: If a mute should be issued, specify how long the mute should be in hours. Use "0" for indefinite / until staff remove it. Specify "none" if no mute is to be issued. You have 5 minutes to respond.`, 300000);
         if (!duration) {
             throw new Error("No mute specified")
         }
@@ -266,7 +266,7 @@ async function askClassE (message, discipline, hasAccountability) {
         }
     }
 
-    var resp = await message.awaitReply(`:question: If this user should be denied access to one or more text channels, specify which text channels they should be removed from using proper # notation. Specify "none" to not restrict the user from any text channels. You have 5 minutes to respond.`, 300000);
+    var resp = await message.awaitReply(`:question: **Text Channel Restrictions**: If this user should be denied access to one or more text channels, specify which text channels they should be removed from using proper # notation. Specify "none" to not restrict the user from any text channels. You have 5 minutes to respond.`, 300000);
     if (!resp) {
         throw new Error("No channel restrictions specified")
     }
@@ -274,7 +274,7 @@ async function askClassE (message, discipline, hasAccountability) {
         discipline.addChannelRestrictions(resp);
     }
 
-    var resp = await message.awaitReply(`:question: If this user should be awarded roles, such as ones that restrict certain permissions, mention each role that should be applied to them. Do not add the muted role to the user; this is added automatically when necessary. Specify "none" to not add any roles to the user. You have 5 minutes to respond.`, 300000);
+    var resp = await message.awaitReply(`:question: **Add Restrictive Roles*8: If this user should be awarded roles, such as ones that restrict certain permissions, mention each role that should be applied to them. Do not add the muted role to the user; this is added automatically when necessary. Specify "none" to not add any roles to the user. You have 5 minutes to respond.`, 300000);
     if (!resp) {
         throw new Error("No roles specified")
     }
@@ -285,7 +285,7 @@ async function askClassE (message, discipline, hasAccountability) {
 }
 
 async function askClassF (message, discipline) {
-    var duration = await message.awaitReply(`:question: How long, in days, should the ban last? Specify 0 for a permanent ban. You have 5 minutes to respond.`, 300000);
+    var duration = await message.awaitReply(`:question: **Ban**: How long, in days, should the ban last? Specify 0 for a permanent ban. You have 5 minutes to respond.`, 300000);
     if (!duration) {
         throw new Error("No ban specified")
     }
@@ -300,7 +300,7 @@ async function askClassF (message, discipline) {
 }
 
 async function askWillMute (message, discipline) {
-    var willMute = await message.ask(`:question: Are you going to either issue a mute, or require the user to write an apology / research paper / retraction statement?`);
+    var willMute = await message.ask(`:question: **Initial Mute**: Are you going to either issue a mute, or require the user to write an apology / research paper / retraction statement?`);
     if (willMute)
         discipline.setMuteDuration(0);
 }
