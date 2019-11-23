@@ -80,23 +80,31 @@ module.exports = class GuildDiscipline {
     }
 
     addChannelRestrictions (messageContent) {
+        console.log(messageContent);
         var regex = /(?:<#)?(\d{17,19})>?/g
         if (regex.test(messageContent)) {
             var snowflake;
             while ((snowflake = regex.exec(messageContent)) !== null) {
+                console.dir(snowflake)
                 this.channelRestrictions.push(snowflake[ 1 ]);
             }
+        } else {
+            console.log('Channel Restrictions No Dice')
         }
         return this;
     }
 
     addPermissions (messageContent) {
+        console.log(messageContent);
         var regex = /(?:<@&)?(\d{17,19})>?/g
         if (regex.test(messageContent)) {
             var snowflake;
             while ((snowflake = regex.exec(messageContent)) !== null) {
+                console.dir(snowflake)
                 this.permissions.push(snowflake[ 1 ]);
             }
+        } else {
+            console.log('Permissions No Dice')
         }
         return this;
     }
