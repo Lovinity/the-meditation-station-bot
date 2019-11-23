@@ -80,25 +80,29 @@ module.exports = class extends Command {
         if (menu.options[ choice ]) {
             var discipline = new GuildDiscipline(user, message.guild, message.author);
             discipline.setType(menu.options[ choice ].name);
-            discipline.prepare();
             try {
                 switch (menu.options[ choice ].name) {
                     case 'classA':
+                        discipline.prepare();
                         await askRulesReason(message, discipline);
                         await askOther(message, discipline);
                         break;
                     case 'classB':
+                        discipline.prepare();
                         await askRulesReason(message, discipline);
                         await askClassB(message, discipline);
                         await askOther(message, discipline);
                         break;
                     case 'classD':
+                        discipline.prepare();
                         await askRulesReason(message, discipline);
                         await askClassB(message, discipline);
                         await askClassD(message, discipline);
                         await askOther(message, discipline);
                         break;
                     case 'classE':
+                        await askWillMute(message, discipline);
+                        discipline.prepare();
                         await askRulesReason(message, discipline);
                         await askClassB(message, discipline);
                         var hasAccountability = await askClassD(message, discipline);
@@ -106,6 +110,7 @@ module.exports = class extends Command {
                         await askOther(message, discipline);
                         break;
                     case 'classF':
+                        discipline.prepare();
                         await askRulesReason(message, discipline);
                         var isPermanentBan = await askClassF(message, discipline);
                         await askClassB(message, discipline);
@@ -116,6 +121,7 @@ module.exports = class extends Command {
                         await askOther(message, discipline);
                         break;
                     case 'classG':
+                        discipline.prepare();
                         await askRulesReason(message, discipline);
                         await askOther(message, discipline);
                         break;
@@ -291,4 +297,10 @@ async function askClassF (message, discipline) {
     discipline.setBanDuration(duration);
 
     return duration === 0;
+}
+
+async function askWillMute (message, discipline) {
+    var willMute = await message.ask(`:question: Are you going to either issue a mute, or require the user to write an apology / research paper / retraction statement?`);
+    if (willMute)
+        discipline.setMuteDuration(0);
 }
