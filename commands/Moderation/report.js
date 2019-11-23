@@ -113,7 +113,6 @@ ${reportMembers} members have reported you for misconduct within the last ${repo
 
             const muted = message.guild.settings.muteRole;
             const mutedRole = message.guild.roles.resolve(muted);
-            var guildMember = message.guild.members.resolve(user.id);
 
             if (mutedRole && guildMember) {
                 guildMember.roles.add(mutedRole, `Mute via several !report s`);
