@@ -52,7 +52,7 @@ module.exports = class extends Command {
             if (value.length > 0) {
                 response += `**Actions issued regarding ${key}**: ` + "\n"
                 value.map((record) => {
-                    response += `🔹${record.type} on ${moment(record.date).format("LLLL Z")}` + "\n"
+                    response += `🔹${record.type} discipline on ${moment(record.date).format("LLLL Z")}` + "\n"
                 })
                 response += "\n"
             }
@@ -66,105 +66,64 @@ module.exports = class extends Command {
 
         // First, ask what kind of discipline to issue
         var menu = new RichMenu(new MessageEmbed()
-            .setTitle(`Choose a discipline for ${user.tag}`)
-            .setDescription(`Use number reactions to select which kind of discipline to issue.`)
+            .setTitle(`Choose the highest class discipline for ${user.tag}`)
+            .setDescription(`G is the highest class and A is the lowest class. Choose which class of discipline is the highest you are going to issue. You have 5 minutes to pick an option. Class C discipline cannot be issued manually as it is specific to the bot antispam system.`)
         );
-        menu.addOption(`warn`, `Formally warns the user of unacceptable behaviour, but does not issue any disciplinary action.`);
-        menu.addOption(`discipline`, `Issue Yang fines, take away XP, and/or apply bad reputation.`);
-        menu.addOption(`mute`, `Add the muteRole to the user, temporarily or indefinitely. Optionally, also add discipline.`);
-        menu.addOption(`tempban`, `Ban the user from the guild temporarily. Optionally, also add discipline.`);
-        menu.addOption(`ban`, `Permanently ban the user from the guild. Optionally, also add discipline.`);
+        menu.addOption(`classA`, `Choose this for issuing a formal / final warning only without disciplinary action.`);
+        menu.addOption(`classB`, `Choose this if issuing a Yang fine, bad reputation, and/or loss of XP, but nothing else.`);
+        menu.addOption(`ClassD`, `Choose this if mandating an apology, research paper, or retraction statement. User will be muted until staff remove it after confirming tasks are done. Can also issue class B discipline.`);
+        menu.addOption(`classE`, `Choose this if issuing an indefinite or timed mute, channel restrictions, or roles that restrict permissions. Can also issue class B or D discipline. If issuing class D discipline, the mute will always be untimed / until staff remove it.`);
+        menu.addOption(`classF`, `Choose this if issuing a temporary or permanent ban. Can also issue discipline from class B, D, or E. If doing a temporary ban and issuing class E discipline, user will be muted upon re-joining the guild after the ban until staff remove the role (when the user completes their tasks).`);
+        menu.addOption(`classG`, `Choose this if the user is being investigated for a violation of the law or Discord's terms. User will be indefinitely muted until the investigation is concluded. No other classes can be issued with this; you should issue another appropriate discipline later after the user is reported and the investigation is finished.`);
         var collector = await menu.run(await message.send('Please wait...'), { time: 300000, filter: (reaction, user) => user.id === message.author.id });
         var choice = await collector.selection;
         if (menu.options[ choice ]) {
-            var type = menu.options[ choice ].name;
-            // Prepare the discipline
-            var discipline = await new GuildDiscipline(user, message.guild, message.author);
-            discipline.setType(type);
+            var discipline = new GuildDiscipline(user, message.guild, message.author);
+            discipline.setType(menu.options[ choice ].name);
             discipline.prepare();
-
-            // Ask for the rule numbers violated
-            var rules = await message.awaitReply(`:question: Please state which rule number(s) pertain to this discipline. Separate multiple rule numbers with a dash without spaces (example: 1-5-12). You have 5 minutes to respond.`, 300000);
-            if (!rules) {
+            try {
+                switch (menu.options[ choice ].name) {
+                    case 'classA':
+                        await askRulesReason(message, discipline);
+                        await askOther(message, discipline);
+                        break;
+                    case 'classB':
+                        await askRulesReason(message, discipline);
+                        await askClassB(message, discipline);
+                        await askOther(message, discipline);
+                        break;
+                    case 'classD':
+                        await askRulesReason(message, discipline);
+                        await askClassB(message, discipline);
+                        await askClassD(message, discipline);
+                        await askOther(message, discipline);
+                        break;
+                    case 'classE':
+                        await askRulesReason(message, discipline);
+                        await askClassB(message, discipline);
+                        var hasAccountability = await askClassD(message, discipline);
+                        await askClassE(message, discipline, hasAccountability);
+                        await askOther(message, discipline);
+                        break;
+                    case 'classF':
+                        await askRulesReason(message, discipline);
+                        var isPermanentBan = await askClassF(message, discipline);
+                        await askClassB(message, discipline);
+                        if (!isPermanentBan) {
+                            var hasAccountability = await askClassD(message, discipline);
+                            await askClassE(message, discipline, hasAccountability);
+                        }
+                        await askOther(message, discipline);
+                        break;
+                    case 'classG':
+                        await askRulesReason(message, discipline);
+                        await askOther(message, discipline);
+                        break;
+                }
+            } catch (e) {
                 await discipline.cancel();
-                return message.channel.send(`:x: The wizard timed out and was canceled.`);
+                return message.channel.send(`:x: ${e.message}`);
             }
-            rules = rules.split("-");
-            rules.map((rule) => discipline.addRule(rule));
-
-            // Next, ask for a reason
-            var reason = await message.awaitReply(`:question: Please state the reason(s) for this action concisely but completely (eg. explain the violation even though you specified the rule numbers; muted users probably cannot see the rules channel). Keep the length under 512 characters. Please do not provide additional instruction/discipline here; that will be asked later. You have 5 minutes to respond.`, 300000);
-            if (!reason) {
-                await discipline.cancel();
-                return message.channel.send(`:x: The wizard timed out and was canceled.`);
-            }
-            discipline.setReason(reason);
-
-            // Continue with the additional questions only if type is not warning
-            if (type !== 'warn') {
-                // Next, ask for a duration if type is mute or tempban
-                if (type === 'mute' || type === 'tempban') {
-                    var duration = await message.awaitReply(`:question: How many ${type === 'mute' ? `hours` : `days`} should this ${type} last? ${type === 'mute' ? `Answer "0" if the mute should remain until staff manually unmute.` : ``} You have 5 minutes to respond.`, 300000);
-                    if (!duration) {
-                        await discipline.cancel();
-                        return message.channel.send(`:x: The wizard timed out and was canceled.`);
-                    }
-                    if (isNaN(parseInt(duration))) {
-                        await message.channel.send(`:x: An invalid number was provided. We will assume ${type === 'mute' ? `1 hour` : `1 day`}.`);
-                        duration = 1;
-                    }
-                    duration = parseInt(duration);
-                    discipline.setDuration((type === 'tempban') ? (60 * 24 * duration) : (60 * duration));
-                }
-
-                // Ask for bad reputation
-                var badRep = await message.awaitReply(`:question: How much bad reputation should be assigned to this user? Use "0" for none. You have 5 minutes to respond.`, 300000);
-                if (!badRep) {
-                    await discipline.cancel();
-                    return message.channel.send(`:x: The wizard timed out and was canceled.`);
-                }
-                if (isNaN(parseInt(badRep))) {
-                    await message.channel.send(`:x: An invalid number was provided. We will assume ${type === 'mute' ? `0` : `25`} bad rep.`);
-                    badRep = (type === 'mute') ? 0 : 25;
-                }
-                badRep = parseInt(badRep);
-                discipline.setReputation(badRep);
-
-                // Ask for Yang charge
-                var yang = await message.awaitReply(`:question: How much Yang should be charged from this user? Use "0" for none. You have 5 minutes to respond.`, 300000);
-                if (!yang) {
-                    await discipline.cancel();
-                    return message.channel.send(`:x: The wizard timed out and was canceled.`);
-                }
-                if (isNaN(parseInt(yang))) {
-                    await message.channel.send(`:x: An invalid number was provided. We will assume ${type === 'mute' ? `0` : `250`} Yang.`);
-                    yang = (type === 'mute') ? 0 : 250;
-                }
-                yang = parseInt(yang);
-                discipline.setYang(yang);
-
-                // Ask for XP charge
-                var xp = await message.awaitReply(`:question: How much XP should be removed from the user? **You should ONLY remove XP that was earned through abuse; do not charge XP as punishment** Use "0" for none. You have 5 minutes to respond.`, 300000);
-                if (!xp) {
-                    await discipline.cancel();
-                    return message.channel.send(`:x: The wizard timed out and was canceled.`);
-                }
-                if (isNaN(parseInt(xp))) {
-                    await message.channel.send(`:x: An invalid number was provided. We will assume 0 XP.`);
-                    xp = 0;
-                }
-                xp = parseInt(xp);
-                discipline.setXp(xp);
-            }
-
-            // Ask for any additional discipline or instruction
-            var other = await message.awaitReply(`:question: If there is any other discipline or instructions for the user, such as requiring the user to make an apology, please state so here. Keep the length under 512 characters. If there is no other further discipline or instruction, send "none". You have 5 minutes to respond.`, 300000);
-            if (!other) {
-                await discipline.cancel();
-                return message.channel.send(`:x: The wizard timed out and was canceled.`);
-            }
-            if (other.toLowerCase() !== 'none')
-                discipline.setOther(other);
 
             await discipline.finalize();
             return message.channel.send(`:white_check_mark: Discipline has been sent!`);
@@ -179,3 +138,157 @@ module.exports = class extends Command {
 };
 
 
+// Helper functions
+async function askRulesReason (message, discipline) {
+    // Ask for the rule numbers violated
+    var rules = await message.awaitReply(`:question: Please state which rule number(s) pertain to this discipline. Separate multiple rule numbers with a dash without spaces (example: 1-5-12). You have 5 minutes to respond.`, 300000);
+    if (!rules) {
+        throw new Error("No rules specified")
+    }
+    rules = rules.split("-");
+    rules.map((rule) => discipline.addRule(rule));
+
+    // Next, ask for a reason
+    var reason = await message.awaitReply(`:question: Please state the reason(s) for this action concisely but completely (eg. explain the violation even though you specified the rule numbers; muted users probably cannot see the rules channel). Keep the length under 256 characters. Please do not provide additional instruction/discipline here; that will be asked later. You have 5 minutes to respond.`, 300000);
+    if (!reason) {
+        throw new Error("No reasons specified")
+    }
+    discipline.setReason(reason);
+}
+
+async function askOther (message, discipline) {
+    // Ask for any additional discipline or instruction
+    var other = await message.awaitReply(`:question: If there is any other discipline or instructions for the user, such as requiring the user to make an apology, please state so here. Keep the length under 256 characters. If there is no other further discipline or instruction, send "none". You have 5 minutes to respond.`, 300000);
+    if (!other) {
+        throw new Error("No other discipline specified")
+    }
+    if (other.toLowerCase() !== 'none')
+        discipline.setOther(other);
+}
+
+async function askClassB (message, discipline) {
+    // Ask for bad reputation
+    var badRep = await message.awaitReply(`:question: How much bad reputation should be assigned to this user? Use "0" for none. You have 5 minutes to respond.`, 300000);
+    if (!badRep) {
+        throw new Error("No badRep specified")
+    }
+    if (isNaN(parseInt(badRep))) {
+        await message.channel.send(`:x: An invalid number was provided. We will assume 25 bad rep.`);
+        badRep = 25;
+    }
+    badRep = parseInt(badRep);
+    discipline.setReputation(badRep);
+
+    // Ask for Yang charge
+    var yang = await message.awaitReply(`:question: How much Yang should be charged from this user? Use "0" for none. You have 5 minutes to respond.`, 300000);
+    if (!yang) {
+        throw new Error("No yang specified")
+    }
+    if (isNaN(parseInt(yang))) {
+        await message.channel.send(`:x: An invalid number was provided. We will assume 250 Yang.`);
+        yang = 250;
+    }
+    yang = parseInt(yang);
+    discipline.setYang(yang);
+
+    // Ask for XP charge
+    var xp = await message.awaitReply(`:question: How much XP should be removed from the user? **You should ONLY remove XP that was earned through abuse; do not charge XP as punishment** Use "0" for none. You have 5 minutes to respond.`, 300000);
+    if (!xp) {
+        throw new Error("No XP specified")
+    }
+    if (isNaN(parseInt(xp))) {
+        await message.channel.send(`:x: An invalid number was provided. We will assume 0 XP.`);
+        xp = 0;
+    }
+    xp = parseInt(xp);
+    discipline.setXp(xp);
+}
+
+async function askClassD (message, discipline) {
+    var isAccountable = false;
+    var classD = {
+        apology: null,
+        research: null,
+        retraction: null
+    }
+
+    var resp = await message.awaitReply(`:question: (class D) If this member should be required to write formal / reflective apologies, specify which member(s) the apologies should be addressed to. Specify "none" if the user does not have to write any apologies. You have 5 minutes to respond.`, 300000);
+    if (!resp) {
+        throw new Error("No apology specified")
+    }
+    if (resp.toLowerCase() !== 'none') {
+        classD.apology = resp;
+        isAccountable = true;
+    }
+
+    var resp = await message.awaitReply(`:question: (class D) If this member should be required to do a research paper, specify what topics / points the user should research. Clearly indicate/separate where the user should write a separate research paper if doing multiple. Do not include base research paper requirements; those are already included. Specify "none" if the user does not have to write any research papers. You have 5 minutes to respond.`, 300000);
+    if (!resp) {
+        throw new Error("No research specified")
+    }
+    if (resp.toLowerCase() !== 'none') {
+        classD.research = resp;
+        isAccountable = true;
+    }
+
+    var resp = await message.awaitReply(`:question: (class D) If this member should be required to make a retraction statement, specify what the user must retract and correct. Clearly indicate/separate where the user should write a separate retraction statement if doing multiple. Do not include base retraction statement requirements; those are already included. Specify "none" if the user does not have to make any retraction statements. You have 5 minutes to respond.`, 300000);
+    if (!resp) {
+        throw new Error("No research specified")
+    }
+    if (resp.toLowerCase() !== 'none') {
+        classD.research = resp;
+        isAccountable = true;
+    }
+
+    discipline.setClassD(classD);
+
+    return isAccountable;
+}
+
+async function askClassE (message, discipline, hasAccountability) {
+    if (!hasAccountability) {
+        var duration = await message.awaitReply(`:question: If a mute should be issued, specify how long the mute should be in hours. Use "0" for indefinite / until staff remove it. Specify "none" if no mute is to be issued. You have 5 minutes to respond.`, 300000);
+        if (!duration) {
+            throw new Error("No mute specified")
+        }
+        if (duration.toLowerCase() !== 'none') {
+            if (isNaN(parseInt(duration))) {
+                await message.channel.send(`:x: An invalid number was provided. We will assume 1 hour.`);
+                duration = 1;
+            }
+            duration = parseInt(duration);
+            discipline.setMuteDuration(duration);
+        }
+    }
+
+    var resp = await message.awaitReply(`:question: If this user should be denied access to one or more text channels, specify which text channels they should be removed from using proper # notation. Specify "none" to not restrict the user from any text channels. You have 5 minutes to respond.`, 300000);
+    if (!resp) {
+        throw new Error("No channel restrictions specified")
+    }
+    if (resp.toLowerCase() !== 'none') {
+        discipline.addChannelRestrictions(resp);
+    }
+
+    var resp = await message.awaitReply(`:question: If this user should be awarded roles, such as ones that restrict certain permissions, mention each role that should be applied to them. Do not add the muted role to the user; this is added automatically when necessary. Specify "none" to not add any roles to the user. You have 5 minutes to respond.`, 300000);
+    if (!resp) {
+        throw new Error("No roles specified")
+    }
+    if (resp.toLowerCase() !== 'none') {
+        discipline.addPermissions(resp);
+    }
+
+}
+
+async function askClassF (message, discipline) {
+    var duration = await message.awaitReply(`:question: How long, in days, should the ban last? Specify 0 for a permanent ban. You have 5 minutes to respond.`, 300000);
+    if (!duration) {
+        throw new Error("No ban specified")
+    }
+    if (isNaN(parseInt(duration))) {
+        await message.channel.send(`:x: An invalid number was provided. We will assume 3 days.`);
+        duration = 3;
+    }
+    duration = parseInt(duration);
+    discipline.setBanDuration(duration);
+
+    return duration === 0;
+}

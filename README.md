@@ -1,1 +1,1 @@
-This bot is considered UNSTABLE and will probably not work out of the box. I do not expect to ever make it stable unless people request me to do so as they plan to use it in their guilds.
+This bot was not intended for out-of-the-box use. It is customized for a guild.

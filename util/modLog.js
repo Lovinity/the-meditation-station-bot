@@ -17,6 +17,13 @@ module.exports = class ModLog {
         this.case = null;
         this.expiration = null;
         this.rules = [];
+        this.channelRestrictions = [];
+        this.permissions = [];
+        this.classD = {
+            apology: null,
+            research: null,
+            retraction: null
+        };
     }
 
     setType(type) {
@@ -82,6 +89,21 @@ module.exports = class ModLog {
         return this;
     }
 
+    setChannelRestrictions (array) {
+        this.channelRestrictions = array;
+        return this;
+    }
+
+    setPermissions (array) {
+        this.permissions = array;
+        return this;
+    }
+
+    setClassD (obj) {
+        this.classD = obj;
+        return this;
+    }
+
     // Send the log to the modlog channel
 
     async send() {
@@ -99,13 +121,16 @@ module.exports = class ModLog {
 
     get embed() {
         const embed = new MessageEmbed()
-                .setTitle(`Discipline issued: ${this.type[0].toUpperCase() + this.type.slice(1)}`)
+                .setTitle(`Discipline issued: ${this.type}`)
                 .setAuthor(this.user.tag, this.user.avatar)
                 .setColor(ModLog.colour(this.type))
                 .setDescription(this.reason)
                 .addField(`Rule Numbers Violated`, this.rules.join(", "))
                 .addField(`Issued By`, this.moderator.tag)
                 .addField(`Standard Discpline`, JSON.stringify(this.discipline))
+                .addField(`Reflection / Accountability`, JSON.stringify(this.classD))
+                .addField(`Channel Restrictions`, JSON.stringify(this.channelRestrictions))
+                .addField(`Permission Restriction Roles`, JSON.stringify(this.permissions))
                 .addField(`Additional Discpline`, this.otherDiscipline)
                 .addField(`Expiration`, this.expiration ? this.expiration : 'None')
                 .setFooter(`Case ${this.case}`)
@@ -127,6 +152,9 @@ module.exports = class ModLog {
             reason: this.reason,
             rules: this.rules,
             discipline: this.discipline,
+            classD: this.classD,
+            channelRestrictions: this.channelRestrictions,
+            permissions: this.permissions,
             otherDiscipline: this.otherDiscipline,
             channel: this.channel,
             expiration: this.expiration,
@@ -138,17 +166,17 @@ module.exports = class ModLog {
 
     static colour(type) {
         switch (type) {
-            case 'ban':
+            case 'classF':
                 return 16724253;
-            case 'usethis':
+            case 'classC':
                 return 1822618;
-            case 'warn':
+            case 'classA':
                 return 16564545;
-            case 'tempban':
+            case 'classE':
                 return 16573465;
-            case 'mute':
+            case 'classD':
                 return 15014476;
-            case 'discipline':
+            case 'classB':
                 return 8421631;
             default:
                 return 16777215;
