@@ -27,11 +27,13 @@ module.exports = class extends Command {
 
         // Prepare organized variables
         var cases = {
-            warn: [],
-            discipline: [],
-            mute: [],
-            tempban: [],
-            ban: [],
+            classA: [],
+            classB: [],
+            classC: [],
+            classD: [],
+            classE: [],
+            classF: [],
+            classG: []
         };
 
         var rules = {};
@@ -51,7 +53,7 @@ module.exports = class extends Command {
 
         // Construct a rich menu, starting with the count of active cases in each discipline type
         var menu = new RichMenu(new MessageEmbed()
-            .setTitle(`ModLogs for ${user.tag}`)
+            .setTitle(`ModLogs for ${user.tag}, grouped by highest discipline class.`)
             .setDescription('Use the arrow reactions to scroll between pages.\nUse number reactions to view cases under that type of discipline.')
         );
         // Populate counts... each type is also an option in the menu
@@ -117,11 +119,6 @@ module.exports = class extends Command {
         } else {
             return message.send(`:stop_button: The request was canceled.`);
         }
-
-        return message.send([
-            `${user.tag} (${user.id}) Moderation Logs:`,
-            util.codeBlock('http', Object.entries(final).map(([ action, value ]) => `${util.toTitleCase(`${action}s`).padEnd(11)}: ${value}`).join('\n'))
-        ]);
     }
 
 };
@@ -139,7 +136,7 @@ Moderator : ${log.moderator.tag} (${log.moderator.id})
 Rules : ${log.rules.join(", ")}
 Reason:   : ${log.reason}
 Expiration: ${log.expiration}
-Discipline: ${JSON.stringify(log.discipline)}
+Discipline: Basic ${JSON.stringify(log.discipline)}, class D ${JSON.stringify(log.classD)}, channel Restrictions ${JSON.stringify(log.channelRestrictions)}, restrictive roles ${JSON.stringify(log.permissions)}
 Additional: ${log.otherDiscipline}
 
 Use number reactions to select an action, or stop to exit.`)
@@ -163,6 +160,7 @@ Use number reactions to select an action, or stop to exit.`)
                 await user.guildSettings(message.guild.id).update(`modLogs`, log, { action: 'remove' });
                 log.valid = false;
                 await user.guildSettings(message.guild.id).update(`modLogs`, log, { action: 'add' });
+
                 // Now, appeal all discipline
                 if (log.discipline.xp !== 0) {
                     user.guildSettings(message.guild.id).update(`xp`, (user.guildSettings(message.guild.id).xp + log.discipline.xp));
@@ -176,7 +174,7 @@ Use number reactions to select an action, or stop to exit.`)
 
                 const guildMember = message.guild.members.resolve(user.id);
 
-                if (log.type === 'tempban' || log.type === 'ban') {
+                if (log.banDuration !== null) {
                     if (log.discipline.schedule !== null)
                         this.client.schedule.delete(log.discipline.schedule)
                             .catch(err => {
@@ -184,7 +182,7 @@ Use number reactions to select an action, or stop to exit.`)
                             });
                     await message.guild.members.unban(user, `Ban was appealed`);
 
-                    if (log.type === 'tempban') {
+                    if (log.banDuration > 0) {
                         // Remove the suspension if it is pending in the guild
                         const pendSuspensions = message.guild.settings.pendSuspensions;
                         if (pendSuspensions && pendSuspensions.length > 0) {
@@ -194,7 +192,7 @@ Use number reactions to select an action, or stop to exit.`)
                             });
                         }
                     }
-                    if (log.type === 'ban') {
+                    if (log.banDuration === 0) {
                         // Remove the ban if it is pending in the guild
                         const pendBans = message.guild.settings.pendBans;
                         if (pendBans && pendBans.length > 0) {
@@ -206,7 +204,7 @@ Use number reactions to select an action, or stop to exit.`)
                     }
                 }
 
-                if (log.type === 'mute') {
+                if (log.muteDuration !== null) {
                     if (log.discipline.schedule !== null)
                         this.client.schedule.delete(log.discipline.schedule)
                             .catch(err => {
@@ -224,6 +222,35 @@ Use number reactions to select an action, or stop to exit.`)
                         // Otherwise, remove mutedRole to the list of roles for the user so it's applied when/if they return
                         user.guildSettings(message.guild.id).update(`roles`, mutedRole, message.guild, { action: 'remove' });
                     }
+                }
+
+                // Remove channel restrictions
+                if (log.channelRestrictions.length > 0) {
+                    log.channelRestrictions.map(channel => {
+                        var theChannel = message.guild.channels.resolve(channel)
+
+                        if (theChannel) {
+                            var overwrite = theChannel.permissionOverwrites.get(user.id);
+
+                            if (overwrite)
+                                overwrite.delete(`Discipline case ${log.case} appealed`);
+                        }
+                    })
+                }
+
+                // Remove permission restriction roles
+                if (log.permissions.length > 0) {
+                    log.permissions.map(permission => {
+                        var theRole = message.guild.roles.resolve(permission)
+
+                        if (theRole) {
+                            if (guildMember) {
+                                guildMember.roles.remove(theRole, `Discipline case ${log.case} appealed`);
+                            } else {
+                                user.guildSettings(message.guild.id).update(`roles`, theRole, message.guild, { action: 'remove' });
+                            }
+                        }
+                    })
                 }
 
                 // Remove incident if it is pending in the guild

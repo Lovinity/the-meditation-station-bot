@@ -498,8 +498,7 @@ Post your completed retraction statement(s) in this text channel as an attachmen
                 if (theChannel) {
                     msg2 += ` ${theChannel.name},`
                     theChannel.createOverwrite(this.user, {
-                        VIEW_CHANNEL: false,
-                        READ_MESSAGE_HISTORY: false
+                        VIEW_CHANNEL: false
                     }, `Discipline case ${this.case}`);
                 }
             })
@@ -614,12 +613,17 @@ Post your completed retraction statement(s) in this text channel as an attachmen
         }
 
         // Add 30 to the raid score for permanent bans and temp bans
-        if (this.banDuration !== null)
+        if (this.banDuration !== null) {
             this.guild.raidScore(30);
 
-        // Add 15 to the raid score for mutes
-        if (this.muteDuration !== null)
+            // Add 20 to the raid score for mutes
+        } else if (this.muteDuration !== null) {
             this.guild.raidScore(20);
+
+            // Add 10 to the raid score for all other discipline
+        } else {
+            this.guild.raidScore(10);
+        }
 
         modLog = modLog.setChannel(this.channel)
 
@@ -634,7 +638,7 @@ Post your completed retraction statement(s) in this text channel as an attachmen
         }
 
         // Push out discipline message
-        this.channel.send(msg + "\n\n" + msg2 + msg3, {
+        this.channel.send("\n" + msg + "\n\n" + msg2 + msg3, {
             split: true,
             reply: this.user
         })

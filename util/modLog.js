@@ -19,6 +19,8 @@ module.exports = class ModLog {
         this.rules = [];
         this.channelRestrictions = [];
         this.permissions = [];
+        this.banDuration = null;
+        this.muteDuration = null;
         this.classD = {
             apology: null,
             research: null,
@@ -104,6 +106,16 @@ module.exports = class ModLog {
         return this;
     }
 
+    setMuteDuration (hours) {
+        this.muteDuration = hours;
+        return this;
+    }
+
+    setBanDuration (days) {
+        this.banDuration = days;
+        return this;
+    }
+
     // Send the log to the modlog channel
 
     async send() {
@@ -158,6 +170,8 @@ module.exports = class ModLog {
             otherDiscipline: this.otherDiscipline,
             channel: this.channel,
             expiration: this.expiration,
+            banDuration: this.banDuration,
+            muteDuration: this.muteDuration,
             valid: true
         };
     }
