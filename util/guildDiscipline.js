@@ -82,6 +82,7 @@ module.exports = class GuildDiscipline {
     addChannelRestrictions (messageContent) {
         var regex = /(?:<#)?(\d{17,19})>?/g
         if (regex.test(messageContent)) {
+            var snowflake;
             while ((snowflake = regex.exec(messageContent)) !== null) {
                 this.channelRestrictions.push(snowflake[ 1 ]);
             }
@@ -92,6 +93,7 @@ module.exports = class GuildDiscipline {
     addPermissions (messageContent) {
         var regex = /(?:<@&)?(\d{17,19})>?/g
         if (regex.test(messageContent)) {
+            var snowflake;
             while ((snowflake = regex.exec(messageContent)) !== null) {
                 this.permissions.push(snowflake[ 1 ]);
             }
