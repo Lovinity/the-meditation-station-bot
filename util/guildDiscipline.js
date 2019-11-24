@@ -519,10 +519,10 @@ Post your completed retraction statement(s) in this text channel as an attachmen
         }
 
         if (this.xp > 0) {
-            msg2 += `**Loss of ${this.xp} XP**` + " \n"
-            msg2 += `Your XP is now at ${(this.user.guildSettings(this.guild.id).xp - this.xp)}` + "\n\n"
-
             await this.user.guildSettings(this.guild.id).update(`xp`, (this.user.guildSettings(this.guild.id).xp - this.xp));
+
+            msg2 += `**Loss of ${this.xp} XP**` + " \n"
+            msg2 += `Your XP is now at ${(this.user.guildSettings(this.guild.id).xp)}` + "\n\n"
 
             // Update level roles
             var guildMember = this.guild.members.resolve(this.user);
@@ -561,16 +561,21 @@ Post your completed retraction statement(s) in this text channel as an attachmen
             }
         }
         if (this.yang > 0) {
-            msg2 += `**Loss of ${this.yang} Yang**` + " \n"
-            msg2 += `Your Yang balance is now at ${(this.user.guildSettings(this.guild.id).yang - this.yang)}` + "\n\n"
-
             this.user.guildSettings(this.guild.id).update(`yang`, (this.user.guildSettings(this.guild.id).yang - this.yang));
+
+            msg2 += `**Loss of ${this.yang} Yang**` + " \n"
+            msg2 += `Your Yang balance is now at ${(this.user.guildSettings(this.guild.id).yang)}` + "\n\n"
         }
         if (this.reputation > 0) {
-            msg2 += `**${this.reputation} bad reputation added to profile**` + " \n"
-            msg2 += `Your reputation is now ${this.user.guildSettings(this.guild.id).goodRep} good / ${(this.user.guildSettings(this.guild.id).badRep + this.reputation)} bad` + "\n\n"
-
             this.user.guildSettings(this.guild.id).update(`badRep`, (this.user.guildSettings(this.guild.id).badRep + this.reputation));
+
+            msg2 += `**${this.reputation} bad reputation added to profile**` + " \n"
+            if (this.user.guildSettings(this.guild.id).badRep >= 100) {
+                msg2 += `Your reputation is now ${this.user.guildSettings(this.guild.id).goodRep} good / ${(this.user.guildSettings(this.guild.id).badRep)} bad` + "\n"
+                msg2 += `:warning: **You have 100 or more bad reputation**. This means future discipline for any rule violations could include a temporary or permanent ban.` + "\n\n"
+            } else {
+                msg2 += `Your reputation is now ${this.user.guildSettings(this.guild.id).goodRep} good / ${(this.user.guildSettings(this.guild.id).badRep)} bad` + "\n\n"
+            }
         }
         if (this.other !== null) {
             msg2 += `**Additional Discipline / Notes**` + " \n"
