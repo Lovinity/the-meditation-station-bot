@@ -350,7 +350,7 @@ Post your completed retraction statement(s) in this text channel as an attachmen
                 msg += ":mute: **__ACCOUNTABILITY MUTE ISSUED__ (Class D)** :mute: \n\n"
                 msg += "The staff are disappointed in your recent conduct. Your behavior has caused problems for other members, and we are issuing a mute until you complete a task or two as reflection / accountability for your actions. You are being issued a mute for the following: \n"
                 msg += `**Rule number(s) violated:** ${this.rules.join(", ")}` + "\n"
-                msg += `**Further Information:** ${this.reason}` + "\n\n"
+                msg += `**Further Information:** ${this.reason}`
 
                 msg3 += "This channel is private between you and staff; you may communicate any questions or concerns you have here. If you need help resolving this incident, staff are happy to provide some tips and guidance. But please remain respectful. \n"
                 msg3 += "**You have 48 hours to dispute this discipline in this text channel**. Leaving the guild, being disrespectful towards staff, or trying to discuss the matter outside of this channel will automatically make this discipline final and unappealable. \n"
@@ -366,7 +366,7 @@ Post your completed retraction statement(s) in this text channel as an attachmen
                 msg += ":closed_lock_with_key: **__PREVENTATIVE DISCIPLINE ISSUED__ (Class E)** :closed_lock_with_key: \n\n"
                 msg += "The staff are disappointed in your recent conduct. Your behavior has caused problems in the guild to the point preventative discipline is necessary. You are being issued discipline for the following: \n"
                 msg += `**Rule number(s) violated:** ${this.rules.join(", ")}` + "\n"
-                msg += `**Further Information:** ${this.reason}` + "\n\n"
+                msg += `**Further Information:** ${this.reason}`
 
                 msg3 += "This channel is private between you and staff; you may communicate any questions or concerns you have here. If you need help resolving this incident, staff are happy to provide some tips and guidance. But please remain respectful. \n"
                 msg3 += "**You have 48 hours to dispute this discipline in this text channel**. Leaving the guild, being disrespectful towards staff, or trying to discuss the matter outside of this channel will automatically make this discipline final and unappealable. \n"
@@ -383,7 +383,7 @@ Post your completed retraction statement(s) in this text channel as an attachmen
                     msg += ":no_entry_sign: **__PERMANENT BAN ISSUED__ (Class F)** :no_entry_sign: \n\n"
                     msg += "Your conduct in the guild cannot be tolerated any longer. Therefore, for the safety of the community, you are being asked to leave the guild and not to return. We wish you the best in your adventures and hope you enjoyed your stay in this guild. You are being banned for the following: \n"
                     msg += `**Rule number(s) violated:** ${this.rules.join(", ")}` + "\n"
-                    msg += `**Further Information:** ${this.reason}` + "\n\n"
+                    msg += `**Further Information:** ${this.reason}`
 
                     msg3 += "This channel is private between you and staff; you may communicate any questions or concerns you have here prior to leaving (once you leave, you will lose access to the guild). If you need help resolving this incident, staff are happy to provide some tips and guidance. But please remain respectful. \n"
                     msg3 += "**You have 48 hours to dispute this ban in this text channel if you feel it was wrongly issued**. Leaving the guild, being disrespectful towards staff, or trying to discuss the matter outside of this channel will automatically make this ban final and unappealable. \n"
@@ -396,7 +396,7 @@ Post your completed retraction statement(s) in this text channel as an attachmen
                     msg += ":no_entry: **__TEMPORARY BAN ISSUED__ (Class F)** :no_entry: \n\n"
                     msg += "The staff are greatly disappointed in your conduct; we know you can do better than this. We ask that you take a break from the guild for some time and reflect on your mistakes. To facilitate this, you have been issued a temporary ban for the following: \n"
                     msg += `**Rule number(s) violated:** ${this.rules.join(", ")}` + "\n"
-                    msg += `**Further Information:** ${this.reason}` + "\n\n"
+                    msg += `**Further Information:** ${this.reason}`
                     msg += "During your temporary ban, the staff would like to see you reflect on your mistakes and put a plan of action in place to improve your behavior. Staff may need to issue a permanent ban if this happens again."
 
                     msg3 += "This channel is private between you and staff; you may communicate any questions or concerns you have here prior to leaving (once you leave, you will lose access to the server until the suspension ends). If you need help resolving this incident, staff are happy to provide some tips and guidance. But please remain respectful. \n"
@@ -415,7 +415,7 @@ Post your completed retraction statement(s) in this text channel as an attachmen
                 msg += ":incoming_envelope:  **__YOU ARE MUTED FOR AN INVESTIGATION__ (Class G)** :incoming_envelope:  \n\n"
                 msg += "Your recent conduct necessitates an investigation because you violated rules pertaining to a third party (such as Discord or the law). Until the investigation concludes, you will be muted. You are being muted for the following: \n"
                 msg += `**Rule number(s) violated:** ${this.rules.join(", ")}` + "\n"
-                msg += `**Further Information:** ${this.reason}` + "\n\n"
+                msg += `**Further Information:** ${this.reason}`
 
                 msg3 += "**You are obligated to comply with this investigation and answer any questions asked by staff truthfully**. A permanent ban will be issued if you do not comply. You have the right to remain silent and refuse to answer questions, but if you do answer them, you must answer truthfully. Once the investigation concludes and the third party (Discord or law enforcement) makes a decision, you will be informed on what happens next." + "\n\n"
                 msg3 += "This channel is private between you and staff; you may communicate any questions or concerns you have here. If you need help resolving this incident, staff are happy to provide some tips and guidance. But please remain respectful. \n"

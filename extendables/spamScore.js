@@ -101,7 +101,7 @@ module.exports = class extends Extendable {
             // Add 10 score for each embed; link/embed spam
             var numembeds = this.embeds.length;
             score += (10 * numembeds);
-            if (numembeds > 0) { scoreReasons[ "Embeds" ] = (nummembeds * 10) }
+            if (numembeds > 0) { scoreReasons[ "Embeds" ] = (numembeds * 10) }
 
             // Add 10 score for each attachment; attachment spam
             var numattachments = this.attachments.size;
