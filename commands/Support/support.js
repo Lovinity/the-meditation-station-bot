@@ -64,6 +64,8 @@ ${message.author.tag} has requested support from the community. Here, you may of
 Sensitive or triggering information might also be discussed.
 
 <@${message.author.id}> , you may use the command \`!remove username/mention/snowflake\` in this channel if you want to remove someone who is not being supportive or understanding of you. This command will not work on administrators.
+
+This channel will automatically be deleted by the bot when it goes 24 hours without a message being sent.
             `;
 
             // Add deny permissions for @everyone and for the muted role

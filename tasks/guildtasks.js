@@ -79,11 +79,11 @@ module.exports = class extends Task {
                 if (_guild.settings.raidMitigation === 0)
                     raidMitigation2 = `**Level 0**` + "\n" + `:black_heart: New Member Verification: Medium Verification` + "\n" + `:black_heart: New Member Participation: Immediately on join` + "\n" + `:black_heart: Invite Links: Active` + "\n" + `:black_heart: Antispam Discipline: 30-minute mute`
                 if (_guild.settings.raidMitigation === 1)
-                raidMitigation2 = `**Level 1**` + "\n" + `:red_heart: New Member Verification: Required Verified Phone Number` + "\n" + `:black_heart: New Member Participation: Immediately on join` + "\n" + `:black_heart: Invite Links: Active` + "\n" + `:yellow_heart: Antispam Discipline: Mute until staff remove it`
+                    raidMitigation2 = `**Level 1**` + "\n" + `:red_heart: New Member Verification: Required Verified Phone Number` + "\n" + `:black_heart: New Member Participation: Immediately on join` + "\n" + `:black_heart: Invite Links: Active` + "\n" + `:yellow_heart: Antispam Discipline: Mute until staff remove it`
                 if (_guild.settings.raidMitigation === 2)
-                raidMitigation2 = `**Level 2**` + "\n" + `:red_heart: New Member Verification: Required Verified Phone Number` + "\n" + `:red_heart: New Member Participation: Isolated until Mitigation Ends` + "\n" + `:black_heart: Invite Links: Active` + "\n" + `:orange_heart: Antispam Discipline: 24-hour temp ban`
+                    raidMitigation2 = `**Level 2**` + "\n" + `:red_heart: New Member Verification: Required Verified Phone Number` + "\n" + `:red_heart: New Member Participation: Isolated until Mitigation Ends` + "\n" + `:black_heart: Invite Links: Active` + "\n" + `:orange_heart: Antispam Discipline: 24-hour temp ban`
                 if (_guild.settings.raidMitigation === 3)
-                raidMitigation2 = `**Level 3**` + "\n" + `:red_heart: New Member Verification: Required Verified Phone Number` + "\n" + `:red_heart: New Member Participation: Isolated until Mitigation Ends` + "\n" + `:red_heart: Invite Links: Deleted / Not Allowed` + "\n" + `:red_heart: Antispam Discipline: permanent ban`
+                    raidMitigation2 = `**Level 3**` + "\n" + `:red_heart: New Member Verification: Required Verified Phone Number` + "\n" + `:red_heart: New Member Participation: Isolated until Mitigation Ends` + "\n" + `:red_heart: Invite Links: Deleted / Not Allowed` + "\n" + `:red_heart: Antispam Discipline: permanent ban`
                 embed.addField(`Raid Mitigation Status`, raidMitigation + "\n" + raidMitigation2);
                 embed.addField(`Guild Members`, _guild.members.array().length);
                 embed.addField(`Most Active Member`, mostActiveUser);
@@ -93,6 +93,24 @@ module.exports = class extends Task {
                 _guild.channels.resolve(statsMessageChannel).messages.fetch(statsMessage)
                     .then(message => message.edit(``, { embed: embed }));
             }
+
+            // Remove support channels that have expired
+            _guild.channels
+                .filter((channel) => channel.name.startsWith("support_"))
+                .each((channel) => {
+                    if ((!channel.lastMessage && moment(channel.createdAt).add(1, 'days').isBefore(moment())) || (channel.lastMessage && moment(channel.lastMessage.createdAt).add(1, 'days').isBefore(moment()))) {
+                        channel.delete(`Support channel expired (24 hours of inactivity).`);
+                    }
+                });
+
+            // Remove temp channels that have expired
+            _guild.channels
+                .filter((channel) => channel.name.endsWith("-temp14"))
+                .each((channel) => {
+                    if (moment(channel.createdAt).add(14, 'days').isBefore(moment())) {
+                        channel.delete(`Temp channel expired (14 days since it was created).`);
+                    }
+                });
 
             // Do icebreakers
             var n = new Date();
