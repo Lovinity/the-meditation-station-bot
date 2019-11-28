@@ -58,7 +58,7 @@ module.exports = class extends Route {
         })
         .then((res) => res.json())
         .then((body) => {
-            return response.end(res);
+            return response.end(body);
         })
         /*
 		if (!res.ok) return response.end(res);
