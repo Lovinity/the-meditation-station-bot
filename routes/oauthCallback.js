@@ -24,7 +24,7 @@ module.exports = class extends Route {
 			headers: { Authorization: `Basic ${Buffer.from(`${this.client.options.clientID}:${this.client.options.clientSecret}`).toString('base64')}` },
 			method: 'POST'
 		});
-		if (!res.ok) return response.end(JSON.stringify(await res.body.json()));
+		if (!res.ok) return response.end(res);
 
 		const { oauthUser } = this;
 
@@ -52,11 +52,16 @@ module.exports = class extends Route {
 			['redirect_uri', request.query.redirectUri],
 			['code', request.query.code]
 		]);
-		const res = await fetch(url, {
+		fetch(url, {
 			headers: { Authorization: `Basic ${Buffer.from(`${this.client.options.clientID}:${this.client.options.clientSecret}`).toString('base64')}` },
 			method: 'POST'
-		});
-		if (!res.ok) return response.end(JSON.stringify(await res.body.json()));
+        })
+        .then((res) => res.json())
+        .then((body) => {
+            return response.end(res);
+        })
+        /*
+		if (!res.ok) return response.end(res);
 
 		const { oauthUser } = this;
 
@@ -72,7 +77,7 @@ module.exports = class extends Route {
 			}, this.client.options.clientSecret),
 			user
 		}));
-		/* eslint-enable camelcase */
+        /* eslint-enable camelcase */
 	}
 
 	notReady(response) {
