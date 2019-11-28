@@ -69,6 +69,7 @@ Client.defaultGuildSchema
     .add('badges', 'any', { array: true, configurable: false });
 
 Client.use(require('klasa-member-gateway'));
+Client.use(require('klasa-dashboard-hooks'));
 Client.use(require('./klasa-selfroles-gateway'));
 
 // Guild Member Schema
