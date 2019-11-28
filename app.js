@@ -127,6 +127,9 @@ var client = new Client({
         default: 'mysql',
         mysql: config.providers.mysql
     },
+    dashboardHooks: {
+        redirectUri: "https://discord.spillthet.org/api/oauth/callback" 
+    },
     // Add custom permissions
     permissionLevels: new PermissionLevels()
         // everyone can use these commands

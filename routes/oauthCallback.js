@@ -17,7 +17,7 @@ module.exports = class extends Route {
 		const url = new URL('https://discordapp.com/api/oauth2/token');
 		url.search = new URLSearchParams([
 			['grant_type', 'authorization_code'],
-			['redirect_uri', request.body.redirectUri],
+			['redirect_uri', request.body.redirectUri || this.client.options.dashboardHooks.redirectUri],
 			['code', request.body.code]
 		]);
 		const res = await fetch(url, {
@@ -49,7 +49,7 @@ module.exports = class extends Route {
 		const url = new URL('https://discordapp.com/api/oauth2/token');
 		url.search = new URLSearchParams([
 			['grant_type', 'authorization_code'],
-			['redirect_uri', request.query.redirectUri],
+			['redirect_uri', request.query.redirectUri || this.client.options.dashboardHooks.redirectUri],
 			['code', request.query.code]
 		]);
 		fetch(url, {
