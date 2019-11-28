@@ -52,15 +52,11 @@ module.exports = class extends Route {
 			['redirect_uri', request.query.redirectUri || this.client.options.dashboardHooks.redirectUri],
 			['code', request.query.code]
 		]);
-		fetch(url, {
+		var res = await fetch(url, {
 			headers: { Authorization: `Basic ${Buffer.from(`${this.client.options.clientID}:${this.client.options.clientSecret}`).toString('base64')}` },
 			method: 'POST'
-        })
-        .then((res) => res.json())
-        .then((body) => {
-            return response.end(JSON.stringify(body));
-        })
-        /*
+        });
+
 		if (!res.ok) return response.end(res);
 
 		const { oauthUser } = this;
