@@ -78,7 +78,7 @@ module.exports = class extends Event {
                     channel.messages.fetch();
             });
 
-            // Cycle through all the members without the verified role and assign them the stored roles
+            // Cycle through all the members without the verified role and assign them the stored roles, providing we are not in raid mitigation.
             const verified = guild.settings.verifiedRole;
             const verifiedRole = guild.roles.resolve(verified);
             if (verifiedRole) {
@@ -100,11 +100,9 @@ module.exports = class extends Event {
                         guildMember.roles.add(temp, `Re-assigning saved roles`)
                             .then(newMember => updateLevels(newMember));
 
-                        // Also if the guild is under a raid mitigation level 2+, assign the mitigation role to the new member.
-                        if (guildMember.guild.settings.raidMitigation > 1) {
-                            const raidRole = guildMember.guild.roles.resolve(guildMember.guild.settings.raidRole);
-                            if (raidRole)
-                                guildMember.roles.add(raidRole, `Raid mitigation is active`);
+                        // Verify the member if we are not in raid mitigation level 2+
+                        if (guild.settings.raidMitigation < 2) {
+                            guildMember.roles.add(verifiedRole, `User is verified`);
                         }
                     }
                 });

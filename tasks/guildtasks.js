@@ -148,15 +148,15 @@ ${iceBreakers[ Math.floor(Math.random() * iceBreakers.length) ]}
 
             // Raid mitigation ends
             if (newscore <= 0 && _guild.settings.raidMitigation > 0) {
-                // Remove raidRole
-                _guild.members.each((guildMember) => {
-                    var raidRole = _guild.roles.resolve(_guild.settings.raidRole);
-                    if (raidRole) {
-                        if (guildMember.roles.get(raidRole.id)) {
-                            guildMember.roles.remove(raidRole, `Raid mitigation expired`);
+                // Add verifiedRole
+                var verifiedRole = _guild.roles.resolve(_guild.settings.verifiedRole);
+                if (verifiedRole) {
+                    _guild.members.each((guildMember) => {
+                        if (!guildMember.roles.get(verifiedRole.id)) {
+                            guildMember.roles.add(verifiedRole, `Raid mitigation expired`);
                         }
-                    }
-                });
+                    });
+                }
 
                 // Reset verification level
                 _guild.setVerificationLevel(2);

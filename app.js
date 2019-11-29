@@ -22,7 +22,6 @@ Client.defaultGuildSchema
     .add('repEmoji', 'string')
     .add('muteRole', 'role')
     .add('modRole', 'role')
-    .add('raidRole', 'role')
     .add('noRepRole', 'role')
     .add('conflictResolutionMembers', 'integer', { default: 3, min: 1 })
     .add('conflictResolutionTime', 'integer', { default: 15, min: 1 })
@@ -130,7 +129,8 @@ var client = new Client({
         mysql: config.providers.mysql
     },
     dashboardHooks: {
-        redirectUri: "https://discord.spillthet.org/api/oauth/callback" 
+        redirectUri: "https://discord.spillthet.org/api/oauth/callback",
+        origin: "https://discord.spillthet.org",
     },
     // Add custom permissions
     permissionLevels: new PermissionLevels()
