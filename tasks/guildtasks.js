@@ -86,7 +86,8 @@ module.exports = class extends Task {
                     raidMitigation2 = `**Level 3**` + "\n" + `:red_heart: New Member Verification: Required Verified Phone Number` + "\n" + `:red_heart: New Member Participation: Isolated until Mitigation Ends` + "\n" + `:red_heart: Invite Links: Deleted / Not Allowed` + "\n" + `:red_heart: Antispam Discipline: permanent ban`
                 embed.addField(`Raid Mitigation Status`, raidMitigation + "\n" + raidMitigation2);
                 embed.addField(`Guild Members`, _guild.members.array().length);
-                embed.addField(`Most Active Member`, mostActiveUser);
+                if (mostActiveUser !== '')
+                    embed.addField(`Most Active Member`, mostActiveUser);
                 embed.addField(`Guild Activity Index`, parseInt(activityLevel / _guild.members.array().length));
 
 
