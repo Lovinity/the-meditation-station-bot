@@ -1,8 +1,5 @@
 const { Command } = require('klasa');
 const moment = require("moment");
-const { createCanvas, loadImage } = require('canvas');
-const config = require("../../config");
-const yangStore = require('../../util/yangStore');
 
 module.exports = class extends Command {
 
@@ -89,7 +86,7 @@ module.exports = class extends Command {
 
         if (!sBadge) return message.send(`:x: I could not find an active badge with the provided ID.`);
 
-        user.guildSettings(user.id).update('profile.badges', sBadge.ID, { action: 'add' });
+        user.guildSettings(user.id).update('profile.badges', {ID: sBadge.ID, earnedOn: moment().format("LLL")}, { action: 'add' });
 
         return message.send(`:white_check_mark: Badge has been awarded!`);
     }

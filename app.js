@@ -91,7 +91,7 @@ Client.defaultMemberSchema
             .add('location', 'string')
             .add('info', 'string')
             .add('donations', 'float', { default: 0 })
-            .add('badges', 'string', { array: true })
+            .add('badges', 'any', { array: true })
             .add('background', 'url')
             .add('profileColor', folder2 => {
                 folder2
