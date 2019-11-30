@@ -54,7 +54,7 @@ module.exports = class extends Route {
             location: userSettings.profile.location,
             info: userSettings.profile.info,
             donations: userSettings.profile.donations,
-            pronouns: userSettings.pronouns
+            pronouns: userSettings.profile.pronouns
         }
 
         return response.end(JSON.stringify({ message: respond }));
