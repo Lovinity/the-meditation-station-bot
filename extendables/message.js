@@ -9,24 +9,31 @@ module.exports = class extends Extendable {
 	}
 
 	async ask(content, options) {
-		const message = await this.sendMessage(content, options);
+		const message = await this.send(content, options);
 		if (this.channel.permissionsFor(this.guild.me).has('ADD_REACTIONS')) return awaitReaction(this, message);
 		return awaitMessage(this);
 	}
 
 	async awaitReply(question, time = 60000, embed) {
-		await (embed ? this.channel.send(question, { embed }) : this.channel.send(question));
+		await (embed ? this.send(question, { embed }) : this.send(question));
 		return this.channel.awaitMessages(message => message.author.id === this.author.id,
 			{ max: 1, time, errors: ['time'] })
-			.then(messages => messages.first().content)
+			.then(messages => {
+				const returnContent = messages.first().content;
+				messages.first().delete();
+				return returnContent;
+			})
 			.catch(() => false);
 	}
 
 	async awaitMessage(question, time = 60000, embed) {
-		await (embed ? this.channel.send(question, { embed }) : this.channel.send(question));
+		await (embed ? this.send(question, { embed }) : this.channel.send(question));
 		return this.channel.awaitMessages(message => message.author.id === this.author.id,
 			{ max: 1, time, errors: ['time'] })
-			.then(messages => messages.first())
+			.then(messages => {
+				const returnContent = messages.first();
+				return returnContent;
+			})
 			.catch(() => false);
 	}
 
@@ -49,7 +56,8 @@ const awaitReaction = async (msg, message) => {
 const awaitMessage = async (message) => {
 	const messages = await message.channel.awaitMessages(mes => mes.author === message.author, { time: 60000, max: 1 });
 	if (messages.size === 0) return false;
-	const responseMessage = await messages.first();
-	if (responseMessage.content.toLowerCase() === 'yes') return true;
+	const responseMessage = await messages.first().content;
+	messages.first().delete();
+	if (responseMessage.toLowerCase() === 'yes') return true;
 	return false;
 };

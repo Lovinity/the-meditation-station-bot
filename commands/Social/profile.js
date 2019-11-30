@@ -1,6 +1,6 @@
-const {Command} = require('klasa');
+const { Command } = require('klasa');
 const moment = require("moment");
-const {createCanvas, loadImage} = require('canvas');
+const { createCanvas, loadImage } = require('canvas');
 const config = require("../../config");
 const yangStore = require('../../util/yangStore');
 
@@ -9,22 +9,21 @@ module.exports = class extends Command {
     constructor(...args) {
         super(...args, {
             subcommands: true,
-            runIn: ['text'],
+            runIn: [ 'text' ],
             description: 'View your profile or the profile of another user; or, edit your profile info.',
             usage: '<title|gender|pronouns|dob|location|factions|info|background|color|badge|show:default> [user:user] [parameter:string]',
             usageDelim: ' | ',
             cooldown: 30,
-            requiredSettings: ["botChannel"],
+            requiredSettings: [ "botChannel" ],
         });
     }
 
-    async title(message, [user = null, parameter = ""]) {
-        if (user === null || user.id === message.author.id)
-        {
+    async title (message, [ user = null, parameter = "" ]) {
+        if (user === null || user.id === message.author.id) {
             user = message.author;
 
         } else {
-            const {permission} = await this.client.permissionLevels.run(message, 4);
+            const { permission } = await this.client.permissionLevels.run(message, 4);
             if (!permission)
                 return message.send(`:x: Ha ha, you're not a staff member. Good try, though.`);
         }
@@ -35,19 +34,17 @@ module.exports = class extends Command {
         if (/[^\x20-\x7E]/g.test(parameter))
             return message.send(`:x: You don't need fancy text in titles.`);
 
-        if (user.id === message.author.id && await yangStore(message, 'profileTitle', 1))
-        {
+        if (user.id === message.author.id && await yangStore(message, 'profileTitle', 1)) {
             await user.guildSettings(message.guild.id).update('profile.title', parameter);
             return message.send(":white_check_mark: Title has been updated!");
-    }
+        }
     }
 
-    async gender(message, [user = null, parameter = ""]) {
-        if (user === null || user.id === message.author.id)
-        {
+    async gender (message, [ user = null, parameter = "" ]) {
+        if (user === null || user.id === message.author.id) {
             user = message.author;
         } else {
-            const {permission} = await this.client.permissionLevels.run(message, 4);
+            const { permission } = await this.client.permissionLevels.run(message, 4);
             if (!permission)
                 return message.send(`:x: Ha ha, you're not a staff member. Good try, though.`);
         }
@@ -63,12 +60,11 @@ module.exports = class extends Command {
         return message.send(":white_check_mark: Gender has been updated!");
     }
 
-    async pronouns(message, [user = null, parameter = ""]) {
-        if (user === null || user.id === message.author.id)
-        {
+    async pronouns (message, [ user = null, parameter = "" ]) {
+        if (user === null || user.id === message.author.id) {
             user = message.author;
         } else {
-            const {permission} = await this.client.permissionLevels.run(message, 4);
+            const { permission } = await this.client.permissionLevels.run(message, 4);
             if (!permission)
                 return message.send(`:x: Ha ha, you're not a staff member. Good try, though.`);
         }
@@ -84,14 +80,13 @@ module.exports = class extends Command {
         return message.send(":white_check_mark: Pronouns have been updated!");
     }
 
-    async dob(message, [user = null, parameter = ""]) {
-        if (user === null || user.id === message.author.id)
-        {
+    async dob (message, [ user = null, parameter = "" ]) {
+        if (user === null || user.id === message.author.id) {
             user = message.author;
             if (user.guildSettings(message.guild.id).profile.dob !== "" && user.guildSettings(message.guild.id).profile.dob !== null)
                 return message.send(`:x: You already set your birthday. Please contact staff if you put the wrong birthday.`);
         } else {
-            const {permission} = await this.client.permissionLevels.run(message, 4);
+            const { permission } = await this.client.permissionLevels.run(message, 4);
             if (!permission)
                 return message.send(`:x: Ha ha, you're not a staff member. Good try, though.`);
         }
@@ -104,12 +99,11 @@ module.exports = class extends Command {
         return message.send(":white_check_mark: date of birth has been updated!");
     }
 
-    async location(message, [user = null, parameter = ""]) {
-        if (user === null || user.id === message.author.id)
-        {
+    async location (message, [ user = null, parameter = "" ]) {
+        if (user === null || user.id === message.author.id) {
             user = message.author;
         } else {
-            const {permission} = await this.client.permissionLevels.run(message, 4);
+            const { permission } = await this.client.permissionLevels.run(message, 4);
             if (!permission)
                 return message.send(`:x: Ha ha, you're not a staff member. Good try, though.`);
         }
@@ -125,12 +119,11 @@ module.exports = class extends Command {
         return message.send(":white_check_mark: location has been updated!");
     }
 
-    async factions(message, [user = null, parameter = ""]) {
-        if (user === null || user.id === message.author.id)
-        {
+    async factions (message, [ user = null, parameter = "" ]) {
+        if (user === null || user.id === message.author.id) {
             user = message.author;
         } else {
-            const {permission} = await this.client.permissionLevels.run(message, 4);
+            const { permission } = await this.client.permissionLevels.run(message, 4);
             if (!permission)
                 return message.send(`:x: Ha ha, you're not a staff member. Good try, though.`);
         }
@@ -146,12 +139,11 @@ module.exports = class extends Command {
         return message.send(":white_check_mark: factions has been updated!");
     }
 
-    async info(message, [user = null, parameter = ""]) {
-        if (user === null || user.id === message.author.id)
-        {
+    async info (message, [ user = null, parameter = "" ]) {
+        if (user === null || user.id === message.author.id) {
             user = message.author;
         } else {
-            const {permission} = await this.client.permissionLevels.run(message, 4);
+            const { permission } = await this.client.permissionLevels.run(message, 4);
             if (!permission)
                 return message.send(`:x: Ha ha, you're not a staff member. Good try, though.`);
         }
@@ -167,12 +159,11 @@ module.exports = class extends Command {
         return message.send(":white_check_mark: info has been updated!");
     }
 
-    async background(message, [user = null, parameter = ""]) {
-        if (user === null || user.id === message.author.id)
-        {
+    async background (message, [ user = null, parameter = "" ]) {
+        if (user === null || user.id === message.author.id) {
             user = message.author;
         } else {
-            const {permission} = await this.client.permissionLevels.run(message, 4);
+            const { permission } = await this.client.permissionLevels.run(message, 4);
             if (!permission)
                 return message.send(`:x: Ha ha, you're not a staff member. Good try, though.`);
         }
@@ -180,30 +171,28 @@ module.exports = class extends Command {
         await message.send(`:question: Please send an attachment of the background you want to use. Or, send the word "clear" to remove your current background. You have 5 minutes to respond.`);
         try {
             var messages = await message.channel.awaitMessages(dmessage => dmessage.author.id === message.author.id && (dmessage.attachments.size > 0 || dmessage.content === "clear"),
-                    {max: 1, time: 300000, errors: ['time']});
+                { max: 1, time: 300000, errors: [ 'time' ] });
         } catch (err) {
             return message.send(`:x: I didn't hear back from you. I canceled your !profile background command.`);
         }
         var themessage = messages.first();
-        if (themessage.content === "clear")
-        {
+        if (themessage.content === "clear") {
             user.guildSettings(message.guild.id).reset('profile.background');
         } else {
-            if (user.id === message.author.id && await yangStore(message, 'profileBackground', 1))
-            {
+            if (user.id === message.author.id && await yangStore(message, 'profileBackground', 1)) {
                 var url = themessage.attachments.first().url;
                 await user.guildSettings(message.guild.id).update('profile.background', url);
                 return message.send(":white_check_mark: background has been updated!");
             }
-    }
+        }
+        themessage.delete();
     }
 
-    async color(message, [user = null, parameter = ""]) {
-        if (user === null || user.id === message.author.id)
-        {
+    async color (message, [ user = null, parameter = "" ]) {
+        if (user === null || user.id === message.author.id) {
             user = message.author;
         } else {
-            const {permission} = await this.client.permissionLevels.run(message, 4);
+            const { permission } = await this.client.permissionLevels.run(message, 4);
             if (!permission)
                 return message.send(`:x: Ha ha, you're not a staff member. Good try, though.`);
         }
@@ -244,8 +233,7 @@ module.exports = class extends Command {
         if (l < 0 || l > 1000)
             return message.send(`:x: lightness must be between 0 and 1000.`);
 
-        if (user.id === message.author.id && await yangStore(message, 'profileColor', 1))
-        {
+        if (user.id === message.author.id && await yangStore(message, 'profileColor', 1)) {
             await user.guildSettings(message.guild.id).update('profile.profileColor.hue', hue);
             await user.guildSettings(message.guild.id).update('profile.profileColor.saturation', sat);
             await user.guildSettings(message.guild.id).update('profile.profileColor.lightness', l);
@@ -254,16 +242,15 @@ module.exports = class extends Command {
         }
     }
 
-    async badge(message, [user = null, parameter = ""]) {
-        const {permission} = await this.client.permissionLevels.run(message, 4);
+    async badge (message, [ user = null, parameter = "" ]) {
+        const { permission } = await this.client.permissionLevels.run(message, 4);
         if (!permission)
             return message.send(`:x: Ha ha, you're not a staff member. Good try, though.`);
 
         if (user === null)
             user = message.author;
 
-        if (parameter === "remove")
-        {
+        if (parameter === "remove") {
             var toRemove = await message.awaitReply(`:question: Which badge do you want to remove from this user? Specify a number from 1 to 15, where 1 is the top left badge, counting right, and then counting down (the left badge in row 2 is 4).`, 60000);
             if (!toRemove || toRemove < 1 || toRemove > 15)
                 return message.send(`:x: That's an invalid badge number. Please try the command again.`);
@@ -272,29 +259,29 @@ module.exports = class extends Command {
             if (badges.length > 0)
                 badges = badges.reverse();
 
-            await user.guildSettings(message.guild.id).update('profile.badges', badges[toRemove - 1], {action: 'remove'});
+            await user.guildSettings(message.guild.id).update('profile.badges', badges[ toRemove - 1 ], { action: 'remove' });
         } else {
             await message.send(`:question: Please upload an attachment containing the badge you want to award this member. Or, send a message containing a link to it. It is highly advised to use square images. You have 3 minutes.`);
             try {
                 var messages = await message.channel.awaitMessages(dmessage => dmessage.author.id === message.author.id && (dmessage.attachments.size > 0 || /(https?:\/\/[^\s]+)/g.test(dmessage.content)),
-                        {max: 1, time: 180000, errors: ['time']});
+                    { max: 1, time: 180000, errors: [ 'time' ] });
             } catch (err) {
                 return message.send(`:x: I didn't receive a valid image from you for the badge. The command was canceled.`);
             }
             var themessage = messages.first();
-            if (themessage.attachments.size > 0)
-            {
+            if (themessage.attachments.size > 0) {
                 var url = themessage.attachments.first().url;
             } else {
                 var url = themessage.cleanContent;
             }
-            await user.guildSettings(message.guild.id).update('profile.badges', url, {action: 'add'});
+            await user.guildSettings(message.guild.id).update('profile.badges', url, { action: 'add' });
+            themessage.delete();
         }
 
         return message.send(":white_check_mark: Badge has been updated!");
     }
 
-    async show(message, [user = null]) {
+    async show (message, [ user = null ]) {
         const canvas = createCanvas(480, 360);
 
         if (user === null || user.id === message.author.id)
@@ -310,8 +297,7 @@ module.exports = class extends Command {
 
         var ctx = canvas.getContext('2d');
         ctx.save();
-        if (profile.background && profile.background !== null)
-        {
+        if (profile.background && profile.background !== null) {
             try {
                 var background = await loadImage(profile.background);
                 ctx.drawImage(background, 0, 0, 480, 360);
@@ -368,15 +354,14 @@ module.exports = class extends Command {
         ctx.shadowBlur = 5;
         ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
         try {
-            var avatar = await loadImage(user.displayAvatarURL({format: 'png'}));
+            var avatar = await loadImage(user.displayAvatarURL({ format: 'png' }));
             ctx.drawImage(avatar, 9, 13, 100, 100);
         } catch (e) {
             this.client.emit('error', e)
         }
         ctx.restore();
         ctx.save();
-        if (profile.badges.length > 0)
-        {
+        if (profile.badges.length > 0) {
             var maps = profile.badges.reverse().map(async (badge, index) => {
                 ctx.shadowBlur = 2;
                 ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
@@ -568,37 +553,37 @@ module.exports = class extends Command {
                 ctx.fillText(line, 116, (i * 12) + 265);
         });
 
-        return message.send('', {files: [canvas.toBuffer()]});
+        return message.send('', { files: [ canvas.toBuffer() ] });
     }
 
 };
 
 
-function wrapText(ctx, text, maxWidth) {
+function wrapText (ctx, text, maxWidth) {
     const words = text === null ? [] : text.split(' ');
     let lines = [];
     let line = '';
 
     if (ctx.measureText(text).width < maxWidth) {
-        return [text];
+        return [ text ];
     }
 
     while (words.length > 0) {
         let split = false;
 
-        while (ctx.measureText(words[0]).width >= maxWidth) {
-            const tmp = words[0];
-            words[0] = tmp.slice(0, -1);
+        while (ctx.measureText(words[ 0 ]).width >= maxWidth) {
+            const tmp = words[ 0 ];
+            words[ 0 ] = tmp.slice(0, -1);
 
             if (!split) {
                 split = true;
                 words.splice(1, 0, tmp.slice(-1));
             } else {
-                words[1] = tmp.slice(-1) + words[1];
+                words[ 1 ] = tmp.slice(-1) + words[ 1 ];
             }
         }
 
-        if (ctx.measureText(line + words[0]).width < maxWidth) {
+        if (ctx.measureText(line + words[ 0 ]).width < maxWidth) {
             line += `${words.shift()} `;
         } else {
             lines.push(line);
@@ -614,7 +599,7 @@ function wrapText(ctx, text, maxWidth) {
 }
 
 
-function getIndicesOf(searchStr, str, caseSensitive) {
+function getIndicesOf (searchStr, str, caseSensitive) {
     var searchStrLen = searchStr.length;
     if (searchStrLen == 0) {
         return [];
