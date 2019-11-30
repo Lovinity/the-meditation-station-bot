@@ -85,11 +85,10 @@ Client.defaultMemberSchema
     .add('profile', folder => {
         folder
             .add('title', 'string')
-            .add('gender', 'string')
+            .add('identities', 'string')
             .add('pronouns', 'string')
             .add('dob', 'string')
             .add('location', 'string')
-            .add('factions', 'string')
             .add('info', 'string')
             .add('donations', 'float', { default: 0 })
             .add('badges', 'url', { array: true })
@@ -131,10 +130,7 @@ var client = new Client({
         default: 'mysql',
         mysql: config.providers.mysql
     },
-    dashboardHooks: {
-        redirectUri: "https://discord.spillthet.org/api/oauth/callback",
-        origin: "https://discord.spillthet.org",
-    },
+    dashboardHooks: config.dashboardHooks,
     // Add custom permissions
     permissionLevels: new PermissionLevels()
         // everyone can use these commands

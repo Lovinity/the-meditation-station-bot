@@ -11,7 +11,7 @@ module.exports = class extends Command {
             subcommands: true,
             runIn: [ 'text' ],
             description: 'View your profile or the profile of another user; or, edit your profile info.',
-            usage: '<title|gender|pronouns|dob|location|factions|info|background|color|badge|show:default> [user:user] [parameter:string]',
+            usage: '<title|identities|pronouns|dob|location|factions|info|background|color|badge|show:default> [user:user] [parameter:string]',
             usageDelim: ' | ',
             cooldown: 30,
             requiredSettings: [ "botChannel" ],
@@ -40,7 +40,7 @@ module.exports = class extends Command {
         }
     }
 
-    async gender (message, [ user = null, parameter = "" ]) {
+    async identities (message, [ user = null, parameter = "" ]) {
         if (user === null || user.id === message.author.id) {
             user = message.author;
         } else {
@@ -50,14 +50,14 @@ module.exports = class extends Command {
         }
 
         if (parameter.length > 48)
-            return message.send(`:x: Let's not get excessive; genders can't be over 48 characters long.`);
+            return message.send(`:x: Let's not get excessive; identities can't be over 48 characters long.`);
 
         if (/[^\x20-\x7E]/g.test(parameter))
-            return message.send(`:x: You don't need fancy text in genders.`);
+            return message.send(`:x: You don't need fancy text in identities.`);
 
-        await user.guildSettings(message.guild.id).update('profile.gender', parameter);
+        await user.guildSettings(message.guild.id).update('profile.identities', parameter);
 
-        return message.send(":white_check_mark: Gender has been updated!");
+        return message.send(":white_check_mark: Identities has been updated!");
     }
 
     async pronouns (message, [ user = null, parameter = "" ]) {
