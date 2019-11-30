@@ -23,18 +23,40 @@ module.exports = class extends Route {
             return response.end(JSON.stringify({ error: "Unable to fetch the provided user." }));
         }
 
+        var bans;
+        var isBanned = false;
+        try {
+            bans = await guild.fetchBans();
+            if (bans.get(user.id))
+                isBanned = true;
+        } catch (e) {
+
+        }
+
+        var isMuted = false;
+
         const userSettings = user.guildSettings(guild.id);
+        var guildMember;
+        try {
+            guildMember = await guild.members.fetch(user.id)
+            var joined;
+            if (guildMember)
+            {
+                joined = guildMember.joinedAt;
+                var muteRole = guild.roles.resolve(guild.settings.muteRole);
 
-        const guildMember = guild.members.fetch(user.id)
-        var joined;
-        if (guildMember)
-            joined = guildMember.joinedAt;
+                if (muteRole && guildMember.roles.get(muteRole.id))
+                    isMuted = true;
+            }
+        } catch (e) {
 
-            var xp = userSettings.xp;
-            var level = Math.floor(0.177 * Math.sqrt(xp)) + 1;
-            var upper = Math.ceil((level / 0.177) ** 2);
-            var lower = Math.ceil(((level - 1) / 0.177) ** 2);
-            var fillValue = Math.min(Math.max((xp - lower) / (upper - lower), 0), 1);
+        }
+
+        var xp = userSettings.xp;
+        var level = Math.floor(0.177 * Math.sqrt(xp)) + 1;
+        var upper = Math.ceil((level / 0.177) ** 2);
+        var lower = Math.ceil(((level - 1) / 0.177) ** 2);
+        var fillValue = Math.min(Math.max((xp - lower) / (upper - lower), 0), 1);
 
         var respond = {
             tag: user.tag,
@@ -54,7 +76,9 @@ module.exports = class extends Route {
             location: userSettings.profile.location,
             info: userSettings.profile.info,
             donations: userSettings.profile.donations,
-            pronouns: userSettings.profile.pronouns
+            pronouns: userSettings.profile.pronouns,
+            isbanned: isBanned,
+            ismuted: isMuted
         }
 
         return response.end(JSON.stringify({ message: respond }));
