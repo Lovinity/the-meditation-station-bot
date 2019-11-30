@@ -64,7 +64,10 @@ Client.defaultGuildSchema
             .add('choice', 'integer', { min: 0, default: 5 })
             .add('affirmations', 'integer', { min: 0, default: 25 })
             .add('markov', 'integer', { min: 0, default: 10 })
+            .add('advertisement', 'integer', { min: 0, default: 100 })
+            .add('advertisementHere', 'integer', { min: 0, default: 250 })
     })
+    .add('ads', 'any', { array: true, configurable: false })
     .add('badges', 'any', { array: true, configurable: false });
 
 Client.use(require('klasa-member-gateway'));
