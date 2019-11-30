@@ -73,8 +73,6 @@ Do you want your ad to contain a here mention?`);
             purchaseAd();
             return message.send(`:white_check_mark: Advertisement has been purchased!`);
         }
-
-        return message.send(`:x: Please try the ad command again.`);
     }
 
 };
