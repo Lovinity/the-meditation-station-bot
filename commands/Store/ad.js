@@ -1,5 +1,5 @@
 const { Command } = require('klasa');
-const {MessageEmbed} = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 const moment = require('moment');
 const yangStore = require('../../util/yangStore');
 
@@ -47,31 +47,35 @@ Do you want your ad to contain a here mention?`);
             var adID = Date.now().toString(36) + (message.client.shard ? message.client.shard.id.toString(36) : '') + String.fromCharCode((1 % 26) + 97)
             message.guild.settings.update('ads', {
                 ID: adID,
+                author: message.user.id,
                 postsLeft: numPosts,
                 nextPost: moment().add(1, 'days').add(Math.floor(Math.random() * 24), 'hours').add(Math.floor(Math.random() * 60), 'minutes').toISOString(true),
                 hereMention: hereAd,
                 adText: adText
-            }, {action: 'add'});
+            }, { action: 'add' });
             const channel = message.guild.channels.resolve(message.guild.settings.eventLogChannel);
             if (channel) {
                 const embed = new MessageEmbed()
-                .setTitle(`Advertisement Purchased`)
-                .setAuthor(message.user.tag)
-                .setColor('#4527A0')
-                .setDescription(adText)
-                .addField(`Number of posts`, numPosts)
-                .addField(`Here mention?`, hereAd)
-                .addField(`Remove this ad`, `If you need to remove this ad, use the command \`!adremove ${adID}\``)
-                .setFooter(`Ad ID ${adID}`)
+                    .setTitle(`Advertisement Purchased`)
+                    .setAuthor(message.user.tag)
+                    .setColor('#4527A0')
+                    .setDescription(adText)
+                    .addField(`Number of posts`, numPosts)
+                    .addField(`Here mention?`, hereAd)
+                    .addField(`Remove this ad`, `If you need to remove this ad, use the command \`!adremove ${adID}\``)
+                    .setFooter(`Ad ID ${adID}`)
+                channel.send({ embed });
             }
         }
 
         if (hereAd && await yangStore(message, 'advertisementHere', numPosts)) {
             purchaseAd();
-            return message.send(`:white_check_mark: Advertisement has been purchased!`);
+            return message.send(`:white_check_mark: Advertisement has been purchased!
+:warning: Be aware if you leave the guild, all remaining purchased advertisements will be removed without refund.`);
         } else if (await yangStore(message, 'advertisement', numPosts)) {
             purchaseAd();
-            return message.send(`:white_check_mark: Advertisement has been purchased!`);
+            return message.send(`:white_check_mark: Advertisement has been purchased!
+:warning: Be aware if you leave the guild, all remaining purchased advertisements will be removed without refund.`);
         }
     }
 

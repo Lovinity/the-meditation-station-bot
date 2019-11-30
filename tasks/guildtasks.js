@@ -205,6 +205,38 @@ ${_guild.settings.raidMitigation >= 3 ? `**Please remember to re-generate invite
                     }
                 });
 
+            // Guild advertisements
+            const _channel = this.client.channels.resolve(_guild.settings.generalChannel);
+            if (_channel && _guild.settings.ads && _guild.settings.ads.length > 0) {
+                _guild.settings.ads.map((ad) => {
+                    if (moment().isAfter(moment(ad.nextPost))) {
+                        const _user = this.client.users.resolve(ad.author);
+                        _guild.settings.update('ads', ad, { action: 'remove' })
+                            .then(() => {
+                                if (ad.postsLeft > 1 && _user && _guild.members.resolve(_user.id)) {
+                                    _guild.settings.update('ads', {
+                                        ID: ad.ID,
+                                        author: ad.author,
+                                        postsLeft: ad.postsLeft - 1,
+                                        nextPost: moment().add(1, 'days').add(Math.floor(Math.random() * 24), 'hours').add(Math.floor(Math.random() * 60), 'minutes').toISOString(true),
+                                        hereMention: ad.hereMention,
+                                        adText: ad.adText
+                                    }, { action: 'add' });
+                                }
+                            })
+                        if (_user && _guild.members.resolve(_user.id)) {
+                            const embed = new MessageEmbed()
+                                .setTitle(`Community Advertisement`)
+                                .setAuthor(_user.tag)
+                                .setColor('#4527A0')
+                                .setDescription(ad.adText)
+                                .setFooter(`If you would like to purchase an ad with your Yang, use the bot command \`!ad\``)
+                            _channel.send(`${ad.hereMention ? '@here' : ''}`, { embed });
+                        }
+                    }
+                })
+            }
+
             // tri-hourly Trivia Game at minute 58
             if (m === 58 && h % 3 === 0) {
                 console.log(`trivia`);

@@ -76,6 +76,15 @@ module.exports = class extends Event {
 
                 });
 
+        // Remove any of the member's purchased advertisements
+        if (guildMember.guild.settings.ads.length > 0) {
+            guildMember.guild.settings.ads
+                .filter((ad) => ad.author === guildMember.id)
+                .map((ad) => {
+                    guildMember.guild.settings.update('ads', ad, { action: 'remove' });
+                })
+        }
+
     }
 
 };
