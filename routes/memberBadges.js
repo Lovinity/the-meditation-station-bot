@@ -24,13 +24,13 @@ module.exports = class extends Route {
 
         const userSettings = user.guildSettings(guild.id);
         const guildBadges = guild.settings.badges;
-        var respond = [];
+        var respond = {tag: user.tag, badges: []};
 
         if (guildBadges && guildBadges.length > 0 && userSettings.profile.badges && userSettings.profile.badges.length > 0) {
             guildBadges
             .filter((badge) => userSettings.profile.badges.includes(badge.ID))
             .map((badge) => {
-                respond.push(badge);
+                respond.badges.push(badge);
             });
         }
 

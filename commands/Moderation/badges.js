@@ -81,13 +81,13 @@ module.exports = class extends Command {
 
         if (message.guild.settings.badges && message.guild.settings.badges.length > 0) {
             message.guild.settings.badges
-                .filter((badge) => badge.ID === id)
+                .filter((badge) => badge.ID === id && badge.active)
                 .map((badge) => {
                     sBadge = badge;
                 });
         }
 
-        if (!sBadge) return message.send(`:x: I could not find a badge with the provided ID.`);
+        if (!sBadge) return message.send(`:x: I could not find an active badge with the provided ID.`);
 
         user.guildSettings(user.id).update('badges', sBadge.ID, { action: 'add' });
 
