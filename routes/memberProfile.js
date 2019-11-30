@@ -17,7 +17,7 @@ module.exports = class extends Route {
         if (!guild) return response.end(JSON.stringify({ error: "The bot is not in the provided guild." }));
 
         try {
-            const user = await this.client.users.fetch(request.query.user);
+            var user = await this.client.users.fetch(request.query.user);
             if (!user) throw new Error("User not found");
         } catch (e) {
             return response.end(JSON.stringify({ error: "Unable to fetch the provided user." }));
