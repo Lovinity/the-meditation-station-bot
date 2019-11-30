@@ -26,11 +26,11 @@ module.exports = class extends Route {
         const guildBadges = guild.settings.badges;
         var respond = {tag: user.tag, badges: []};
 
-        if (guildBadges.length > 0 && userSettings.profile.badges.length > 0) {
+        if (guildBadges.length > 0 && userSettings.badges.length > 0) {
             guildBadges
-            .filter((badge) => userSettings.profile.badges.some((badgeb) => badgeb.ID === badge.ID))
+            .filter((badge) => userSettings.badges.some((badgeb) => badgeb.ID === badge.ID))
             .map((badge) => {
-                respond.badges.push({...badge, earnedOn: userSettings.profile.badges.find((badgeb) => badgeb.ID === badge.ID)});
+                respond.badges.push({...badge, earnedOn: userSettings.badges.find((badgeb) => badgeb.ID === badge.ID)});
             });
         }
 
