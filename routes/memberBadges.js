@@ -30,7 +30,7 @@ module.exports = class extends Route {
             guildBadges
             .filter((badge) => userBadges.some((badgeb) => badgeb.ID === badge.ID))
             .map((badge) => {
-                respond.badges.push({...badge, earnedOn: userBadges.find((badgeb) => badgeb.ID === badge.ID)});
+                respond.badges.push({...badge, earnedOn: userBadges.find((badgeb) => badgeb.ID === badge.ID).earnedOn});
             });
         }
 
