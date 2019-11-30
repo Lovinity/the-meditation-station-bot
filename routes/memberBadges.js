@@ -22,15 +22,15 @@ module.exports = class extends Route {
             return response.end(JSON.stringify({ error: "Unable to fetch the provided user." }));
         }
 
-        const userSettings = user.guildSettings(guild.id);
+        const userBadges = user.guildSettings(guild.id).profile.badges;
         const guildBadges = guild.settings.badges;
         var respond = {tag: user.tag, badges: []};
 
-        if (guildBadges.length > 0 && userSettings.badges.length > 0) {
+        if (guildBadges.length > 0 && userBadges.length > 0) {
             guildBadges
-            .filter((badge) => userSettings.badges.some((badgeb) => badgeb.ID === badge.ID))
+            .filter((badge) => userBadges.some((badgeb) => badgeb.ID === badge.ID))
             .map((badge) => {
-                respond.badges.push({...badge, earnedOn: userSettings.badges.find((badgeb) => badgeb.ID === badge.ID)});
+                respond.badges.push({...badge, earnedOn: userBadges.find((badgeb) => badgeb.ID === badge.ID)});
             });
         }
 

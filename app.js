@@ -92,6 +92,7 @@ Client.defaultMemberSchema
             .add('info', 'string')
             .add('donations', 'float', { default: 0 })
             .add('background', 'url')
+            .add('badges', 'any', { array: true })
             .add('profileColor', folder2 => {
                 folder2
                     .add('hue', 'float', { default: 0, min: 0, max: 0 })
@@ -99,7 +100,6 @@ Client.defaultMemberSchema
                     .add('lightness', 'float', { default: 100, min: 0, max: 1000 });
             });
     })
-    .add('badges', 'any', { array: true })
     .add('canRep', 'boolean', { default: true })
     .add('modLogs', 'any', { array: true })
     .add('reports', 'string', { array: true })

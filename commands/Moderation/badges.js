@@ -86,7 +86,7 @@ module.exports = class extends Command {
 
         if (!sBadge) return message.send(`:x: I could not find an active badge with the provided ID.`);
 
-        await user.guildSettings(user.id).update('badges', {ID: sBadge.ID, earnedOn: moment().format("LLL")}, { action: 'add' });
+        await user.guildSettings(message.guild.id).update('profile.badges', {ID: sBadge.ID, earnedOn: moment().format("LLL")}, { action: 'add' });
 
         return message.send(`:white_check_mark: Badge has been awarded!`);
     }
