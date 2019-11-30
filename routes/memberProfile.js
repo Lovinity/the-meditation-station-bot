@@ -52,7 +52,8 @@ module.exports = class extends Route {
             identities: userSettings.profile.identities,
             dob: userSettings.profile.dob,
             location: userSettings.profile.location,
-            info: userSettings.profile.info
+            info: userSettings.profile.info,
+            donations: userSettings.profile.donations,
         }
 
         return response.end(JSON.stringify({ message: respond }));
