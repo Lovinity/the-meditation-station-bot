@@ -82,8 +82,9 @@ module.exports = class extends Command {
         menu.addOption(`classE`, `Indefinite or timed mute, channel restrictions, and/or roles that restrict permissions.`);
         menu.addOption(`classF`, `Temporary or permanent ban.`);
         menu.addOption(`classG`, `Investigation for a violation of the law or Discord's terms / guidelines.`);
-        var collector = await menu.run(await message.send('Please wait...'), { time: 300000, filter: (reaction, user) => user.id === message.author.id });
+        var collector = await menu.run(await message.channel.send('Please wait...'), { time: 300000, filter: (reaction, user) => user.id === message.author.id });
         var choice = await collector.selection;
+        collector.message.delete();
         if (menu.options[ choice ]) {
             var discipline = new GuildDiscipline(user, message.guild, message.author);
             discipline.setType(menu.options[ choice ].name);
