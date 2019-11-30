@@ -11,27 +11,29 @@ module.exports = class extends Extendable {
 	async ask(content, options) {
 		const message = await this.send(content, options);
 		if (this.channel.permissionsFor(this.guild.me).has('ADD_REACTIONS')) return awaitReaction(this, message);
-		return awaitMessage(this);
+		return awaitMessage(this, message);
 	}
 
 	async awaitReply(question, time = 60000, embed) {
-		await (embed ? this.send(question, { embed }) : this.send(question));
+		const message = await (embed ? this.send(question, { embed }) : this.send(question));
 		return this.channel.awaitMessages(message => message.author.id === this.author.id,
 			{ max: 1, time, errors: ['time'] })
 			.then(messages => {
 				const returnContent = messages.first().content;
 				messages.first().delete();
+				message.delete();
 				return returnContent;
 			})
 			.catch(() => false);
 	}
 
 	async awaitMessage(question, time = 60000, embed) {
-		await (embed ? this.send(question, { embed }) : this.channel.send(question));
+		const message = await (embed ? this.send(question, { embed }) : this.channel.send(question));
 		return this.channel.awaitMessages(message => message.author.id === this.author.id,
 			{ max: 1, time, errors: ['time'] })
 			.then(messages => {
 				const returnContent = messages.first();
+				message.delete();
 				return returnContent;
 			})
 			.catch(() => false);
@@ -49,15 +51,17 @@ const awaitReaction = async (msg, message) => {
 	await message.react('🇾');
 	await message.react('🇳');
 	const data = await message.awaitReactions(reaction => reaction.users.has(msg.author.id), { time: 60000, max: 1 });
+	message.delete();
 	if (data.firstKey() === '🇾') return true;
 	return false;
 };
 
-const awaitMessage = async (message) => {
-	const messages = await message.channel.awaitMessages(mes => mes.author === message.author, { time: 60000, max: 1 });
+const awaitMessage = async (msg, message) => {
+	const messages = await msg.channel.awaitMessages(mes => mes.author === msg.author, { time: 60000, max: 1 });
 	if (messages.size === 0) return false;
 	const responseMessage = await messages.first().content;
 	messages.first().delete();
+	message.delete();
 	if (responseMessage.toLowerCase() === 'yes') return true;
 	return false;
 };
