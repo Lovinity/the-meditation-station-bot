@@ -50,8 +50,8 @@ module.exports = class extends Command {
 
         var badgeID = Date.now().toString(36) + (this.client.shard ? this.client.shard.id.toString(36) : '') + String.fromCharCode((1 % 26) + 97);
 
-        if (message.guild.badges.length > 0) {
-            var maps = message.guild.badges
+        if (message.guild.settings.badges && message.guild.settings.badges.length > 0) {
+            var maps = message.guild.settings.badges
                 .filter((badge) => badge.name === title)
                 .map(async (badge) => {
                     badgeID = badge.ID;

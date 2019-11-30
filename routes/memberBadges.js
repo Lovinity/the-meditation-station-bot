@@ -26,7 +26,7 @@ module.exports = class extends Route {
         const guildBadges = guild.settings.badges;
         var respond = [];
 
-        if (guildBadges.length > 0 && userSettings.profile.badges.length > 0) {
+        if (guildBadges && guildBadges.length > 0 && userSettings.profile.badges && userSettings.profile.badges.length > 0) {
             guildBadges
             .filter((badge) => userSettings.profile.badges.includes(badge.ID))
             .map((badge) => {
