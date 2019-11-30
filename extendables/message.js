@@ -9,13 +9,13 @@ module.exports = class extends Extendable {
 	}
 
 	async ask(content, options) {
-		const message = await this.send(content, options);
+		const message = await this.channel.send(content, options);
 		if (this.channel.permissionsFor(this.guild.me).has('ADD_REACTIONS')) return awaitReaction(this, message);
 		return awaitMessage(this, message);
 	}
 
 	async awaitReply(question, time = 60000, embed) {
-		const message = await (embed ? this.send(question, { embed }) : this.send(question));
+		const message = await (embed ? this.channel.send(question, { embed }) : this.channel.send(question));
 		return this.channel.awaitMessages(message => message.author.id === this.author.id,
 			{ max: 1, time, errors: ['time'] })
 			.then(messages => {
@@ -28,7 +28,7 @@ module.exports = class extends Extendable {
 	}
 
 	async awaitMessage(question, time = 60000, embed) {
-		const message = await (embed ? this.send(question, { embed }) : this.channel.send(question));
+		const message = await (embed ? this.channel.send(question, { embed }) : this.channel.send(question));
 		return this.channel.awaitMessages(message => message.author.id === this.author.id,
 			{ max: 1, time, errors: ['time'] })
 			.then(messages => {
