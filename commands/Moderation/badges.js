@@ -12,7 +12,7 @@ module.exports = class extends Command {
             permLevel: 4,
             runIn: [ 'text' ],
             description: 'Manage earnable badges.',
-            usage: '<add>',
+            usage: '<add|award> [user:username] [id:string]',
             usageDelim: ' | ',
             cooldown: 30,
             requiredSettings: [ "botChannel" ],
@@ -67,9 +67,30 @@ module.exports = class extends Command {
             yangPrice: yangPrice,
             image: url,
             active: true
-        }, {action: 'add'});
+        }, { action: 'add' });
         themessage.delete();
 
-        return message.send(":white_check_mark: Badge has been updated!");
+        return message.send(`:white_check_mark: Badge has been added! Its ID is ${badgeID}`);
+    }
+
+    async award (message, [ user, id ]) {
+        if (!user) return message.send(`:x: Username / mention / snowflake required; I need to know to whom I will award the badge.`);
+        if (!id) return message.send(`:x: Badge ID required.`);
+
+        var sBadge;
+
+        if (message.guild.settings.badges && message.guild.settings.badges.length > 0) {
+            message.guild.settings.badges
+                .filter((badge) => badge.ID === id)
+                .map((badge) => {
+                    sBadge = badge;
+                });
+        }
+
+        if (!sBadge) return message.send(`:x: I could not find a badge with the provided ID.`);
+
+        user.guildSettings(user.id).update('badges', sBadge.ID, { action: 'add' });
+
+        return message.send(`:white_check_mark: Badge has been awarded!`);
     }
 }
