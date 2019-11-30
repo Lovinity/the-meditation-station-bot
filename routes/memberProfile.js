@@ -42,7 +42,7 @@ module.exports = class extends Route {
             avatar: user.displayAvatarURL({ format: 'png' }),
             background: userSettings.profile.background,
             xp: userSettings.xp,
-            activity: userSettings.activityScore,
+            activity: parseInt(userSettings.activityScore * 100) / 100,
             joined: joined ? moment(joined).format("YYYY-MM-DD") : "N/A",
             goodrep: userSettings.goodRep,
             badrep: userSettings.badRep,
@@ -54,6 +54,7 @@ module.exports = class extends Route {
             location: userSettings.profile.location,
             info: userSettings.profile.info,
             donations: userSettings.profile.donations,
+            pronouns: userSettings.pronouns
         }
 
         return response.end(JSON.stringify({ message: respond }));
