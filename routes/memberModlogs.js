@@ -28,14 +28,9 @@ module.exports = class extends Route {
             return response.end(JSON.stringify({ error: `Unable to fetch the authorized user.` }));
         }
 
-        try {
-            var modRole = guild.roles.resolve(guild.settings.modRole);
-            if (!modRole) throw new Error("modRole not found");
-        } catch (e) {
-            return response.end(JSON.stringify({ error: `Guild modRole could not be resolved to check authorized user permissions.` }));
-        }
+        this.client.emit('error', JSON.stringify(authMember));
 
-        if (authUser.id !== request.query.user && !authMember.roles.get(modRole.id))
+        if (!authMember.permissions.has('VIEW_AUDIT_LOG') && authUser.id !== request.query.user)
             return response.end(JSON.stringify({ error: `You do not have permission to view other members' mod logs in this guild.` }));
 
         try {
@@ -57,7 +52,7 @@ module.exports = class extends Route {
             }
         }
         modLogs = modLogs.sort(compare);
-
+        
         var respond = [];
         if (modLogs.length > 0) {
             var maps = modLogs.map(async (log) => {
