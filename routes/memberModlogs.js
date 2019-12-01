@@ -39,15 +39,30 @@ module.exports = class extends Route {
         }
 
         var modLogs = user.guildSettings(guild.id).modLogs;
-        
+
         var respond = [];
         if (modLogs.length > 0) {
             var maps = modLogs.map(async (log) => {
-                log.sort = moment(log.date).valueOf();
-                log.date = moment(log.date).format("LLL");
-                log.user = log.user.tag;
-                log.moderator = log.moderator.tag;
-                log.channelRestrictions = log.channelRestrictions.map(async (restriction) => {
+                var toPush = {
+                    case: log.case,
+                    sort: moment(log.date).valueOf(),
+                    date: moment(log.date).format("LLL"),
+                    type: log.type,
+                    user: typeof log.user !== 'undefined' ? log.user.tag : 'Unknown User',
+                    moderator: typeof log.moderator !== 'undefined' ? log.moderator.tag : 'Unknown Moderator',
+                    reason: log.reason,
+                    rules: log.rules,
+                    discipline: log.discipline,
+                    classD: log.classD,
+                    channelRestrictions: log.channelRestrictions,
+                    permissions: log.permissions,
+                    otherDiscipline: log.otherDiscipline,
+                    expiration: moment(log.expiration).format("LLL"),
+                    banDuration: log.banDuration,
+                    muteDuration: log.muteDuration,
+                    valid: log.valid
+                };
+                toPush.channelRestrictions = toPush.channelRestrictions.map(async (restriction) => {
                     var chan = this.client.channels.fetch(restriction);
                     if (chan) {
                         return chan.name;
@@ -55,8 +70,8 @@ module.exports = class extends Route {
                         return `Unknown channel ${restriction}`
                     }
                 });
-                await Promise.all(log.channelRestrictions);
-                log.permissions = log.permissions.map(async (permission) => {
+                await Promise.all(toPush.channelRestrictions);
+                toPush.permissions = toPush.permissions.map(async (permission) => {
                     var role = guild.roles.resolve(permission);
                     if (role) {
                         return role.name;
@@ -64,10 +79,8 @@ module.exports = class extends Route {
                         return `Unknown role ${permission}`
                     }
                 });
-                await Promise.all(log.permissions);
-                delete log.channel;
-                log.expiration = moment(log.expiration).format("LLL");
-                respond.push(log);
+                await Promise.all(toPush.permissions);
+                respond.push(toPush);
             });
             await Promise.all(maps);
         }
