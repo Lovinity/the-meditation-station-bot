@@ -38,7 +38,7 @@ module.exports = class extends Route {
             return response.end(JSON.stringify({ error: "Unable to fetch the provided user." }));
         }
 
-        const modLogs = user.guildSettings(guild.id).modLogs;
+        var modLogs = user.guildSettings(guild.id).modLogs;
 
         var compare = function (a, b) {
             try {
