@@ -20,15 +20,13 @@ module.exports = class extends Route {
         if (!guild) return response.end(JSON.stringify({ error: "The bot is not in the provided guild." }));
 
         try {
-            var authUser = this.client.users.fetch(request.auth.scope[ 0 ]);
+            var authUser = await this.client.users.fetch(request.auth.scope[ 0 ]);
             if (!authUser) throw new Error("Authorized user not found");
             var authMember = await guild.members.fetch(authUser.id);
             if (!authMember) throw new Error("Authorized user does not seem to be in the provided guild.");
         } catch (e) {
             return response.end(JSON.stringify({ error: `Unable to fetch the authorized user.` }));
         }
-
-        this.client.emit('error', JSON.stringify(authMember));
 
         if (!authMember.permissions.has('VIEW_AUDIT_LOG') && authUser.id !== request.query.user)
             return response.end(JSON.stringify({ error: `You do not have permission to view other members' mod logs in this guild.` }));
