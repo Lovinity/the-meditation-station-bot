@@ -40,14 +40,15 @@ module.exports = class extends Route {
 		if (!oauthUser) return this.notReady(response);
 
 		const body = await res.json();
-		const user = await oauthUser.api(body.access_token);
+		var user = await oauthUser.api(body.access_token);
+		var user2 = await this.client.users.fetch(user.id);
 
 		const access_token = encrypt({
 			token: body.access_token,
 			scope: [ user.id, ...user.guilds.filter(guild => guild.userCanManage).map(guild => guild.id) ]
 		}, this.client.options.clientSecret);
 
-		const redirectURL = `${state.redirect}#access_token=${access_token}&state=${state.ID}&tag=${encodeURI(user.tag)}&avatar=${encodeURI(user.displayAvatarURL({ format: 'png' }))}`;
+		const redirectURL = `${state.redirect}#access_token=${access_token}&state=${state.ID}&tag=${encodeURI(user2.tag)}&avatar=${encodeURI(user2.displayAvatarURL({ format: 'png' }))}`;
 
 		response.writeHead(302,
 			{ Location: redirectURL }
