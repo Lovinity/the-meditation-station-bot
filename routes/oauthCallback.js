@@ -15,6 +15,7 @@ module.exports = class extends Route {
 		/* eslint-disable camelcase */
 		if (!request.query.code) return this.noCode(response);
 		if (!request.query.state) return response.end(JSON.stringify({ error: "State was not returned." }));
+		request.query.state = request.query.state.replace(/[ ]/gm, '+');
 
 		try {
 			var state = decrypt(request.query.state, this.client.options.clientSecret);
