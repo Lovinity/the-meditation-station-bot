@@ -14,12 +14,12 @@ module.exports = class extends Route {
 	async get (request, response) {
 		/* eslint-disable camelcase */
 		if (!request.query.code) return this.noCode(response);
-		if (!request.query.state) return response.send(JSON.stringify({ error: "State was not returned." }));
+		if (!request.query.state) return response.end(JSON.stringify({ error: "State was not returned." }));
 
 		try {
 			var state = decrypt(request.query.state, this.client.options.clientSecret);
 		} catch (e) {
-			return response.send(JSON.stringify({ error: "Unable to decrypt returned state. Clickjacking might have occurred!" }))
+			return response.end(JSON.stringify({ error: "Unable to decrypt returned state. Clickjacking might have occurred!", state: request.query.state }))
 		}
 
 		const url = new URL('https://discordapp.com/api/oauth2/token');
