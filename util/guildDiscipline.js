@@ -484,30 +484,32 @@ Post your completed retraction statement(s) in this text channel as an attachmen
 
         // First, channel restrictions
         if (this.channelRestrictions.length > 0) {
+            var channelNames = [];
             msg2 += `**Channel Restrictions**` + " \n"
-            msg2 += `You can no longer access the following text channels:`
+            msg2 += `You can no longer access the following text channels: `
             this.channelRestrictions.map(channel => {
                 var theChannel = this.guild.channels.resolve(channel)
 
                 if (theChannel) {
-                    msg2 += ` ${theChannel.name},`
+                    channelNames.push(theChannel.name);
                     theChannel.createOverwrite(this.user, {
                         VIEW_CHANNEL: false
                     }, `Discipline case ${this.case}`);
                 }
             })
-            msg2 += "\n\n"
+            msg2 += `${channelNames.join(", ")}` + "\n\n"
         }
 
         // Next, add restriction permissions
         if (this.permissions.length > 0) {
+            var roleNames = [];
             msg2 += `**Restrictive Roles**` + " \n"
-            msg2 += `These permission-restrictive roles have been added:`
+            msg2 += `These permission-restrictive roles have been added: `
             this.permissions.map(permission => {
                 var theRole = this.guild.roles.resolve(permission)
 
                 if (theRole) {
-                    msg2 += ` ${theRole.name},`
+                    roleNames.push(theRole.name);
                     if (guildMember) {
                         guildMember.roles.add(theRole, `Discipline case ${this.case}`);
                     } else {
@@ -515,7 +517,7 @@ Post your completed retraction statement(s) in this text channel as an attachmen
                     }
                 }
             })
-            msg2 += "\n\n"
+            msg2 += `${roleNames.join(", ")}` + "\n\n"
         }
 
         if (this.xp > 0) {

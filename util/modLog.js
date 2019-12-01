@@ -1,4 +1,4 @@
-const {MessageEmbed} = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 const moment = require("moment");
 
 module.exports = class ModLog {
@@ -28,12 +28,12 @@ module.exports = class ModLog {
         };
     }
 
-    setType(type) {
+    setType (type) {
         this.type = type;
         return this;
     }
 
-    setUser(user) {
+    setUser (user) {
         this.user = {
             id: user.id,
             tag: user.tag
@@ -43,7 +43,7 @@ module.exports = class ModLog {
 
     // Here we get all the info about the executing Moderator
 
-    setModerator(user) {
+    setModerator (user) {
         this.moderator = {
             id: user.id,
             tag: user.tag,
@@ -52,36 +52,36 @@ module.exports = class ModLog {
         return this;
     }
 
-    setReason(reason = null) {
+    setReason (reason = null) {
         if (reason instanceof Array)
             reason = reason.join(' ');
         this.reason = reason;
         return this;
     }
 
-    setExpiration(expiration) {
+    setExpiration (expiration) {
         this.expiration = expiration;
         return this;
     }
 
-    setDiscipline(discipline) {
+    setDiscipline (discipline) {
         this.discipline = discipline;
         return this;
     }
 
-    setOtherDiscipline(other = null) {
+    setOtherDiscipline (other = null) {
         if (other instanceof Array)
             other = other.join('; ');
         this.otherDiscipline = other;
         return this;
     }
 
-    setChannel(channel) {
+    setChannel (channel) {
         this.channel = channel;
         return this;
     }
 
-    setCase(value) {
+    setCase (value) {
         this.case = value;
         return this;
     }
@@ -118,34 +118,51 @@ module.exports = class ModLog {
 
     // Send the log to the modlog channel
 
-    async send() {
+    async send () {
         const channel = this.guild.channels.resolve(this.guild.settings.modLogChannel);
-        if (channel)
-        {
-            await channel.send({embed: this.embed});
+        if (channel) {
+            await channel.send({ embed: this.embed });
         }
         const user = this.client.users.resolve(this.user.id);
-        await user.guildSettings(this.guild.id).update(`modLogs`, this.pack, {action: 'add'});
+        await user.guildSettings(this.guild.id).update(`modLogs`, this.pack, { action: 'add' });
         return this.pack;
     }
 
     // Here we build the modlog embed
 
-    get embed() {
+    get embed () {
+        var channelNames = [];
+        this.channelRestrictions.map(channel => {
+            var theChannel = this.guild.channels.resolve(channel)
+
+            if (theChannel) {
+                channelNames.push(theChannel.name)
+            }
+        });
+        var roleNames = [];
+        this.permissions.map(permission => {
+            var theRole = this.guild.roles.resolve(permission)
+
+            if (theRole) {
+                roleNames.push(theRole.name);
+            }
+        });
         const embed = new MessageEmbed()
-                .setTitle(`Discipline issued: ${this.type}`)
-                .setAuthor(this.user.tag, this.user.avatar)
-                .setColor(ModLog.colour(this.type))
-                .setDescription(this.reason)
-                .addField(`Rule Numbers Violated`, this.rules.join(", "))
-                .addField(`Issued By`, this.moderator.tag)
-                .addField(`Standard Discpline`, JSON.stringify(this.discipline))
-                .addField(`Reflection / Accountability`, JSON.stringify(this.classD))
-                .addField(`Channel Restrictions`, JSON.stringify(this.channelRestrictions))
-                .addField(`Permission Restriction Roles`, JSON.stringify(this.permissions))
-                .addField(`Additional Discpline`, this.otherDiscipline)
-                .addField(`Expiration`, this.expiration ? this.expiration : 'None')
-                .setFooter(`Case ${this.case} | :link: ${this.client.options.dashboardHooks.origin}/modlogs.html?user=${this.user.id}&case=${this.case}`);
+            .setTitle(`Discipline issued: ${this.type}`)
+            .setAuthor(this.user.tag, this.user.avatar)
+            .setColor(ModLog.colour(this.type))
+            .setDescription(this.reason)
+            .addField(`Issued By`, this.moderator.tag)
+            .addField(`Rule Numbers Violated`, this.rules.join(", "))
+            .addField(`(Class F) Ban Duration`, this.banDuration ? `${this.banDuration === 0 ? `Indefinite` : `${this.banDuration} days`}` : 'No ban issued')
+            .addField(`(Class E) Mute Duration`, this.muteDuration ? `${this.muteDuration === 0 ? `Until Staff Remove It` : `${this.muteDuration} hours`}` : 'No mute issued')
+            .addField(`(Class E) Channel Restrictions`, channelNames.join(", "))
+            .addField(`(Class E) Permission Restriction Roles`, roleNames.join(", "))
+            .addField(`(Class D) Reflection / Accountability`, `Apologies to: ${this.classD.apology}` + "\n" + `Research Papers on: ${this.classD.research}` + "\n" + `Retraction Statements on: ${this.classD.retraction}`)
+            .addField(`(Class B) Standard Discipline`, `Yang fine: ${this.discipline.yang}` + "\n" + `Bad Reputation: ${this.discipline.reputation}` + "\n" + `XP taken away: ${this.discipline.xp}`)
+            .addField(`Additional Discipline`, this.otherDiscipline)
+            .addField(`Link to Mod Log`, `${this.client.options.dashboardHooks.origin}/modlogs.html?user=${this.user.id}&case=${this.case}`)
+            .setFooter(`Case ${this.case}`);
         return embed;
     }
 
@@ -153,7 +170,7 @@ module.exports = class ModLog {
 
     // Here we pack all the info together
 
-    get pack() {
+    get pack () {
         return {
             case: this.case,
             date: moment().toISOString(true),
@@ -177,7 +194,7 @@ module.exports = class ModLog {
 
     // And here we just define the color for a certain type of offence or action
 
-    static colour(type) {
+    static colour (type) {
         switch (type) {
             case 'classF':
                 return 16724253;
