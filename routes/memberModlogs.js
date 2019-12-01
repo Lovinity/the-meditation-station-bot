@@ -1,5 +1,6 @@
 const { Route } = require('klasa-dashboard-hooks');
 const fetch = require('node-fetch');
+const moment = require("moment");
 
 module.exports = class extends Route {
 
@@ -38,8 +39,50 @@ module.exports = class extends Route {
         }
 
         const modLogs = user.guildSettings(guild.id).modLogs;
+        
+        var compare = function (a, b) {
+            try {
+                if (moment(a.date).valueOf() < moment(b.date).valueOf()) { return 1 }
+                if (moment(a.date).valueOf() > moment(b.date).valueOf()) { return -1 }
+                return 0;
+            } catch (e) {
+                console.error(e)
+            }
+        }
+        modLogs = modLogs.sort(compare);
 
-        return response.end(JSON.stringify({ message: {tag: user.tag, modLogs: modLogs} }));
+        var respond = [];
+        if (modLogs.length > 0) {
+            var maps = modLogs.map(async (log) => {
+                log.date = moment(log.date).format("LLL");
+                log.user = log.user.tag;
+                log.moderator = log.moderator.tag;
+                log.channelRestrictions = log.channelRestrictions.map(async (restriction) => {
+                    var chan = this.client.channels.fetch(restriction);
+                    if (chan) {
+                        return chan.name;
+                    } else {
+                        return `Unknown channel ${restriction}`
+                    }
+                });
+                await Promise.all(log.channelRestrictions);
+                log.permissions = log.permissions.map(async (permission) => {
+                    var role = guild.roles.resolve(permission);
+                    if (role) {
+                        return role.name;
+                    } else {
+                        return `Unknown role ${permission}`
+                    }
+                });
+                await Promise.all(log.permissions);
+                delete log.channel;
+                log.expiration = moment(log.expiration).format("LLL");
+                respond.push(log);
+            });
+            await Promise.all(maps);
+        }
+
+        return response.end(JSON.stringify({ message: { tag: user.tag, modLogs: respond } }));
     }
 
 };
