@@ -226,7 +226,7 @@ async function askClassD (message, discipline) {
         retraction: null
     }
 
-    var resp = await message.awaitReply(`:question: **Apologies**: If this member should be required to write formal / reflective apologies, specify which member(s) the apologies should be addressed to. Specify "none" if the user does not have to write any apologies. You have 5 minutes to respond.`, 300000);
+    var resp = await message.awaitReply(`:question: **Apologies**: If this member should be required to write formal / reflective apologies, specify the names of the member(s) the apologies should be addressed to (do NOT use mentions nor snowflake IDs). Specify "none" if the user does not have to write any apologies. You have 5 minutes to respond.`, 300000);
     if (!resp) {
         throw new Error("No apology specified")
     }

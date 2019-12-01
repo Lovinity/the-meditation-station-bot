@@ -145,8 +145,7 @@ module.exports = class ModLog {
                 .addField(`Permission Restriction Roles`, JSON.stringify(this.permissions))
                 .addField(`Additional Discpline`, this.otherDiscipline)
                 .addField(`Expiration`, this.expiration ? this.expiration : 'None')
-                .setFooter(`Case ${this.case}`)
-                .setTimestamp();
+                .setFooter(`Case ${this.case} | :link: ${this.client.options.dashboardHooks.origin}/modlogs.html?user=${this.user.id}&case=${this.case}`);
         return embed;
     }
 
