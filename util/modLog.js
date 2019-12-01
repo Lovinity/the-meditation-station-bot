@@ -197,19 +197,21 @@ module.exports = class ModLog {
     static colour (type) {
         switch (type) {
             case 'classF':
-                return 16724253;
+                return "#dc3545";
             case 'classC':
-                return 1822618;
+                return '#17a2b8';
             case 'classA':
-                return 16564545;
+                return "#ffc107";
             case 'classE':
-                return 16573465;
+                return "#ff851b";
             case 'classD':
-                return 15014476;
+                return "#605ca8";
             case 'classB':
-                return 8421631;
+                return "#007bff";
+            case 'classG':
+                return "#f012be";
             default:
-                return 16777215;
+                return "#ffffff";
         }
     }
 
