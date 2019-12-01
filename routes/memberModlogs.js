@@ -39,7 +39,7 @@ module.exports = class extends Route {
 
         const modLogs = user.guildSettings(guild.id).modLogs;
 
-        return response.end(JSON.stringify({ message: modLogs }));
+        return response.end(JSON.stringify({ message: {tag: user.tag, modLogs: modLogs} }));
     }
 
 };
