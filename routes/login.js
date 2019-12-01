@@ -18,12 +18,12 @@ module.exports = class extends Route {
             redirect: request.query.redirect_uri
         }, this.client.options.clientSecret);
 
-        var discordURL = `https://discordapp.com/api/oauth2/authorize?client_id=${this.client.options.clientID}&redirect_uri=${encodeURI(`${this.client.options.dashboardHooks.origin}/oauth/callback`)}&response_type=code&scope=identify&state=${state}`
+        var discordURL = `https://discordapp.com/api/oauth2/authorize?client_id=${this.client.options.clientID}&redirect_uri=${encodeURI(`${this.client.options.dashboardHooks.origin}/api/oauth/callback`)}&response_type=code&scope=identify&state=${encodeURI(state)}`
 
         response.writeHead(302,
             { Location: discordURL }
         );
-        
+
         return response.end();
     }
 
