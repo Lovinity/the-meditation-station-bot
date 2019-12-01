@@ -561,13 +561,13 @@ Post your completed retraction statement(s) in this text channel as an attachmen
             }
         }
         if (this.yang > 0) {
-            this.user.guildSettings(this.guild.id).update(`yang`, (this.user.guildSettings(this.guild.id).yang - this.yang));
+            await this.user.guildSettings(this.guild.id).update(`yang`, (this.user.guildSettings(this.guild.id).yang - this.yang));
 
             msg2 += `**Loss of ${this.yang} Yang**` + " \n"
             msg2 += `Your Yang balance is now at ${(this.user.guildSettings(this.guild.id).yang)}` + "\n\n"
         }
         if (this.reputation > 0) {
-            this.user.guildSettings(this.guild.id).update(`badRep`, (this.user.guildSettings(this.guild.id).badRep + this.reputation));
+            await this.user.guildSettings(this.guild.id).update(`badRep`, (this.user.guildSettings(this.guild.id).badRep + this.reputation));
 
             msg2 += `**${this.reputation} bad reputation added to profile**` + " \n"
             if (this.user.guildSettings(this.guild.id).badRep >= 100) {
