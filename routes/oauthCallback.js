@@ -49,7 +49,7 @@ module.exports = class extends Route {
 			scope: [ user.id, ...user.guilds.filter(guild => guild.userCanManage).map(guild => guild.id) ]
 		}, this.client.options.clientSecret);
 
-		const redirectURL = `${state.redirect}#access_token=${access_token}&state=${state.ID}&tag=${encodeURI(user2.tag)}&avatar=${encodeURI(user2.displayAvatarURL({ format: 'png' }))}`;
+		const redirectURL = `${state.redirect}#access_token=${encodeURI(access_token)}&state=${encodeURI(state.ID)}&tag=${encodeURI(user2.tag)}&avatar=${encodeURI(user2.displayAvatarURL({ format: 'png' }))}`;
 
 		response.writeHead(302,
 			{ Location: redirectURL }
