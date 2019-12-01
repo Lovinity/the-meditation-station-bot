@@ -28,7 +28,14 @@ module.exports = class extends Route {
             return response.end(JSON.stringify({ error: `Unable to fetch the authorized user.` }));
         }
 
-        if (!authMember.permissions.has('VIEW_AUDIT_LOG') && authUser.id !== request.query.user)
+        try {
+            var modRole = guild.roles.resolve(guild.settings.modRole);
+            if (!modRole) throw new Error("modRole not found");
+        } catch (e) {
+            return response.end(JSON.stringify({ error: `Guild modRole could not be resolved to check authorized user permissions.` }));
+        }
+
+        if (authUser.id !== request.query.user && !authMember.roles.get(modRole.id))
             return response.end(JSON.stringify({ error: `You do not have permission to view other members' mod logs in this guild.` }));
 
         try {
@@ -39,7 +46,7 @@ module.exports = class extends Route {
         }
 
         const modLogs = user.guildSettings(guild.id).modLogs;
-        
+
         var compare = function (a, b) {
             try {
                 if (moment(a.date).valueOf() < moment(b.date).valueOf()) { return 1 }
