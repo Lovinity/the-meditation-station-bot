@@ -39,21 +39,11 @@ module.exports = class extends Route {
         }
 
         var modLogs = user.guildSettings(guild.id).modLogs;
-
-        var compare = function (a, b) {
-            try {
-                if (moment(a.date).valueOf() < moment(b.date).valueOf()) { return 1 }
-                if (moment(a.date).valueOf() > moment(b.date).valueOf()) { return -1 }
-                return 0;
-            } catch (e) {
-                console.error(e)
-            }
-        }
-        modLogs = modLogs.sort(compare);
         
         var respond = [];
         if (modLogs.length > 0) {
             var maps = modLogs.map(async (log) => {
+                log.sort = moment(log.date).valueOf();
                 log.date = moment(log.date).format("LLL");
                 log.user = log.user.tag;
                 log.moderator = log.moderator.tag;
@@ -81,6 +71,17 @@ module.exports = class extends Route {
             });
             await Promise.all(maps);
         }
+
+        var compare = function (a, b) {
+            try {
+                if (a.sort < b.sort) { return 1 }
+                if (a.sort > b.sort) { return -1 }
+                return 0;
+            } catch (e) {
+                console.error(e)
+            }
+        }
+        respond = respond.sort(compare);
 
         return response.end(JSON.stringify({ message: { tag: user.tag, modLogs: respond } }));
     }
