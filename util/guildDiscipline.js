@@ -16,9 +16,10 @@ module.exports = class GuildDiscipline {
         this.channelRestrictions = [];
         this.permissions = [];
         this.classD = {
-            apology: null,
-            research: null,
-            retraction: null
+            apology: false,
+            research: false,
+            retraction: false,
+            quiz: false
         }
         this.other = null;
         this.muteDuration = null;
@@ -216,14 +217,15 @@ module.exports = class GuildDiscipline {
             // No class D discipline if we are issuing a permanent ban
             if (this.banDuration === 0) {
                 this.classD = {
-                    apology: null,
-                    research: null,
-                    retraction: null
+                    apology: false,
+                    research: false,
+                    retraction: false,
+                    quiz: false
                 }
             }
 
             // Check to ensure at least one class D discipline was specified
-            if (this.classD.apology !== null || this.classD.research !== null || this.classD.retraction !== null) {
+            if (this.classD.apology || this.classD.research || this.classD.retraction || this.classD.quiz) {
                 // Format the mute depending on whether or not a temp ban is issued
                 if (this.banDuration === null) {
                     this.muteDuration = 0;
@@ -240,8 +242,8 @@ module.exports = class GuildDiscipline {
             }
 
             // Make messages depending on class D discipline specified.
-            if (this.classD.apology !== null) {
-                msg2 += "**Task: Formal, Reflective Apologies** \n"
+            if (this.classD.apology) {
+                msg2 += "**Task: Formal, Reflective Apology** \n"
                 msg2 += `You are required to write formal reflective apologies addressed to each of the following people: **${this.classD.apology}**.
 :small_blue_diamond: Each apology must be no less than 250 words long.
 :small_blue_diamond: You must state in each apology what you did wrong, that you acknowledge you did wrong, how your actions negatively impacted the person and/or the community, what you learned from this experience, and what you will do to ensure this doesn't happen again.
@@ -249,7 +251,7 @@ module.exports = class GuildDiscipline {
 Post your completed apologies in this text channel as an attachment of file type ODT, DOC/DOCX, RTF, TXT, or PDF. Once approved, staff will add the responsible members to this chat, and you will be required to present your apologies to those people (the staff will not do it; you must do it since you're the responsible one). After doing that, this task will be satisfied.` + "\n\n"
             }
 
-            if (this.classD.research !== null) {
+            if (this.classD.research) {
                 msg2 += "**Task: Research Paper** \n"
                 msg2 += `You are required to write a research paper on each of the following topics: **${this.classD.research}**
 :small_blue_diamond: Each research paper must be no less than 1,000 words long (about one page each of 12-point font)
@@ -258,13 +260,18 @@ Post your completed apologies in this text channel as an attachment of file type
 Post your completed research paper(s) in this text channel as an attachment of file type ODT, DOC/DOCX, RTF, TXT, or PDF. Once staff approve your papers, this task is satisfied.` + "\n\n"
             }
 
-            if (this.classD.retraction !== null) {
+            if (this.classD.retraction) {
                 msg2 += "**Task: Retraction Statement** \n"
                 msg2 += `You are required to write a retration statement retracting the following things you posted / said: **${this.classD.retraction}**
 :small_blue_diamond: Each retraction statement must be no less than 250 words long.
 :small_blue_diamond: Each retraction statement must include an introduction (what you originally said, and statement that it was wrong and you retract it), body (the correct information and evidence / sources), and conclusion (what you learned by doing this research / retraction, and what you will do to ensure you fact-check yourself in the future)
 :small_blue_diamond: Each retraction statement must contain at least 2 cited credible sources to act as evidence that your corrected information is indeed correct.
 Post your completed retraction statement(s) in this text channel as an attachment of file type ODT, DOC/DOCX, RTF, TXT, or PDF. Once staff approve your statements, you will be required to present your statement(s) to the rest of the guild. Once you do, this task is satisfied.` + "\n\n"
+            }
+
+            if (this.classD.quiz) {
+                msg2 += "**Task: Take / Pass a Quiz** \n"
+                msg2 += `You are required to take and pass one or more quizzes on spillthet.org. Here are the details: **${this.classD.retraction}**` + "\n\n"
             }
         }
 
@@ -600,7 +607,7 @@ Post your completed retraction statement(s) in this text channel as an attachmen
                 await this.guild.settings.update('pendIncidents', { channel: this.channel.id, user: this.user.id }, { action: 'add' });
             if (this.banDuration !== null) {
                 await this.guild.members.ban(this.user, { days: 7, reason: this.reason });
-                if ((this.classD.apology === null && this.classD.research === null && this.classD.retraction === null) || this.banDuration === 0) {
+                if ((!this.classD.apology && !this.classD.research && !this.classD.retraction && !this.classD.quiz) || this.banDuration === 0) {
                     this.user.guildSettings(this.guild.id).update(`roles`, mutedRole, this.guild, { action: 'remove' });
                 }
                 if (this.banDuration > 0) {

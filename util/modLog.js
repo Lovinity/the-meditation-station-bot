@@ -22,9 +22,10 @@ module.exports = class ModLog {
         this.banDuration = null;
         this.muteDuration = null;
         this.classD = {
-            apology: null,
-            research: null,
-            retraction: null
+            apology: false,
+            research: false,
+            retraction: false,
+            quiz: false
         };
     }
 
@@ -158,7 +159,7 @@ module.exports = class ModLog {
             .addField(`(Class E) Mute Duration`, this.muteDuration ? `${this.muteDuration === 0 ? `Until Staff Remove It` : `${this.muteDuration} hours`}` : 'No mute issued')
             .addField(`(Class E) Channel Restrictions`, channelNames.length > 0 ? channelNames.join(", ") : 'None')
             .addField(`(Class E) Permission Restriction Roles`, roleNames.length > 0 ? roleNames.join(", ") : 'None')
-            .addField(`(Class D) Reflection / Accountability`, `Apologies: ${this.classD.apology}` + "\n" + `Research Paper Topics: ${this.classD.research}` + "\n" + `Retraction Statements: ${this.classD.retraction}`)
+            .addField(`(Class D) Reflection / Accountability`, `Apologies: ${this.classD.apology}` + "\n" + `Research Paper Topics: ${this.classD.research}` + "\n" + `Retraction Statements: ${this.classD.retraction}` + "\n" + `Quizzes: ${this.classD.quiz}`)
             .addField(`(Class B) Standard Discipline`, `Yang fine: ${this.discipline.yang}` + "\n" + `Bad Reputation: ${this.discipline.reputation}` + "\n" + `XP taken away: ${this.discipline.xp}`)
             .addField(`Additional Discipline`, this.otherDiscipline)
             .addField(`Link to Mod Log`, `${this.client.options.dashboardHooks.origin}/modlogs.html?user=${this.user.id}&case=${this.case}`)
