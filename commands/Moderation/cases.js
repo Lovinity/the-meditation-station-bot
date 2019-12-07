@@ -6,7 +6,7 @@ module.exports = class extends Command {
     constructor(...args) {
         super(...args, {
             name: 'cases',
-            permLevel: 4,
+            permissionLevel: 5,
             runIn: [ 'text' ],
             description: 'Get information about a given user modlogs, and perform actions on them. Must be used in a staff or incidents channel.',
             usage: '<user:username>',

@@ -4,7 +4,7 @@ module.exports = class extends Command {
 
     constructor(...args) {
         super(...args, {
-            permLevel: 4,
+            permissionLevel: 4,
             botPerms: ['MANAGE_ROLES'],
             runIn: ['text'],
             description: 'Grant a user or users access to the channel this command was executed in.',

@@ -23,7 +23,7 @@ module.exports = class extends Command {
             user = message.author;
 
         } else {
-            const { permission } = await this.client.permissionLevels.run(message, 4);
+            const { permission } = await this.client.permissionLevels.run(message, 5);
             if (!permission)
                 return message.send(`:x: Ha ha, you're not a staff member. Good try, though.`);
         }

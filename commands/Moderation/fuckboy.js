@@ -6,7 +6,7 @@ module.exports = class extends Command {
     constructor(...args) {
         super(...args, {
             name: 'fuckboy',
-            permLevel: 4,
+            permissionLevel: 5,
             runIn: [ 'text' ],
             description: 'WE GOT A FUCKBOY ON DECK! We must shame them and then exterminate them immediately!',
             usage: '<user:username>',

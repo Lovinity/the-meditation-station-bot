@@ -6,7 +6,7 @@ module.exports = class extends Command {
     constructor(...args) {
         super(...args, {
             subcommands: true,
-            permLevel: 4,
+            permissionLevel: 4,
             runIn: [ 'text' ],
             description: 'Manage earnable badges.',
             usage: '<add|award> [user:username] [id:string]',

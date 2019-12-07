@@ -5,7 +5,7 @@ module.exports = class extends Command {
 
     constructor(...args) {
         super(...args, {
-            permLevel: 4,
+            permissionLevel: 5,
             botPerms: ['MANAGE_ROLES'],
             runIn: ['text'],
             description: 'Add or remove a level role.',

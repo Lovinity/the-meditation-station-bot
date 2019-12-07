@@ -7,7 +7,7 @@ module.exports = class extends Command {
         super(...args, {
             subcommands: true,
             runIn: [ 'text' ],
-            permLevel: 4,
+            permissionLevel: 4,
             description: 'Manage reaction-based self-assignable roles',
             usage: '<add|remove|regenerate:default> [role:rolename]',
             usageDelim: ' | ',

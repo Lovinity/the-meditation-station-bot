@@ -6,7 +6,7 @@ module.exports = class extends Command {
     constructor(...args) {
         super(...args, {
             name: 'prune',
-            permLevel: 4,
+            permissionLevel: 5,
             botPerms: ['MANAGE_MESSAGES'],
             runIn: ['text'],
             description: 'Prune messages',

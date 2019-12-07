@@ -5,7 +5,7 @@ module.exports = class extends Command {
 
     constructor(...args) {
         super(...args, {
-            permLevel: 4,
+            permissionLevel: 6,
             botPerms: [],
             runIn: [ 'text' ],
             description: 'Creates a resource channel using a specially-formatted text file as an attachment to the command message.',
