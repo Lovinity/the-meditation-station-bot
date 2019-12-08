@@ -27,7 +27,7 @@ module.exports = class extends Command {
     }
 
     async run (message, [ user ]) {
-        if (!message.channel.name.startsWith(`support_`))
+        if (!message.channel.name.startsWith(`support-`))
             return message.send(':x: This command may only be used in a support channel.')
 
         if (!message.channel.topic || !message.channel.topic.includes(`initiated by ${message.author.tag}`))

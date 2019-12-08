@@ -179,7 +179,7 @@ module.exports = class GuildDiscipline {
 
 
             // Create the incidents channel
-            this.channel = await this.guild.channels.create(`discipline_${this.case}`, {
+            this.channel = await this.guild.channels.create(`discipline-${this.case}`, {
                 type: 'text',
                 topic: `Discipline ${this.user.username}#${this.user.discriminator}, responsible mod: ${this.responsible.username}#${this.responsible.discriminator}`,
                 parent: incidents,
@@ -630,17 +630,21 @@ Post your completed retraction statement(s) in this text channel as an attachmen
             }
         }
 
-        // Add 30 to the raid score for permanent bans and temp bans
-        if (this.banDuration !== null) {
-            this.guild.raidScore(30);
-
-            // Add 20 to the raid score for mutes
-        } else if (this.muteDuration !== null) {
-            this.guild.raidScore(20);
-
-            // Add 10 to the raid score for all other discipline
-        } else {
-            this.guild.raidScore(10);
+        // Add raid score depending on type of discipline
+        switch (this.type) {
+            case 'classA':
+            case 'classB':
+                this.guild.raidScore(10);
+                break;
+            case 'classC':
+            case 'classD':
+            case 'classE':
+                this.guild.raidScore(20);
+                break;
+            case 'classF':
+            case 'classG':
+                this.guild.raidScore(30);
+                break;
         }
 
         modLog = modLog.setChannel(this.channel)

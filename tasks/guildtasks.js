@@ -97,7 +97,7 @@ module.exports = class extends Task {
 
             // Remove support channels that have expired
             _guild.channels
-                .filter((channel) => channel.name.startsWith("support_"))
+                .filter((channel) => channel.name.startsWith("support-"))
                 .each((channel) => {
                     if ((!channel.lastMessage && moment(channel.createdAt).add(1, 'days').isBefore(moment())) || (channel.lastMessage && moment(channel.lastMessage.createdAt).add(1, 'days').isBefore(moment()))) {
                         channel.delete(`Support channel expired (24 hours of inactivity).`);

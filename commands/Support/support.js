@@ -61,7 +61,7 @@ module.exports = class extends Command {
 
 ${message.author.tag} has requested support from the community. Here, you may offer support for them. All rules still apply, especially with regards to privacy. **Anything discussed in this text channel must not be discussed outside of this text channel**
 
-Sensitive or triggering information might also be discussed.
+Sensitive or triggering information might also be discussed. NSFW content is allowed in this channel if it directly pertains to the support and follows the guild's NSFW rules.
 
 <@${message.author.id}> , you may use the command \`!remove username/mention/snowflake\` in this channel if you want to remove someone who is not being supportive or understanding of you. This command will not work on administrators.
 
@@ -88,9 +88,10 @@ This channel will automatically be deleted by the bot when it goes 24 hours with
             }
 
             // Create the support channel
-            var channel = await message.guild.channels.create(`support_${ID}`, {
+            var channel = await message.guild.channels.create(`support-${ID}`, {
                 type: 'text',
                 topic: `Support channel initiated by ${message.author.tag}`,
+                nsfw: true,
                 parent: incidents,
                 permissionOverwrites: overwrites,
                 rateLimitPerUser: 10,
@@ -102,7 +103,7 @@ This channel will automatically be deleted by the bot when it goes 24 hours with
             return message.send({ embed: embed });
         } else {
             // Check if the support channel exists and bail if it does not
-            var theChannel = message.guild.channels.find(r => r.name === `support_${incident}`)
+            var theChannel = message.guild.channels.find(r => r.name === `support-${incident}`)
             if (!theChannel)
                 return message.send(':x: That support channel does not exist. Either it was typed incorrectly, or it was removed / closed.')
 
