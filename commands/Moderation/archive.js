@@ -31,7 +31,7 @@ module.exports = class extends Command {
 
         await newChannel.send(`:exclamation: This is a cloned channel; the original channel by the same name has been archived by staff and can no longer be accessed by regular members.`);
 
-        return message.send(':white_check_mark: This channel has been archived.')
+        return message.send(':white_check_mark: This channel has been archived.' + "\n" + ':warning: If this channel was a part of bot configuration, be sure to update it with the new channel!')
     }
 
 };
