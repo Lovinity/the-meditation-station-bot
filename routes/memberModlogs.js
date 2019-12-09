@@ -104,7 +104,7 @@ module.exports = class extends Route {
 
         switch (request.body.action) {
             case 'appeal':
-                if (!request.body.ID) return response.end(JSON.stringify({ error: "ID is required (ID of the case to appeal)." }));
+                if (!request.body.case) return response.end(JSON.stringify({ error: "case is required (ID of the case to appeal)." }));
                 if (!request.body.guild) return response.end(JSON.stringify({ error: "guild is required (snowflake ID of the guild involved)." }));
                 if (!request.body.user) return response.end(JSON.stringify({ error: "user is required (snowflake ID of the user which has the case being appealed)." }));
 
@@ -138,7 +138,7 @@ module.exports = class extends Route {
                 var modLogs = user.guildSettings(guild.id).modLogs;
                 if (modLogs.length < 1) return response.end(JSON.stringify({ error: "You are trying to appeal a case when the provided user has no cases on record." }));
 
-                var log = modLogs.find((modLog) => modLog.case === request.body.ID);
+                var log = modLogs.find((modLog) => modLog.case === request.body.case);
                 if (!log) return response.end(JSON.stringify({ error: "The provided case ID was not found in the user's mod logs." }));
 
                 if (log.moderator.id === authUser.id) return response.end(JSON.stringify({ error: "You are the responsible moderator for this case and therefore cannot appeal it. Please have a different staff member appeal it." }));
