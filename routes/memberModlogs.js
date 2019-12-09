@@ -62,7 +62,7 @@ module.exports = class extends Route {
                     muteDuration: log.muteDuration,
                     valid: log.valid
                 };
-                toPush.channelRestrictions = toPush.channelRestrictions.map(async (restriction) => {
+                toPush.channelRestrictions = toPush.channelRestrictions.map((restriction) => {
                     var chan = guild.channels.resolve(restriction);
                     if (chan) {
                         return chan.name;
@@ -70,8 +70,7 @@ module.exports = class extends Route {
                         return `Unknown channel ${restriction}`
                     }
                 });
-                await Promise.all(toPush.channelRestrictions);
-                toPush.permissions = toPush.permissions.map(async (permission) => {
+                toPush.permissions = toPush.permissions.map((permission) => {
                     var role = guild.roles.resolve(permission);
                     if (role) {
                         return role.name;
@@ -79,7 +78,6 @@ module.exports = class extends Route {
                         return `Unknown role ${permission}`
                     }
                 });
-                await Promise.all(toPush.permissions);
                 respond.push(toPush);
             });
             await Promise.all(maps);
