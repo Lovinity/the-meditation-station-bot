@@ -13,16 +13,25 @@ module.exports = class extends Command {
         });
     }
 
-    async run (msg) {
-        if (await yangStore(msg, 'markov', 1)) {
-            let messageBank = await msg.channel.messages.fetch({ limit: 100 });
+    async run (message) {
+        if (message.guild.settings.botChannel && message.channel.id !== message.guild.settings.botChannel) {
+            var msg = await message.send(`:x: No spammy whammy! Please use that command in the bot channel.`);
+            message.delete();
+            setTimeout(() => {
+                msg.delete();
+            }, 10000);
+            return msg;
+        }
+
+        if (await yangStore(message, 'markov', 1)) {
+            let messageBank = await message.channel.messages.fetch({ limit: 100 });
             for (let i = 1; i < messageLimitHundreds; i++) {
-                messageBank = messageBank.concat(await msg.channel.messages.fetch({ limit: 100, before: messageBank.last().id }));
+                messageBank = messageBank.concat(await message.channel.messages.fetch({ limit: 100, before: messageBank.last().id }));
             }
 
             const quotes = new MarkovChain(messageBank.map(message => message.content).join(' '));
             const chain = quotes.start(this.useUpperCase).end(20).process();
-            return msg.send(chain.substring(0, 1999));
+            return message.send(chain.substring(0, 1999));
         }
     }
 

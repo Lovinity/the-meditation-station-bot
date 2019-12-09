@@ -18,8 +18,14 @@ module.exports = class extends Command {
     }
 
     async run(message, [nick]) {
-        if (message.channel.id !== message.guild.settings.botChannel)
-            return message.send(`:x: No spammy whammy! Please use this command in the bot channel.`);
+        if (message.guild.settings.botChannel && message.channel.id !== message.guild.settings.botChannel) {
+            var msg = await message.send(`:x: No spammy whammy! Please use that command in the bot channel.`);
+            message.delete();
+            setTimeout(() => {
+                msg.delete();
+            }, 10000);
+            return msg;
+        }
         
         // Test for profanity
         config.profanity.forEach((word) => {

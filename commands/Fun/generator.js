@@ -21,12 +21,19 @@ module.exports = class extends Command {
     }
 
     async run(message, [group, individual, quantity = 1]) {
+        if (message.guild.settings.botChannel && message.channel.id !== message.guild.settings.botChannel) {
+            var msg = await message.send(`:x: No spammy whammy! Please use that command in the bot channel.`);
+            message.delete();
+            setTimeout(() => {
+                msg.delete();
+            }, 10000);
+            return msg;
+        }
+
         if (group)
             group = group.replace(" ", "_");
         if (individual)
             individual = individual.replace(" ", "_");
-        if (message.channel.id !== message.guild.settings.botChannel)
-            return message.send(`:x: Sorry, but this command may only be used in the bot channel.`);
 
         var response = ``;
         try {

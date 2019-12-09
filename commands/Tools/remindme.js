@@ -18,8 +18,14 @@ module.exports = class extends Command {
     }
 
     async run (message, [ when, ...text ]) {
-        if (message.channel.id !== message.guild.settings.botChannel)
-            return message.send(`:x: No spammy whammy! Please use this command in the bot channel.`)
+        if (message.guild.settings.botChannel && message.channel.id !== message.guild.settings.botChannel) {
+            var msg = await message.send(`:x: No spammy whammy! Please use that command in the bot channel.`);
+            message.delete();
+            setTimeout(() => {
+                msg.delete();
+            }, 10000);
+            return msg;
+        }
 
         if (await yangStore(message, 'remindme', 1)) {
             const reminder = await this.client.schedule.create('reminder', when, {

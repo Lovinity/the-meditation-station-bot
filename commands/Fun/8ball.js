@@ -12,11 +12,20 @@ module.exports = class extends Command {
         });
     }
 
-    async run (msg, [ question ]) {
-        if (question.endsWith('?') && await yangStore(msg, '8ball', 1)) {
-            return msg.reply(`🎱 ${answers[ Math.floor(Math.random() * answers.length) ]}`);
+    async run (message, [ question ]) {
+        if (message.guild.settings.botChannel && message.channel.id !== message.guild.settings.botChannel) {
+            var msg = await message.send(`:x: No spammy whammy! Please use that command in the bot channel.`);
+            message.delete();
+            setTimeout(() => {
+                msg.delete();
+            }, 10000);
+            return msg;
         }
-        return msg.reply("🎱 That doesn't look like a question, try again please.");
+
+        if (question.endsWith('?') && await yangStore(message, '8ball', 1)) {
+            return message.reply(`🎱 ${answers[ Math.floor(Math.random() * answers.length) ]}`);
+        }
+        return message.reply("🎱 That doesn't look like a question, try again please.");
     }
 
 };

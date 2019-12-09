@@ -13,11 +13,20 @@ module.exports = class extends Command {
         });
     }
 
-    async run (msg, choices) {
-        if (choices.length > 1 && await yangStore(msg, 'choice', 1)) {
-            return msg.reply(`I think you should go with "${choices[ Math.floor(Math.random() * choices.length) ]}"`);
+    async run (message, choices) {
+        if (message.guild.settings.botChannel && message.channel.id !== message.guild.settings.botChannel) {
+            var msg = await message.send(`:x: No spammy whammy! Please use that command in the bot channel.`);
+            message.delete();
+            setTimeout(() => {
+                msg.delete();
+            }, 10000);
+            return msg;
         }
-        return msg.reply('You only gave me one choice, dummy.');
+
+        if (choices.length > 1 && await yangStore(msg, 'choice', 1)) {
+            return message.reply(`I think you should go with "${choices[ Math.floor(Math.random() * choices.length) ]}"`);
+        }
+        return message.reply('You only gave me one choice, dummy.');
     }
 
 };

@@ -25,7 +25,7 @@ module.exports = class extends Command {
         // Error if this command was not executed in an incidents channel, and delete the message for user's confidentiality
         if (message.channel.parent && message.channel.parent.id !== message.guild.settings.incidentsCategory) {
             await message.send(`:x: I don't want others knowing you're reporting someone. Please use the !report command in an incidents channel. You can use the command !staff to create one.`);
-            return message.delete({ reason: `Use of !report ourside an incidents channel. Deleted for confidentiality.` });
+            return message.delete({ reason: `Use of !report outside an incidents channel. Deleted for confidentiality.` });
         }
 
         // First, resolve configured settings

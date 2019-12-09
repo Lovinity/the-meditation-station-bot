@@ -12,6 +12,15 @@ module.exports = class extends Command {
 	}
 
 	async run (message) {
+        if (message.guild.settings.botChannel && message.channel.id !== message.guild.settings.botChannel) {
+            var msg = await message.send(`:x: No spammy whammy! Please use that command in the bot channel.`);
+            message.delete();
+            setTimeout(() => {
+                msg.delete();
+            }, 10000);
+            return msg;
+        }
+		
 		var category = await message.awaitReply(`:question: Please respond with one of the following affirmation categories you would like: ${Object.keys(affirmations).join(", ")}`, 180000);
 		if (category && typeof affirmations[category.toLowerCase()] !== 'undefined') {
 			if (await yangStore(message, 'affirmations', 1)) {

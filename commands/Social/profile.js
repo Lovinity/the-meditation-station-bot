@@ -282,6 +282,15 @@ module.exports = class extends Command {
     }
 
     async show (message, [ user = null ]) {
+        if (message.guild.settings.botChannel && message.channel.id !== message.guild.settings.botChannel) {
+            var msg = await message.send(`:x: No spammy whammy! Please use that command in the bot channel.`);
+            message.delete();
+            setTimeout(() => {
+                msg.delete();
+            }, 10000);
+            return msg;
+        }
+        
         if (user === null)
             user = message.author;
         return message.send(`:link: ${message.client.options.dashboardHooks.origin}/profile.html?user=${user.id}`);
