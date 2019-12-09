@@ -84,7 +84,7 @@ module.exports = class extends Command {
         menu.addOption(`classG`, `Report / Investigation by Third Party (Discord TOS violation and/or report to police).`);
         var collector = await menu.run(await message.channel.send('Please wait...'), { time: 300000, filter: (reaction, user) => user.id === message.author.id });
         var choice = await collector.selection;
-        collector.message.delete();
+        await collector.message.delete();
         if (menu.options[ choice ]) {
             var discipline = new GuildDiscipline(user, message.guild, message.author);
             discipline.setType(menu.options[ choice ].name);
