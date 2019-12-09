@@ -108,7 +108,7 @@ module.exports = class extends Route {
                 if (!request.body.guild) return response.end(JSON.stringify({ error: "guild is required (snowflake ID of the guild involved)." }));
                 if (!request.body.user) return response.end(JSON.stringify({ error: "user is required (snowflake ID of the user which has the case being appealed)." }));
 
-                const guild = this.client.guilds.resolve(request.query.guild)
+                const guild = this.client.guilds.resolve(request.body.guild)
                 if (!guild) return response.end(JSON.stringify({ error: "The bot is not in the provided guild." }));
 
                 try {
