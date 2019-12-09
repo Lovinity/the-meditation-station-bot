@@ -84,24 +84,26 @@ module.exports = class extends Command {
         menu.addOption(`classG`, `Report / Investigation by Third Party (Discord TOS violation and/or report to police).`);
         var collector = await menu.run(await message.channel.send('Please wait...'), { time: 300000, filter: (reaction, user) => user.id === message.author.id });
         var choice = await collector.selection;
-        await collector.message.delete();
         if (menu.options[ choice ]) {
             var discipline = new GuildDiscipline(user, message.guild, message.author);
             discipline.setType(menu.options[ choice ].name);
             try {
                 switch (menu.options[ choice ].name) {
                     case 'classA':
+                        await collector.message.delete();
                         discipline.prepare();
                         await askRulesReason(message, discipline);
                         await askOther(message, discipline);
                         break;
                     case 'classB':
+                        await collector.message.delete();
                         discipline.prepare();
                         await askRulesReason(message, discipline);
                         await askClassB(message, discipline);
                         await askOther(message, discipline);
                         break;
                     case 'classD':
+                        await collector.message.delete();
                         discipline.prepare();
                         await askRulesReason(message, discipline);
                         await askClassB(message, discipline);
@@ -110,6 +112,7 @@ module.exports = class extends Command {
                         break;
                     case 'classE':
                         await askWillMute(message, discipline);
+                        await collector.message.delete();
                         discipline.prepare();
                         await askRulesReason(message, discipline);
                         await askClassB(message, discipline);
@@ -118,6 +121,7 @@ module.exports = class extends Command {
                         await askOther(message, discipline);
                         break;
                     case 'classF':
+                        await collector.message.delete();
                         discipline.prepare();
                         await askRulesReason(message, discipline);
                         var isPermanentBan = await askClassF(message, discipline);
@@ -129,6 +133,7 @@ module.exports = class extends Command {
                         await askOther(message, discipline);
                         break;
                     case 'classG':
+                        await collector.message.delete();
                         discipline.prepare();
                         await askRulesReason(message, discipline);
                         await askOther(message, discipline);
