@@ -63,7 +63,7 @@ module.exports = class extends Route {
                     valid: log.valid
                 };
                 toPush.channelRestrictions = toPush.channelRestrictions.map(async (restriction) => {
-                    var chan = this.client.channels.fetch(restriction);
+                    var chan = guild.channels.resolve(restriction);
                     if (chan) {
                         return chan.name;
                     } else {
