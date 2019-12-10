@@ -57,6 +57,7 @@ module.exports = class extends Route {
         var upper = Math.ceil((level / 0.177) ** 2);
         var lower = Math.ceil(((level - 1) / 0.177) ** 2);
         var fillValue = Math.min(Math.max((xp - lower) / (upper - lower), 0), 1);
+        var guildStoreSettings = guild.settings.yangStore;
 
         var respond = {
             tag: user.tag,
@@ -78,7 +79,11 @@ module.exports = class extends Route {
             donations: userSettings.profile.donations,
             pronouns: userSettings.profile.pronouns,
             isbanned: isBanned,
-            ismuted: isMuted
+            ismuted: isMuted,
+            yangStore: {
+                profileTitle: guildStoreSettings.profileTitle,
+                profileBackground: guildStoreSettings.profileBackground
+            }
         }
 
         return response.end(JSON.stringify({ message: respond }));
