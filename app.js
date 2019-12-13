@@ -46,6 +46,7 @@ Client.defaultGuildSchema
     .add('antispamRuleNumber', 'integer', { default: 1, min: 0 })
     .add('raidScore', 'integer', { default: 0, configurable: false })
     .add('raidMitigation', 'integer', { default: 0, configurable: false })
+    .add('badRepDecayXP', 'integer', { default: 50, min: 0 })
     .add('levelRoles', folder => {
         for (var i = 2; i <= 100; i++) {
             folder.add(`level${i}`, 'role', { configurable: false });

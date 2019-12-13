@@ -208,4 +208,12 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
         this.speaking = 0;
     }
 
+    get badRepWithDecay () {
+        var badRep = this.settings.badRep;
+        var decay = this.guild.settings.badRepDecayXP;
+        var newBadRep = decay > 0 ? badRep - Math.floor(this.settings.xp / decay) : badRep
+        if (newBadRep < 0) newBadRep = 0;
+        return newBadRep;
+    }
+
 });
