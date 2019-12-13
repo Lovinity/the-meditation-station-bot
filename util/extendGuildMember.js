@@ -59,7 +59,8 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                 }
 
                 // Determine if a mute should be untimed based on bad Reputation
-                var badRepThreshold = this.settings.badRep > 100
+                var badRep = this.badRepWithDecay;
+                var badRepThreshold = badRep > 100
 
                 // Issue the mute
                 if (this.guild.settings.raidMitigation < 1 && !badRepThreshold) {

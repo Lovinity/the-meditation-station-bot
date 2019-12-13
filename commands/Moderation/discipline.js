@@ -58,13 +58,13 @@ module.exports = class extends Command {
             }
         });
 
-        response += `**Current Bad Reputation**: ${user.guildSettings(message.guild.id).badRep}` + "\n"
-        if (user.guildSettings(message.guild.id).badRep < 100) {
+        var badRep = user.badRepWithDecay(message.guild.id);
+        response += `**Current Bad Reputation**: ${badRep}` + "\n"
+        if (badRep < 100) {
             response += `Member does **not** qualify for a permanent ban on this discipline (except for criminal activity, sexual engagement with minors, violation of Discord's TOS with Discord taking action, sharing of legally private info, or using multiple accounts).` + "\n"
-            response += `Member qualifies for a temporary ban, maximum 7 days, if issuing ${100 - user.guildSettings(message.guild.id).badRep} or more bad reputation on this discipline.` + "\n\n"
+            response += `Member qualifies for a temporary ban if issuing ${100 - badRep} or more bad reputation on this discipline.` + "\n\n"
         } else {
-            response += `:warning: **Member qualifies for a permanent ban** at any time if staff deem the community would be best without the member.` + "\n"
-            response += `Member qualifies for a temporary ban, maximum 14 days, if issuing ${((user.guildSettings(message.guild.id).badRep % 50) === 0 ? 50 : user.guildSettings(message.guild.id).badRep)} or more bad reputation on this discipline.` + "\n\n"
+            response += `:warning: **Member qualifies for a temporary or permanent ban** at any time if staff deem the community would be best without the member.` + "\n\n"
         }
         response += `**Current Yang**: ${user.guildSettings(message.guild.id).yang}` + "\n\n"
         response += `**Current XP**: ${user.guildSettings(message.guild.id).xp}` + "\n\n"

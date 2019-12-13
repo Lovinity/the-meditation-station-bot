@@ -68,7 +68,7 @@ module.exports = class extends Route {
             activity: parseInt(userSettings.activityScore * 100) / 100,
             joined: joined ? moment(joined).format("YYYY-MM-DD") : "N/A",
             goodrep: userSettings.goodRep,
-            badrep: userSettings.badRep,
+            badrep: guildMember.badRepWithDecay,
             yang: userSettings.yang,
             xpprogress: parseInt(fillValue * 100),
             level: level,

@@ -589,11 +589,14 @@ Post your completed retraction statement(s) in this text channel as an attachmen
             await this.user.guildSettings(this.guild.id).update(`badRep`, (this.user.guildSettings(this.guild.id).badRep + this.reputation));
 
             msg2 += `:thumbsdown: **${this.reputation} bad reputation added to profile**` + " \n"
-            if (this.user.guildSettings(this.guild.id).badRep >= 100) {
-                msg2 += `Your reputation is now ${this.user.guildSettings(this.guild.id).goodRep} good / ${(this.user.guildSettings(this.guild.id).badRep)} bad` + "\n"
+            var badRepWithDecay = this.user.badRepWithDecay(this.guild.id);
+            if (badRepWithDecay >= 100) {
+                msg2 += `Your reputation is now ${this.user.guildSettings(this.guild.id).goodRep} good / ${badRepWithDecay} bad` + "\n"
+                msg2 += `Bad reputation decays at a rate of 1 bad reputation for every 50 XP earned.` + "\n"
                 msg2 += `:warning: **You have 100 or more bad reputation**. This means future discipline for any rule violations could include a temporary or permanent ban.` + "\n\n"
             } else {
-                msg2 += `Your reputation is now ${this.user.guildSettings(this.guild.id).goodRep} good / ${(this.user.guildSettings(this.guild.id).badRep)} bad` + "\n\n"
+                msg2 += `Your reputation is now ${this.user.guildSettings(this.guild.id).goodRep} good / ${badRepWithDecay} bad` + "\n"
+                msg2 += `Bad reputation decays at a rate of 1 bad reputation for every 50 XP earned.` + "\n\n"
             }
         }
         if (this.other !== null) {
