@@ -663,9 +663,8 @@ Post your completed retraction statement(s) in this text channel as an attachmen
         }
 
         // Push out discipline message
-        this.channel.send("\n" + msg + "\n\n" + msg2 + msg3, {
+        this.channel.send((this.user ? `<@${this.user.id}>` : ``) + "\n" + msg + "\n\n" + msg2 + msg3, {
             split: true,
-            reply: this.user
         })
 
         return this;
