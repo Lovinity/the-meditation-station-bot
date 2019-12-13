@@ -23,11 +23,11 @@ module.exports = class extends Event {
             const verifiedRole = newMember.guild.roles.resolve(newMember.guild.settings.verifiedRole);
 
             if (isMuted && isVerified && verifiedRole) {
-                guildMember.roles.remove(verifiedRole, `Member is muted`);
+                newMember.roles.remove(verifiedRole, `Member is muted`);
             }
 
             if (!isMuted && !isVerified && newMember.guild.settings.raidMitigation < 2 && verifiedRole) {
-                guildMember.roles.add(verifiedRole, `Member no longer muted`);
+                newMember.roles.add(verifiedRole, `Member no longer muted`);
             }
         }
     }
