@@ -10,17 +10,17 @@ module.exports = class extends Command {
 		});
 	}
 
-	run(message, [mentioned = msg.member]) {
-        if (message.guild.settings.botChannel && message.channel.id !== message.guild.settings.botChannel) {
-            var msg = await message.send(`:x: No spammy whammy! Please use that command in the bot channel.`);
-            message.delete();
-            setTimeout(() => {
-                msg.delete();
-            }, 10000);
-            return msg;
-        }
-		
-		return message.send(`${mentioned.user.tag}: ${compliments[Math.floor(Math.random() * compliments.length)]}`);
+	async run (message, [ mentioned = msg.member ]) {
+		if (message.guild.settings.botChannel && message.channel.id !== message.guild.settings.botChannel) {
+			var msg = await message.send(`:x: No spammy whammy! Please use that command in the bot channel.`);
+			message.delete();
+			setTimeout(() => {
+				msg.delete();
+			}, 10000);
+			return msg;
+		}
+
+		return message.send(`${mentioned.user.tag}: ${compliments[ Math.floor(Math.random() * compliments.length) ]}`);
 	}
 
 };
