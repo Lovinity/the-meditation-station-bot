@@ -99,7 +99,7 @@ module.exports = class extends Task {
             _guild.channels
                 .filter((channel) => channel.name.startsWith("support-"))
                 .each((channel) => {
-                    if ((!channel.lastMessage && moment(channel.createdAt).add(1, 'days').isBefore(moment())) || (channel.lastMessage && moment(channel.lastMessage.createdAt).add(1, 'days').isBefore(moment()))) {
+                    if ((!channel.lastMessage && moment(channel.createdAt).add(2, 'days').isBefore(moment())) || (channel.lastMessage && moment(channel.lastMessage.createdAt).add(1, 'days').isBefore(moment()))) {
                         channel.delete(`Support channel expired (24 hours of inactivity).`);
                     }
                 });

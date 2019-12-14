@@ -79,12 +79,12 @@ module.exports = class extends Event {
             });
 
             // Cycle through all the members without the verified role and assign them the stored roles, providing we are not in raid mitigation.
-            const verified = guild.settings.verifiedRole;
-            const verifiedRole = guild.roles.resolve(verified);
+            const verifiedRole = guild.roles.resolve(guild.settings.verifiedRole);
+            const muteRole = guild.roles.resolve(guild.settings.muteRole);
             if (verifiedRole) {
                 guild.members.each((guildMember) => {
-                    // Member has the verified role. Update database with the current roles set in case anything changed since bot was down.
-                    if (guildMember.roles.get(verifiedRole.id)) {
+                    // Member has the verified role or mute role. Update database with the current roles set in case anything changed since bot was down.
+                    if (guildMember.roles.get(verifiedRole.id) || (muteRole && guildMember.roles.get(muteRole.id))) {
                         var roleArray = [];
                         guildMember.settings.reset(`roles`);
                         guildMember.roles.each((role) => {
