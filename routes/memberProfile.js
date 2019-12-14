@@ -211,7 +211,7 @@ module.exports = class extends Route {
                 }
 
                 if (request.body.dob) {
-                    if (sameUser && userSettings.dob !== null) return response.end(JSON.stringify({ error: `Date of birth cannot be changed once already set except by a staff member.` }));
+                    if (sameUser && userSettings.dob !== null && userSettings.dob !== request.body.dob) return response.end(JSON.stringify({ error: `Date of birth cannot be changed once already set except by a staff member.` }));
                     if (request.body.dob !== '' && !moment(request.body.dob).isValid()) return response.end(JSON.stringify({ error: `Date of birth is not a valid date. Try using the format YYYY-MM-DD.` }));
                     await userSettings.update('profile.dob', request.body.dob !== '' ? moment(request.body.dob).format("YYYY-MM-DD") : null);
                     userSettings = user.guildSettings(guild.id);
