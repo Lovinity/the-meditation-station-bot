@@ -15,6 +15,9 @@ module.exports = class extends Route {
         if (!request.query.guild) return response.end(JSON.stringify({ error: "Guild was not specified" }));
         if (!request.query.user) return response.end(JSON.stringify({ error: "User was not specified" }));
 
+        const guild = this.client.guilds.resolve(request.query.guild)
+        if (!guild) return response.end(JSON.stringify({ error: "The bot is not in the provided guild." }));
+
         try {
             var authUser = await this.client.users.fetch(request.auth.scope[ 0 ]);
             if (!authUser) throw new Error("Authorized user not found");
@@ -23,9 +26,6 @@ module.exports = class extends Route {
         } catch (e) {
             return response.end(JSON.stringify({ error: `Authorized user not found or is not in the guild. You must be in the guild to view the badges of guild members.` }));
         }
-
-        const guild = this.client.guilds.resolve(request.query.guild)
-        if (!guild) return response.end(JSON.stringify({ error: "The bot is not in the provided guild." }));
 
         try {
             var user = await this.client.users.fetch(request.query.user);
