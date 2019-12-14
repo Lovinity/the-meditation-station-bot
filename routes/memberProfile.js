@@ -174,8 +174,10 @@ module.exports = class extends Route {
                         allowedTags: [],
                         allowedAttributes: {}
                     });
+                    if (sameUser && request.body.title !== '' && request.body.title !== userSettings.profile.title && userSettings.yang < 50) return response.end(JSON.stringify({ error: `You do not have enough Yang to change your title.` }));
                     if (request.body.title.length > 64) return response.end(JSON.stringify({ error: `Title may not be more than 64 characters long.` }));
                     if (/[^\x20-\x7E]/g.test(request.body.title)) return response.end(JSON.stringify({ error: `Title may not contain special characters.` }));
+                    if (sameUser && request.body.title !== '' && request.body.title !== userSettings.profile.title) await userSettings.update('yang', userSettings.yang - 50);
                     await userSettings.update('profile.title', request.body.title);
                     userSettings = user.guildSettings(guild.id);
                 }
@@ -183,7 +185,7 @@ module.exports = class extends Route {
                 if (request.body.background) {
                     if (request.body.background !== '' && !isImageUrl(request.body.background)) return response.end(JSON.stringify({ error: `Cover Image URL is not a valid URL to an image.` }));
                     if (sameUser && request.body.background !== '' && request.body.background !== userSettings.profile.background && userSettings.yang < 150) return response.end(JSON.stringify({ error: `You do not have enough Yang to change your cover image.` }));
-                    await userSettings.update('yang', userSettings.yang - 150);
+                    if (sameUser && request.body.background !== '' && request.body.background !== userSettings.profile.background) await userSettings.update('yang', userSettings.yang - 150);
                     await userSettings.update('profile.background', request.body.background);
                     userSettings = user.guildSettings(guild.id);
                 }
@@ -255,6 +257,7 @@ module.exports = class extends Route {
                     });
 
                     if (request.body.info.length > 2048) return response.end(JSON.stringify({ error: `Profile info may not be more than 2048 characters long (including HTML tags).` }));
+                    if (/[^\x20-\x7E]/g.test(request.body.info)) return response.end(JSON.stringify({ error: `Profile info may not contain special characters.` }));
 
                     var newLines = request.body.info.split("<br").length - 1;
                     if (newLines > 25) return response.end(JSON.stringify({ error: `Profile info may not contain more than 25 new lines / line breaks; that's spammy.` }));
