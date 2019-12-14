@@ -24,7 +24,7 @@ module.exports = class extends Route {
             var authMember = await guild.members.fetch(authUser.id);
             if (!authMember) throw new Error("Authorized user does not seem to be in the provided guild.");
         } catch (e) {
-            return response.end(JSON.stringify({ error: `Authorized user not found or is not in the guild. You must be in the guild to view the profiles of guild members.` }));
+            return response.end(JSON.stringify({ error: `Authorized user ${request.auth.scope[ 0 ]} not found or is not in the guild. You must be in the guild to view the profiles of guild members.` }));
         }
 
         const guild = this.client.guilds.resolve(request.query.guild)
