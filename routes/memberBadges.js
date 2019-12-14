@@ -4,7 +4,10 @@ const fetch = require('node-fetch');
 module.exports = class extends Route {
 
     constructor(...args) {
-        super(...args, { route: 'profile/badges' });
+        super(...args, {
+            route: 'profile/badges',
+            authorized: true,
+        });
     }
 
     async get (request, response) {
@@ -24,14 +27,14 @@ module.exports = class extends Route {
 
         const userBadges = user.guildSettings(guild.id).profile.badges;
         const guildBadges = guild.settings.badges;
-        var respond = {tag: user.tag, badges: []};
+        var respond = { tag: user.tag, badges: [] };
 
         if (guildBadges.length > 0 && userBadges.length > 0) {
             guildBadges
-            .filter((badge) => userBadges.some((badgeb) => badgeb.ID === badge.ID))
-            .map((badge) => {
-                respond.badges.push({...badge, earnedOn: userBadges.find((badgeb) => badgeb.ID === badge.ID).earnedOn});
-            });
+                .filter((badge) => userBadges.some((badgeb) => badgeb.ID === badge.ID))
+                .map((badge) => {
+                    respond.badges.push({ ...badge, earnedOn: userBadges.find((badgeb) => badgeb.ID === badge.ID).earnedOn });
+                });
         }
 
         return response.end(JSON.stringify({ message: respond }));

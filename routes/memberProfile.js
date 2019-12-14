@@ -7,7 +7,10 @@ const isImageUrl = require('is-image-url');
 module.exports = class extends Route {
 
     constructor(...args) {
-        super(...args, { route: 'profile' });
+        super(...args, {
+            route: 'profile',
+            authenticated: true
+        });
     }
 
     async get (request, response) {
@@ -261,7 +264,7 @@ module.exports = class extends Route {
                         matcher = regex.exec(request.body.info);
                     }
                     var patternScore = (request.body.info.length > 0 ? (newstring.length / request.body.info.length) : 1);
-                    if (patternScore < (2/3) && request.body.info !== '' && request.body.info !== '<p><br></p>') return response.end(JSON.stringify({ error: `More than 1/3 of the profile info is repeated 2 or more times; this is spammy.` }));
+                    if (patternScore < (2 / 3) && request.body.info !== '' && request.body.info !== '<p><br></p>') return response.end(JSON.stringify({ error: `More than 1/3 of the profile info is repeated 2 or more times; this is spammy.` }));
 
                     // TODO: Toxicity check
 
