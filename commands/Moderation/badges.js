@@ -65,7 +65,10 @@ module.exports = class extends Command {
             image: url,
             active: true
         }, { action: 'add' });
-        themessage.delete();
+
+        setTimeout(() => {
+            themessage.delete();
+        }, 60000);
 
         return message.send(`:white_check_mark: Badge has been added! Its ID is ${badgeID}`);
     }
