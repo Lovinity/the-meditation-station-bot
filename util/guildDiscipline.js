@@ -271,7 +271,7 @@ Post your completed retraction statement(s) in this text channel as an attachmen
 
             if (this.classD.quiz) {
                 msg2 += ":question: **Task: Take / Pass a Quiz** \n"
-                msg2 += `You are required to take and pass one or more quizzes on spillthet.org. Here are the details: **${this.classD.retraction}**` + "\n\n"
+                msg2 += `You are required to take and pass one or more quizzes on spillthet.org. Here are the details: **${this.classD.quiz}**` + "\n\n"
             }
         }
 
