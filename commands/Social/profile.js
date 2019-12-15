@@ -1,6 +1,5 @@
 const { Command } = require('klasa');
 const moment = require("moment");
-const { createCanvas, loadImage } = require('canvas');
 const config = require("../../config");
 const yangStore = require('../../util/yangStore');
 
