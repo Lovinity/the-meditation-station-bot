@@ -25,8 +25,8 @@ module.exports = class GuildDiscipline {
         this.muteDuration = null;
         this.banDuration = null;
         this.type = 'classA';
-        this.channel = null;
-        this.message = null;
+        this.channel;
+        this.message;
         this.rules = [];
         this.case = Date.now().toString(36) + (this.client.shard ? this.client.shard.id.toString(36) : '') + String.fromCharCode((1 % 26) + 97);
     }
@@ -691,8 +691,10 @@ Post your completed retraction statement(s) in this text channel as an attachmen
                 this.user.guildSettings(this.guild.id).update(`roles`, mutedRole, this.guild, { action: 'remove' });
             }
         }
-        await this.message.delete();
-        await this.channel.send(`:ok_hand: The staff member who was working on your discipline has decided against taking any action. We apologize for any inconvenience this caused you. If you were muted, the mute was removed.`);
+        if (this.message)
+            await this.message.delete();
+        if (this.channel)
+            await this.channel.send(`:ok_hand: The staff member who was working on your discipline has decided against taking any action. We apologize for any inconvenience this caused you. If you were muted, the mute was removed.`);
         return this;
     }
 
