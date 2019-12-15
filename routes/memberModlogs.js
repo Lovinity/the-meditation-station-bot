@@ -28,8 +28,13 @@ module.exports = class extends Route {
             return response.end(JSON.stringify({ error: `Unable to fetch the authorized user.` }));
         }
 
-        if (!authMember.permissions.has('VIEW_AUDIT_LOG') && authUser.id !== request.query.user)
-            return response.end(JSON.stringify({ error: `You do not have permission to view other members' mod logs in this guild.` }));
+        if (authUser.id !== request.query.user) {
+            if (guild && guild.settings.modRole) {
+                if (!authMember.roles.get(guild.settings.modRole)) return response.end(JSON.stringify({ error: `You do not have the guild's modRole and therefore are not allowed to view other users' moderation logs.` }));
+            } else if (!authMember.permissions.has('VIEW_AUDIT_LOG')) {
+                return response.end(JSON.stringify({ error: `You do not have VIEW_AUDIT_LOG permissions and therefore are not allowed to view other users' moderation logs.` }));
+            }
+        }
 
         try {
             var user = await this.client.users.fetch(request.query.user);
