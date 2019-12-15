@@ -78,7 +78,7 @@ module.exports = class extends Command {
         );
         menu.addOption(`classA`, `Warning`);
         menu.addOption(`classB`, `Basic Discipline (Yang fine, bad reputation, and/or loss of XP)`);
-        menu.addOption(`ClassD`, `Reflection / Research (Require apology, research paper, retraction statement, and/or quiz).`);
+        menu.addOption(`classD`, `Reflection / Research (Require apology, research paper, retraction statement, and/or quiz).`);
         menu.addOption(`classE`, `Access Restrictions (Indefinite or timed mute, channel restrictions, and/or roles that restrict permissions).`);
         menu.addOption(`classF`, `Ban (Temporary or Permanent).`);
         menu.addOption(`classG`, `Report / Investigation by Third Party (Discord TOS violation and/or report to police).`);
