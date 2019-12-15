@@ -59,9 +59,6 @@ module.exports = class extends Event {
                 return;
             }
 
-            var voice = guild.channels.resolve('637468753562435614');
-            if (voice) voice.join();
-
             // Add a scheduled task to run every minute for the guild if it does not already exist
             const guildTask = guild.settings.guildTasks;
             if (!guildTask || guildTask === null) {
