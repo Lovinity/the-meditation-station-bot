@@ -9,6 +9,7 @@ module.exports = class extends Event {
     }
 
     async run (oldState, newState) {
+        console.log(`Voice state update`)
         if (newState.member && oldState.channelID !== newState.channelID && newState.channelID) {
 
             // Check if the member is muted. If so, update voice mute as well.
