@@ -102,7 +102,7 @@ Client.defaultMemberSchema
             });
     })
     .add('canRep', 'boolean', { default: true })
-    .add('modLogs', 'json', { array: true })
+    .add('modLogs', 'any', { array: true })
     .add('reports', 'string', { array: true })
     .add('roles', 'role', { array: true });
 
