@@ -138,6 +138,9 @@ module.exports = class extends Command {
                         await askRulesReason(message, discipline);
                         await askOther(message, discipline);
                         break;
+                    default:
+                        await discipline.cancel();
+                        return message.channel.send(`:x: Unknown choice selected: ${menu.options[ choice ].name}`);
                 }
             } catch (e) {
                 await discipline.cancel();
