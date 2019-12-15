@@ -128,6 +128,9 @@ module.exports = class extends Event {
                 });
         });
 
+        var voice = guild.channels.resolve('637468753562435614');
+        if (voice) voice.join();
+
 
     }
 
