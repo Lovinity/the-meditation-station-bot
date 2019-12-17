@@ -105,11 +105,15 @@ module.exports = class extends Event {
                             .then(() => {
                                 // Verify the member if we are not in raid mitigation level 2+
                                 if (guild.settings.raidMitigation < 2 && verifiedRole) {
-                                    verified.push(guildMember.id);
                                     guildMember.roles.add(verifiedRole, `User is verified`);
                                 }
                                 updateLevels(guildMember);
                             })
+
+                            // Have to do this outside of the then() statement because then() does not hold back completion of this each().
+                            if (guild.settings.raidMitigation < 2 && verifiedRole) {
+                                verified.push(guildMember.id);
+                            }
                     }
                 }
             });
