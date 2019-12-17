@@ -51,8 +51,8 @@ module.exports = class extends Event {
 
         // Reassign saved roles, if any, to the member. Also, creates a settings entry in the database for them if it doesn't exist
         const _channel2 = this.client.channels.resolve(guildMember.guild.settings.generalChannel);
-        const verifiedRole = guild.roles.resolve(guildMember.guild.settings.verifiedRole);
-        const muteRole = guild.roles.resolve(guildMember.guild.settings.muteRole);
+        const verifiedRole = guildMember.guild.roles.resolve(guildMember.guild.settings.verifiedRole);
+        const muteRole = guildMember.guild.roles.resolve(guildMember.guild.settings.muteRole);
 
         // Check if the member should be muted. If so, reset all roles
         if (muteRole && (guildMember.settings.muted || guildMember.roles.get(muteRole.id))) {
@@ -64,7 +64,7 @@ module.exports = class extends Event {
                 guildMember.roles.set(guildMember.settings.roles, `Re-assigning roles`)
                     .then(() => {
                         // Verify the member if we are not in raid mitigation level 2+
-                        if (guild.settings.raidMitigation < 2 && verifiedRole) {
+                        if (guildMember.guild.settings.raidMitigation < 2 && verifiedRole) {
                             guildMember.roles.add(verifiedRole, `User is verified`);
                         }
 
@@ -74,7 +74,7 @@ module.exports = class extends Event {
                     })
             } else {
                 // Verify the member if we are not in raid mitigation level 2+
-                if (guild.settings.raidMitigation < 2 && verifiedRole) {
+                if (guildMember.guild.settings.raidMitigation < 2 && verifiedRole) {
                     if (_channel2)
                         _channel2.send(`**Welcome new member** <@${guildMember.id}>! It looks like you've never been here before. We love new friends! Here are some tips to get started:
 :small_orange_diamond: Be sure to check out the welcome channel for the rules and helpful resources. All members and staff must follow the rules.
