@@ -14,7 +14,7 @@ module.exports = class extends Event {
             }
 
             // If newly muted, or muted with more than 1 role, or not muted when they should be muted, remove all roles except muted.
-            if ((!wasMuted && isMuted) || (isMuted && newMember.roles.size > 1) || (!isMuted && !wasMuted && newMember.settings.muted)) {
+            if ((!wasMuted && isMuted) || (isMuted && newMember.roles.size > 2) || (!isMuted && !wasMuted && newMember.settings.muted)) {
                 await newMember.settings.update(`muted`, true, newMember.guild);
                 // Remove all roles except the muted role
                 newMember.roles.set([ newMember.guild.settings.muteRole ], `User muted; remove all other roles`);
