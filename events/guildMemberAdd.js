@@ -4,7 +4,9 @@ const _ = require("lodash");
 module.exports = class extends Event {
 
     run (guildMember) {
-        // Delay operations by 5 seconds to allow settings sync
+        console.dir(guildMember.settings);
+
+        // Delay operations by 10 seconds to allow settings sync
         setTimeout(() => {
 
             console.dir(guildMember.settings);
@@ -114,7 +116,7 @@ module.exports = class extends Event {
                 });
             }
 
-        }, 5000);
+        }, 10000);
     }
 
 };
