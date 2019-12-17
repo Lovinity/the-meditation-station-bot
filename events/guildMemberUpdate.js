@@ -3,6 +3,10 @@ const { Event } = require('klasa');
 module.exports = class extends Event {
 
     run (oldMember, newMember) {
+        console.log(`Member update`);
+        
+        console.dir(oldMember);
+        console.dir(newMember);
 
         var isMuted = (newMember.roles.get(newMember.guild.settings.muteRole));
         var wasMuted = (oldMember.roles.get(oldMember.guild.settings.muteRole));
