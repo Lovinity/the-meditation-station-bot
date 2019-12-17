@@ -81,36 +81,35 @@ module.exports = class extends Event {
             // Cycle through all the members without the verified role and assign them the stored roles, providing we are not in raid mitigation.
             const verifiedRole = guild.roles.resolve(guild.settings.verifiedRole);
             const muteRole = guild.roles.resolve(guild.settings.muteRole);
-            if (verifiedRole) {
-                guild.members.each((guildMember) => {
-                    // Member has the verified role or mute role. Update database with the current roles set in case anything changed since bot was down.
-                    if (guildMember.roles.get(verifiedRole.id) || (muteRole && guildMember.roles.get(muteRole.id))) {
-                        var roleArray = [];
+            guild.members.each((guildMember) => {
+
+                // Check if the member should be muted. If so, reset all roles
+                if (muteRole && (guildMember.settings.muted || guildMember.roles.get(muteRole.id))) {
+                    guildMember.settings.update(`muted`, true, guild);
+                    guildMember.roles.set([ guild.settings.muteRole ], `User supposed to be muted`);
+                } else {
+                    // Member has the verified role. Update database with the current roles set in case anything changed since bot was down.
+                    if (verifiedRole && guildMember.roles.get(verifiedRole.id)) {
                         guildMember.settings.reset(`roles`);
                         guildMember.roles.each((role) => {
-                            if (role.id !== guild.roles.everyone.id)
+                            if (role.id !== guild.roles.everyone.id && role.id !== guild.settings.muteRole)
                                 guildMember.settings.update(`roles`, role, guild, { action: 'add' });
                         });
                         updateLevels(guildMember);
                         // Member does not have verified role, so add all roles from the database
                     } else {
                         // We have to lodash clone the roles before we start adding them, otherwise guildMemberUpdate will interfere with this process
-                        var _temp = guildMember.settings.roles;
-                        var temp = _.cloneDeep(_temp);
-                        guildMember.roles.add(temp, `Re-assigning saved roles`)
-                            .then(newMember => updateLevels(newMember));
-
-                        // Verify the member if we are not in raid mitigation level 2+
-                        if (guild.settings.raidMitigation < 2) {
-                            guildMember.roles.add(verifiedRole, `User is verified`);
-                        }
+                        guildMember.roles.set(guildMember.settings.roles, `Re-assigning roles`)
+                            .then(() => {
+                                // Verify the member if we are not in raid mitigation level 2+
+                                if (guild.settings.raidMitigation < 2 && verifiedRole) {
+                                    guildMember.roles.add(verifiedRole, `User is verified`);
+                                }
+                                updateLevels(guildMember);
+                            })
                     }
-                });
-            } else {
-                guild.members.each((guildMember) => {
-                    updateLevels(guildMember);
-                });
-            }
+                }
+            });
 
             // Remove invites that have no inviter (raid prevention)
             const modLog = guild.settings.eventLogChannel;

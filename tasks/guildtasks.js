@@ -152,11 +152,22 @@ ${iceBreakers[ Math.floor(Math.random() * iceBreakers.length) ]}
                 // Add verifiedRole
                 var verifiedRole = _guild.roles.resolve(_guild.settings.verifiedRole);
                 if (verifiedRole) {
+                    var guildMembers = [];
+                    var generalChannel
                     _guild.members.each((guildMember) => {
                         if (!guildMember.roles.get(verifiedRole.id)) {
+                            guildMembers.push(guildMember.id);
                             guildMember.roles.add(verifiedRole, `Raid mitigation expired`);
                         }
                     });
+                    if (generalChannel && guildMembers.length > 0) {
+                        guildChannel.send(`**Welcome to our new members** ${guildMembers.map((gm) => gm = `<@${gm}> `)}` + "\n\n" + `The raid has ended, and you all now have full guild access. Thank you for your patience. Here are some tips to get started:`)
+                            .then(() => {
+                                guildChannel.send(`:small_orange_diamond: Be sure to check out the welcome channel for the rules and helpful resources. All members and staff must follow the rules.
+:small_orange_diamond: Use the \`!staff\` bot command at any time if you need to talk privately with staff, such as to report another member.
+:small_orange_diamond: Use the \`!profile\` bot command to get a link to view and edit your profile! Everyone in the guild gets a bot profile.`);
+                            })
+                    }
                 }
 
                 // Reset verification level

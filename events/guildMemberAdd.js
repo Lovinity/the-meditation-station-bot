@@ -50,22 +50,42 @@ module.exports = class extends Event {
             _channel.send(`:tada: The member <@!${guildMember.user.id}> just joined the guild. They created their account on ${guildMember.user.createdAt.toUTCString()}`);
 
         // Reassign saved roles, if any, to the member. Also, creates a settings entry in the database for them if it doesn't exist
-        // We have to lodash clone the roles before we start adding them, otherwise guildMemberUpdate will interfere with this process
-        var _temp = guildMember.settings.roles;
-        if (_temp.length > 0) {
-            var temp = _.cloneDeep(_temp);
+        const _channel2 = this.client.channels.resolve(guildMember.guild.settings.generalChannel);
+        const verifiedRole = guild.roles.resolve(guildMember.guild.settings.verifiedRole);
+        const muteRole = guild.roles.resolve(guildMember.guild.settings.muteRole);
 
-            guildMember.roles.add(temp)
-                .then(newMember => updateLevels(newMember));
-            const _channel2 = this.client.channels.resolve(guildMember.guild.settings.generalChannel);
-            if (_channel2) {
-                _channel2.send(`**Welcome back** <@${guildMember.id}>! I see you have been here before. I remembered your profile, XP, Yang, reputation, badges, profile info, etc. I also re-assigned the roles that you had when you left. Be sure to check out the welcome channel; the rules may have changed since you were last with us.`);
-            }
+        // Check if the member should be muted. If so, reset all roles
+        if (muteRole && (guildMember.settings.muted || guildMember.roles.get(muteRole.id))) {
+            guildMember.settings.update(`muted`, true, guild);
+            guildMember.roles.set([ guild.settings.muteRole ], `User supposed to be muted`);
         } else {
-            updateLevels(guildMember);
-            const _channel2 = this.client.channels.resolve(guildMember.guild.settings.generalChannel);
-            if (_channel2) {
-                _channel2.send(`**Welcome new member** <@${guildMember.id}>! It looks like you've never been here before. Be sure to check out the welcome channel for the rules. Use the \`!staff\` command if you need to talk with staff in a private text channel (please do not ever DM staff for staff matters). We hope you enjoy your stay!`);
+            // Re-assign saved roles
+            if (guildMember.settings.roles.length > 0) {
+                guildMember.roles.set(guildMember.settings.roles, `Re-assigning roles`)
+                    .then(() => {
+                        // Verify the member if we are not in raid mitigation level 2+
+                        if (guild.settings.raidMitigation < 2 && verifiedRole) {
+                            guildMember.roles.add(verifiedRole, `User is verified`);
+                        }
+
+                        if (_channel2)
+                            _channel2.send(`**Welcome back** <@${guildMember.id}>! I see you have been here before. I remembered your profile, XP, Yang, reputation, badges, profile info, roles, etc. Be sure to check out the welcome channel; the rules may have changed since you were last with us.`)
+                        updateLevels(guildMember);
+                    })
+            } else {
+                // Verify the member if we are not in raid mitigation level 2+
+                if (guild.settings.raidMitigation < 2 && verifiedRole) {
+                    if (_channel2)
+                        _channel2.send(`**Welcome new member** <@${guildMember.id}>! It looks like you've never been here before. We love new friends! Here are some tips to get started:
+:small_orange_diamond: Be sure to check out the welcome channel for the rules and helpful resources. All members and staff must follow the rules.
+:small_orange_diamond: Use the \`!staff\` bot command at any time if you need to talk privately with staff, such as to report another member
+:small_orange_diamond: Use the \`!profile\` bot command to get a link to view and edit your profile! Everyone in the guild gets a bot profile.`);
+                    guildMember.roles.add(verifiedRole, `User is verified`);
+                } else {
+                    const _channel3 = this.client.channels.resolve(guildMember.guild.settings.unverifiedChannel);
+                    if (_channel3)
+                        _channel3.send(`**Welcome new member** <@${guildMember.id}>! Please stand by; the guild is experiencing a raid and therefore you do not have full guild access yet. You may talk with staff and other new members here. Once the raid ends (hopefully within an hour or two), all new members will get full guild access.`)
+                }
             }
         }
 
@@ -88,13 +108,6 @@ module.exports = class extends Event {
                     }
                 }
             });
-        }
-
-        // If the guild raid mitigation is under level 2, assign verified role
-        if (guildMember.guild.settings.raidMitigation < 2) {
-            const verifiedRole = guildMember.guild.roles.resolve(guildMember.guild.settings.verifiedRole);
-            if (verifiedRole)
-                guildMember.roles.add(verifiedRole);
         }
     }
 

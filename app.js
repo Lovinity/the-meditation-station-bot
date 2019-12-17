@@ -77,12 +77,12 @@ Client.use(require('./klasa-selfroles-gateway'));
 
 // Guild Member Schema
 Client.defaultMemberSchema
-    .add('xp', 'integer', { default: 0 })
-    .add('yang', 'integer', { default: 0 })
-    .add('badRep', 'integer', { default: 0 })
-    .add('goodRep', 'integer', { default: 0 })
-    .add('spamScore', 'integer', { default: 0 })
-    .add('activityScore', 'float', { min: 0, default: 0 })
+    .add('xp', 'integer', { default: 0, configurable: false })
+    .add('yang', 'integer', { default: 0, configurable: false })
+    .add('badRep', 'integer', { default: 0, configurable: false })
+    .add('goodRep', 'integer', { default: 0, configurable: false })
+    .add('spamScore', 'integer', { default: 0, configurable: false })
+    .add('activityScore', 'float', { min: 0, default: 0, configurable: false })
     .add('profile', folder => {
         folder
             .add('title', 'string')
@@ -94,17 +94,12 @@ Client.defaultMemberSchema
             .add('donations', 'float', { default: 0 })
             .add('background', 'url')
             .add('badges', 'any', { array: true })
-            .add('profileColor', folder2 => {
-                folder2
-                    .add('hue', 'float', { default: 0, min: 0, max: 0 })
-                    .add('saturation', 'float', { default: 0, min: 0, max: 100 })
-                    .add('lightness', 'float', { default: 100, min: 0, max: 1000 });
-            });
     })
-    .add('canRep', 'boolean', { default: true })
-    .add('modLogs', 'any', { array: true })
-    .add('reports', 'string', { array: true })
-    .add('roles', 'role', { array: true });
+    .add('canRep', 'boolean', { default: true, configurable: false })
+    .add('muted', 'boolean', { default: false, configurable: false })
+    .add('modLogs', 'any', { array: true, configurable: false })
+    .add('reports', 'string', { array: true, configurable: false })
+    .add('roles', 'role', { array: true, configurable: false });
 
 Client.defaultRoleSchema
     .add('self', folder => {

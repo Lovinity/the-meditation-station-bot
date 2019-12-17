@@ -4,31 +4,30 @@ module.exports = class extends Event {
 
     run (oldMember, newMember) {
 
-        // Update the roles in the database
-        newMember.settings.reset(`roles`);
-        newMember.roles.each((role) => {
-            if (role.id !== newMember.guild.roles.everyone.id)
-                newMember.settings.update(`roles`, role, newMember.guild, { action: 'add' });
-        });
-
-        // Update voice mutes according to whether or not the user is muted.
         var isMuted = (newMember.roles.get(newMember.guild.settings.muteRole));
-        var isVerified = (newMember.roles.get(newMember.guild.settings.verifiedRole));
+        var wasMuted = (oldMember.roles.get(oldMember.guild.settings.muteRole));
+
+        // Kick the user out of voice channels if they are muted
         if (isMuted && newMember.voice.channelID) {
             newMember.voice.kick(`User is muted`)
         }
 
-        // Remove verified role when member is muted; re-add verified role when member is no longer muted if not in a guild raid
-        if (newMember.guild.settings.muteRole && newMember.guild.settings.verifiedRole) {
-            const verifiedRole = newMember.guild.roles.resolve(newMember.guild.settings.verifiedRole);
+        // If newly muted, or muted with more than 1 role, or not muted when they should be muted, remove all roles except muted.
+        if ((!wasMuted && isMuted) || (isMuted && newMember.roles.length > 1) || (!isMuted && !wasMuted && newMember.settings.muted)) {
+            newMember.settings.update(`muted`, true, newMember.guild);
+            // Remove all roles except the muted role
+            newMember.roles.set([ newMember.guild.settings.muteRole ], `User muted; remove all other roles`);
 
-            if (isMuted && isVerified && verifiedRole) {
-                newMember.roles.remove(verifiedRole, `Member is muted`);
-            }
+        } else if (wasMuted && !isMuted) { // User was muted and is no longer muted; re-assign roles.
+            newMember.settings.update(`muted`, false, newMember.guild);
+            newMember.roles.set(newMember.settings.roles, `User no longer muted; apply previous roles`);
 
-            if (!isMuted && !isVerified && newMember.guild.settings.raidMitigation < 2 && verifiedRole) {
-                newMember.roles.add(verifiedRole, `Member no longer muted`);
-            }
+        } else if (!isMuted && !wasMuted) { // User not, nor was, muted; update role database
+            newMember.settings.reset(`roles`);
+            newMember.roles.each((role) => {
+                if (role.id !== newMember.guild.roles.everyone.id)
+                    newMember.settings.update(`roles`, role, newMember.guild, { action: 'add' });
+            });
         }
     }
 
