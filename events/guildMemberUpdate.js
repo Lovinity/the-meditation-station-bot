@@ -5,8 +5,8 @@ module.exports = class extends Event {
     async run (oldMember, newMember) {
         const mutedRole = newMember.guild.roles.resolve(newMember.guild.settings.muteRole);
         if (mutedRole) {
-            var isMuted = (newMember.roles.get(newMember.guild.settings.muteRole));
-            var wasMuted = (oldMember.roles.get(oldMember.guild.settings.muteRole));
+            var isMuted = (newMember.roles.get(newMember.guild.settings.muteRole) ? true : false);
+            var wasMuted = (oldMember.roles.get(oldMember.guild.settings.muteRole) ? true : false);
 
             // Kick the user out of voice channels if they are muted
             if (isMuted && newMember.voice.channelID) {
