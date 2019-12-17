@@ -53,15 +53,16 @@ module.exports = class extends Event {
         const _channel2 = this.client.channels.resolve(guildMember.guild.settings.generalChannel);
         const verifiedRole = guildMember.guild.roles.resolve(guildMember.guild.settings.verifiedRole);
         const muteRole = guildMember.guild.roles.resolve(guildMember.guild.settings.muteRole);
+        const settings = guildMember.user.guildSettings(guildMember.guild.id);
 
         // Check if the member should be muted. If so, reset all roles
-        if (muteRole && (guildMember.settings.muted || guildMember.roles.get(muteRole.id))) {
-            guildMember.settings.update(`muted`, true, guild);
+        if (muteRole && (settings.muted || guildMember.roles.get(muteRole.id))) {
+            settings.update(`muted`, true, guild);
             guildMember.roles.set([ guild.settings.muteRole ], `User supposed to be muted`);
         } else {
             // Re-assign saved roles
-            if (guildMember.settings.roles.size > 0) {
-                guildMember.roles.set(guildMember.settings.roles, `Re-assigning roles`)
+            if (settings.roles.length > 0) {
+                guildMember.roles.set(settings.roles, `Re-assigning roles`)
                     .then(() => {
                         // Verify the member if we are not in raid mitigation level 2+
                         if (guildMember.guild.settings.raidMitigation < 2 && verifiedRole) {
