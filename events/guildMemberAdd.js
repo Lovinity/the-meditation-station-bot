@@ -118,7 +118,7 @@ module.exports = class extends Event {
                     }
 
                 });
-        }, 15000);
+        }, 30000);
     }
 
 };
