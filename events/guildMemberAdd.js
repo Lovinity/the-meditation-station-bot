@@ -5,7 +5,7 @@ module.exports = class extends Event {
 
     run (guildMember) {
 
-        // UNSTABLE!!! There is a bug in klasa-members-gateway causing guildMember.settings to not initialize until after this function is finished executing.
+        guildMember.settings.sync(true);
 
         // Get the configured modLog channel.
         const modLog = guildMember.guild.settings.eventLogChannel;
