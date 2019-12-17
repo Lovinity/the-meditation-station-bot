@@ -18,20 +18,10 @@ module.exports = class extends Event {
                 await newMember.settings.update(`muted`, true, newMember.guild);
                 // Remove all roles except the muted role
                 newMember.roles.set([ newMember.guild.settings.muteRole ], `User muted; remove all other roles`);
-                console.log(`---`)
-                console.log(wasMuted);
-                console.log(isMuted);
-                console.log(newMember.roles.size);
-                console.log(newMember.settings.muted);
 
             } else if (wasMuted && !isMuted) { // User was muted and is no longer muted; re-assign roles.
                 await newMember.settings.update(`muted`, false, newMember.guild);
                 newMember.roles.set(newMember.settings.roles, `User no longer muted; apply previous roles`);
-                console.log(`---x`)
-                console.log(wasMuted);
-                console.log(isMuted);
-                console.log(newMember.roles.size);
-                console.log(newMember.settings.muted);
 
             } else if (!isMuted && !wasMuted) { // User not, nor was, muted; update role database
                 newMember.settings.reset(`roles`);
