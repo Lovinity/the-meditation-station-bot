@@ -15,6 +15,7 @@ Client.defaultGuildSchema
     .add('iceBreakerChannel', 'textchannel')
     .add('announcementsChannel', 'textchannel')
     .add('generalChannel', 'textchannel')
+    .add('unverifiedChannel', 'textchannel')
     .add('starboardChannel', 'textchannel')
     .add('selfRolesChannel', 'textchannel')
     .add('noXPChannels', 'textchannel', { array: true })
