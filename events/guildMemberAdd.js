@@ -6,7 +6,7 @@ module.exports = class extends Event {
     run (_guildMember) {
 
         // Re-fetch guild member to update settings before operations
-        _guildMember.guild.members.fetch(guildMember.id)
+        _guildMember.guild.members.fetch(_guildMember.id)
             .then((guildMember) => {
 
                 console.dir(guildMember.settings);
