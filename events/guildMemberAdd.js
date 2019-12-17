@@ -60,7 +60,7 @@ module.exports = class extends Event {
             guildMember.roles.set([ guild.settings.muteRole ], `User supposed to be muted`);
         } else {
             // Re-assign saved roles
-            if (guildMember.settings.roles.length > 0) {
+            if (guildMember.settings.roles.size > 0) {
                 guildMember.roles.set(guildMember.settings.roles, `Re-assigning roles`)
                     .then(() => {
                         // Verify the member if we are not in raid mitigation level 2+
