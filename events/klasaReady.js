@@ -120,9 +120,9 @@ module.exports = class extends Event {
 
             // Make a message welcoming the new members who have been verified.
             if (generalChannel && verified.length > 0) {
-                guildChannel.send(`**Welcome to our new members** ${verified.map((gm) => gm = `<@${gm}> `)}` + "\n\n" + `Sorry about me being sick/offline, but I am back online and verified you. Thank you for your patience. Here are some tips to get started:`)
+                generalChannel.send(`**Welcome to our new members** ${verified.map((gm) => gm = `<@${gm}> `)}` + "\n\n" + `Sorry about me being sick/offline, but I am back online and verified you. Thank you for your patience. Here are some tips to get started:`)
                     .then(() => {
-                        guildChannel.send(`:small_orange_diamond: Be sure to check out the welcome channel for the rules and helpful resources. All members and staff must follow the rules.
+                        generalChannel.send(`:small_orange_diamond: Be sure to check out the welcome channel for the rules and helpful resources. All members and staff must follow the rules.
 :small_orange_diamond: Use the \`!staff\` bot command at any time if you need to talk privately with staff, such as to report another member.
 :small_orange_diamond: Use the \`!profile\` bot command to get a link to view and edit your profile! Everyone in the guild gets a bot profile.`);
                     });
