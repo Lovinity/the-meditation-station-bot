@@ -81,6 +81,8 @@ module.exports = class extends Event {
             // Cycle through all the members without the verified role and assign them the stored roles, providing we are not in raid mitigation.
             const verifiedRole = guild.roles.resolve(guild.settings.verifiedRole);
             const muteRole = guild.roles.resolve(guild.settings.muteRole);
+            var verified = [];
+            const generalChannel = this.client.channels.resolve(guild.settings.generalChannel);
             guild.members.each((guildMember) => {
 
                 // Check if the member should be muted. If so, reset all roles
@@ -103,6 +105,7 @@ module.exports = class extends Event {
                             .then(() => {
                                 // Verify the member if we are not in raid mitigation level 2+
                                 if (guild.settings.raidMitigation < 2 && verifiedRole) {
+                                    verified.push(guildMember.id);
                                     guildMember.roles.add(verifiedRole, `User is verified`);
                                 }
                                 updateLevels(guildMember);
@@ -110,6 +113,16 @@ module.exports = class extends Event {
                     }
                 }
             });
+
+            // Make a message welcoming the new members who have been verified.
+            if (generalChannel && verified.length > 0) {
+                guildChannel.send(`**Welcome to our new members** ${verified.map((gm) => gm = `<@${gm}> `)}` + "\n\n" + `Sorry about me being sick/offline, but I am back online and verified you. Thank you for your patience. Here are some tips to get started:`)
+                    .then(() => {
+                        guildChannel.send(`:small_orange_diamond: Be sure to check out the welcome channel for the rules and helpful resources. All members and staff must follow the rules.
+:small_orange_diamond: Use the \`!staff\` bot command at any time if you need to talk privately with staff, such as to report another member.
+:small_orange_diamond: Use the \`!profile\` bot command to get a link to view and edit your profile! Everyone in the guild gets a bot profile.`);
+                    });
+            }
 
             // Remove invites that have no inviter (raid prevention)
             const modLog = guild.settings.eventLogChannel;
