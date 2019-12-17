@@ -3,9 +3,9 @@ const _ = require("lodash");
 
 module.exports = class extends Event {
 
-    run (guildMember) {
+    async run (guildMember) {
 
-        guildMember.settings.sync(true);
+        await guildMember.settings.sync(true);
 
         // Get the configured modLog channel.
         const modLog = guildMember.guild.settings.eventLogChannel;
