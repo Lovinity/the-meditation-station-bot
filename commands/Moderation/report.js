@@ -129,7 +129,7 @@ ${reportMembers} members have reported you for misconduct within the last ${repo
 
             var channel = await message.guild.channels.create(`reported-${Date.now().toString(36) + (this.client.shard ? this.client.shard.id.toString(36) : '') + String.fromCharCode((1 % 26) + 97)}`, {
                 type: 'text',
-                topic: `Private staff channel initiated by the bot due to multiple member reports`,
+                topic: `Member ${user.tag} reported multiple times by users.`,
                 parent: message.guild.settings.incidentsCategory,
                 permissionOverwrites: overwrites,
                 rateLimitPerUser: 15,
