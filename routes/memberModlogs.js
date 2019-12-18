@@ -210,8 +210,8 @@ module.exports = class extends Route {
                         if (guildMember) {
                             guildMember.roles.remove(mutedRole, `Mute was appealed`);
                         } else {
-                            // Otherwise, remove mutedRole to the list of roles for the user so it's applied when/if they return
-                            user.guildSettings(guild.id).update(`roles`, mutedRole, guild, { action: 'remove' });
+                            // Otherwise, set muted to false manually
+                            await user.guildSettings(guild.id).update(`muted`, false, guild);
                         }
                     }
 

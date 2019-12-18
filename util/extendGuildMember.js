@@ -92,7 +92,7 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                     var discipline = new GuildDiscipline(this.user, this.guild, this.client.user)
                         .setType('classC')
                         .setMuteReason(`Triggered the antispam system and ignored the warnings by the bot. Level 1 raid mitigation was in effect.`)
-                        .setDuration(0)
+                        .setMuteDuration(0)
                         .setYang(100)
                         .setReputation(10)
                         .addRule(this.guild.settings.antispamRuleNumber);

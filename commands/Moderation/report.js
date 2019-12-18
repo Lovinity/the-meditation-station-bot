@@ -114,8 +114,12 @@ ${reportMembers} members have reported you for misconduct within the last ${repo
             const muted = message.guild.settings.muteRole;
             const mutedRole = message.guild.roles.resolve(muted);
 
-            if (mutedRole && guildMember) {
-                guildMember.roles.add(mutedRole, `Mute via several !report s`);
+            if (mutedRole) {
+                if (guildMember) {
+                    guildMember.roles.add(mutedRole, `Mute via several !report s`);
+                } else {
+                    await user.guildSettings(message.guild.id).update(`muted`, true, message.guild);
+                }
             }
 
             var channel = await message.guild.channels.create(`reported_${Date.now().toString(36) + (this.client.shard ? this.client.shard.id.toString(36) : '') + String.fromCharCode((1 % 26) + 97)}`, {
@@ -126,7 +130,7 @@ ${reportMembers} members have reported you for misconduct within the last ${repo
                 rateLimitPerUser: 15,
                 reason: `!report initiated by multiple member reports`
             });
-    
+
             await channel.send(response);
 
             return message.send(`:mute: Your report was acknowledged. Other members reported this user, therefore I muted them. Please explain why you reported the user here with evidence. Staff may revoke your !report privileges if you do not do so.`);

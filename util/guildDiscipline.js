@@ -170,8 +170,8 @@ module.exports = class GuildDiscipline {
                 if (guildMember) {
                     guildMember.roles.add(mutedRole, this.reason);
                 } else {
-                    // Otherwise, add mutedRole to the list of roles for the user so it's applied when/if they return
-                    this.user.guildSettings(this.guild.id).update(`roles`, mutedRole, this.guild, { action: 'add' });
+                    // Otherwise, set muted to true manually
+                    this.user.guildSettings(this.guild.id).update(`muted`, true, this.guild);
                 }
 
                 response += "\n\n" + `**You have been muted in the guild for the time being for the safety of the community.**`
@@ -475,9 +475,6 @@ Post your completed retraction statement(s) in this text channel as an attachmen
             }
         }
 
-        // Check class D discipline
-        classD();
-
         // Add a schedule if a mute is in place
         if (this.muteDuration !== null && this.muteDuration > 0) {
             const removemute = await this.client.schedule.create('removemute', moment().add(this.muteDuration, 'hours').toDate(), {
@@ -536,6 +533,9 @@ Post your completed retraction statement(s) in this text channel as an attachmen
             })
             msg2 += `${roleNames.join(", ")}` + "\n\n"
         }
+
+        // Check class D discipline
+        classD();
 
         if (this.xp > 0) {
             await this.user.guildSettings(this.guild.id).update(`xp`, (this.user.guildSettings(this.guild.id).xp - this.xp));
@@ -611,7 +611,7 @@ Post your completed retraction statement(s) in this text channel as an attachmen
             if (this.banDuration !== null) {
                 await this.guild.members.ban(this.user, { days: 7, reason: this.reason });
                 if ((!this.classD.apology && !this.classD.research && !this.classD.retraction && !this.classD.quiz) || this.banDuration === 0) {
-                    this.user.guildSettings(this.guild.id).update(`roles`, mutedRole, this.guild, { action: 'remove' });
+                    this.user.guildSettings(this.guild.id).update(`muted`, false, this.guild);
                 }
                 if (this.banDuration > 0) {
                     // Add a schedule if the mute is limited duration
@@ -688,7 +688,7 @@ Post your completed retraction statement(s) in this text channel as an attachmen
                 guildMember.roles.remove(mutedRole, `Staff did not complete discipline wizard.`);
             } else {
                 // Otherwise, remove mutedRole to the list of roles for the user so it's applied when/if they return
-                this.user.guildSettings(this.guild.id).update(`roles`, mutedRole, this.guild, { action: 'remove' });
+                this.user.guildSettings(this.guild.id).update(`muted`, false, this.guild);
             }
         }
         if (this.message)
