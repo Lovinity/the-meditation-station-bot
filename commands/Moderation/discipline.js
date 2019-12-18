@@ -52,7 +52,7 @@ module.exports = class extends Command {
             if (value.length > 0) {
                 response += `**Actions issued regarding ${key}**: ` + "\n"
                 value.map((record) => {
-                    response += `🔹${record.type} discipline on ${moment(record.date).format("LLLL Z")}` + "\n"
+                    response += `🔹${record.type} on ${moment(record.date).format("LLLL Z")}` + "\n"
                 })
                 response += "\n"
             }
@@ -61,10 +61,9 @@ module.exports = class extends Command {
         var badRep = user.badRepWithDecay(message.guild.id);
         response += `**Current Bad Reputation**: ${badRep}` + "\n"
         if (badRep < 100) {
-            response += `Member does **not** qualify for a permanent ban on this discipline (except for criminal activity, sexual engagement with minors, violation of Discord's TOS with Discord taking action, sharing of legally private info, or using multiple accounts).` + "\n"
-            response += `Member qualifies for a temporary ban if issuing ${100 - badRep} or more bad reputation on this discipline.` + "\n\n"
+            response += `Member does **not** qualify for a ban on this discipline (except for criminal activity, sexual engagement with minors, violation of Discord's TOS with Discord taking action, sharing of legally private info, or using multiple accounts).` + "\n\n"
         } else {
-            response += `:warning: **Member qualifies for a temporary or permanent ban** at any time if staff deem the community would be best without the member.` + "\n\n"
+            response += `:warning: **Member qualifies for a temporary or permanent ban**. Please ask yourself if this member is causing more harm than good to the community. If so, this discipline should be a class F temporary or permanent ban.` + "\n\n"
         }
         response += `**Current Yang**: ${user.guildSettings(message.guild.id).yang}` + "\n\n"
         response += `**Current XP**: ${user.guildSettings(message.guild.id).xp}` + "\n\n"
@@ -121,6 +120,13 @@ module.exports = class extends Command {
                         await askOther(message, discipline);
                         break;
                     case 'classF':
+                        if (badRep < 100) {
+                            var confirm = await askClassF(message, discipline);
+                            if (!confirm) {
+                                await discipline.cancel();
+                                break;
+                            }
+                        }
                         await collector.message.delete();
                         discipline.prepare();
                         await askRulesReason(message, discipline);
@@ -329,4 +335,11 @@ async function askWillMute (message, discipline) {
     var willMute = await message.ask(`:question: **Initial Mute**: Are you going to either issue a mute, or require the user to write an apology / research paper / retraction statement or take a quiz?`);
     if (willMute)
         discipline.setMuteDuration(0);
+}
+
+async function askClassF (message, discipline) {
+    var willBan = await message.ask(`:warning: **Are you sure you want to issue a ban?**: You have 1 minute to respond. This member does not qualify for any bans based on bad reputation. You are only allowed to issue a ban if this user engaged/encouraged fellonious crime, violated Discord's terms of service or community guidelines, engaged sexually with or posted content (including art) of someone under 18 years old, or is using multiple accounts in the guild. Issuing bans otherwise may be considered staff abuse and could result in staff discipline.`);
+    if (willBan)
+        return true;
+    return false;
 }
