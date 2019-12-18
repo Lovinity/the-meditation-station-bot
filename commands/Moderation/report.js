@@ -24,7 +24,7 @@ module.exports = class extends Command {
     async run (message, [ user ]) {
         // Error if this command was not executed in an incidents channel, and delete the message for user's confidentiality
         if (message.channel.parent && message.channel.parent.id !== message.guild.settings.incidentsCategory) {
-            await message.send(`:x: I don't want others knowing you're reporting someone. Please use the !report command in an incidents channel. You can use the command !staff to create one.`);
+            await message.send(`:x: For confidentiality, you need to first use the !staff command, and then you can use the !report command inside the created text channel.`);
             return message.delete({ reason: `Use of !report outside an incidents channel. Deleted for confidentiality.` });
         }
 
@@ -39,14 +39,19 @@ module.exports = class extends Command {
         const guildMember = message.guild.members.resolve(user.id);
         const incidents = message.guild.settings.incidentsCategory;
 
+        if (!guildMember)
+        return message.send(`:x: The member you were trying to report is no longer in the guild, so I could not acknowledge your report. However, you can still provide evidence here for staff to investigate; staff can still take action despite the member having left the guild.`);
+
         // Check if this specific member used the conflict command on the user recently. If not, add an entry.
         if (reports.indexOf(`${message.author.id}`) === -1) {
-            // Do not activate the mute if already muted, not in the guild, or not activated by staff and not enough reports made yet
-            if (guildMember && guildMember.roles.get(mutedRole.id))
-                return message.sendMessage(`:x: Your report was acknowledged, but the member is already muted. Please provide reasoning / evidence why you reported this member.`);
 
+            // Reporter is not allowed to report.
             if (guildMember && guildMember.roles.get(noSelfModRole.id))
-                return message.sendMessage(`:x: I could not acknowledge your report because you had abused the report command in the past. You can still tell us here why you're reporting the member.`);
+            return message.send(`:x: Sorry, but you are not allowed to use the report command due to past abuse. You can still post evidence of the member violating the rules in this channel for staff to investigate.`);
+
+            // Reported member is already muted.
+            if (guildMember && guildMember.roles.get(mutedRole.id))
+                return message.send(`:x: The member is already muted, therefore the report command was not acknowledged. However, you can still provide evidence here for staff to investigate.`);
 
             // By this point, the report is authorized
 
@@ -122,7 +127,7 @@ ${reportMembers} members have reported you for misconduct within the last ${repo
                 }
             }
 
-            var channel = await message.guild.channels.create(`reported_${Date.now().toString(36) + (this.client.shard ? this.client.shard.id.toString(36) : '') + String.fromCharCode((1 % 26) + 97)}`, {
+            var channel = await message.guild.channels.create(`reported-${Date.now().toString(36) + (this.client.shard ? this.client.shard.id.toString(36) : '') + String.fromCharCode((1 % 26) + 97)}`, {
                 type: 'text',
                 topic: `Private staff channel initiated by the bot due to multiple member reports`,
                 parent: message.guild.settings.incidentsCategory,
