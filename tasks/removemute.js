@@ -15,8 +15,6 @@ module.exports = class extends Task {
                 const _role = _guild.roles.resolve(role);
                 if (_role)
                 {
-                    // Remove the role from the user's database
-                    _user.guildSettings(guild).update(`roles`, _role, _guild, {action: 'remove'});
                     // Remove the muted role
                     const _guildMember = _guild.members.resolve(user);
                     if (_guildMember)
@@ -24,6 +22,7 @@ module.exports = class extends Task {
                         _guildMember.roles.remove(_role, `Mute expired`);
                     }
                 }
+                _user.guildSettings(_guild.id).update(`muted`, false, _guild);
 
                 const logchannel = _guild.channels.resolve(_guild.settings.modLogChannel);
 
@@ -32,7 +31,7 @@ module.exports = class extends Task {
                     logchannel.send(`:loud_sound: The mute for ${_user.tag} has expired.`);
                 }
 
-                // Announce in the inbcidents channel that the mute is expired
+                // Announce in the incidents channel that the mute is expired
                 if (incidentsChannel !== null)
                 {
                     const channel = _guild.channels.resolve(incidentsChannel);
