@@ -230,15 +230,18 @@ module.exports = class GuildDiscipline {
                 if (this.banDuration === null) {
                     this.muteDuration = 0;
                     msg2 += ":mute: **Mute** \n"
-                    msg2 += `You have been muted from the guild until you complete the tasks outlined in this discipline section. Once all tasks are satisfied, your mute will be lifted. If you choose not to do the tasks, you will remain muted until / unless you do them.` + "\n\n"
+                    msg2 += `You have been muted from the guild until you complete the tasks outlined in this discipline section. Once all tasks are satisfied, your mute will be lifted. If you choose not to do the tasks, you will remain muted until / unless you do them.` + "\n"
+                    msg2 += `:warning: Leaving and re-joining the guild will not remove the mute. It will be removed by staff when you complete the tasks.` + "\n\n"
                 } else {
                     msg2 += ":mute: **Mute on Return** \n"
-                    msg2 += `Once you return to the guild, you will be muted until you complete the tasks outlined in this discipline section. Once all tasks are satisfied, your mute will be lifted. If you choose not to do the tasks, you will remain muted until / unless you do them.` + "\n\n"
+                    msg2 += `Once you return to the guild, you will be muted until you complete the tasks outlined in this discipline section. Once all tasks are satisfied, your mute will be lifted. If you choose not to do the tasks, you will remain muted until / unless you do them.` + "\n"
+                    msg2 += `:warning: Leaving and re-joining the guild will not remove the mute. It will be removed by staff when you complete the tasks.` + "\n\n"
                 }
                 // No class D discipline, but a mute was specified? Make a mute discipline message based on duration.
             } else if (this.muteDuration !== null) {
                 msg2 += ":mute: **Mute** \n"
-                msg2 += `You have been muted from the guild ${this.muteDuration === 0 ? 'until staff manually remove the muted role from you. You will not have access to the rest of the guild until the mute is removed.' + "\n\n" : `until ${moment().add(this.muteDuration, 'hours').format("LLLL Z")}`} (${this.muteDuration} hours from now). You will not have access to the rest of the guild until the mute expires.` + "\n\n"
+                msg2 += `You have been muted from the guild ${this.muteDuration === 0 ? 'until staff manually remove the muted role from you. You will not have access to the rest of the guild until the mute is removed.' + "\n\n" : `until ${moment().add(this.muteDuration, 'hours').format("LLLL Z")}`} (${this.muteDuration} hours from now). You will not have access to the rest of the guild until the mute expires.` + "\n"
+                msg2 += `:warning: Leaving and re-joining the guild will not remove the mute. It will be removed once expired or once staff manually remove it.` + "\n\n"
             }
 
             // Make messages depending on class D discipline specified.
