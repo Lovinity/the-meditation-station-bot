@@ -29,17 +29,17 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
             // Check if the score has been breached
             if (currentScore < 100 && newScore >= 100) {
                 console.log(`Went over 100!`);
-                if (this.spamScoreStamp === null || moment().subtract(60, 'seconds').isAfter(moment(this.spamScoreStamp))) {
+                if (this.spamScoreStamp === null || moment().subtract(5, 'minutes').isAfter(moment(this.spamScoreStamp))) {
                     console.log(`Sent warning`);
-                    var response = `:warning: <@${message.author.id}> **__Antispam Verbal Warning__: You're being a bit rowdy. Please take a break from sending messages for about ${moment.duration(this.guild.settings.antispamCooldown > 0 ? (newScore / this.guild.settings.antispamCooldown) + 1 : 0, 'minutes').format("m [Minutes]")} (this includes editing messages)**. `;
+                    var response = `:warning: <@${message.author.id}> **__Antispam__: Please take a break from sending messages for about ${moment.duration(this.guild.settings.antispamCooldown > 0 ? (newScore / this.guild.settings.antispamCooldown) + 1 : 0, 'minutes').format("m [Minutes]")} (this includes editing messages)**. `;
                     if (isMuted) {
                         response += `**Otherwise, I'll have to kick you from the guild, causing any pending bans to apply and you to lose any opportunity to appeal active discipline**.`;
                     } else if (this.guild.settings.raidMitigation >= 3) {
                         response += `__**Otherwise, I'll have to permanently ban you.**__`;
                     } else if (this.guild.settings.raidMitigation >= 2) {
-                        response += `**Otherwise, I'll have to temp ban you for 24 hours.**`;
+                        response += `**Otherwise, I'll have to issue you a temporary ban for 24 hours.**`;
                     } else if (this.guild.settings.raidMitigation >= 1) {
-                        response += `Otherwise, I'll have to mute you until staff manually unmute you.`;
+                        response += `Otherwise, I'll have to mute you.`;
                     } else {
                         response += `Otherwise, I'll have to mute you for 30 minutes.`;
                     }
