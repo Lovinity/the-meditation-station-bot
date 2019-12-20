@@ -249,9 +249,9 @@ module.exports = class GuildDiscipline {
                 msg2 += ":sweat_smile: **Task: Formal, Reflective Apology** \n"
                 msg2 += `You are required to write formal reflective apologies addressed to each of the following people: **${this.classD.apology}**.
 :small_blue_diamond: Each apology must be no less than 250 words long.
-:small_blue_diamond: You must state in each apology what you did wrong, that you acknowledge you did wrong, how your actions negatively impacted the person and/or the community, what you learned from this experience, and what you will do to ensure this doesn't happen again.
+:small_blue_diamond: You must state in each apology what you did wrong, that you acknowledge you did wrong, how your actions negatively impacted these people and/or the community, what you learned from this experience, and what you will do to ensure this doesn't happen again.
 :small_blue_diamond: Apologies __may not__ contain excuses, justifications, nor defenses. This apology is about the people affected, not you.
-Post your completed apologies in this text channel as an attachment of file type ODT, DOC/DOCX, RTF, TXT, or PDF. Once approved, staff will add the responsible members to this chat, and you will be required to present your apologies to those people (the staff will not do it; you must do it since you're the responsible one). After doing that, this task will be satisfied.` + "\n\n"
+Post your completed apologies in this text channel as an attachment of file type ODT, DOC/DOCX, RTF, TXT, or PDF. Once approved, you will be required, with staff guidance, to present your apologies to those people. After doing that, this task will be satisfied.` + "\n\n"
             }
 
             if (this.classD.research) {
@@ -260,7 +260,7 @@ Post your completed apologies in this text channel as an attachment of file type
 :small_blue_diamond: Each research paper must be no less than 500 words long.
 :small_blue_diamond: Each research paper must contain an introduction (thesis / main points), body (supporting details / evidence / sources to back the points stated in the introduction), and conclusion (what you learned by doing this research, and how you will apply this research to your life and how you conduct yourself).
 :small_blue_diamond: Each paper must contain at least 2 cited credible sources to demonstrate you actually did the research on the provided topics.
-Post your completed research paper(s) in this text channel as an attachment of file type ODT, DOC/DOCX, RTF, TXT, or PDF. Once staff approve your papers, this task is satisfied.` + "\n\n"
+Post your completed research paper(s) in this text channel as an attachment of file type ODT, DOC/DOCX, RTF, TXT, or PDF. Once staff approve your papers, staff might require with their guidance that you present your research to the guild. After doing that, this task is satisfied.` + "\n\n"
             }
 
             if (this.classD.retraction) {
@@ -269,12 +269,12 @@ Post your completed research paper(s) in this text channel as an attachment of f
 :small_blue_diamond: Each retraction statement must be no less than 250 words long.
 :small_blue_diamond: Each retraction statement must include an introduction (what you originally said, and statement that it was wrong and you retract it), body (the correct information and evidence / sources), and conclusion (what you learned by doing this research / retraction, and what you will do to ensure you fact-check yourself in the future)
 :small_blue_diamond: Each retraction statement must contain at least 2 cited credible sources to act as evidence that your corrected information is indeed correct.
-Post your completed retraction statement(s) in this text channel as an attachment of file type ODT, DOC/DOCX, RTF, TXT, or PDF. Once staff approve your statements, you will be required to present your statement(s) to the rest of the guild. Once you do, this task is satisfied.` + "\n\n"
+Post your completed retraction statement(s) in this text channel as an attachment of file type ODT, DOC/DOCX, RTF, TXT, or PDF. Once staff approve your statements, you will be required to present your statement(s) to the rest of the guild with staff guidance. Once you do, this task is satisfied.` + "\n\n"
             }
 
             if (this.classD.quiz) {
                 msg2 += ":question: **Task: Take / Pass a Quiz** \n"
-                msg2 += `You are required to take and pass one or more quizzes on spillthet.org. Here are the details: **${this.classD.quiz}**` + "\n\n"
+                msg2 += `You are required to take and pass one or more quizzes on spillthet.org. Here are the details: ` + "\n" + `**${this.classD.quiz}**` + "\n\n"
             }
         }
 
@@ -289,7 +289,7 @@ Post your completed retraction statement(s) in this text channel as an attachmen
                 msg += "Staff are concerned about your recent conduct. You are being issued a formal warning for the following: \n"
                 msg += `:hash: **Rule number(s) violated:** ${this.rules.join(", ")}` + "\n"
                 msg += `:notepad_spiral: **Further Information:** ${this.reason}` + "\n\n"
-                msg += "Staff would like to see you work on this concern and learn from this encounter. Further violations will likely result in discipline."
+                msg += "Please work on improving your behavior; Further violations will likely result in discipline."
 
                 msg2 = ""
 

@@ -52,7 +52,7 @@ module.exports = class extends Command {
             if (value.length > 0) {
                 response += `**Actions issued regarding ${key}**: ` + "\n"
                 value.map((record) => {
-                    response += `🔹${record.type} on ${moment(record.date).format("LLLL Z")}` + "\n"
+                    response += `🔹${record.type} on ${moment(record.issued).format("LLL")}` + "\n"
                 })
                 response += "\n"
             }
