@@ -36,7 +36,7 @@ module.exports = class extends Command {
         if (users && users.length > 0)
         {
             // Check to see if author is staff. If not, bail with an error message.
-            const {permission} = await this.client.permissionLevels.run(message, 4);
+            const {permission} = this.client.permissionLevels.run(message, 4);
             if (!permission)
                 return msg.edit(`:x: No no, only staff can specify specific members to be added to an incidents channel. Please use the command without any arguments.`);
 
@@ -78,7 +78,7 @@ ${mute ? `**You have been muted from the rest of the guild until staff speak wit
                         {
                             guildMember.roles.add(mutedRole, `Mute via !staff command`);
                         } else {
-                            await user.guildSettings(message.guild.id).update(`muted`, true, message.guild);
+                            user.guildSettings(message.guild.id).update(`muted`, true, message.guild);
                         }
                     }
 
