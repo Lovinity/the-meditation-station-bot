@@ -283,6 +283,7 @@ function sanitizeInteger(value) {
  * @private
  */
 function sanitizeString(value) {
+	// Use custom sanitizeString because original provider one did not escape quotes in JSON, resulting in errors.
 	return `'${String(value).replace(/\\/g, "\\\\").replace(/\n/g, "\\n").replace(/\r/g, "\\r").replace(/\t/g, "\\t").replace(/\f/g, "\\f").replace(/"/g,"\\\"").replace(/'/g,"\\\'").replace(/\&/g, "\\&")}'`;
 }
 
