@@ -27,7 +27,7 @@ module.exports = class extends Command {
                 return message.send(`:x: That user is not currently muted.`);
 
             guildMember.roles.remove(mutedRole, `Mute removed with !unmute by ${message.author.tag}`);
-            const channel = guild.channels.resolve(guild.settings.generalChannel);
+            const channel = message.guild.channels.resolve(message.guild.settings.generalChannel);
             if (channel) {
                 channel.send(`:loud_sound: <@${user.id}> , your mute has been removed by staff. You can now participate in the guild again.`);
             }
