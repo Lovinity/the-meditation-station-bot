@@ -257,7 +257,7 @@ Post your completed apologies in this text channel as an attachment of file type
             if (this.classD.research) {
                 msg2 += ":pencil: **Task: Research Paper** \n"
                 msg2 += `You are required to write a research paper on each of the following topics: **${this.classD.research}**
-:small_blue_diamond: Each research paper must be no less than 1,000 words long (about one page each of 12-point font)
+:small_blue_diamond: Each research paper must be no less than 500 words long.
 :small_blue_diamond: Each research paper must contain an introduction (thesis / main points), body (supporting details / evidence / sources to back the points stated in the introduction), and conclusion (what you learned by doing this research, and how you will apply this research to your life and how you conduct yourself).
 :small_blue_diamond: Each paper must contain at least 2 cited credible sources to demonstrate you actually did the research on the provided topics.
 Post your completed research paper(s) in this text channel as an attachment of file type ODT, DOC/DOCX, RTF, TXT, or PDF. Once staff approve your papers, this task is satisfied.` + "\n\n"
@@ -265,7 +265,7 @@ Post your completed research paper(s) in this text channel as an attachment of f
 
             if (this.classD.retraction) {
                 msg2 += ":page_facing_up: **Task: Retraction Statement** \n"
-                msg2 += `You are required to write a retration statement retracting the following things you posted / said: **${this.classD.retraction}**
+                msg2 += `You are required to write a retraction statement retracting the following things you posted / said: **${this.classD.retraction}**
 :small_blue_diamond: Each retraction statement must be no less than 250 words long.
 :small_blue_diamond: Each retraction statement must include an introduction (what you originally said, and statement that it was wrong and you retract it), body (the correct information and evidence / sources), and conclusion (what you learned by doing this research / retraction, and what you will do to ensure you fact-check yourself in the future)
 :small_blue_diamond: Each retraction statement must contain at least 2 cited credible sources to act as evidence that your corrected information is indeed correct.

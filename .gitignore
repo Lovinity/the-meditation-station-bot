@@ -3,3 +3,4 @@
 /config.js
 /bwd/provider
 /rethinkdb_data
+/monitors/lv.js
