@@ -38,7 +38,7 @@ module.exports = class extends Command {
 
         user.guildSettings(message.guild.id).update(`muted`, false, message.guild);
 
-        const channel2 = guild.channels.resolve(guild.settings.modLogChannel);
+        const channel2 = message.guild.channels.resolve(message.guild.settings.modLogChannel);
         if (channel2) {
             channel2.send(`:loud_sound: Member ${user.tag} (${user.id}) was unmuted by ${message.author.tag}.`);
         }
