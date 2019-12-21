@@ -83,10 +83,13 @@ module.exports = class extends Event {
             const muteRole = guild.roles.resolve(guild.settings.muteRole);
             var verified = [];
             const generalChannel = this.client.channels.resolve(guild.settings.generalChannel);
+            const _channelMod = this.client.channels.resolve(guild.settings.modLogChannel);
             guild.members.each((guildMember) => {
 
                 // Check if the member should be muted. If so, reset all roles
                 if (muteRole && (guildMember.settings.muted || guildMember.roles.get(muteRole.id))) {
+                    if (!guildMember.roles.get(muteRole.id) && _channelMod)
+                        _channelMod.send(`:mute: The member <@!${guildMember.user.id}> had a mute on their account and was re-muted upon the bot restarting. Check to be sure they were not trying to mute evade.`);
                     guildMember.settings.update(`muted`, true, guild);
                     guildMember.roles.set([ guild.settings.muteRole ], `User supposed to be muted`);
                 } else {
@@ -110,10 +113,10 @@ module.exports = class extends Event {
                                 updateLevels(guildMember);
                             })
 
-                            // Have to do this outside of the then() statement because then() does not hold back completion of this each().
-                            if (guild.settings.raidMitigation < 2 && verifiedRole) {
-                                verified.push(guildMember.id);
-                            }
+                        // Have to do this outside of the then() statement because then() does not hold back completion of this each().
+                        if (guild.settings.raidMitigation < 2 && verifiedRole) {
+                            verified.push(guildMember.id);
+                        }
                     }
                 }
             });

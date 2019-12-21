@@ -8,9 +8,8 @@ module.exports = class extends Event {
         await guildMember.settings.sync(true);
 
         // Get the configured modLog channel.
-        const modLog = guildMember.guild.settings.eventLogChannel;
-
-        const _channel = this.client.channels.resolve(modLog);
+        const _channel = this.client.channels.resolve(guildMember.guild.settings.eventLogChannel);
+        const _channelMod = this.client.channels.resolve(guildMember.guild.settings.modLogChannel);
 
         var updateLevels = (_guildMember) => {
             // Update level roles
@@ -60,6 +59,8 @@ module.exports = class extends Event {
         if (muteRole && (guildMember.settings.muted || guildMember.roles.get(muteRole.id))) {
             guildMember.settings.update(`muted`, true, guild);
             guildMember.roles.set([ guild.settings.muteRole ], `User supposed to be muted`);
+            if (_channelMod)
+                _channelMod.send(`:mute: The member <@!${guildMember.user.id}> had a mute on their account and was re-muted upon entering the guild. Check to be sure they were not trying to mute evade.`);
         } else {
             // Re-assign saved roles
             if (guildMember.settings.roles.length > 0) {
