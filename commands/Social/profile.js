@@ -9,7 +9,7 @@ module.exports = class extends Command {
         super(...args, {
             runIn: [ 'text' ],
             description: 'View your profile or the profile of another user.',
-            usage: '[user:user]',
+            usage: '[user:username]',
             usageDelim: ' | ',
             cooldown: 15,
             requiredSettings: [ "botChannel" ],
