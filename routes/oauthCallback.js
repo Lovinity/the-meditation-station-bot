@@ -46,7 +46,7 @@ module.exports = class extends Route {
 
 		const access_token = encrypt({
 			token: body.access_token,
-			scope: [ user.id, ...user.guilds.filter(guild => guild.userCanManage).map(guild => guild.id) ]
+			scope: [ user.id ]
 		}, this.client.options.clientSecret);
 
 		const redirectURL = `${state.redirect}#access_token=${encodeURI(access_token)}&state=${encodeURI(state.ID)}&user=${user2.id}&tag=${encodeURI(user2.tag)}&avatar=${encodeURI(user2.displayAvatarURL({ format: 'png' }))}`;
