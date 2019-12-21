@@ -157,15 +157,16 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
             if (prevLevel < curLevel) {
                 console.log(`Increased level!`);
                 var levelRole = this.guild.settings.levelRoles[ `level${curLevel}` ];
-                if (levelRole && levelRole !== null && this.guild.roles.has(levelRole) && !this.roles.has(levelRole)) {
+                var role = this.guild.roles.resolve(levelRole);
+                if (role && levelRole && levelRole !== null && this.guild.roles.has(levelRole) && !this.roles.has(levelRole)) {
                     this.roles.add(levelRole, `Achieved level ${curLevel}`);
                     if (message !== null) {
-                        message.send(`:tada: **Congratulations <@${this.id}>, you earned the ${levelRole.name} role!**`);
+                        message.send(`:tada: **Congratulations <@${this.id}>, you earned the ${role.name} role!**`);
                     } else {
                         var channel = this.guild.settings.generalChannel;
                         var _channel = this.guild.channels.resolve(channel);
                         if (_channel)
-                            _channel.send(`:tada: **Congratulations <@${this.id}>, you earned the ${levelRole.name} role!**`);
+                            _channel.send(`:tada: **Congratulations <@${this.id}>, you earned the ${role.name} role!**`);
                     }
                 }
             }
