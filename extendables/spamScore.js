@@ -239,7 +239,8 @@ module.exports = class extends Extendable {
                     afterFunction()
                     return resolve(score)
                 } catch (e) {
-                    this.client.emit('error', e)
+                    if (!e.message.includes("language"))
+                        this.client.emit('error', e)
                     afterFunction()
                     return resolve(score)
                 }
