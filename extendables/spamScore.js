@@ -200,50 +200,20 @@ module.exports = class extends Extendable {
                 score += parseInt(((1 - patternScore) * 25) * (1 + (0.1 * (this.cleanContent ? this.cleanContent.length / 100 : 0))))
                 if (patternScore < 1) { scoreReasons[ "Repeating Patterns" ] = parseInt(((1 - patternScore) * 25) * (1 + (0.1 * (this.cleanContent ? this.cleanContent.length / 100 : 0)))) }
 
-                // Perspective API check and score add
-                try {
-                    var body = await perspective.analyze(this.cleanContent, { attributes: [ 'SEVERE_TOXICITY' ], doNotStore: false })
-                    var threatening = false
-                    var toxic = false
-                    var hadAttributes = false
-                    var perspectiveMultiplier = 1 + (this.cleanContent.length / 1000)
-                    for (const key of Object.keys(body.attributeScores)) {
-                        if (typeof body.attributeScores[ key ].spanScores !== 'undefined' && body.attributeScores[ key ].spanScores.length > 0) {
-                            hadAttributes = true
-                            body.attributeScores[ key ].spanScores.map((spanScore) => {
-                                switch (key) {
-                                    case 'SEVERE_TOXICITY':
-                                        score += parseInt((spanScore.score.value * 50) * perspectiveMultiplier)
-                                        scoreReasons[ "Perspective Toxicity / Provocative Nature" ] = parseInt((spanScore.score.value * 50) * perspectiveMultiplier)
-                                        if (spanScore.score.value >= (0.9 - (this.cleanContent.length / 4000))) {
-                                            toxic = true
-                                        }
-                                        break;
-                                }
-                            })
-                        } else if (typeof body.attributeScores[ key ].summaryScore !== 'undefined') {
-                            console.log(`summary ${key}: ${body.attributeScores[ key ].summaryScore.value} / ${(0.9 - (this.cleanContent.length / 4000))}`)
-                            hadAttributes = true
-                            switch (key) {
-                                case 'SEVERE_TOXICITY':
-                                    score += parseInt((body.attributeScores[ key ].summaryScore.value * 50) * perspectiveMultiplier)
-                                    scoreReasons[ "Perspective Toxicity / Provocative Nature" ] = parseInt((body.attributeScores[ key ].summaryScore.value * 50) * perspectiveMultiplier)
-                                    if (body.attributeScores[ key ].summaryScore.value >= (0.9 - (this.cleanContent.length / 4000))) {
-                                        toxic = true
-                                    }
-                                    break;
-                            }
-                        } else {
-                        }
+                // Add 3 points for every profane word used; excessive profanity spam
+                config.profanity.map((word) => {
+                    var numbers = getIndicesOf(word, this.cleanContent, false);
+                    if (numbers.length > 0) {
+                        score += 3;
+                        if (typeof scoreReasons[ "Profanity" ] === `undefined`)
+                            scoreReasons[ "Profanity" ] = 0
+                        scoreReasons[ "Profanity" ] += 3;
+                        //console.log(`profanity`);
                     }
-                    afterFunction()
-                    return resolve(score)
-                } catch (e) {
-                    if (!e.message.includes("language"))
-                        this.client.emit('error', e)
-                    afterFunction()
-                    return resolve(score)
-                }
+                });
+
+                afterFunction()
+                return resolve(score)
             } else {
                 afterFunction()
                 return resolve(score)

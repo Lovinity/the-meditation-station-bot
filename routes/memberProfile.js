@@ -278,7 +278,17 @@ module.exports = class extends Route {
                     var patternScore = (request.body.info.length > 0 ? (newstring.length / request.body.info.length) : 1);
                     if (patternScore < (2 / 3) && request.body.info !== '' && request.body.info !== '<p><br></p>') return response.end(JSON.stringify({ error: `More than 1/3 of the profile info is repeated 2 or more times; this is spammy.` }));
 
-                    // TODO: Toxicity check
+                    var profane = [];
+                    var profaneCount = 0;
+                    config.profanity.map((word) => {
+                        var numbers = getIndicesOf(word, this.cleanContent, false);
+                        if (numbers.length > 0) {
+                            profane.push(word);
+                            profaneCount += numbers.length;
+                        }
+                    });
+                    if (profaneCount >= 5)
+                        return response.end(JSON.stringify({ error: `Profile info may not contain more than 4 uses of profane words. Yours had ${profaneCount}. Words detected: ${profane.join(", ")}` }));
 
                     await userSettings.update('profile.info', request.body.info);
                     userSettings = user.guildSettings(guild.id);
@@ -289,3 +299,20 @@ module.exports = class extends Route {
         }
     }
 };
+
+function getIndicesOf (searchStr, str, caseSensitive) {
+    var searchStrLen = searchStr.length;
+    if (searchStrLen == 0) {
+        return [];
+    }
+    var startIndex = 0, index, indices = [];
+    if (!caseSensitive) {
+        str = str.toLowerCase();
+        searchStr = searchStr.toLowerCase();
+    }
+    while ((index = str.indexOf(searchStr, startIndex)) > -1) {
+        indices.push(index);
+        startIndex = index + searchStrLen;
+    }
+    return indices;
+}
