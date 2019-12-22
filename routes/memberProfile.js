@@ -282,7 +282,7 @@ module.exports = class extends Route {
                     var profane = [];
                     var profaneCount = 0;
                     config.profanity.map((word) => {
-                        var numbers = getIndicesOf(word, this.cleanContent, false);
+                        var numbers = getIndicesOf(word, request.body.info, false);
                         if (numbers.length > 0) {
                             profane.push(word);
                             profaneCount += numbers.length;
