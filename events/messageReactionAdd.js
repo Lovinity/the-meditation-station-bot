@@ -12,7 +12,6 @@ module.exports = class extends Event {
 
         // Add rep if this is a rep earning message
         if (reaction.message.author.id !== this.client.user.id && !user.bot && reaction.message.author.id !== user.id && reaction.emoji.id === reaction.message.guild.settings.repEmoji) {
-            console.log(`Rep earning`);
             var addRep = false;
             reaction.message.reactions
                 .each((reaction) => {
@@ -22,7 +21,6 @@ module.exports = class extends Event {
 
             // Make sure those with the noRep role cannot add reputation
             if (addRep && !user.bot && (!noRepRole || !reaction.message.member.roles.get(noRepRole.id))) {
-                console.log(`Add rep`);
                 reaction.message.member.settings.update(`goodRep`, reaction.message.member.settings.goodRep + 1);
             }
         }
@@ -48,16 +46,13 @@ module.exports = class extends Event {
             }
         }
         if (guild && starChannel && reactionCount >= guild.settings.starboardRequired) {
-            console.log(`starboard`)
             if (starChannel && starChannel.postable && starChannel.embedable && !msg.channel.nsfw) {
-                console.log(`Starboard valid`)
                 const fetch = await starChannel.messages.fetch({ limit: 100 });
                 const starMsg = fetch.find(m => m.embeds.length && m.embeds[ 0 ].footer && m.embeds[ 0 ].footer.text.startsWith("REP:") && m.embeds[ 0 ].footer.text.endsWith(msg.id));
 
-                const jumpString = `[â–º View The Original Message](https://discordapp.com/channels/${msg.guild.id}/${msg.channel.id}/${msg.id})\n`;
+                const jumpString = `[View The Original Message](https://discordapp.com/channels/${msg.guild.id}/${msg.channel.id}/${msg.id})\n`;
 
                 if (starMsg) {
-                    console.log(`Star message found`)
                     const starEmbed = starMsg.embeds[ 0 ];
                     const image = msg.attachments.size > 0 ? this.checkAttachments(msg.attachments.array()[ 0 ].url) : null;
 
@@ -75,7 +70,6 @@ module.exports = class extends Event {
                     if (oldMsg && oldMsg.author.id === this.client.user.id)
                         await oldMsg.edit({ embed });
                 } else {
-                    console.log(`Star message not found; use new message`);
                     const image = msg.attachments.size > 0 ? this.checkAttachments(msg.attachments.array()[ 0 ].url) : null;
                     if (image || msg.content) {
                         const embed = new MessageEmbed()
