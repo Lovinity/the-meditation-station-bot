@@ -204,10 +204,10 @@ module.exports = class extends Extendable {
                 config.profanity.map((word) => {
                     var numbers = getIndicesOf(word, this.cleanContent, false);
                     if (numbers.length > 0) {
-                        score += 3;
+                        score += (numbers.length * 3);
                         if (typeof scoreReasons[ "Profanity" ] === `undefined`)
                             scoreReasons[ "Profanity" ] = 0
-                        scoreReasons[ "Profanity" ] += 3;
+                        scoreReasons[ "Profanity" ] += (numbers.length * 3);
                         //console.log(`profanity`);
                     }
                 });
