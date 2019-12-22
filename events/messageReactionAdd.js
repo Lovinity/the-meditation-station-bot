@@ -52,7 +52,7 @@ module.exports = class extends Event {
             if (starChannel && starChannel.postable && starChannel.embedable && !msg.channel.nsfw) {
                 console.log(`Starboard valid`)
                 const fetch = await starChannel.messages.fetch({ limit: 100 });
-                const starMsg = fetch.find(m => m.embeds.length && m.embeds[ 0 ].footer && m.embeds[ 0 ].footer.text.startsWith("â­") && m.embeds[ 0 ].footer.text.endsWith(msg.id));
+                const starMsg = fetch.find(m => m.embeds.length && m.embeds[ 0 ].footer && m.embeds[ 0 ].footer.text.startsWith("REP:") && m.embeds[ 0 ].footer.text.endsWith(msg.id));
 
                 const jumpString = `[â–º View The Original Message](https://discordapp.com/channels/${msg.guild.id}/${msg.channel.id}/${msg.id})\n`;
 
@@ -93,7 +93,7 @@ module.exports = class extends Event {
             }
         } else if (guild && starChannel) {
             const fetch = await starChannel.messages.fetch({ limit: 100 });
-            const starMsg = fetch.find(m => m.embeds.length && m.embeds[ 0 ].footer && m.embeds[ 0 ].footer.text.startsWith("â­") && m.embeds[ 0 ].footer.text.endsWith(msg.id));
+            const starMsg = fetch.find(m => m.embeds.length && m.embeds[ 0 ].footer && m.embeds[ 0 ].footer.text.startsWith("REP:") && m.embeds[ 0 ].footer.text.endsWith(msg.id));
             if (starMsg) {
                 const oldMsg = await starChannel.messages.fetch(starMsg.id).catch(() => null);
 
