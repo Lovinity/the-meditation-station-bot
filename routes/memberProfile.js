@@ -1,5 +1,6 @@
 const { Route } = require('klasa-dashboard-hooks');
 const fetch = require('node-fetch');
+const config = require("../config");
 const moment = require("moment");
 const sanitizeHtml = require('sanitize-html');
 const isImageUrl = require('is-image-url');
