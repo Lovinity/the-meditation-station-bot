@@ -53,7 +53,7 @@ Do you want your ad to contain a here mention?`);
             var adID = Date.now().toString(36) + (message.client.shard ? message.client.shard.id.toString(36) : '') + String.fromCharCode((1 % 26) + 97)
             message.guild.settings.update('ads', {
                 ID: adID,
-                author: message.user.id,
+                author: message.author.id,
                 postsLeft: numPosts,
                 nextPost: moment().add(1, 'days').add(Math.floor(Math.random() * 24), 'hours').add(Math.floor(Math.random() * 60), 'minutes').toISOString(true),
                 hereMention: hereAd,
