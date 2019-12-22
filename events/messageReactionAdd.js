@@ -26,19 +26,21 @@ module.exports = class extends Event {
             }
         }
 
-        // Starboard
+        // Starboard (via rep emoji)
         const msg = reaction.message;
         const { guild } = msg;
-        if (guild && reaction.emoji.name === "â­" && guild.settings.starboardChannel && msg.reactions.get("â­").count >= guild.settings.starboardRequired) {
-
-            const starChannel = msg.guild.channels.get(msg.guild.settings.starboarChannel);
+        const starChannel = msg.guild.channels.get(msg.guild.settings.starboardChannel);
+        if (guild && reaction.emoji.id === guild.settings.repEmoji && starChannel && msg.reactions.resolve(reaction.message.guild.settings.repEmoji).count >= (guild.settings.starboardRequired + 1)) {
+            console.log(`starboard`)
             if (starChannel && starChannel.postable && starChannel.embedable && !msg.channel.nsfw) {
+                console.log(`Starboard valid`)
                 const fetch = await starChannel.messages.fetch({ limit: 100 });
                 const starMsg = fetch.find(m => m.embeds.length && m.embeds[ 0 ].footer && m.embeds[ 0 ].footer.text.startsWith("â­") && m.embeds[ 0 ].footer.text.endsWith(msg.id));
 
                 const jumpString = `[â–º View The Original Message](https://discordapp.com/channels/${msg.guild.id}/${msg.channel.id}/${msg.id})\n`;
 
                 if (starMsg) {
+                    console.log(`Star message found`)
                     const starEmbed = starMsg.embeds[ 0 ];
                     const image = msg.attachments.size > 0 ? this.checkAttachments(msg.attachments.array()[ 0 ].url) : null;
 
@@ -56,6 +58,7 @@ module.exports = class extends Event {
                     if (oldMsg && oldMsg.author.id === this.client.user.id)
                         await oldMsg.edit({ embed });
                 } else {
+                    console.log(`Star message not found; use new message`);
                     const image = msg.attachments.size > 0 ? this.checkAttachments(msg.attachments.array()[ 0 ].url) : null;
                     if (image || msg.content) {
                         const embed = new MessageEmbed()
@@ -70,6 +73,15 @@ module.exports = class extends Event {
                         await starChannel.send({ embed });
                     }
                 }
+            }
+        } else if (guild && starChannel) {
+            const fetch = await starChannel.messages.fetch({ limit: 100 });
+            const starMsg = fetch.find(m => m.embeds.length && m.embeds[ 0 ].footer && m.embeds[ 0 ].footer.text.startsWith("â­") && m.embeds[ 0 ].footer.text.endsWith(msg.id));
+            if (starMsg) {
+                const oldMsg = await starChannel.messages.fetch(starMsg.id).catch(() => null);
+
+                if (oldMsg && oldMsg.author.id === this.client.user.id)
+                    await oldMsg.delete(`Starboard message no longer qualifies to be on the starboard.`);
             }
         }
     }
