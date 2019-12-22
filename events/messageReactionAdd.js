@@ -65,7 +65,7 @@ module.exports = class extends Event {
                         .setColor(starEmbed.color)
                         .setAuthor(`${msg.author.tag} in #${msg.channel.name}`, msg.author.displayAvatarURL())
                         .setTimestamp(new Date(msg.createdTimestamp))
-                        .setFooter(`â­ ${msg.reactions.get("â­").count} | ${msg.id}`);
+                        .setFooter(`REP: +${reactionCount} | ${msg.id}`);
                     if (image) embed.setImage(image);
                     if (msg.content) embed.setDescription(`${jumpString}${msg.content}`);
                     else embed.setDescription(jumpString);
@@ -82,7 +82,7 @@ module.exports = class extends Event {
                             .setColor(15844367)
                             .setAuthor(`${msg.author.tag} in #${msg.channel.name}`, msg.author.displayAvatarURL())
                             .setTimestamp(new Date(msg.createdTimestamp))
-                            .setFooter(`â­ ${msg.reactions.get("â­").count} | ${msg.id}`);
+                            .setFooter(`REP: +${reactionCount} | ${msg.id}`);
                         if (image) embed.setImage(image);
                         if (msg.content) embed.setDescription(`${jumpString}${msg.content}`);
                         else embed.setDescription(jumpString);
