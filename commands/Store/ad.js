@@ -63,7 +63,7 @@ Do you want your ad to contain a here mention?`);
             if (channel) {
                 const embed = new MessageEmbed()
                     .setTitle(`Advertisement Purchased`)
-                    .setAuthor(message.user.tag)
+                    .setAuthor(message.author.tag)
                     .setColor('#4527A0')
                     .setDescription(adText)
                     .addField(`Number of posts`, numPosts)
