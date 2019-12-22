@@ -39,6 +39,21 @@ module.exports = class extends Event {
             }
         }
 
+        // Remove all starboard
+        const { guild } = message;
+        if (guild && guild.settings.starboardChannel) {
+
+            const starChannel = message.guild.channels.get(message.guild.settings.starboardChannel);
+            if (starChannel) {
+                const fetch = await starChannel.messages.fetch({ limit: 100 });
+                const starMsg = fetch.find(m => m.embeds.length && m.embeds[ 0 ].footer && m.embeds[ 0 ].footer.text.startsWith("REP:") && m.embeds[ 0 ].footer.text.endsWith(message.id));
+                if (starMsg) {
+                    const oldMsg = await starChannel.messages.fetch(starMsg.id).catch(() => null);
+                    await oldMsg.delete();
+                }
+            }
+        }
+
         // Get the configured modLog channel.
         const modLog = message.guild.settings.eventLogChannel;
 

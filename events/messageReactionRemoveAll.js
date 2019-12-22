@@ -36,10 +36,9 @@ module.exports = class extends Event {
         if (guild && guild.settings.starboardChannel) {
 
             const starChannel = msg.guild.channels.get(msg.guild.settings.starboardChannel);
-            if (starChannel && starChannel.postable && starChannel.embedable && !msg.channel.nsfw) {
-
+            if (starChannel) {
                 const fetch = await starChannel.messages.fetch({ limit: 100 });
-                const starMsg = fetch.find(m => m.embeds.length && m.embeds[ 0 ].footer && m.embeds[ 0 ].footer.text.startsWith("â­") && m.embeds[ 0 ].footer.text.endsWith(msg.id));
+                const starMsg = fetch.find(m => m.embeds.length && m.embeds[ 0 ].footer && m.embeds[ 0 ].footer.text.startsWith("REP:") && m.embeds[ 0 ].footer.text.endsWith(msg.id));
                 if (starMsg) {
                     const oldMsg = await starChannel.messages.fetch(starMsg.id).catch(() => null);
                     await oldMsg.delete();
