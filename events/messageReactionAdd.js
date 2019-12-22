@@ -7,6 +7,9 @@ module.exports = class extends Event {
         if (!reaction.message.member)
             return null;
 
+        const noRep = reaction.message.guild.settings.noRep
+        const noRepRole = reaction.message.guild.roles.resolve(noRep)
+
         // Add rep if this is a rep earning message
         if (reaction.message.author.id !== this.client.user.id && !user.bot && reaction.message.author.id !== user.id && reaction.emoji.id === reaction.message.guild.settings.repEmoji) {
             console.log(`Rep earning`);
@@ -18,8 +21,6 @@ module.exports = class extends Event {
                 });
 
             // Make sure those with the noRep role cannot add reputation
-            const noRep = reaction.message.guild.settings.noRep
-            const noRepRole = reaction.message.guild.roles.resolve(noRep)
             if (addRep && !user.bot && (!noRepRole || !reaction.message.member.roles.get(noRepRole.id))) {
                 console.log(`Add rep`);
                 reaction.message.member.settings.update(`goodRep`, reaction.message.member.settings.goodRep + 1);
@@ -29,8 +30,24 @@ module.exports = class extends Event {
         // Starboard (via rep emoji)
         const msg = reaction.message;
         const { guild } = msg;
-        const starChannel = msg.guild.channels.get(msg.guild.settings.starboardChannel);
-        if (guild && reaction.emoji.id === guild.settings.repEmoji && starChannel && msg.reactions.resolve(reaction.message.guild.settings.repEmoji).count >= (guild.settings.starboardRequired + 1)) {
+        const starChannel = guild.channels.get(guild.settings.starboardChannel);
+        var reactionCount = 0;
+        if (guild && guild.settings.repEmoji && starChannel) {
+            var msgReactions = msg.reactions.resolve(guild.settings.repEmoji);
+            if (msgReactions) {
+                msgReactions.users.each((reactionUser) => {
+                    if (reactionUser.id !== this.client.user.id && !reactionUser.bot && reaction.message.author.id !== reactionUser.id) {
+                        var reactionMember = guild.members.resolve(user);
+                        if (reactionMember) {
+                            if (!noRepRole || !reactionMember.roles.get(noRepRole.id)) {
+                                reactionCount++;
+                            }
+                        }
+                    }
+                })
+            }
+        }
+        if (guild && starChannel && reactionCount >= guild.settings.starboardRequired) {
             console.log(`starboard`)
             if (starChannel && starChannel.postable && starChannel.embedable && !msg.channel.nsfw) {
                 console.log(`Starboard valid`)
