@@ -3,7 +3,7 @@ const moment = require("moment");
 
 module.exports = class extends Event {
 
-    run (messages) {
+    async run (messages) {
         var modLog;
         for (const message of messages) {
             if (message.command && message.command.deletable)

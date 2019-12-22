@@ -3,7 +3,7 @@ const {MessageEmbed} = require('discord.js');
 const moment = require("moment");
 module.exports = class extends Event {
 
-    run(message) {
+    async run(message) {
         if (message.command && message.command.deletable)
             for (const msg of message.responses)
                 msg.delete();
