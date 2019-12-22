@@ -183,11 +183,15 @@ module.exports = class extends Route {
                     userSettings = user.guildSettings(guild.id);
                 }
 
-                if (request.body.background) {
+                if (request.body.background || request.body.background === "") {
                     if (request.body.background !== '' && !isImageUrl(request.body.background)) return response.end(JSON.stringify({ error: `Cover Image URL is not a valid URL to an image.` }));
                     if (sameUser && request.body.background !== '' && request.body.background !== userSettings.profile.background && userSettings.yang < 150) return response.end(JSON.stringify({ error: `You do not have enough Yang to change your cover image.` }));
                     if (sameUser && request.body.background !== '' && request.body.background !== userSettings.profile.background) await userSettings.update('yang', userSettings.yang - 150);
-                    await userSettings.update('profile.background', request.body.background);
+                    if (request.body.background === "") {
+                        await userSettings.reset('profile.background');
+                    } else {
+                        await userSettings.update('profile.background', request.body.background);
+                    }
                     userSettings = user.guildSettings(guild.id);
                 }
 
