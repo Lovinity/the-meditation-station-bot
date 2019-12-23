@@ -23,6 +23,7 @@ Client.defaultGuildSchema
     .add('repEmoji', 'string')
     .add('muteRole', 'role')
     .add('modRole', 'role')
+    .add('staffRole', 'role')
     .add('noRepRole', 'role')
     .add('conflictResolutionMembers', 'integer', { default: 3, min: 1 })
     .add('conflictResolutionTime', 'integer', { default: 15, min: 1 })

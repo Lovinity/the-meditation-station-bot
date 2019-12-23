@@ -9,10 +9,14 @@ module.exports = class extends Task {
         const _guild = this.client.guilds.resolve(guild);
         if (_guild) {
             var cooldown = _guild.settings.antispamCooldown;
-            var mostActiveUser = ``;
-            var highestActivityScore = 0;
+            var mostActiveUsers = [];
+            var mostActiveStaff;
+            var highestActivityScore;
             var activityLevel = 0;
-            _guild.members.each((guildMember) => {
+            var compare = (a, b) => {
+                return b.settings.activityScore - a.settings.activityScore;
+            };
+            _guild.members.sort(compare).each((guildMember) => {
                 // Antispam cooldown
                 var newScore = guildMember.settings.spamScore - cooldown;
                 if (newScore < 0)
@@ -21,16 +25,21 @@ module.exports = class extends Task {
 
                 // Activity score cooldown
                 var activityScore = guildMember.settings.activityScore;
+                var newScore = 0;
                 if (activityScore > 0) {
-                    var newScore = activityScore * 0.999;
+                    newScore = activityScore * 0.999;
                     guildMember.settings.update('activityScore', newScore);
                 }
 
-                // Calculate most active user and current activity level
-                activityLevel += activityScore
-                if (activityScore > highestActivityScore) {
-                    highestActivityScore = activityScore
-                    mostActiveUser = guildMember.user.tag
+                if (!highestActivityScore)
+                    highestActivityScore = newScore;
+
+                // Calculate most active members
+                if (!_guild.settings.staffRole || !guildMember.roles.get(_guild.settings.staffRole)) {
+                    if (mostActiveUsers.length < 3 && newScore > 0)
+                        mostActiveUsers.push(guildMember.user.tag);
+                } else if (_guild.settings.staffRole && guildMember.roles.get(_guild.settings.staffRole) && !mostActiveStaff) {
+                    mostActiveStaff = guildMember.user.tag;
                 }
             });
 
@@ -86,8 +95,15 @@ module.exports = class extends Task {
                     raidMitigation2 = `**Level 3**` + "\n" + `:heart: New Member Verification: Required Verified Phone Number` + "\n" + `:heart: New Member Participation: Isolated until Mitigation Ends` + "\n" + `:heart: Invite Links: Deleted / Not Allowed` + "\n" + `:heart: Antispam Discipline: permanent ban`
                 embed.addField(`Raid Mitigation Status`, raidMitigation + "\n" + raidMitigation2);
                 embed.addField(`Guild Members`, _guild.members.size);
-                if (mostActiveUser !== '')
-                    embed.addField(`Most Active Member`, mostActiveUser);
+                if (mostActiveUsers.length > 0) {
+                    var mostActiveUsersText = ``;
+                    mostActiveUsers.map((maUser, index) => {
+                        mostActiveUsersText += `${index + 1}. ${maUser}` + "\n";
+                    });
+                    embed.addField(`Most Active Members`, mostActiveUsersText);
+                }
+                if (mostActiveStaff)
+                    embed.addField(`Most Active Staff Member`, mostActiveStaff);
                 embed.addField(`Guild Activity Index`, parseInt(activityLevel / _guild.members.size));
 
 
