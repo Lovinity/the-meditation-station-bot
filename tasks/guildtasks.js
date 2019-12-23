@@ -38,9 +38,9 @@ module.exports = class extends Task {
 
                 // Calculate most active members
                 if (!_guild.settings.staffRole || !guildMember.roles.get(_guild.settings.staffRole)) {
-                    if (mostActiveUsers.length < 3 && newScore > 0)
+                    if (mostActiveUsers.length < 3 && newScore >= 1)
                         mostActiveUsers.push(guildMember.user.tag);
-                } else if (_guild.settings.staffRole && guildMember.roles.get(_guild.settings.staffRole) && !mostActiveStaff) {
+                } else if (_guild.settings.staffRole && guildMember.roles.get(_guild.settings.staffRole) && !mostActiveStaff && newScore >= 1) {
                     mostActiveStaff = guildMember.user.tag;
                 }
             });
@@ -102,10 +102,10 @@ module.exports = class extends Task {
                     mostActiveUsers.map((maUser, index) => {
                         mostActiveUsersText += `${index + 1}. ${maUser}` + "\n";
                     });
-                    embed.addField(`Most Active Members`, mostActiveUsersText);
+                    embed.addField(`Most Active Members Recently`, mostActiveUsersText);
                 }
                 if (mostActiveStaff)
-                    embed.addField(`Most Active Staff Member`, mostActiveStaff);
+                    embed.addField(`Most Active Staff Member Recently`, mostActiveStaff);
                 embed.addField(`Guild Activity Index`, parseInt(activityLevel / _guild.members.size));
 
 
