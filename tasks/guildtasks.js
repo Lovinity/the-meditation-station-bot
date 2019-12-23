@@ -34,6 +34,8 @@ module.exports = class extends Task {
                 if (!highestActivityScore)
                     highestActivityScore = newScore;
 
+                    activityLevel += newScore;
+
                 // Calculate most active members
                 if (!_guild.settings.staffRole || !guildMember.roles.get(_guild.settings.staffRole)) {
                     if (mostActiveUsers.length < 3 && newScore > 0)
