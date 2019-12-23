@@ -65,6 +65,10 @@ module.exports = class extends Extendable {
                 if (isMuted)
                     multiplier = 1.5;
 
+                // Text channel conflict resolution should have very strict antispam regardless of bot settings.
+                if (this.channel && this.channel.settings.conflictResolution && this.channel.settings.conflictResolution.indexOf("ACTIVE") !== -1)
+                    multiplier = 2;
+
                 //console.log(`${multiplier} multiplier`);
 
                 // Flag messages with a high spam score

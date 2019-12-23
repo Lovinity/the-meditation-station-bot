@@ -19,7 +19,9 @@ module.exports = class extends Task {
             });
 
             // Ask the first series of questions to the community.
-            await _channel.send(`:two: Now that we are more calm, I unmuted the channel. Each member involved in the conflict, please take the next 5 minutes to answer these questions:
+            await _channel.send(`:two: Now that we are more calm, I unmuted the channel. But be aware my antispam system will be strict until we are finished resolving this conflict.
+            
+Each member involved in the conflict, please take the next 5 minutes to answer these questions:
             
 *What is the conflict? Stick solely to objective facts when explaining the conflict.
 *How does the conflict make **you** feel? Use "I" statements, and avoid blaming nor talking about other people; stick solely to you.
