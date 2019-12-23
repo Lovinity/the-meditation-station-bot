@@ -48,7 +48,7 @@ Client.defaultGuildSchema
     .add('antispamRuleNumber', 'integer', { default: 1, min: 0 })
     .add('raidScore', 'integer', { default: 0, configurable: false })
     .add('raidMitigation', 'integer', { default: 0, configurable: false })
-    .add('badRepDecayXP', 'integer', { default: 50, min: 0 })
+    .add('oneHPPerXP', 'integer', { default: 50, min: 0 })
     .add('levelRoles', folder => {
         for (var i = 2; i <= 100; i++) {
             folder.add(`level${i}`, 'role', { configurable: false });
@@ -81,7 +81,7 @@ Client.use(require('./klasa-selfroles-gateway'));
 Client.defaultMemberSchema
     .add('xp', 'integer', { default: 0, configurable: false })
     .add('yang', 'integer', { default: 0, configurable: false })
-    .add('badRep', 'integer', { default: 0, configurable: false })
+    .add('HPDamage', 'integer', { default: 0, configurable: false })
     .add('goodRep', 'integer', { default: 0, configurable: false })
     .add('spamScore', 'integer', { default: 0, configurable: false })
     .add('activityScore', 'float', { min: 0, default: 0, configurable: false })

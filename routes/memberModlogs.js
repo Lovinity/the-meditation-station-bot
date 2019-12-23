@@ -159,8 +159,8 @@ module.exports = class extends Route {
                     if (log.discipline.yang !== 0) {
                         user.guildSettings(guild.id).update(`yang`, (user.guildSettings(guild.id).yang + log.discipline.yang));
                     }
-                    if (log.discipline.reputation !== 0) {
-                        user.guildSettings(guild.id).update(`badRep`, (user.guildSettings(guild.id).badRep - log.discipline.reputation));
+                    if (log.discipline.HPDamage !== 0) {
+                        user.guildSettings(guild.id).update(`HPDamage`, (user.guildSettings(guild.id).HPDamage - log.discipline.HPDamage));
                     }
 
                     const guildMember = guild.members.resolve(user.id);

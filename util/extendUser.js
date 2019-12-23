@@ -10,15 +10,16 @@ Structures.extend('User', User => class MyUser extends User {
       return this.client.gateways.members.create([ guildID, this.id ]);
     };
 
-    this.badRepWithDecay = (guildID) => {
+    this.HP = (guildID) => {
       var settings = this.client.gateways.members.create([ guildID, this.id ]);
       var guild = this.client.guilds.resolve(guildID);
-      if (!guild) return settings.badRep;
-      var badRep = settings.badRep;
-      var decay = guild.settings.badRepDecayXP;
-      var newBadRep = decay > 0 ? badRep - Math.floor(settings.xp / decay) : badRep
-      if (newBadRep < 0) newBadRep = 0;
-      return newBadRep;
+      if (!guild) return 100;
+
+      var damage =settings.HPDamage;
+      var decay = guild.settings.oneHPPerXP;
+      var HP = (100 + Math.floor(decay > 0 ? settings.xp / decay : 0)) - damage;
+      if (HP < 0) HP = 0;
+      return HP;
     };
 
   }

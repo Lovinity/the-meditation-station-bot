@@ -72,7 +72,7 @@ module.exports = class extends Event {
                         }
 
                         if (_channel2)
-                            _channel2.send(`**Welcome back** <@${guildMember.id}>! I see you have been here before. I remembered your profile, XP, Yang, reputation, badges, profile info, roles, etc. Be sure to check out the welcome channel; the rules may have changed since you were last with us.`)
+                            _channel2.send(`**Welcome back** <@${guildMember.id}>! I see you have been here before. I remembered your profile, XP, Yang, HP, badges, profile info, roles, etc. Be sure to check out the welcome channel; the rules may have changed since you were last with us.`)
                         updateLevels(guildMember);
                     })
             } else {

@@ -58,32 +58,32 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                     return null;
                 }
 
-                // Determine if a mute should be untimed based on bad Reputation
-                var badRep = this.badRepWithDecay;
-                var badRepThreshold = badRep > 100
+                // Determine if a mute should be untimed based on HP.
+                var HP = this.HP;
+                var HPThreshold = HP <= 0
 
                 // Issue the mute
-                if (this.guild.settings.raidMitigation < 1 && !badRepThreshold) {
+                if (this.guild.settings.raidMitigation < 1 && !HPThreshold) {
                     var discipline = new GuildDiscipline(this.user, this.guild, this.client.user)
                         .setType('classC')
                         .setReason(`You were asked via my antispam system to take a short break from sending messages, but you did not do so.`)
                         .setMuteDuration(0.5)
                         .setYang(100)
-                        .setReputation(10)
+                        .setHPDamage(10)
                         .addRule(this.guild.settings.antispamRuleNumber);
                     discipline.prepare()
                         .then(prepared => {
                             prepared.finalize();
                         });
-                } else if (this.guild.settings.raidMitigation < 1 && badRepThreshold) {
+                } else if (this.guild.settings.raidMitigation < 1 && HPThreshold) {
                     var discipline = new GuildDiscipline(this.user, this.guild, this.client.user)
                         .setType('classC')
                         .setReason(`You were asked via my antispam system to take a short break from sending messages, but you did not do so.`)
                         .setMuteDuration(0)
                         .setYang(100)
-                        .setReputation(10)
+                        .setHPDamage(10)
                         .addRule(this.guild.settings.antispamRuleNumber)
-                        .setOther(`Your bad reputation is above 100, which may necessitate a temporary or permanent ban. Staff will review the incident and make a decision.`);
+                        .setOther(`You do not have any HP left, which may necessitate a temporary or permanent ban. Staff will review the incident and make a decision.`);
                     discipline.prepare()
                         .then(prepared => {
                             prepared.finalize();
@@ -94,9 +94,9 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                         .setMuteReason(`Triggered the antispam system and ignored the warnings by the bot. Level 1 raid mitigation was in effect.`)
                         .setMuteDuration(0)
                         .setYang(100)
-                        .setReputation(10)
+                        .setHPDamage(10)
                         .addRule(this.guild.settings.antispamRuleNumber);
-                    if (badRepThreshold) { discipline.setOther(`Your bad reputation is above 100, which may necessitate a temporary or permanent ban. Staff will review the incident and make a decision.`) }
+                    if (HPThreshold) { discipline.setOther(`You do not have any HP left, which may necessitate a temporary or permanent ban. Staff will review the incident and make a decision.`) }
                     discipline.prepare()
                         .then(prepared => {
                             prepared.finalize();
@@ -107,7 +107,7 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                         .setReason(`Triggered the antispam system and ignored the warnings by the bot. Level 2 raid mitigation was in effect.`)
                         .setBanDuration(1)
                         .addRule(this.guild.settings.antispamRuleNumber);
-                    if (badRepThreshold) { discipline.setOther(`Your bad reputation is above 100, which may necessitate a permanent ban. Staff will review the incident and make a decision.`) }
+                    if (HPThreshold) { discipline.setOther(`You do not have any HP left, which may necessitate a permanent ban. Staff will review the incident and make a decision.`) }
                     discipline.prepare()
                         .then(prepared => {
                             prepared.finalize();
@@ -208,12 +208,12 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
         this.speaking = 0;
     }
 
-    get badRepWithDecay () {
-        var badRep = this.settings.badRep;
-        var decay = this.guild.settings.badRepDecayXP;
-        var newBadRep = decay > 0 ? badRep - Math.floor(this.settings.xp / decay) : badRep
-        if (newBadRep < 0) newBadRep = 0;
-        return newBadRep;
+    get HP () {
+        var damage = this.settings.HPDamage;
+        var decay = this.guild.settings.oneHPPerXP;
+        var HP = (100 + Math.floor(decay > 0 ? this.settings.xp / decay : 0)) - damage;
+        if (HP < 0) HP = 0;
+        return HP;
     }
 
 });

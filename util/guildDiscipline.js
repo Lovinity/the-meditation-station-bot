@@ -12,7 +12,7 @@ module.exports = class GuildDiscipline {
         this.reason = `No reason specified; please contact staff of ${guild.name}`;
         this.xp = 0;
         this.yang = 0;
-        this.reputation = 0;
+        this.HPDamage = 0;
         this.channelRestrictions = [];
         this.permissions = [];
         this.classD = {
@@ -48,8 +48,8 @@ module.exports = class GuildDiscipline {
         return this;
     }
 
-    setReputation (reputation) {
-        this.reputation = reputation;
+    setHPDamage (damage) {
+        this.HPDamage = damage;
         return this;
     }
 
@@ -455,7 +455,7 @@ Post your completed retraction statement(s) in this text channel as an attachmen
             .setDiscipline({
                 xp: this.xp,
                 yang: this.yang,
-                reputation: this.reputation,
+                HPDamage: this.HPDamage,
                 schedule: null
             })
             .setChannelRestrictions(this.channelRestrictions)
@@ -491,7 +491,7 @@ Post your completed retraction statement(s) in this text channel as an attachmen
             modLog.setDiscipline({
                 xp: this.xp,
                 yang: this.yang,
-                reputation: this.reputation,
+                HPDamage: this.HPDamage,
                 schedule: removemute.id
             });
             modLog.setExpiration(moment().add(this.muteDuration, 'hours').toISOString(true));
@@ -588,18 +588,19 @@ Post your completed retraction statement(s) in this text channel as an attachmen
             msg2 += `:gem: **Loss of ${this.yang} Yang**` + " \n"
             msg2 += `Your Yang balance is now at ${(this.user.guildSettings(this.guild.id).yang)}` + "\n\n"
         }
-        if (this.reputation > 0) {
-            await this.user.guildSettings(this.guild.id).update(`badRep`, (this.user.guildSettings(this.guild.id).badRep + this.reputation));
+        if (this.HPDamage > 0) {
+            await this.user.guildSettings(this.guild.id).update(`HPDamage`, (this.user.guildSettings(this.guild.id).HPDamage + this.HPDamage));
 
-            msg2 += `:thumbsdown: **${this.reputation} bad reputation added to profile**` + " \n"
-            var badRepWithDecay = this.user.badRepWithDecay(this.guild.id);
-            if (badRepWithDecay >= 100) {
-                msg2 += `Your reputation is now ${this.user.guildSettings(this.guild.id).goodRep} good / ${badRepWithDecay} bad` + "\n"
-                msg2 += `Bad reputation decays at a rate of 1 bad reputation for every 50 XP earned.` + "\n"
-                msg2 += `:warning: **You have 100 or more bad reputation**. This means future discipline for any rule violations could include a temporary or permanent ban.` + "\n\n"
+            msg2 += `:broken_heart: **${this.HPDamage} HP Damage**` + " \n"
+            var HP = this.user.HP(this.guild.id);
+            if (HP <= 0) {
+                msg2 += `You now have ${HP} HP.` + "\n"
+                msg2 += `You earn 1 HP for every ${this.guild.settings.oneHPPerXP} XP earned in the guild.` + "\n"
+                msg2 += `:warning: **You do not have any HP left**. This means future discipline for any rule violations could include a temporary or permanent ban.` + "\n\n"
             } else {
-                msg2 += `Your reputation is now ${this.user.guildSettings(this.guild.id).goodRep} good / ${badRepWithDecay} bad` + "\n"
-                msg2 += `Bad reputation decays at a rate of 1 bad reputation for every 50 XP earned.` + "\n\n"
+                msg2 += `You now have ${HP} HP.` + "\n"
+                msg2 += `You earn 1 HP for every ${this.guild.settings.oneHPPerXP} XP earned in the guild.` + "\n"
+                msg2 += `Should you run out of HP, you could be issued a temporary or permanent ban.` + "\n\n"
             }
         }
         if (this.other !== null) {
@@ -628,7 +629,7 @@ Post your completed retraction statement(s) in this text channel as an attachmen
                     modLog.setDiscipline({
                         xp: this.xp,
                         yang: this.yang,
-                        reputation: this.reputation,
+                        HPDamage: this.HPDamage,
                         schedule: removeban.id
                     });
                     modLog.setExpiration(moment().add(this.banDuration, 'days').toISOString(true));

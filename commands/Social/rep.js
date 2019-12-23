@@ -1,8 +1,3 @@
-/*
- * This command is used to report a conflict in a text channel. If a configured number of members report in a configured amount of time, the bot
- * activates conflict resolution, taking "SEND_MESSAGES" away from everyone for 5 minutes while instructing a breathing exercise, and then
- * proceeding with conflict resolution questions. Used with tasks/conflictstage[2-5].js and tasks/removeconflict.js.
- */
 const { Command } = require('klasa');
 const moment = require('moment');
 const yangStore = require('../../util/yangStore');

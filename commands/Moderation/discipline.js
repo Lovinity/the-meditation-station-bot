@@ -58,9 +58,9 @@ module.exports = class extends Command {
             }
         });
 
-        var badRep = user.badRepWithDecay(message.guild.id);
-        response += `**Current Bad Reputation**: ${badRep}` + "\n"
-        if (badRep < 100) {
+        var HP = user.HP(message.guild.id);
+        response += `**Current HP**: ${HP}` + "\n"
+        if (HP > 0) {
             response += `Member does **not** qualify for a ban on this discipline (except for criminal activity, sexual engagement with minors, violation of Discord's TOS with Discord taking action, sharing of legally private info, or using multiple accounts).` + "\n\n"
         } else {
             response += `:warning: **Member qualifies for a temporary or permanent ban**. Please ask yourself if this member is causing more harm than good to the community. If so, this discipline should be a class F temporary or permanent ban.` + "\n\n"
@@ -76,7 +76,7 @@ module.exports = class extends Command {
             .setDescription(`G is the highest class and A is the lowest class. You have 5 minutes to pick an option.`)
         );
         menu.addOption(`classA`, `Warning`);
-        menu.addOption(`classB`, `Basic Discipline (Yang fine, bad reputation, and/or loss of XP)`);
+        menu.addOption(`classB`, `Basic Discipline (Yang fine, HP damage, and/or loss of XP)`);
         menu.addOption(`classD`, `Reflection / Research (Require apology, research paper, retraction statement, and/or quiz).`);
         menu.addOption(`classE`, `Access Restrictions (Indefinite or timed mute, channel restrictions, and/or roles that restrict permissions).`);
         menu.addOption(`classF`, `Ban (Temporary or Permanent).`);
@@ -120,7 +120,7 @@ module.exports = class extends Command {
                         await askOther(message, discipline);
                         break;
                     case 'classF':
-                        if (badRep < 100) {
+                        if (HP > 0) {
                             var confirm = await askClassF(message, discipline);
                             if (!confirm) {
                                 await discipline.cancel();
@@ -195,17 +195,17 @@ async function askOther (message, discipline) {
 }
 
 async function askClassB (message, discipline) {
-    // Ask for bad reputation
-    var badRep = await message.awaitReply(`:question: **Bad Reputation**: How much bad reputation should be assigned to this user? Use "0" for none. You have 5 minutes to respond.`, 300000);
-    if (!badRep) {
-        throw new Error("No badRep specified")
+    // Ask for HP damage (bad reputation)
+    var HP = await message.awaitReply(`:question: **HP damage**: How much HP damage should the user take? Use "0" for none. You have 5 minutes to respond.`, 300000);
+    if (!HP) {
+        throw new Error("No HP specified")
     }
-    if (isNaN(parseInt(badRep))) {
-        await message.channel.send(`:x: An invalid number was provided. We will assume 25 bad rep.`);
-        badRep = 25;
+    if (isNaN(parseInt(HP))) {
+        await message.channel.send(`:x: An invalid number was provided. We will assume 25 HP damage.`);
+        HP = 25;
     }
-    badRep = parseInt(badRep);
-    discipline.setReputation(badRep);
+    HP = parseInt(HP);
+    discipline.setHPDamage(HP);
 
     // Ask for Yang charge
     var yang = await message.awaitReply(`:question: **Yang Fine**: How much Yang should be charged from this user? Use "0" for none. You are allowed to fine more than the user has in their balance. You have 5 minutes to respond.`, 300000);
@@ -338,7 +338,7 @@ async function askWillMute (message, discipline) {
 }
 
 async function askClassF (message, discipline) {
-    var willBan = await message.ask(`:warning: **Are you sure you want to issue a ban?**: You have 1 minute to respond. This member does not qualify for any bans based on bad reputation. You are only allowed to issue a ban if this user engaged/encouraged fellonious crime, violated Discord's terms of service or community guidelines, engaged sexually with or posted content (including art) of someone under 18 years old, or is using multiple accounts in the guild. Issuing bans otherwise may be considered staff abuse and could result in staff discipline.`);
+    var willBan = await message.ask(`:warning: **Are you sure you want to issue a ban?**: You have 1 minute to respond. This member does not qualify for any bans because they still have HP. You are only allowed to issue a ban if this user engaged/encouraged fellonious crime, violated Discord's terms of service or community guidelines, engaged sexually with or posted content (including art) of someone under 18 years old, or is using multiple accounts in the guild. Issuing bans otherwise may be considered staff abuse and could result in staff discipline.`);
     if (willBan)
         return true;
     return false;

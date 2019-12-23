@@ -11,7 +11,11 @@ module.exports = class ModLog {
         this.user = null;
         this.moderator = null;
         this.reason = null;
-        this.discipline = null;
+        this.discipline = {
+            xp: 0,
+            yang: 0,
+            HPDamage: 0
+        };
         this.otherDiscipline = null;
         this.channel = null;
         this.case = null;
@@ -160,7 +164,7 @@ module.exports = class ModLog {
             .addField(`(Class E) Channel Restrictions`, channelNames.length > 0 ? channelNames.join(", ") : 'None')
             .addField(`(Class E) Permission Restriction Roles`, roleNames.length > 0 ? roleNames.join(", ") : 'None')
             .addField(`(Class D) Reflection / Accountability`, `Apologies: ${this.classD.apology}` + "\n" + `Research Paper Topics: ${this.classD.research}` + "\n" + `Retraction Statements: ${this.classD.retraction}` + "\n" + `Quizzes: ${this.classD.quiz}`)
-            .addField(`(Class B) Standard Discipline`, `Yang fine: ${this.discipline.yang}` + "\n" + `Bad Reputation: ${this.discipline.reputation}` + "\n" + `XP taken away: ${this.discipline.xp}`)
+            .addField(`(Class B) Standard Discipline`, `Yang fine: ${this.discipline.yang}` + "\n" + `HP Damage: ${this.discipline.HPDamage}` + "\n" + `XP taken away: ${this.discipline.xp}`)
             .addField(`Additional Discipline`, this.otherDiscipline)
             .addField(`Link to Mod Log`, `${this.client.options.dashboardHooks.origin}/modlogs.html?user=${this.user.id}&case=${this.case}`)
             .setFooter(`Case ${this.case}`);

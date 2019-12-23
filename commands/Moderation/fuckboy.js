@@ -51,7 +51,7 @@ module.exports = class extends Command {
                                     .setReason(`Being a fuckboy (someone who is only interested in hitting on members or sexually objectifying others)`)
                                     .setMuteDuration(0)
                                     .setYang(500)
-                                    .setReputation(50)
+                                    .setHPDamage(50)
                                     .setOther(`In order to remain in the guild without being permanently banned, you must pass a fuckboy interrogation process which staff will perform here. You will be subject to several tests in which you must pass without acting like a fuckboy. If you act like a fuckboy even once during this test, you will fail and will be permanently banned from the guild.`)
                                 discipline.prepare()
                                     .then(prepared => {
