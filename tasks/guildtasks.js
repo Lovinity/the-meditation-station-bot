@@ -15,6 +15,8 @@ module.exports = class extends Task {
             _guild.members.each((guildMember) => {
                 // Antispam cooldown
                 var newScore = guildMember.settings.spamScore - cooldown;
+                if (newScore < 0)
+                    newScore = 0;
                 guildMember.settings.update('spamScore', newScore);
 
                 // Activity score cooldown
@@ -25,9 +27,9 @@ module.exports = class extends Task {
                 }
 
                 // Calculate most active user and current activity level
-                activityLevel += newScore
-                if (newScore > highestActivityScore) {
-                    highestActivityScore = newScore
+                activityLevel += activityScore
+                if (activityScore > highestActivityScore) {
+                    highestActivityScore = activityScore
                     mostActiveUser = guildMember.user.tag
                 }
             });
