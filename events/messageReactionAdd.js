@@ -10,23 +10,12 @@ module.exports = class extends Event {
         var reactionMember = reaction.message.guild.members.resolve(user);
 
         // Add rep if this is a rep earning message
-        if (reaction.message.author.id !== this.client.user.id && !user.bot && reaction.message.author.id !== user.id && reaction.emoji.id === reaction.message.guild.settings.repEmoji) {
-            var addRep = false;
-            reaction.message.reactions
-                .each((_reaction) => {
-                    if (_reaction.me && _reaction.emoji.id === _reaction.message.guild.settings.repEmoji)
-                        addRep = true;
-                });
-
-                console.log('Can add rep? ' + addRep);
-                console.log('reactionMember? ' + reactionMember);
-                console.log('reaction is client? ' + reaction.me);
+        if (user.id !== this.client.user.id && reaction.message.author.id !== user.id && reaction.emoji.id === reaction.message.guild.settings.repEmoji) {
+            var addRep = reaction.me;
 
             // Make sure this user can actually give reputation
-            if (reactionMember && addRep && !reaction.me) {
-                console.log('Can add rep passed');
-                if (!reactionMember.settings.cannotGiveReputation && !user.bot) {
-                    console.log('Can add rep2 passed');
+            if (reactionMember && addRep) {
+                if (!reactionMember.settings.restrictions.cannotGiveReputation && !user.bot) {
                     reaction.message.member.settings.update(`goodRep`, reaction.message.member.settings.goodRep + 1);
                 } else {
                     reactionMember.spamScore(25);
@@ -36,7 +25,7 @@ module.exports = class extends Event {
                     }, 15000);
                     reaction.users.remove(user);
                 }
-            } else if (!reaction.me) {
+            } else {
                 reaction.users.remove(user);
             }
         }
@@ -53,7 +42,7 @@ module.exports = class extends Event {
                     if (reactionUser.id !== this.client.user.id && !reactionUser.bot && reaction.message.author.id !== reactionUser.id) {
                         if (reactionMember) {
                             var reactionMember = guild.members.resolve(reactionUser);
-                            if (!reactionMember.settings.cannotGiveReputation) {
+                            if (!reactionMember.settings.restrictions.cannotGiveReputation) {
                                 reactionCount++;
                             }
                         }

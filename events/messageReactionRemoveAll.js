@@ -18,11 +18,10 @@ module.exports = class extends Event {
 
             if (removeRep) {
                 message.reactions
-                    .filter((reaction) => reaction.emoji.id === reaction.message.guild.settings.repEmoji && !reaction.me && reaction.message.author.id !== message.author.id)
+                    .filter((reaction) => reaction.emoji.id === reaction.message.guild.settings.repEmoji && reaction.message.author.id !== message.author.id)
                     .each((reaction) => {
                         reaction.users.each((reactionUser) => {
-                            var reactionMember = message.guild.members.resolve(reactionUser);
-                            if (reactionMember && !reactionMember.settings.cannotGiveReputation)
+                            if (!reactionUser.bot && !reactionUser.guildSettings(message.guild.id).restrictions.cannotGiveReputation)
                                 message.member.settings.update('goodRep', message.member.settings.goodRep - 1);
                         });
                     });

@@ -11,15 +11,9 @@ module.exports = class extends Event {
 
         // Remove earned rep if necessary
         if (reaction.message.author.id !== this.client.user.id) {
-            var removeRep = false;
-            reaction.message.reactions
-                .each((_reaction) => {
-                    if (_reaction.me && _reaction.emoji.id === _reaction.message.guild.settings.repEmoji)
-                        removeRep = true;
-                });
+            var removeRep = reaction.me;
 
-            // Make sure those with the noRep role cannot remove reputation
-            if (removeRep && !user.bot && reaction.message.author.id !== user.id && reaction.emoji.id === reaction.message.guild.settings.repEmoji && reactionMember && !reactionMember.settings.cannotGiveReputation) {
+            if (removeRep && !user.bot && reaction.message.author.id !== user.id && reaction.emoji.id === reaction.message.guild.settings.repEmoji && reactionMember && !reactionMember.settings.restrictions.cannotGiveReputation) {
                 reaction.message.member.settings.update(`goodRep`, reaction.message.member.settings.goodRep - 1);
             }
         }
@@ -36,7 +30,7 @@ module.exports = class extends Event {
                     if (reactionUser.id !== this.client.user.id && !reactionUser.bot && reaction.message.author.id !== reactionUser.id) {
                         var reactionMember = guild.members.resolve(user);
                         if (reactionMember) {
-                            if (!reactionMember.settings.cannotGiveReputation) {
+                            if (!reactionMember.settings.restrictions.cannotGiveReputation) {
                                 reactionCount++;
                             }
                         }

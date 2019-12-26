@@ -23,20 +23,23 @@ module.exports = class extends Event {
                 message.earnedXp = 0;
             }
 
-            // Remove good rep
-            if (message.member && !message.author.bot) {
+            // Remove all good rep earned from reactions, if any.
+            if (!message.author.bot) {
                 var removeRep = false;
                 message.reactions
-                    .each((reaction) => {
-                        if (reaction.me)
+                    .each((_reaction) => {
+                        if (_reaction.me && _reaction.emoji.id === _reaction.message.guild.settings.repEmoji)
                             removeRep = true;
                     });
 
                 if (removeRep) {
                     message.reactions
-                        .filter((reaction) => reaction.emoji.id === message.guild.settings.repEmoji && !reaction.me)
+                        .filter((reaction) => reaction.emoji.id === reaction.message.guild.settings.repEmoji && reaction.message.author.id !== message.author.id)
                         .each((reaction) => {
-                            message.member.settings.update('goodRep', message.member.settings.goodRep - 1);
+                            reaction.users.each((reactionUser) => {
+                                if (!reactionUser.bot && !reactionUser.guildSettings(message.guild.id).restrictions.cannotGiveReputation)
+                                    message.author.guildSettings(message.guild.id).update('goodRep', message.author.guildSettings(message.guild.id).goodRep - 1);
+                            });
                         });
                 }
             }
