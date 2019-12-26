@@ -104,7 +104,7 @@ module.exports = class GuildDiscipline {
         return this;
     }
 
-    setBotRestrictions (restrictions) {
+    addBotRestrictions (restrictions) {
         this.botRestrictions = restrictions;
         return this;
     }
@@ -465,7 +465,7 @@ Post your completed retraction statement(s) in this text channel as an attachmen
                 schedule: null
             })
             .setChannelRestrictions(this.channelRestrictions)
-            .setBotRestrictions(this.botRestrictions)
+            .addBotRestrictions(this.botRestrictions)
             .setPermissions(this.permissions)
             .setClassD(this.classD)
             .setRules(this.rules)
@@ -564,7 +564,7 @@ Post your completed retraction statement(s) in this text channel as an attachmen
                     this.botRestrictions.splice(index, 1);
                 }
             });
-            modLog = modLog.setBotRestrictions(this.botRestrictions);
+            modLog = modLog.addBotRestrictions(this.botRestrictions);
             msg2 += `${this.botRestrictions.join(", ")}` + "\n\n"
         }
 

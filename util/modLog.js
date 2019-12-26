@@ -122,7 +122,7 @@ module.exports = class ModLog {
         return this;
     }
 
-    setBotRestrictions (restrictions) {
+    addBotRestrictions (restrictions) {
         this.botRestrictions = restrictions;
         return this;
     }
