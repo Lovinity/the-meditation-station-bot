@@ -24,9 +24,9 @@ module.exports = class extends Event {
                     reaction.message.member.settings.update(`goodRep`, reaction.message.member.settings.goodRep + 1);
                 } else {
                     reactionMember.spamScore(25);
-                    var msg = await reaction.message.send(`:lock: Sorry <@${user.id}>, but staff have forbidden you from being able to give good reputation to other members. Note: Repeatedly trying will trigger antispam.`);
+                    var _msg = await reaction.message.send(`:lock: Sorry <@${user.id}>, but staff have forbidden you from being able to give good reputation to other members. Note: Repeatedly trying will trigger antispam.`);
                     setTimeout(() => {
-                        msg.delete();
+                        _msg.delete();
                     }, 15000);
                     reaction.users.remove(user);
                 }
