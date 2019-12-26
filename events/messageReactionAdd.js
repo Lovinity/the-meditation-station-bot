@@ -18,9 +18,13 @@ module.exports = class extends Event {
                         addRep = true;
                 });
 
+                console.log('Can add rep? ' + addRep);
+
             // Make sure this user can actually give reputation
             if (reactionMember && addRep && !reaction.me) {
+                console.log('Can add rep passed');
                 if (!reactionMember.settings.cannotGiveReputation && !user.bot) {
+                    console.log('Can add rep2 passed');
                     reaction.message.member.settings.update(`goodRep`, reaction.message.member.settings.goodRep + 1);
                 } else {
                     reactionMember.spamScore(25);
