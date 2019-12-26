@@ -60,6 +60,7 @@ module.exports = class extends Route {
                     discipline: log.discipline,
                     classD: log.classD,
                     channelRestrictions: log.channelRestrictions,
+                    botRestrictions: log.botRestrictions,
                     permissions: log.permissions,
                     otherDiscipline: log.otherDiscipline,
                     expiration: moment(log.expiration).format("LLL"),
@@ -242,6 +243,20 @@ module.exports = class extends Route {
                                 }
                             }
                         })
+                    }
+
+                    // Remove bot restrictions
+                    if (log.botRestrictions.length > 0) {
+                        log.botRestrictions.map((restriction) => {
+                            if (Object.keys(user.guildSettings(guild.id).restrictions).indexOf(restriction) !== -1) {
+                                user.guildSettings(guild.id).update(`restrictions.${restriction}`, false);
+
+                                if (restriction === 'cannotUseVoiceChannels' && guildMember) {
+                                    guildMember.voice.setDeaf(false, 'cannotUseVoiceChannels appealed.');
+                                    guildMember.voice.setMute(false, 'cannotUseVoiceChannels appealed.');
+                                }
+                            }
+                        });
                     }
 
                     // Remove incident if it is pending in the guild

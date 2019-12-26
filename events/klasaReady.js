@@ -119,6 +119,14 @@ module.exports = class extends Event {
                         }
                     }
                 }
+
+                // Check to see if the member has cannotUseVoiceChannels. If so, apply server deaf and mute.
+                if (guildMember.settings.restrictions.cannotUseVoiceChannels && (!guildMember.voice.serverMute || !guildMember.voice.serverDeaf)) {
+                    guildMember.voice.setDeaf(true, 'User joined guild with cannotUseVoiceChannels restriction.');
+                    guildMember.voice.setMute(true, 'User joined guild with cannotUseVoiceChannels restriction.');
+                    if (_channelMod)
+                        _channelMod.send(`:lock: The member <@!${guildMember.user.id}> had cannotUseVoiceChannels restriction. Server VC deaf/mute was re-applied. Check to make sure the member is not trying to evade this restriction.`);
+                }
             });
 
             // Make a message welcoming the new members who have been verified.

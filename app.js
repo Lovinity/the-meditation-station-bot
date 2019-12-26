@@ -97,6 +97,17 @@ Client.defaultMemberSchema
             .add('background', 'url')
             .add('badges', 'any', { array: true })
     })
+    .add('restrictions', folder => {
+        folder
+        .add('cannotUseVoiceChannels', 'boolean', {default: false, configurable: false})
+        .add('cannotGiveReputation', 'boolean', {default: false, configurable: false})
+        .add('cannotUseStaffCommand', 'boolean', {default: false, configurable: false})
+        .add('cannotUseReportCommand', 'boolean', {default: false, configurable: false})
+        .add('cannotUseSupportCommand', 'boolean', {default: false, configurable: false})
+        .add('cannotUseConflictCommand', 'boolean', {default: false, configurable: false})
+        .add('cannotPurchaseAds', 'boolean', {default: false, configurable: false})
+        .add('cannotEditProfile', 'boolean', {default: false, configurable: false})
+    })
     .add('canRep', 'boolean', { default: true, configurable: false })
     .add('muted', 'boolean', { default: false, configurable: false })
     .add('modLogs', 'any', { array: true, configurable: false })

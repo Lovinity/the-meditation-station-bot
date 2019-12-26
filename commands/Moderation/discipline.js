@@ -65,8 +65,9 @@ module.exports = class extends Command {
         } else {
             response += `:warning: **Member qualifies for a temporary or permanent ban**. Please ask yourself if this member is causing more harm than good to the community. If so, this discipline should be a class F temporary or permanent ban.` + "\n\n"
         }
-        response += `**Current Yang**: ${user.guildSettings(message.guild.id).yang}` + "\n\n"
-        response += `**Current XP**: ${user.guildSettings(message.guild.id).xp}` + "\n\n"
+        response += `**Current Yang**: ${user.guildSettings(message.guild.id).yang}` + "\n"
+        response += `**Current XP**: ${user.guildSettings(message.guild.id).xp}` + "\n"
+        response += `**Active Bot Restrictions**: ${Object.entries(user.guildSettings(message.guild.id).restrictions).map(([key, value]) => value ? `${key} ` : undefined)}` + "\n\n"
 
         var separateMessage = await message.channel.send(response, { split: true });
 
@@ -116,7 +117,7 @@ module.exports = class extends Command {
                         await askRulesReason(message, discipline);
                         await askClassB(message, discipline);
                         var hasAccountability = await askClassD(message, discipline);
-                        await askClassE(message, discipline, hasAccountability);
+                        await askClassE(message, user, discipline, hasAccountability);
                         await askOther(message, discipline);
                         break;
                     case 'classF':
@@ -134,7 +135,7 @@ module.exports = class extends Command {
                         await askClassB(message, discipline);
                         if (!isPermanentBan) {
                             var hasAccountability = await askClassD(message, discipline);
-                            await askClassE(message, discipline, hasAccountability);
+                            await askClassE(message, user, discipline, hasAccountability);
                         }
                         await askOther(message, discipline);
                         break;
@@ -196,7 +197,7 @@ async function askOther (message, discipline) {
 
 async function askClassB (message, discipline) {
     // Ask for HP damage (bad reputation)
-    var HP = await message.awaitReply(`:question: **HP damage**: How much HP damage should the user take? Use "0" for none. You have 5 minutes to respond.`, 300000);
+    var HP = await message.awaitReply(`:question: **HP damage**: How much HP damage should the user take (you can issue more damage than they have)? Use "0" for none. You have 5 minutes to respond.`, 300000);
     if (!HP) {
         throw new Error("No HP specified")
     }
@@ -282,7 +283,7 @@ async function askClassD (message, discipline) {
     return isAccountable;
 }
 
-async function askClassE (message, discipline, hasAccountability) {
+async function askClassE (message, user, discipline, hasAccountability) {
     if (!hasAccountability) {
         var duration = await message.awaitReply(`:question: **Mute**: If a mute should be issued, specify how long the mute should be in hours. Use "0" for indefinite / until staff remove it. Specify "none" if no mute is to be issued. You have 5 minutes to respond.`, 300000);
         if (!duration) {
@@ -304,6 +305,14 @@ async function askClassE (message, discipline, hasAccountability) {
     }
     if (resp.toLowerCase() !== 'none') {
         discipline.addChannelRestrictions(resp);
+    }
+
+    var resp = await message.awaitReply(`:question: **Bot Restrictions**: Add one or more of the following bot restrictions to the member, or type "none" to add none of them (separate each restriction with a space; type exactly as it appears case sensitive; you have 5 minutes to respond): ${Object.keys(user.guildSettings(message.guild.id).restrictions).join(", ")}`, 300000);
+    if (!resp) {
+        throw new Error("No bot restrictions specified")
+    }
+    if (resp.toLowerCase() !== 'none') {
+        discipline.addBotRestrictions(resp.split(" "));
     }
 
     var resp = await message.awaitReply(`:question: **Add Restrictive Roles**: If this user should be awarded roles, such as ones that restrict certain permissions, mention each role that should be applied to them. Do not add the muted role to the user; this is added automatically when necessary. Specify "none" to not add any roles to the user. You have 5 minutes to respond.`, 300000);

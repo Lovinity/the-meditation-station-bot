@@ -22,6 +22,7 @@ module.exports = class ModLog {
         this.expiration = null;
         this.rules = [];
         this.channelRestrictions = [];
+        this.botRestrictions = [];
         this.permissions = [];
         this.banDuration = null;
         this.muteDuration = null;
@@ -121,6 +122,11 @@ module.exports = class ModLog {
         return this;
     }
 
+    setBotRestrictions (restrictions) {
+        this.botRestrictions = restrictions;
+        return this;
+    }
+
     // Send the log to the modlog channel
 
     async send () {
@@ -163,6 +169,7 @@ module.exports = class ModLog {
             .addField(`(Class E) Mute Duration`, this.muteDuration !== null ? `${this.muteDuration === 0 ? `Until Staff Remove It` : `${this.muteDuration} hours`}` : 'No mute issued')
             .addField(`(Class E) Channel Restrictions`, channelNames.length > 0 ? channelNames.join(", ") : 'None')
             .addField(`(Class E) Permission Restriction Roles`, roleNames.length > 0 ? roleNames.join(", ") : 'None')
+            .addField(`(Class E) Bot Restrictions`, this.botRestrictions.length > 0 ? this.botRestrictions.join(", ") : 'None')
             .addField(`(Class D) Reflection / Accountability`, `Apologies: ${this.classD.apology}` + "\n" + `Research Paper Topics: ${this.classD.research}` + "\n" + `Retraction Statements: ${this.classD.retraction}` + "\n" + `Quizzes: ${this.classD.quiz}`)
             .addField(`(Class B) Standard Discipline`, `Yang fine: ${this.discipline.yang}` + "\n" + `HP Damage: ${this.discipline.HPDamage}` + "\n" + `XP taken away: ${this.discipline.xp}`)
             .addField(`Additional Discipline`, this.otherDiscipline)
@@ -187,6 +194,7 @@ module.exports = class ModLog {
             discipline: this.discipline,
             classD: this.classD,
             channelRestrictions: this.channelRestrictions,
+            botRestrictions: this.botRestrictions,
             permissions: this.permissions,
             otherDiscipline: this.otherDiscipline,
             channel: this.channel,

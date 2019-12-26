@@ -16,7 +16,7 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                 return null;
 
             // Ignore this bot
-            if (message.author.id === this.client.user.id)
+            if (typeof message !== `undefined` && message.author.id === this.client.user.id)
                 return null;
 
             var isMuted = (this.roles.get(this.guild.settings.muteRole));
@@ -30,20 +30,22 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
             if (currentScore < 100 && newScore >= 100) {
                 console.log(`Went over 100!`);
                 if (this.spamScoreStamp === null || moment().subtract(1, 'minutes').isAfter(moment(this.spamScoreStamp))) {
-                    console.log(`Sent warning`);
-                    var response = `:warning: <@${message.author.id}> **__Antispam__: Please take a break from sending messages for about ${moment.duration(this.guild.settings.antispamCooldown > 0 ? (newScore / this.guild.settings.antispamCooldown) + 1 : 0, 'minutes').format("m [Minutes]")} (this includes editing messages)**. `;
-                    if (isMuted) {
-                        response += `**Otherwise, I'll have to kick you from the guild, causing any pending bans to apply and you to lose any opportunity to appeal active discipline**.`;
-                    } else if (this.guild.settings.raidMitigation >= 3) {
-                        response += `__**Otherwise, I'll have to permanently ban you.**__`;
-                    } else if (this.guild.settings.raidMitigation >= 2) {
-                        response += `**Otherwise, I'll have to issue you a temporary ban for 24 hours.**`;
-                    } else if (this.guild.settings.raidMitigation >= 1) {
-                        response += `Otherwise, I'll have to mute you.`;
-                    } else {
-                        response += `Otherwise, I'll have to mute you for 30 minutes.`;
+                    if (message) {
+                        console.log(`Sent warning`);
+                        var response = `:warning: <@${message.author.id}> **__Antispam__: Please take a break from sending messages for about ${moment.duration(this.guild.settings.antispamCooldown > 0 ? (newScore / this.guild.settings.antispamCooldown) + 1 : 0, 'minutes').format("m [Minutes]")} (this includes editing messages)**. `;
+                        if (isMuted) {
+                            response += `**Otherwise, I'll have to kick you from the guild, causing any pending bans to apply and you to lose any opportunity to appeal active discipline**.`;
+                        } else if (this.guild.settings.raidMitigation >= 3) {
+                            response += `__**Otherwise, I'll have to permanently ban you.**__`;
+                        } else if (this.guild.settings.raidMitigation >= 2) {
+                            response += `**Otherwise, I'll have to issue you a temporary ban for 24 hours.**`;
+                        } else if (this.guild.settings.raidMitigation >= 1) {
+                            response += `Otherwise, I'll have to mute you.`;
+                        } else {
+                            response += `Otherwise, I'll have to mute you for 30 minutes.`;
+                        }
+                        message.send(response);
                     }
-                    message.send(response);
                     this.spamScoreStamp = moment();
                 }
             } else if (currentScore >= 100 && moment().subtract(10, 'seconds').isAfter(moment(this.spamScoreStamp))) {
@@ -125,7 +127,7 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                 }
             }
         };
-        this.xp = (score, message = null) => {
+        this.xp = (score, message) => {
 
             // Ignore if score = 0
             if (score === 0)
@@ -158,7 +160,7 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                 var role = this.guild.roles.resolve(levelRole);
                 if (role && levelRole && levelRole !== null && this.guild.roles.has(levelRole) && !this.roles.has(levelRole)) {
                     this.roles.add(levelRole, `Achieved level ${curLevel}`);
-                    if (message !== null) {
+                    if (message) {
                         message.send(`:tada: **Congratulations <@${this.id}>, you earned the ${role.name} role!**`);
                     } else {
                         var channel = this.guild.settings.generalChannel;

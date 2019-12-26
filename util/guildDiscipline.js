@@ -14,6 +14,7 @@ module.exports = class GuildDiscipline {
         this.yang = 0;
         this.HPDamage = 0;
         this.channelRestrictions = [];
+        this.botRestrictions = [];
         this.permissions = [];
         this.classD = {
             apology: false,
@@ -100,6 +101,11 @@ module.exports = class GuildDiscipline {
 
     setClassD (classD) {
         this.classD = classD;
+        return this;
+    }
+
+    setBotRestrictions (restrictions) {
+        this.botRestrictions = restrictions;
         return this;
     }
 
@@ -459,6 +465,7 @@ Post your completed retraction statement(s) in this text channel as an attachmen
                 schedule: null
             })
             .setChannelRestrictions(this.channelRestrictions)
+            .setBotRestrictions(this.botRestrictions)
             .setPermissions(this.permissions)
             .setClassD(this.classD)
             .setRules(this.rules)
@@ -520,9 +527,9 @@ Post your completed retraction statement(s) in this text channel as an attachmen
         // Next, add restriction permissions
         if (this.permissions.length > 0) {
             var roleNames = [];
-            msg2 += `:lock: **Restrictive Roles**` + " \n"
+            msg2 += `:closed_lock_with_key: **Restrictive Roles**` + " \n"
             msg2 += `These permission-restrictive roles have been added: `
-            this.permissions.map(permission => {
+            this.permissions.map((permission, index) => {
                 var theRole = this.guild.roles.resolve(permission)
 
                 if (theRole) {
@@ -532,9 +539,33 @@ Post your completed retraction statement(s) in this text channel as an attachmen
                     } else {
                         this.user.guildSettings(this.guild.id).update(`roles`, theRole, this.guild, { action: 'add' });
                     }
+                } else {
+                    this.permissions.splice(index, 1);
                 }
             })
+            modLog = modLog.setPermissions(this.permissions);
             msg2 += `${roleNames.join(", ")}` + "\n\n"
+        }
+
+        // Next, add bot restrictions
+        if (this.botRestrictions.length > 0) {
+            var roleNames = [];
+            msg2 += `:lock: **Bot Restrictions**` + " \n"
+            msg2 += `The following bot-level restrictions have been applied to you: `
+            this.botRestrictions.map((restriction, index) => {
+                if (Object.keys(this.user.guildSettings(this.guild.id).restrictions).indexOf(restriction) !== -1) {
+                    this.user.guildSettings(this.guild.id).update(`restrictions.${restriction}`, true);
+
+                    if (restriction === 'cannotUseVoiceChannels' && guildMember) {
+                        guildMember.voice.setDeaf(true, 'User disciplined with cannotUseVoiceChannels restriction.');
+                        guildMember.voice.setMute(true, 'User disciplined with cannotUseVoiceChannels restriction.');
+                    }
+                } else {
+                    this.botRestrictions.splice(index, 1);
+                }
+            });
+            modLog = modLog.setBotRestrictions(this.botRestrictions);
+            msg2 += `${this.botRestrictions.join(", ")}` + "\n\n"
         }
 
         // Check class D discipline
