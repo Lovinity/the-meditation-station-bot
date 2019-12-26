@@ -19,6 +19,8 @@ module.exports = class extends Event {
                 });
 
                 console.log('Can add rep? ' + addRep);
+                console.log('reactionMember? ' + reactionMember);
+                console.log('reaction is client? ' + reaction.me);
 
             // Make sure this user can actually give reputation
             if (reactionMember && addRep && !reaction.me) {
