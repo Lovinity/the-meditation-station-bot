@@ -17,12 +17,14 @@ module.exports = class extends Event {
                 });
 
             if (removeRep) {
-                const noRep = reaction.message.guild.settings.noRep
-                const noRepRole = reaction.message.guild.roles.resolve(noRep)
                 message.reactions
-                    .filter((reaction) => reaction.emoji.id === reaction.message.guild.settings.repEmoji && !reaction.me && reaction.message.author.id !== message.author.id && (!noRepRole || !reaction.message.member.roles.get(noRepRole.id)))
+                    .filter((reaction) => reaction.emoji.id === reaction.message.guild.settings.repEmoji && !reaction.me && reaction.message.author.id !== message.author.id)
                     .each((reaction) => {
-                        message.member.settings.update('goodRep', message.member.settings.goodRep - 1);
+                        reaction.users.each((reactionUser) => {
+                            var reactionMember = message.guild.members.resolve(reactionUser);
+                            if (reactionMember && !reactionMember.settings.cannotGiveReputation)
+                                message.member.settings.update('goodRep', message.member.settings.goodRep - 1);
+                        });
                     });
             }
         }

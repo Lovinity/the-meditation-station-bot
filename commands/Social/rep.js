@@ -26,11 +26,14 @@ module.exports = class extends Command {
             return msg;
         }
 
-        // Disallow repping if user has the no rep role
-        const noRep = message.guild.settings.noRep
-        const noRepRole = message.guild.roles.resolve(noRep)
-        if (noRepRole && message.member.roles.get(noRepRole.id))
-            return message.send(`:x: Sorry, but you have the No Rep role, therefore you cannot give good reputation to others.`);
+        // Disallow repping if user has a restriction
+        if (message.member.settings.restrictions.cannotGiveReputation) {
+            var msg = await message.send(`:lock: Sorry, but staff have forbidden you from being able to give good reputation to other members.`);
+            setTimeout(() => {
+                msg.delete();
+            }, 10000);
+            return msg;
+        }
 
         // Disallow repping if canRep is false
         if (!message.member.settings.canRep)
