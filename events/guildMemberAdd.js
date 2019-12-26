@@ -92,14 +92,6 @@ module.exports = class extends Event {
             }
         }
 
-        // Check to see if the member has cannotUseVoiceChannels. If so, apply server deaf and mute.
-        if (guildMember.settings.restrictions.cannotUseVoiceChannels) {
-            guildMember.voice.setDeaf(true, 'User joined guild with cannotUseVoiceChannels restriction.');
-            guildMember.voice.setMute(true, 'User joined guild with cannotUseVoiceChannels restriction.');
-            if (_channelMod)
-                _channelMod.send(`:lock: The member <@!${guildMember.user.id}> had cannotUseVoiceChannels restriction. Server VC deaf/mute was re-applied. Check to make sure the member is not trying to evade this restriction.`);
-        }
-
         // See if there are any pending incidents for this member, and if so, assign permissions to that channel
         const pendIncidents = guildMember.guild.settings.pendIncidents;
         if (pendIncidents && pendIncidents.length > 0) {

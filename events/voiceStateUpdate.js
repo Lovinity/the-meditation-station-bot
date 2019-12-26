@@ -18,11 +18,9 @@ module.exports = class extends Event {
                 newState.kick(`User is muted`)
             }
 
-            // Check if the member has a restriction on voice channel use. If so, activate server deaf/mute and kick them out.
+            // Check if the member has a restriction on voice channel use. If so, kick them.
             if (newState.member.settings.restrictions.cannotUseVoiceChannels)
             {
-                newState.setDeaf(true, 'User is not allowed to use voice channels');
-                newState.setMute(true, 'User is not allowed to use voice channels');
                 newState.kick('Use is not allowed to use voice channels');
                 const generalChannel = this.client.channels.resolve(newState.guild.settings.generalChannel);
 
