@@ -13,8 +13,8 @@ module.exports = class extends Event {
         if (reaction.message.author.id !== this.client.user.id) {
             var removeRep = false;
             reaction.message.reactions
-                .each((reaction) => {
-                    if (reaction.me)
+                .each((_reaction) => {
+                    if (_reaction.me && _reaction.emoji.id === _reaction.message.guild.settings.repEmoji)
                         removeRep = true;
                 });
 

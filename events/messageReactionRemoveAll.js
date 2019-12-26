@@ -11,8 +11,8 @@ module.exports = class extends Event {
             // Remove all good rep earned from reactions, if any.
             var removeRep = false;
             message.reactions
-                .each((reaction) => {
-                    if (reaction.me)
+                .each((_reaction) => {
+                    if (_reaction.me && _reaction.emoji.id === _reaction.message.guild.settings.repEmoji)
                         removeRep = true;
                 });
 
