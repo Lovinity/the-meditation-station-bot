@@ -32,7 +32,7 @@ module.exports = class extends Event {
                                     message.reactions
                                         .map((reaction) => {
                                             console.log(`Checking ${reaction.emoji.name.codePointAt(0)}`);
-                                            if (_role.settings.self.reaction === `${reaction.emoji.name}:${reaction.emoji.id}` || _role.settings.self.reaction === reaction.emoji.name.codePointAt(0)) {
+                                            if (_role.settings.self.reaction === `${reaction.emoji.name}:${reaction.emoji.id}` || _role.settings.self.reaction == reaction.emoji.name.codePointAt(0)) {
                                                 console.log(`Removing reaction`)
                                                 reaction.users.remove(data.d.user_id);
                                             }
