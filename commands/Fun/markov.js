@@ -8,12 +8,14 @@ module.exports = class extends Command {
 
     constructor(...args) {
         super(...args, {
-            description: 'Generate a markov chain from the text chat.',
-            requiredPermissions: [ 'READ_MESSAGE_HISTORY' ]
+            description: 'Generate a markov chain from the provided text channel.',
+            requiredPermissions: [ 'READ_MESSAGE_HISTORY' ],
+            usage: '<channel:textChannel>',
+            usageDelim: ' | ',
         });
     }
 
-    async run (message) {
+    async run (message, [channel]) {
         if (message.guild.settings.botChannel && message.channel.id !== message.guild.settings.botChannel) {
             var msg = await message.send(`:x: No spammy whammy! Please use that command in the bot channel.`);
             message.delete();
@@ -24,9 +26,9 @@ module.exports = class extends Command {
         }
 
         if (await yangStore(message, 'markov', 1)) {
-            let messageBank = await message.channel.messages.fetch({ limit: 100 });
+            let messageBank = await channel.messages.fetch({ limit: 100 });
             for (let i = 1; i < messageLimitHundreds; i++) {
-                messageBank = messageBank.concat(await message.channel.messages.fetch({ limit: 100, before: messageBank.last().id }));
+                messageBank = messageBank.concat(await channel.messages.fetch({ limit: 100, before: messageBank.last().id }));
             }
 
             const quotes = new MarkovChain(messageBank.map(message => message.content).join(' '));
