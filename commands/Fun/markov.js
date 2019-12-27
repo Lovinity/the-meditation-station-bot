@@ -10,12 +10,12 @@ module.exports = class extends Command {
         super(...args, {
             description: 'Generate a markov chain from the provided text channel.',
             requiredPermissions: [ 'READ_MESSAGE_HISTORY' ],
-            usage: '<channel:textChannel>',
+            usage: '<channel:textchannel>',
             usageDelim: ' | ',
         });
     }
 
-    async run (message, [channel]) {
+    async run (message, [ channel ]) {
         if (message.guild.settings.botChannel && message.channel.id !== message.guild.settings.botChannel) {
             var msg = await message.send(`:x: No spammy whammy! Please use that command in the bot channel.`);
             message.delete();
