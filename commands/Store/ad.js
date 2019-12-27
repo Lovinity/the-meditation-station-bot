@@ -12,6 +12,7 @@ module.exports = class extends Command {
             usageDelim: '',
             runIn: [ 'text' ],
             requiredSettings: [ "botChannel", "generalChannel" ],
+            cooldown: 60
         });
     }
 
@@ -24,6 +25,9 @@ module.exports = class extends Command {
             }, 10000);
             return msg;
         }
+
+        if (message.member.settings.restrictions.cannotPurchaseAds)
+            return message.send(`:lock: Sorry, but staff forbid you from purchasing ads due to past abuse.`);
 
         var adPrice = message.guild.settings.yangStore.advertisement;
         var adPriceHere = message.guild.settings.yangStore.advertisementHere;
