@@ -131,7 +131,7 @@ module.exports = class extends Event {
                         if (modLogChannel)
                             modLogChannel.send(`:zzz: New member ${guildMember.user.tag} (${guildMember.id}) has joined over 7 days ago without sending their first message. Marked inactive until they do.`)
                         if (inactiveChannel)
-                            inactiveChannel.send(`:zzz: Hey ${guildMember.user.tag}; it looks like you joined over 7 days ago but have not yet sent your first message. Say hi in any channel so we know you are not a lurker and wish to remain in our guild.`);
+                            inactiveChannel.send(`:zzz: Hey <@${guildMember.id}>; it looks like you joined over 7 days ago but have not yet sent your first message. Say hi in any channel so we know you are not a lurker and wish to remain in our guild.`);
                     }
                 } else if (guildMember.settings.lastMessage !== null && moment().diff(moment(guildMember.settings.lastMessage), 'days') > 30) {
                     if (inactiveRole && !guildMember.roles.get(inactiveRole.id)) {
@@ -139,7 +139,7 @@ module.exports = class extends Event {
                         if (modLogChannel)
                             modLogChannel.send(`:zzz: Member ${guildMember.user.tag} (${guildMember.id}) has not sent any messages in the last 30 days. Marked inactive until they do.`)
                         if (inactiveChannel)
-                            inactiveChannel.send(`:zzz: Hey ${guildMember.user.tag}; you haven't sent any messages in over 30 days. Say hi in any channel so we know you're okay, still around, and want to remain in the guild.`);
+                            inactiveChannel.send(`:zzz: Hey <@${guildMember.id}>; you haven't sent any messages in over 30 days. Say hi in any channel so we know you're okay, still around, and want to remain in the guild.`);
                     }
                 } else if (inactiveRole && guildMember.roles.get(inactiveRole.id)) {
                     guildMember.roles.remove(inactiveRole, `Member is no longer inactive`);
