@@ -27,6 +27,10 @@ module.exports = class extends Command {
     }
 
     async run (message, [ incident ]) {
+
+        if (message.member.settings.restrictions.cannotUseSupportCommand)
+            return message.send(`:lock: Sorry, but staff forbid you from using the support command. If you need support, please DM a member who has given you consent to do so.`);
+
         var overwrites = [];
         if (!incident) {
             var ID = Date.now().toString(36) + (this.client.shard ? this.client.shard.id.toString(36) : '') + String.fromCharCode((1 % 26) + 97);
