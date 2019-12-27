@@ -12,11 +12,9 @@ module.exports = class extends Event {
             if (guild)
                 member = await guild.members.fetch(data.d.user_id);
             if (guild && member && !member.bot && data.d.channel_id === guild.settings.selfRolesChannel) {
-                console.log(`Reaction was in selfRoles channel.`)
                 var roles = await guild.roles.fetch();
                 roles.each((role) => {
                     if (role.settings.self.message === `${data.d.channel_id}/${data.d.message_id}`) {
-                        console.log(`Role ${role.id} matched reaction.`);
                         if (!member.roles.get(role.id)) {
                             member.roles.add(role, `Added self role`);
                         } else {
@@ -28,12 +26,9 @@ module.exports = class extends Event {
                             if (channel) {
                                 var message = await channel.messages.fetch(data.d.message_id);
                                 if (message) {
-                                    console.log(`Message found. Finding ${_role.settings.self.reaction}`);
                                     message.reactions
                                         .map((reaction) => {
-                                            console.log(`Checking ${reaction.emoji.name.codePointAt(0)}`);
                                             if (_role.settings.self.reaction === `${reaction.emoji.name}:${reaction.emoji.id}` || _role.settings.self.reaction == reaction.emoji.name.codePointAt(0)) {
-                                                console.log(`Removing reaction`)
                                                 reaction.users.remove(data.d.user_id);
                                             }
                                         })

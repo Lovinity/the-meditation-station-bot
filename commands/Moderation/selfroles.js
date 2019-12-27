@@ -80,6 +80,9 @@ async function generateMessages (message, selfRolesChannel) {
         }
     })
 
+    await selfRolesChannel.send(`:sun_with_face: **__SELF ROLES__** :sun_with_face: 
+Use this channel to assign or remove self roles to yourself. React to the message with the emoji of the role you want to add or remove. If you don't have it, it will be added. If you have it, it will be removed. The bot will remove your message reaction to indicate the role was successfully added or removed.` + "\n\n")
+
     for (const category in selfRoles) {
         if (Object.prototype.hasOwnProperty.call(selfRoles, category)) {
             console.log(`Checking category ${category}`)
