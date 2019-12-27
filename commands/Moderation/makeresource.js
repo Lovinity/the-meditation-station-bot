@@ -54,7 +54,7 @@ module.exports = class extends Command {
         data.map((msg, index) => {
             setTimeout(() => {
                 message.channel.send(msg.content, { files: msg.files });
-            }, index * 5000)
+            }, index * 1000)
         });
 
         return message.delete();
