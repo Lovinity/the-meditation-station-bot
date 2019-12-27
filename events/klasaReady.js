@@ -1,5 +1,6 @@
 const { Event } = require('klasa');
 const _ = require("lodash");
+const moment = require("moment");
 
 module.exports = class extends Event {
 
