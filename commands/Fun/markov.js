@@ -25,7 +25,6 @@ module.exports = class extends Command {
         }
 
         if (channel.type !== 'text') return message.send(':x: The provided channel is not a text channel.');
-        message.send(channel);
 
         if (await yangStore(message, 'markov', 1)) {
             let messageBank = await channel.messages.fetch({ limit: 100 });
