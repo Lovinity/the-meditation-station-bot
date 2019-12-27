@@ -7,8 +7,8 @@ module.exports = class extends Monitor {
         super(...args, {
             name: 'active',
             enabled: true,
-            ignoreBots: false,
-            ignoreSelf: false,
+            ignoreBots: true,
+            ignoreSelf: true,
             ignoreOthers: false,
             ignoreWebhooks: true,
             ignoreEdits: true,
