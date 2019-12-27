@@ -82,7 +82,7 @@ module.exports = class extends Command {
             msg.delete();
             wait.for.time(1);
         });
-        console.log(`Removed ${messages.length} in that batch. Next batch will start before ID ${messages.firstKey()}`);
+        console.log(`Removed ${messages.length} in that batch. Next batch will start before ID ${before}`);
         return [ messages.length, before ];
     }
 
