@@ -2,8 +2,45 @@ const { Event } = require('klasa');
 
 module.exports = class extends Event {
 
-    run (data) {
-        console.log(data);
+    async run (data) {
+        // console.log(data);
+
+        // Check for selfrole reactions (this is in the raw event because we want it to work even on uncached messages)
+        if (data.t === "MESSAGE_REACTION_ADD") {
+            var guild = this.client.guilds.resolve(data.d.guild_id);
+            var member;
+            if (guild)
+                member = await guild.members.fetch(data.d.user_id);
+            if (guild && member && data.d.channel_id === guild.settings.selfRolesChannel) {
+                console.log(`Reaction was in selfRoles channel.`)
+                var roles = await guild.roles.fetch();
+                roles.each((role) => {
+                    if (role.settings.self.message === `${data.d.channel_id}/${data.d.message_id}`) {
+                        console.log(`Role ${role.id} matched reaction.`);
+                        if (!member.roles.get(role.id)) {
+                            member.roles.add(role, `Added self role`);
+                        } else {
+                            member.roles.remove(role, `Removed self role`);
+                        }
+
+                        (async(_role) => {
+                            var channel = await guild.channels.fetch(data.d.channel_id);
+                            if (channel) {
+                                var message = await channel.messages.fetch(data.d.message_id);
+                                if (message) {
+                                    message.reactions
+                                    .filter((reaction) => _role.settings.self.reaction === `${reaction.emoji.name}:${reaction.emoji.id}` || _role.settings.self.reaction === reaction.emoji.name)
+                                    .map((reaction) => {
+                                        console.log(`Removing reaction`)
+                                        reaction.users.remove(data.d.user_id);
+                                    })
+                                }
+                            }
+                        })(role);
+                    }
+                });
+            }
+        }
     }
 
 };
