@@ -10,7 +10,7 @@ module.exports = class extends Command {
         super(...args, {
             description: 'Generate a markov chain from the provided text channel.',
             requiredPermissions: [ 'READ_MESSAGE_HISTORY' ],
-            usage: '<channel:textchannel>'
+            usage: '<channel:channel>'
         });
     }
 
@@ -24,6 +24,7 @@ module.exports = class extends Command {
             return msg;
         }
 
+        if (channel.type !== 'text') return message.send(':x: The provided channel is not a text channel.');
         message.send(channel);
 
         if (await yangStore(message, 'markov', 1)) {
