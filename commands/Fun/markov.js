@@ -10,8 +10,7 @@ module.exports = class extends Command {
         super(...args, {
             description: 'Generate a markov chain from the provided text channel.',
             requiredPermissions: [ 'READ_MESSAGE_HISTORY' ],
-            usage: '<channel:textchannel>',
-            usageDelim: ' | ',
+            usage: '<channel:textchannel>'
         });
     }
 
@@ -24,6 +23,8 @@ module.exports = class extends Command {
             }, 10000);
             return msg;
         }
+
+        message.send(channel);
 
         if (await yangStore(message, 'markov', 1)) {
             let messageBank = await channel.messages.fetch({ limit: 100 });
