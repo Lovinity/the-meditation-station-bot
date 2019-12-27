@@ -125,7 +125,7 @@ module.exports = class extends Event {
                 }
 
                 // Check if the member is inactive
-                if (!guildMember.lastMessage && moment(guildMember.joinedAt).diff(moment(), 'hours') > (24 * 7)) {
+                if (guildMember.settings.lastMessage === null && moment().diff(moment(guildMember.joinedAt), 'hours') > (24 * 7)) {
                     if (inactiveRole && !guildMember.roles.get(inactiveRole.id)) {
                         guildMember.roles.add(inactiveRole, `New member has not sent a message in the last 7 days.`);
                         if (modLogChannel)
@@ -133,7 +133,7 @@ module.exports = class extends Event {
                         if (inactiveChannel)
                             inactiveChannel.send(`:zzz: Hey ${guildMember.user.tag}; it looks like you joined over 7 days ago but have not yet sent your first message. Say hi in any channel so we know you are not a lurker and wish to remain in our guild.`);
                     }
-                } else if (guildMember.lastMessage && moment(guildMember.lastMessage.createdAt).diff(moment(), 'days') > 30) {
+                } else if (guildMember.settings.lastMessage !== null && moment().diff(moment(guildMember.settings.lastMessage), 'days') > 30) {
                     if (inactiveRole && !guildMember.roles.get(inactiveRole.id)) {
                         guildMember.roles.add(inactiveRole, `Regular member has not sent any messages in the last 30 days.`);
                         if (modLogChannel)

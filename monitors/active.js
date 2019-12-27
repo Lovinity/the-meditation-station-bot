@@ -1,4 +1,5 @@
 const {Monitor} = require('klasa');
+const moment = require("moment");
 
 module.exports = class extends Monitor {
 
@@ -24,6 +25,8 @@ module.exports = class extends Monitor {
         if (inactiveRole && message.member.roles.get(inactiveRole.id)) {
             message.member.roles.remove(inactiveRole, `Member no longer inactive`);
         }
+
+        message.member.settings.update('lastMessage', moment().toISOString(true));
     }
 
     async init() {

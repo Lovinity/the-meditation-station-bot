@@ -86,6 +86,7 @@ Client.defaultMemberSchema
     .add('HPDamage', 'integer', { default: 0, configurable: false })
     .add('goodRep', 'integer', { default: 0, configurable: false })
     .add('spamScore', 'integer', { default: 0, configurable: false })
+    .add('lastMessage', 'string', { configurable: false })
     .add('activityScore', 'float', { min: 0, default: 0, configurable: false })
     .add('profile', folder => {
         folder
@@ -101,14 +102,14 @@ Client.defaultMemberSchema
     })
     .add('restrictions', folder => {
         folder
-        .add('cannotUseVoiceChannels', 'boolean', {default: false, configurable: false})
-        .add('cannotGiveReputation', 'boolean', {default: false, configurable: false})
-        .add('cannotUseStaffCommand', 'boolean', {default: false, configurable: false})
-        .add('cannotUseReportCommand', 'boolean', {default: false, configurable: false})
-        .add('cannotUseSupportCommand', 'boolean', {default: false, configurable: false})
-        .add('cannotUseConflictCommand', 'boolean', {default: false, configurable: false})
-        .add('cannotPurchaseAds', 'boolean', {default: false, configurable: false})
-        .add('cannotEditProfile', 'boolean', {default: false, configurable: false})
+            .add('cannotUseVoiceChannels', 'boolean', { default: false, configurable: false })
+            .add('cannotGiveReputation', 'boolean', { default: false, configurable: false })
+            .add('cannotUseStaffCommand', 'boolean', { default: false, configurable: false })
+            .add('cannotUseReportCommand', 'boolean', { default: false, configurable: false })
+            .add('cannotUseSupportCommand', 'boolean', { default: false, configurable: false })
+            .add('cannotUseConflictCommand', 'boolean', { default: false, configurable: false })
+            .add('cannotPurchaseAds', 'boolean', { default: false, configurable: false })
+            .add('cannotEditProfile', 'boolean', { default: false, configurable: false })
     })
     .add('canRep', 'boolean', { default: true, configurable: false })
     .add('muted', 'boolean', { default: false, configurable: false })
