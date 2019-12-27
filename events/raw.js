@@ -23,18 +23,20 @@ module.exports = class extends Event {
                             member.roles.remove(role, `Removed self role`);
                         }
 
-                        (async(_role) => {
+                        (async (_role) => {
                             var channel = guild.channels.resolve(data.d.channel_id);
                             if (channel) {
                                 var message = await channel.messages.fetch(data.d.message_id);
                                 if (message) {
                                     console.log(`Message found. Finding ${_role.settings.self.reaction}`);
                                     message.reactions
-                                    .filter((reaction) => _role.settings.self.reaction === `${reaction.emoji.name}:${reaction.emoji.id}` || _role.settings.self.reaction === reaction.emoji.name.codePointAt(0))
-                                    .map((reaction) => {
-                                        console.log(`Removing reaction`)
-                                        reaction.users.remove(data.d.user_id);
-                                    })
+                                        .map((reaction) => {
+                                            console.log(`Checking ${reaction.emoji.name.codePointAt(0)}`);
+                                            if (_role.settings.self.reaction === `${reaction.emoji.name}:${reaction.emoji.id}` || _role.settings.self.reaction === reaction.emoji.name.codePointAt(0)) {
+                                                console.log(`Removing reaction`)
+                                                reaction.users.remove(data.d.user_id);
+                                            }
+                                        })
                                 }
                             }
                         })(role);
