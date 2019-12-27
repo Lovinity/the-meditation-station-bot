@@ -11,7 +11,7 @@ module.exports = class extends Event {
             var member;
             if (guild)
                 member = await guild.members.fetch(data.d.user_id);
-            if (guild && member && data.d.channel_id === guild.settings.selfRolesChannel) {
+            if (guild && member && !member.bot && data.d.channel_id === guild.settings.selfRolesChannel) {
                 console.log(`Reaction was in selfRoles channel.`)
                 var roles = await guild.roles.fetch();
                 roles.each((role) => {
@@ -24,7 +24,7 @@ module.exports = class extends Event {
                         }
 
                         (async(_role) => {
-                            var channel = await guild.channels.fetch(data.d.channel_id);
+                            var channel = guild.channels.resolve(data.d.channel_id);
                             if (channel) {
                                 var message = await channel.messages.fetch(data.d.message_id);
                                 if (message) {
