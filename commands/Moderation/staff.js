@@ -31,7 +31,7 @@ module.exports = class extends Command {
         var response = ``;
 
         if (message.member.settings.restrictions.cannotUseStaffCommand)
-            return msg.edit(`:lock: Sorry, but staff forbid you from using the staff command. Please DM a staff member directly if you need to speak with them or report a member.`);
+            return msg.edit(`:lock: Sorry, but staff forbid you from using the staff command due to past abuse. Please DM a staff member directly if you need to speak with them or report a member.`);
 
         // Gather necessary config
         const incidents = message.guild.settings.incidentsCategory;

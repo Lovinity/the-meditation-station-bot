@@ -13,7 +13,7 @@ module.exports = class extends Command {
             description: 'Issue this command inside a text channel when there is a conflict going on in that channel.',
             usage: '',
             usageDelim: '',
-            cooldown: 30,
+            cooldown: 180,
             runIn: [ 'text' ],
             requiredPermissions: [ "MANAGE_ROLES" ],
             requiredSettings: [ "conflictResolutionMembers", "conflictResolutionTime" ],
@@ -22,6 +22,10 @@ module.exports = class extends Command {
     }
 
     async run (message, []) {
+
+        if (message.member.settings.restrictions.cannotUseConflictCommand)
+            return message.send(`:lock: Sorry, but staff forbid you from using the conflict command due to past abuse. You can still report matters to staff with the !staff command.`);
+
         // First, get configured settings
         const conflict = message.channel.settings.conflictResolution;
         const confMembers = message.guild.settings.conflictResolutionMembers || 3;

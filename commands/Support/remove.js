@@ -38,7 +38,7 @@ module.exports = class extends Command {
                 READ_MESSAGE_HISTORY: false
             }, "Creator of support channel removed user via !remove command");
 
-            return message.send(':white_check_mark: User removed.')
+            return message.send(':white_check_mark: User removed. Please let staff know with the !staff command if that user was violating the rules.')
     }
 
     async init () {
