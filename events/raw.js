@@ -28,6 +28,7 @@ module.exports = class extends Event {
                             if (channel) {
                                 var message = await channel.messages.fetch(data.d.message_id);
                                 if (message) {
+                                    console.log(`Message found. Finding ${_role.settings.self.reaction}`);
                                     message.reactions
                                     .filter((reaction) => _role.settings.self.reaction === `${reaction.emoji.name}:${reaction.emoji.id}` || _role.settings.self.reaction === reaction.emoji.name)
                                     .map((reaction) => {
