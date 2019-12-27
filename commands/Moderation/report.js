@@ -40,8 +40,8 @@ module.exports = class extends Command {
         const incidents = message.guild.settings.incidentsCategory;
 
         // Reporter is not allowed to report.
-        if (message.member.roles.get(noSelfModRole.id))
-            return message.send(`:x: Sorry, but you are not allowed to use the report command due to past abuse. You can still post evidence of the member violating the rules in this channel for staff to investigate.`);
+        if (message.member.settings.restrictions.cannotUseReportCommand)
+            return message.send(`:lock: Sorry, but you are not allowed to use the report command due to past abuse. You can still post evidence of the member violating the rules in this channel for staff to investigate.`);
 
         if (!guildMember)
             return message.send(`:x: The member you were trying to report is no longer in the guild, so I could not acknowledge your report. However, you can still provide evidence here for staff to investigate; staff can still take action despite the member having left the guild.`);
