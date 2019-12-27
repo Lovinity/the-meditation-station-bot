@@ -150,24 +150,22 @@ module.exports = class extends Route {
                     } catch (e) {
 
                     }
-
-                    var isMuted = false;
-
                     var guildMember;
+                    isMuted;
+                    isNotAllowed;
                     try {
                         guildMember = await guild.members.fetch(user.id)
                         if (guildMember) {
-                            var muteRole = guild.roles.resolve(guild.settings.muteRole);
-
-                            if (muteRole && guildMember.roles.get(muteRole.id))
-                                isMuted = true;
+                            isMuted = guildMember.settings.muted;
+                            isNotAllowed = guildMember.settings.restrictions.cannotEditProfile;
                         }
                     } catch (e) {
 
                     }
 
                     if (isBanned) return response.end(JSON.stringify({ error: `You cannot edit your profile; you have been banned from this guild.` }));
-                    if (isMuted) return response.end(JSON.stringify({ error: `You cannot edit your profile while you are muted in the guild. Please contact a staff member for assistance.` }));
+                    if (isMuted) return response.end(JSON.stringify({ error: `You cannot edit your profile while you are muted in the guild. Please contact a staff member for assistance if you are trying to correct your profile for being in violation of the rules.` }));
+                    if (isNotAllowed) return response.end(JSON.stringify({ error: `Due to past abuse, you are not allowed to edit your profile; only staff may do so at their discretion.` }));
                 }
 
                 if (request.body.title) {
@@ -299,6 +297,12 @@ module.exports = class extends Route {
                     userSettings = user.guildSettings(guild.id);
                 }
 
+                if (guild) {
+                    const _channel = this.client.channels.resolve(guild.settings.eventLogChannel);
+                    if (_channel) {
+                        _channel.send(`:bust_in_silhouette: The profile of ${user.tag} (${user.id}) was edited by ${authUser.tag} (${authUser.id}).`)
+                    }
+                }
                 return response.end(JSON.stringify({ message: "Success" }));
                 break;
         }
