@@ -71,6 +71,7 @@ Client.defaultGuildSchema
             .add('markov', 'integer', { min: 0, default: 10 })
             .add('advertisement', 'integer', { min: 0, default: 100 })
             .add('advertisementHere', 'integer', { min: 0, default: 250 })
+            .add('wikiFact', 'integer', { min: 0, default: 10 })
     })
     .add('ads', 'any', { array: true, configurable: false })
     .add('badges', 'any', { array: true, configurable: false });

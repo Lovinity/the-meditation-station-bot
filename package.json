@@ -33,6 +33,7 @@
     "moment-duration-format": "^2.3.2",
     "mysql2": "^2.0.2",
     "needle": "^2.4.0",
+    "node-superfetch": "^0.1.9",
     "perspective-api-client": "^3.1.0",
     "rethinkdb-ts": "^2.4.0-rc.16",
     "sanitize-html": "^1.20.1",
