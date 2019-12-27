@@ -16,9 +16,9 @@ module.exports = class extends Command {
     }
 
     async run (message, [ limit = 50, filter = null ]) {
-        var message = await message.send(`:hourglass_flowing_sand: Pruning messages (This might take several minutes)...`);
+        var message = await message.send(`:hourglass_flowing_sand: Initializing prune...`);
         await this.process(message, limit, filter);
-        return message.send(`:white_check_mark: I'm done pruning! All clean!`);
+        return message.send(`:white_check_mark: Prune operation executed. It could take a moment to finish.`);
     }
 
     getFilter (message, filter, user) {
@@ -46,28 +46,22 @@ module.exports = class extends Command {
     }
 
     async process (message, limit, filter) {
-        wait.for.time(3);
-        console.log(`Processing`);
         var iteration = 0;
         var before = message.id;
         while (limit > 0 && iteration < 10) {
-            console.log(`Doing next batch`);
             var filtered = await this._process(message, limit, filter, before);
             if (filtered[ 0 ] <= 0)
                 limit = -1;
             before = filtered[ 1 ];
             limit -= filtered[ 0 ];
-            console.log(`Waiting 5 seconds`);
-            wait.for.time(5);
+            wait.for.time(1);
             iteration++;
         }
-        console.log(`DONE`);
         return true;
     }
 
     async _process (message, amount, filter, before) {
         let messages = await message.channel.messages.fetch({ limit: 100, before: before });
-        console.log(`Received batch.`);
         if (messages.array().length <= 0)
             return [ -1 ];
         before = messages.lastKey();
@@ -78,11 +72,8 @@ module.exports = class extends Command {
         }
         messages = messages.array().slice(0, amount);
         messages.map((msg) => {
-            console.log(`Deleting ${msg.id}`);
             msg.delete();
-            wait.for.time(1);
         });
-        console.log(`Removed ${messages.length} in that batch. Next batch will start before ID ${before}`);
         return [ messages.length, before ];
     }
 
