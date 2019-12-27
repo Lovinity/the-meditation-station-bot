@@ -9,12 +9,20 @@ module.exports = class extends Task {
         const _guild = this.client.guilds.resolve(guild);
         if (_guild) {
             var cooldown = _guild.settings.antispamCooldown;
+            var generalChannel = _guild.channels.resolve(_guild.settings.generalChannel);
+            var inactiveChannel = _guild.channels.resolve(_guild.settings.inactiveChannel);
+            var modLogChannel = _guild.channels.resolve(_guild.settings.modLogChannel);
+            var inactiveRole = _guild.roles.resolve(_guild.settings.inactiveRole);
             var mostActiveUsers = [];
             var mostActiveStaff;
             var highestActivityScore;
             var activityLevel = 0;
             var compare = (a, b) => {
-                return b.settings.activityScore - a.settings.activityScore;
+                var sorter = b.settings.activityScore - a.settings.activityScore;
+                // Randomize inactive members
+                if (b.settings.activityScore < 0.01 && a.settings.activityScore < 0.01)
+                    sorter = Math.random() - 0.5;
+                return sorter;
             };
             _guild.members.sort(compare).each((guildMember) => {
                 // Antispam cooldown
@@ -26,6 +34,7 @@ module.exports = class extends Task {
                 // Activity score cooldown
                 var activityScore = guildMember.settings.activityScore;
                 var newScore = 0;
+
                 if (activityScore > 0) {
                     newScore = activityScore * 0.999;
                     guildMember.settings.update('activityScore', newScore);
@@ -34,7 +43,7 @@ module.exports = class extends Task {
                 if (!highestActivityScore)
                     highestActivityScore = newScore;
 
-                    activityLevel += newScore;
+                activityLevel += newScore;
 
                 // Calculate most active members
                 if (!_guild.settings.staffRole || !guildMember.roles.get(_guild.settings.staffRole)) {
@@ -42,6 +51,30 @@ module.exports = class extends Task {
                         mostActiveUsers.push(guildMember.user.tag);
                 } else if (_guild.settings.staffRole && guildMember.roles.get(_guild.settings.staffRole) && !mostActiveStaff && newScore >= 1) {
                     mostActiveStaff = guildMember.user.tag;
+                }
+
+                // Determine inactive users
+                if (!guildMember.lastMessage && moment().diff(moment(guildMember.joinedAt), 'hours') > (24 * 7)) {
+                    if (inactiveRole && !guildMember.roles.get(inactiveRole.id)) {
+                        guildMember.roles.add(inactiveRole, `New member has not sent a message in the last 7 days.`);
+                        if (modLogChannel)
+                            modLogChannel.send(`:zzz: New member ${guildMember.user.tag} (${guildMember.id}) has joined over 7 days ago without sending their first message. Marked inactive until they do.`)
+                        if (inactiveChannel)
+                            inactiveChannel.send(`:zzz: Hey ${guildMember.user.tag}; it looks like you joined over 7 days ago but have not yet sent your first message. Say hi in any channel so we know you are not a lurker and wish to remain in our guild.`);
+                    } else if (inactiveChannel && (Math.random() * 2880) > 2879) {
+                        inactiveChannel.send(`:zzz: Hey ${guildMember.user.tag}; we still haven't heard from you. Say hi in any channel so we know you're not a lurker and wish to remain in the guild.`)
+                    }
+                }
+                if (guildMember.lastMessage && moment().diff(moment(guildMember.lastMessage.createdAt), 'days') > 30) {
+                    if (inactiveRole && !guildMember.roles.get(inactiveRole.id)) {
+                        guildMember.roles.add(inactiveRole, `Regular member has not sent any messages in the last 30 days.`);
+                        if (modLogChannel)
+                            modLogChannel.send(`:zzz: Member ${guildMember.user.tag} (${guildMember.id}) has not sent any messages in the last 30 days. Marked inactive until they do.`)
+                        if (inactiveChannel)
+                            inactiveChannel.send(`:zzz: Hey ${guildMember.user.tag}; you haven't sent any messages in over 30 days. Say hi in any channel so we know you're okay, still around, and want to remain in the guild.`);
+                    } else if (inactiveChannel && (Math.random() * 2880) > 2879) {
+                        inactiveChannel.send(`:zzz: Hey ${guildMember.user.tag}; we still haven't heard from you. Say hi in any channel so we know you're still around and wish to remain in the guild.`)
+                    }
                 }
             });
 
@@ -171,7 +204,6 @@ ${iceBreakers[ Math.floor(Math.random() * iceBreakers.length) ]}
                 var verifiedRole = _guild.roles.resolve(_guild.settings.verifiedRole);
                 if (verifiedRole) {
                     var guildMembers = [];
-                    var generalChannel
                     _guild.members.each((guildMember) => {
                         if (!guildMember.roles.get(verifiedRole.id)) {
                             guildMembers.push(guildMember.id);
