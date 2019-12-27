@@ -30,7 +30,7 @@ module.exports = class extends Event {
                                 if (message) {
                                     console.log(`Message found. Finding ${_role.settings.self.reaction}`);
                                     message.reactions
-                                    .filter((reaction) => _role.settings.self.reaction === `${reaction.emoji.name}:${reaction.emoji.id}` || _role.settings.self.reaction === reaction.emoji.name)
+                                    .filter((reaction) => _role.settings.self.reaction === `${reaction.emoji.name}:${reaction.emoji.id}` || _role.settings.self.reaction === reaction.emoji.name.codePointAt(0))
                                     .map((reaction) => {
                                         console.log(`Removing reaction`)
                                         reaction.users.remove(data.d.user_id);
