@@ -151,8 +151,8 @@ module.exports = class extends Route {
 
                     }
                     var guildMember;
-                    isMuted;
-                    isNotAllowed;
+                    var isMuted;
+                    var isNotAllowed;
                     try {
                         guildMember = await guild.members.fetch(user.id)
                         if (guildMember) {
