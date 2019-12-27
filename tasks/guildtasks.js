@@ -51,7 +51,7 @@ module.exports = class extends Task {
                 }
 
                 // Determine inactive users
-                if (!guildMember.bot) {
+                if (!guildMember.user.bot) {
                     if (guildMember.settings.lastMessage === null && moment().diff(moment(guildMember.joinedAt), 'hours') > (24 * 7)) {
                         if (inactiveRole && !guildMember.roles.get(inactiveRole.id)) {
                             guildMember.roles.add(inactiveRole, `New member has not sent a message in the last 7 days.`);
