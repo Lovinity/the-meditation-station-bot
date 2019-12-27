@@ -67,13 +67,11 @@ module.exports = class extends Command {
 
 
 async function generateMessages (message, selfRolesChannel) {
-    await pruneMessageChannel(selfRolesChannel);
+    await pruneMessageChannel(message, selfRolesChannel);
     var selfRoles = {}
     message.guild.roles.each((role) => {
-        console.log(`Checking role ${role.id}`)
         var settings = role.settings;
         if (settings && settings.self && settings.self.category !== null && settings.self.reaction !== null) {
-            console.log(`Has settings!`)
             if (typeof selfRoles[ settings.self.category ] === 'undefined')
                 selfRoles[ settings.self.category ] = []
             selfRoles[ settings.self.category ].push({ settings, role })
@@ -85,9 +83,7 @@ Use this channel to assign or remove self roles to yourself. React to the messag
 
     for (const category in selfRoles) {
         if (Object.prototype.hasOwnProperty.call(selfRoles, category)) {
-            console.log(`Checking category ${category}`)
             wait.for.time(1);
-            console.log(`Executing category ${category}`)
             var response = `**__${category} self roles__**` + "\n"
             selfRoles[ category ].map((setting) => {
                 var emoji = parseEmoji(setting.settings.self.reaction)
@@ -105,40 +101,39 @@ Use this channel to assign or remove self roles to yourself. React to the messag
 
 }
 
-async function pruneMessageChannel (channel, limit = 1000) {
-    wait.for.time(3);
+async function pruneMessageChannel (message, channel, limit = 100) {
     var iteration = 0;
+    var before = message.id;
     while (limit > 0 && iteration < 10) {
-        var filtered = await _pruneMessageChannel(channel, limit);
-        if (filtered <= 0)
+        var filtered = await _pruneMessageChannel(channel, limit, before);
+        if (filtered[0] <= 0)
             limit = -1;
-        limit -= filtered;
-        wait.for.time(10);
+        limit -= filtered[0];
+        before = filtered[1];
+        wait.for.time(1);
         iteration++;
     }
     return true;
 }
 
-async function _pruneMessageChannel (channel, amount) {
-    let messages = await channel.messages.fetch({ limit: 100 });
+async function _pruneMessageChannel (channel, amount, before) {
+    let messages = await channel.messages.fetch({ limit: 100, before: before });
     if (messages.array().length <= 0)
-        return -1;
+        return [-1];
+    before = messages.lastKey();
     messages = messages.array().slice(0, amount);
-    await channel.bulkDelete(messages);
-    return messages.length;
+    messages.map((msg) => {
+        msg.delete();
+    });
+    return [ messages.length, before ];
 }
 
 function parseEmoji (data) {
     var data = `${data}`.split(':');
-
     if (data.length > 1) {
-        console.log(`length > 1`)
         data = { name: data[ 0 ], id: data[ 1 ] }
-        console.dir(data)
     } else {
-        console.log(`length 1`)
         data = { name: String.fromCodePoint(parseInt(data[ 0 ])) }
-        console.dir(data)
     }
 
     return data;
