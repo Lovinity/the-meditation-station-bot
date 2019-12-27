@@ -87,7 +87,6 @@ async function generateMessages (message, selfRolesChannel) {
             console.log(`Executing category ${category}`)
             var response = `**__${category} self roles__**` + "\n"
             selfRoles[ category ].map((setting) => {
-                wait.for.time(1);
                 var emoji = parseEmoji(setting.settings.self.reaction)
                 response += "\n" + `${emoji.name} | ${setting.role.name}`
             })
