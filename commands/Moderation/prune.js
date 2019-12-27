@@ -1,4 +1,4 @@
-const {Command} = require('klasa');
+const { Command } = require('klasa');
 var wait = require('wait-for-stuff');
 
 module.exports = class extends Command {
@@ -7,21 +7,21 @@ module.exports = class extends Command {
         super(...args, {
             name: 'prune',
             permissionLevel: 5,
-            botPerms: ['MANAGE_MESSAGES'],
-            runIn: ['text'],
+            botPerms: [ 'MANAGE_MESSAGES' ],
+            runIn: [ 'text' ],
             description: 'Prune messages',
             usage: '[limit:integer{1,300}] [link|invite|bots|you|me|upload|noupload|user:username]',
             usageDelim: ' | '
         });
     }
 
-    async run(message, [limit = 50, filter = null]) {
+    async run (message, [ limit = 50, filter = null ]) {
         var message = await message.send(`:hourglass_flowing_sand: Pruning messages (This might take several minutes)...`);
         await this.process(message, limit, filter);
         return message.send(`:white_check_mark: I'm done pruning! All clean!`);
     }
 
-    getFilter(message, filter, user) {
+    getFilter (message, filter, user) {
         switch (filter) {
             // Here we use Regex to check for the diffrent types of prune options
             case 'link':
@@ -45,27 +45,31 @@ module.exports = class extends Command {
         }
     }
 
-    async process(message, limit, filter) {
+    async process (message, limit, filter) {
         wait.for.time(3);
+        console.log(`Processing`);
         var iteration = 0;
         var before = message.id;
-        while (limit > 0 && iteration < 10)
-        {
+        while (limit > 0 && iteration < 10) {
+            console.log(`Doing next batch`);
             var filtered = await this._process(message, limit, filter, before);
-            if (filtered[0] <= 0)
+            if (filtered[ 0 ] <= 0)
                 limit = -1;
-            before = filtered[1];
+            before = filtered[ 1 ];
             limit -= filtered;
+            console.log(`Waiting 5 seconds`);
             wait.for.time(5);
             iteration++;
         }
+        console.log(`DONE`);
         return true;
     }
 
-    async _process(message, amount, filter, before) {
-        let messages = await message.channel.messages.fetch({limit: 100, before: before});
+    async _process (message, amount, filter, before) {
+        let messages = await message.channel.messages.fetch({ limit: 100, before: before });
+        console.log(`Received batch.`);
         if (messages.array().length <= 0)
-            return [-1];
+            return [ -1 ];
         before = messages.firstKey();
         if (filter) {
             const user = typeof filter !== 'string' ? filter : null;
@@ -74,10 +78,12 @@ module.exports = class extends Command {
         }
         messages = messages.array().slice(0, amount);
         messages.map((msg) => {
+            console.log(`Deleting ${msg.id}`);
             msg.delete();
             wait.for.time(1);
         });
-        return [messages.length, before];
+        console.log(`Removed ${messages.length} in that batch. Next batch will start before ID ${messages.firstKey()}`);
+        return [ messages.length, before ];
     }
 
 };
