@@ -56,7 +56,7 @@ module.exports = class extends Command {
             if (filtered[ 0 ] <= 0)
                 limit = -1;
             before = filtered[ 1 ];
-            limit -= filtered;
+            limit -= filtered[ 0 ];
             console.log(`Waiting 5 seconds`);
             wait.for.time(5);
             iteration++;
@@ -70,7 +70,7 @@ module.exports = class extends Command {
         console.log(`Received batch.`);
         if (messages.array().length <= 0)
             return [ -1 ];
-        before = messages.firstKey();
+        before = messages.lastKey();
         if (filter) {
             const user = typeof filter !== 'string' ? filter : null;
             const type = typeof filter === 'string' ? filter : 'user';
