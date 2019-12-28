@@ -89,7 +89,13 @@ module.exports = class extends Command {
 
         if (!sBadge) return message.send(`:x: I could not find an active badge with the provided ID.`);
 
+        const eventLogChannel = message.guild.channels.resolve(message.guild.settings.eventLogChannel);
+
         await user.guildSettings(message.guild.id).update('profile.badges', {ID: sBadge.ID, earnedOn: moment().format("LLL")}, { action: 'add' });
+
+        if (eventLogChannel) {
+            eventLogChannel.send(`:medal: The ${sBadge.name} badge (${sBadge.ID}) was awarded to ${user.tag} (${user.id}) by ${message.author.tag} (${message.author.id}).`)
+        }
 
         return message.send(`:white_check_mark: Badge has been awarded!`);
     }
