@@ -1,5 +1,8 @@
 const { Command } = require('klasa');
 const moment = require("moment");
+var fs = require('fs');
+const download = require('image-downloader');
+var path = require('path')
 
 module.exports = class extends Command {
 
@@ -17,6 +20,8 @@ module.exports = class extends Command {
     }
 
     async add (message, []) {
+        var badgeID = Date.now().toString(36) + (this.client.shard ? this.client.shard.id.toString(36) : '') + String.fromCharCode((1 % 26) + 97);
+
         var yangPrice = 0;
 
         var title = await message.awaitReply(`:question: Please name this badge.
@@ -45,7 +50,16 @@ module.exports = class extends Command {
             var url = themessage.cleanContent;
         }
 
-        var badgeID = Date.now().toString(36) + (this.client.shard ? this.client.shard.id.toString(36) : '') + String.fromCharCode((1 % 26) + 97);
+        // Download the image locally
+        try {
+            await download.image({
+                url: url,
+                dest: appRoot + `/assets/images/badges/${badgeID}${path.extname(url)}`
+            });
+        } catch (e) {
+            this.client.emit('error', e);
+            return message.send(`:x: There was an error downloading the image.`);
+        }
 
         if (message.guild.settings.badges && message.guild.settings.badges.length > 0) {
             var maps = message.guild.settings.badges
@@ -62,7 +76,7 @@ module.exports = class extends Command {
             name: title,
             howToGet: howToGet,
             yangPrice: yangPrice,
-            image: url,
+            filename: `${badgeID}${path.extname(url)}`,
             active: true
         }, { action: 'add' });
 
@@ -91,7 +105,7 @@ module.exports = class extends Command {
 
         const eventLogChannel = message.guild.channels.resolve(message.guild.settings.eventLogChannel);
 
-        await user.guildSettings(message.guild.id).update('profile.badges', {ID: sBadge.ID, earnedOn: moment().format("LLL")}, { action: 'add' });
+        await user.guildSettings(message.guild.id).update('profile.badges', { ID: sBadge.ID, earnedOn: moment().format("LLL") }, { action: 'add' });
 
         if (eventLogChannel) {
             eventLogChannel.send(`:medal: The ${sBadge.name} badge (${sBadge.ID}) was awarded to ${user.tag} (${user.id}) by ${message.author.tag} (${message.author.id}).`)

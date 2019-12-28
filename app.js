@@ -5,6 +5,10 @@ require('./util/extendUser');
 require('./util/extendGuildMember');
 require('./util/extendGuild');
 
+// Set global path
+var path = require('path');
+global.appRoot = path.resolve(__dirname);
+
 // Guild schema
 Client.defaultGuildSchema
     .add('botChannel', 'textchannel')
