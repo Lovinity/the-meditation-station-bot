@@ -50,6 +50,16 @@ module.exports = class extends Command {
             var url = themessage.cleanContent;
         }
 
+        if (message.guild.settings.badges && message.guild.settings.badges.length > 0) {
+            var maps = message.guild.settings.badges
+                .filter((badge) => badge.name === title)
+                .map(async (badge) => {
+                    badgeID = badge.ID;
+                    await message.guild.settings.update('badges', badge, { action: 'remove' });
+                })
+            await Promise.all(maps);
+        }
+
         // Download the image locally
         try {
             await download.image({
@@ -60,16 +70,6 @@ module.exports = class extends Command {
         } catch (e) {
             this.client.emit('error', e);
             return message.send(`:x: There was an error downloading the image.`);
-        }
-
-        if (message.guild.settings.badges && message.guild.settings.badges.length > 0) {
-            var maps = message.guild.settings.badges
-                .filter((badge) => badge.name === title)
-                .map(async (badge) => {
-                    badgeID = badge.ID;
-                    await message.guild.settings.update('badges', badge, { action: 'remove' });
-                })
-            await Promise.all(maps);
         }
 
         await message.guild.settings.update('badges', {
