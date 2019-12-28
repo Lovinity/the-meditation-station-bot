@@ -20,7 +20,7 @@ module.exports = class extends Route {
                 return response.end("No such image");    
             } else {
                 //specify the content type in the response will be an image
-                response.writeHead({'Content-type':`image/${path.extname(request.query.id).replace('.', '')}`})
+                response.writeHead(200, {'Content-type':`image/${path.extname(request.query.id).replace('.', '')}`})
                 return response.end(content);
             }
         });
