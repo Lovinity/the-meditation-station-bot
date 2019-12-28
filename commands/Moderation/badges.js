@@ -54,7 +54,8 @@ module.exports = class extends Command {
         try {
             await download.image({
                 url: url,
-                dest: appRoot + `/assets/images/badges/${badgeID}${path.extname(url)}`
+                dest: appRoot + `/assets/images/badges/${badgeID}${path.extname(url)}`,
+                extractFilename: false
             });
         } catch (e) {
             this.client.emit('error', e);
