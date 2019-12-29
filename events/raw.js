@@ -9,16 +9,35 @@ module.exports = class extends Event {
         if (data.t === "MESSAGE_REACTION_ADD") {
             var guild = this.client.guilds.resolve(data.d.guild_id);
             var member;
-            if (guild)
+            var channel;
+            if (guild) {
                 member = await guild.members.fetch(data.d.user_id);
+                channel = guild.channels.resolve(guild.settings.selfRolesChannel);
+            }
             if (guild && member && data.d.user_id !== this.client.user.id && data.d.channel_id === guild.settings.selfRolesChannel) {
                 var roles = await guild.roles.fetch();
                 roles.each((role) => {
                     if (role.settings.self.message === `${data.d.channel_id}/${data.d.message_id}` && (role.settings.self.reaction === `${data.d.emoji.name}:${data.d.emoji.id}` || role.settings.self.reaction == data.d.emoji.name.codePointAt(0))) {
                         if (!member.roles.get(role.id)) {
                             member.roles.add(role, `Added self role`);
+                            if (channel && member) {
+                                channel.send(`:white_check_mark: <@${member.id}>, the ${role.name} role was **added** to you.`)
+                                .then((msg) => {
+                                    setTimeout(() => {
+                                        msg.delete();
+                                    }, 5000);
+                                });
+                            }
                         } else {
                             member.roles.remove(role, `Removed self role`);
+                            if (channel && member) {
+                                channel.send(`:white_check_mark: <@${member.id}>, the ${role.name} role was **removed** from you.`)
+                                .then((msg) => {
+                                    setTimeout(() => {
+                                        msg.delete();
+                                    }, 5000);
+                                });
+                            }
                         }
 
                         (async (_role) => {
