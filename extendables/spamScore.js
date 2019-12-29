@@ -2,10 +2,7 @@ const { Extendable } = require('klasa');
 const config = require("../config");
 const moment = require("moment");
 const stringSimilarity = require("string-similarity");
-const { Message } = require('discord.js');
-const Perspective = require('perspective-api-client');
-const perspective = new Perspective({ apiKey: config.perspectiveKey });
-const { MessageEmbed } = require('discord.js');
+const { Message, MessageEmbed } = require('discord.js');
 
 module.exports = class extends Extendable {
 
