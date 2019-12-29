@@ -21,6 +21,7 @@ module.exports = class extends Event {
                         if (!member.roles.get(role.id)) {
                             member.roles.add(role, `Added self role`);
                             if (channel && member) {
+                                member.spamScore(5);
                                 channel.send(`:white_check_mark: <@${member.id}>, the ${role.name} role was **added** to you.`)
                                 .then((msg) => {
                                     setTimeout(() => {
@@ -31,6 +32,7 @@ module.exports = class extends Event {
                         } else {
                             member.roles.remove(role, `Removed self role`);
                             if (channel && member) {
+                                member.spamScore(5);
                                 channel.send(`:white_check_mark: <@${member.id}>, the ${role.name} role was **removed** from you.`)
                                 .then((msg) => {
                                     setTimeout(() => {
