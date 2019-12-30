@@ -26,7 +26,7 @@ module.exports = class extends Event {
                                 .then((msg) => {
                                     setTimeout(() => {
                                         msg.delete();
-                                    }, 5000);
+                                    }, 10000);
                                 });
                             }
                         } else {
@@ -37,7 +37,7 @@ module.exports = class extends Event {
                                 .then((msg) => {
                                     setTimeout(() => {
                                         msg.delete();
-                                    }, 5000);
+                                    }, 10000);
                                 });
                             }
                         }

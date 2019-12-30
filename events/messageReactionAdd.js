@@ -10,23 +10,36 @@ module.exports = class extends Event {
         var reactionMember = reaction.message.guild.members.resolve(user);
 
         // Add rep if this is a rep earning message
-        if (user.id !== this.client.user.id && reaction.message.author.id !== user.id && reaction.emoji.id === reaction.message.guild.settings.repEmoji) {
+        if (user.id !== this.client.user.id && reaction.emoji.id === reaction.message.guild.settings.repEmoji) {
             var addRep = reaction.me;
 
             // Make sure this user can actually give reputation
-            if (reactionMember && addRep) {
+            if (reactionMember && addRep && reaction.message.author.id !== user.id) {
                 if (!reactionMember.settings.restrictions.cannotGiveReputation && !user.bot) {
                     reaction.message.member.settings.update(`goodRep`, reaction.message.member.settings.goodRep + 1);
                 } else {
                     reactionMember.spamScore(25);
-                    var _msg = await reaction.message.send(`:lock: Sorry <@${user.id}>, but staff have forbidden you from being able to give good reputation to other members. Note: Repeatedly trying will trigger antispam.`);
+                    var _msg = await reaction.message.send(`:lock: Sorry <@${user.id}>, but staff have forbidden you from being able to give good reputation to other members.`);
                     setTimeout(() => {
                         _msg.delete();
-                    }, 15000);
+                    }, 10000);
                     reaction.users.remove(user);
                 }
             } else {
                 reaction.users.remove(user);
+                if (reaction.message.author.id === user.id) {
+                    var _msg = await reaction.message.send(`:lock: Sorry <@${user.id}>, but you can't give good reputation to yourself.`);
+                    setTimeout(() => {
+                        _msg.delete();
+                    }, 10000);
+                    reaction.message.member.spamScore(10);
+                } else if (!addRep) {
+                    var _msg = await reaction.message.send(`:lock: Sorry <@${user.id}>, but that message does not qualify for good reputation..`);
+                    setTimeout(() => {
+                        _msg.delete();
+                    }, 10000);
+                    reaction.message.member.spamScore(10);
+                }
             }
         }
 
