@@ -99,12 +99,12 @@ module.exports = class extends Extendable {
             score += (5 * nummentions);
             if (nummentions > 0) { scoreReasons[ "Mentions" ] = (nummentions * 5) }
 
-            // Add 5 score for each embed; link/embed spam
+            // Add 10 score for each embed; link/embed spam
             var numembeds = this.embeds.length;
             score += (10 * numembeds);
             if (numembeds > 0) { scoreReasons[ "Embeds" ] = (numembeds * 10) }
 
-            // Add 5 score for each attachment; attachment spam
+            // Add 10 score for each attachment; attachment spam
             var numattachments = this.attachments.size;
             score += (10 * numattachments);
             if (numattachments > 0) { scoreReasons[ "Attachments" ] = (numattachments * 10) }
@@ -184,7 +184,7 @@ module.exports = class extends Extendable {
                 // Add spam score for every new line; but the more content : new lines, the less spam score is added.
                 // New lines when content length is 128 characters or less are considered very spammy.
                 var newlines = this.cleanContent.split(/\r\n|\r|\n/).length - 1;
-                var ratio = newlines / (this.cleanContent.length > 128 ? Math.ceil(this.cleanContent / 128) : 0.25);
+                var ratio = newlines / (this.cleanContent.length > 128 ? Math.ceil(this.cleanContent.length / 128) : 0.25);
                 score += Math.round(newlines * ratio);
                 if (newlines > 0 && ratio > 0) { scoreReasons[ "New Lines / Scrolling" ] = Math.round(newlines * ratio) }
 
