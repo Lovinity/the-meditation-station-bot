@@ -128,7 +128,7 @@ module.exports = class extends Task {
                 if (_guild.settings.raidMitigation === 3)
                     raidMitigation2 = `**Level 3**` + "\n" + `:heart: New Member Verification: Required Verified Phone Number` + "\n" + `:heart: New Member Participation: Isolated until Mitigation Ends` + "\n" + `:heart: Invite Links: Deleted / Not Allowed` + "\n" + `:heart: Antispam Discipline: permanent ban`
                 embed.addField(`Raid Mitigation Status`, raidMitigation + "\n" + raidMitigation2);
-                embed.addField(`Guild Members`, _guild.members.size);
+                embed.addField(`Guild Members`, _guild.members.filter((member) => !member.user.bot).size);
                 if (mostActiveUsers.length > 0) {
                     var mostActiveUsersText = ``;
                     mostActiveUsers.map((maUser, index) => {
@@ -138,7 +138,7 @@ module.exports = class extends Task {
                 }
                 if (mostActiveStaff)
                     embed.addField(`Most Active Staff Member Recently`, mostActiveStaff);
-                embed.addField(`Guild Activity Index`, parseInt(activityLevel / _guild.members.size));
+                embed.addField(`Guild Activity Index`, parseInt(activityLevel / _guild.members.filter((member) => !member.user.bot).size));
 
 
                 _guild.channels.resolve(statsMessageChannel).messages.fetch(statsMessage)

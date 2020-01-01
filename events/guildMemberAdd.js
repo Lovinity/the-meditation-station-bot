@@ -75,7 +75,7 @@ module.exports = class extends Event {
                             _channel2.send(`**Welcome back** <@${guildMember.id}>! I see you have been here before. I remembered your profile, XP, Yang, HP, badges, profile info, roles, etc. Be sure to check out the welcome channel; the rules may have changed since you were last with us.`)
                         updateLevels(guildMember);
                     })
-            } else {
+            } else if (guildMember.settings.verified) {
                 // Verify the member if we are not in raid mitigation level 2+
                 if (guildMember.guild.settings.raidMitigation < 2 && verifiedRole) {
                     if (_channel2)
@@ -84,11 +84,15 @@ module.exports = class extends Event {
 :small_orange_diamond: Use the \`!staff\` bot command at any time if you need to talk privately with staff, such as to report another member
 :small_orange_diamond: Use the \`!profile\` bot command to get a link to view and edit your profile! Everyone in the guild gets a bot profile.`);
                     guildMember.roles.add(verifiedRole, `User is verified`);
-                } else {
+                } else if (verifiedRole) {
                     const _channel3 = this.client.channels.resolve(guildMember.guild.settings.unverifiedChannel);
                     if (_channel3)
-                        _channel3.send(`**Welcome new member** <@${guildMember.id}>! Please stand by; the guild is experiencing a raid and therefore you do not have full guild access yet. You may talk with staff and other new members here. Once the raid ends (hopefully within an hour or two), all new members will get full guild access.`)
+                        _channel3.send(`**Welcome** <@${guildMember.id}>! Please stand by for a short while; you had already previously passed verification, but due to an ongoing raid, I cannot let you have full guild access until the raid ends.`)
                 }
+            } else {
+                const _channel3 = this.client.channels.resolve(guildMember.guild.settings.unverifiedChannel);
+                if (_channel3)
+                    _channel3.send(`**Welcome new member** <@${guildMember.id}>! As a troll prevention, please check the welcome-unverified channel for instructions on how to get full access to this guild!`)
             }
         }
 

@@ -79,7 +79,7 @@ module.exports = class extends Event {
                     channel.messages.fetch();
             });
 
-            // Cycle through all the members without the verified role and assign them the stored roles, providing we are not in raid mitigation.
+            // Cycle through all the members without the verified role and assign them the stored roles if applicable.
             const verifiedRole = guild.roles.resolve(guild.settings.verifiedRole);
             const muteRole = guild.roles.resolve(guild.settings.muteRole);
             var verified = [];
@@ -99,14 +99,15 @@ module.exports = class extends Event {
                 } else {
                     // Member has the verified role. Update database with the current roles set in case anything changed since bot was down.
                     if (verifiedRole && guildMember.roles.get(verifiedRole.id)) {
+                        guildMember.settings.update('verified', true);
                         guildMember.settings.reset(`roles`);
                         guildMember.roles.each((role) => {
                             if (role.id !== guild.roles.everyone.id && role.id !== guild.settings.muteRole)
                                 guildMember.settings.update(`roles`, role, guild, { action: 'add' });
                         });
                         updateLevels(guildMember);
-                        // Member does not have verified role, so add all roles from the database
-                    } else {
+                        // Member does not have verified role but has passed the verification stage, so add all roles from the database
+                    } else if (guildMember.settings.verified) {
                         // We have to lodash clone the roles before we start adding them, otherwise guildMemberUpdate will interfere with this process
                         guildMember.roles.set(guildMember.settings.roles, `Re-assigning roles`)
                             .then(() => {
