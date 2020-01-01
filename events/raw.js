@@ -6,7 +6,7 @@ const moment = require('moment');
 module.exports = class extends Event {
 
     async run (data) {
-        console.log(data);
+        // console.log(data);
 
         // Check for selfrole reactions (this is in the raw event because we want it to work even on uncached messages)
         if (data.t === "MESSAGE_REACTION_ADD") {
@@ -16,7 +16,7 @@ module.exports = class extends Event {
             var message;
             if (guild) {
                 member = await guild.members.fetch(data.d.user_id);
-                channel = guild.channels.resolve(guild.settings.selfRolesChannel);
+                channel = guild.channels.resolve(data.d.channel_id);
                 if (channel)
                     message = await channel.messages.fetch(data.d.message_id);
             }
@@ -69,9 +69,6 @@ module.exports = class extends Event {
             }
 
             // Verification question for a specific guild, must be manually configured
-            channel = guild.channels.resolve(data.d.channel_id);
-            if (channel)
-                message = await channel.messages.fetch(data.d.message_id);
 
             if (config.verification.message === `${data.d.channel_id}/${data.d.message_id}` && guild && member && message) {
                 message.reactions
