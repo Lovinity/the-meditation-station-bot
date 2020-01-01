@@ -6,7 +6,7 @@ const moment = require('moment');
 module.exports = class extends Event {
 
     async run (data) {
-        // console.log(data);
+        console.log(data);
 
         // Check for selfrole reactions (this is in the raw event because we want it to work even on uncached messages)
         if (data.t === "MESSAGE_REACTION_ADD") {
