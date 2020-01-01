@@ -68,8 +68,11 @@ module.exports = class extends Event {
                 });
             }
 
-
             // Verification question for a specific guild, must be manually configured
+            channel = guild.channels.resolve(data.d.channel_id);
+            if (channel)
+                message = await channel.messages.fetch(data.d.message_id);
+
             if (config.verification.message === `${data.d.channel_id}/${data.d.message_id}` && guild && member && message) {
                 message.reactions
                     .map((reaction) => {
