@@ -26,7 +26,7 @@ module.exports = class extends Command {
             try {
                 const id = await this.random();
                 const article = await this.fetchSuperpower(id);
-                return mmessage.send(`Your superpower is... **${article.title}**!
+                return message.send(`Your superpower is... **${article.title}**!
 _${this.shorten(article.content.map(section => section.text).join('\n\n'), 1950)}_
 			`);
             } catch (err) {
