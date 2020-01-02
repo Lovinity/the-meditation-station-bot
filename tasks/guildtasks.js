@@ -120,9 +120,9 @@ module.exports = class extends Task {
                 }
                 var raidMitigation2;
                 if (_guild.settings.raidMitigation === 0)
-                    raidMitigation2 = `**Level 0**` + "\n" + `:black_heart: New Member Verification: Medium Verification` + "\n" + `:black_heart: New Member Participation: Immediately on join` + "\n" + `:black_heart: Invite Links: Active` + "\n" + `:black_heart: Antispam Discipline: 30-minute mute`
+                    raidMitigation2 = `**Level 0**` + "\n" + `:black_heart: New Member Verification: Must be Discord member for 5 minutes` + "\n" + `:black_heart: New Member Participation: Immediately after answering verification question` + "\n" + `:black_heart: Invite Links: Active` + "\n" + `:black_heart: Antispam Discipline: 30-minute mute`
                 if (_guild.settings.raidMitigation === 1)
-                    raidMitigation2 = `**Level 1**` + "\n" + `:heart: New Member Verification: Required Verified Phone Number` + "\n" + `:black_heart: New Member Participation: Immediately on join` + "\n" + `:black_heart: Invite Links: Active` + "\n" + `:yellow_heart: Antispam Discipline: Mute until staff remove it`
+                    raidMitigation2 = `**Level 1**` + "\n" + `:yellow_heart: New Member Verification: Cannot send messages for first 10 minutes` + "\n" + `:heart: New Member Participation: Isolated until Mitigation Ends` + "\n" + `:black_heart: Invite Links: Active` + "\n" + `:yellow_heart: Antispam Discipline: Mute until staff remove it`
                 if (_guild.settings.raidMitigation === 2)
                     raidMitigation2 = `**Level 2**` + "\n" + `:heart: New Member Verification: Required Verified Phone Number` + "\n" + `:heart: New Member Participation: Isolated until Mitigation Ends` + "\n" + `:black_heart: Invite Links: Active` + "\n" + `:orange_heart: Antispam Discipline: 24-hour temp ban`
                 if (_guild.settings.raidMitigation === 3)
@@ -204,7 +204,7 @@ ${iceBreakers[ Math.floor(Math.random() * iceBreakers.length) ]}
                 if (verifiedRole) {
                     var guildMembers = [];
                     _guild.members.each((guildMember) => {
-                        if (!guildMember.roles.get(verifiedRole.id)) {
+                        if (!guildMember.roles.get(verifiedRole.id) && guildMember.settings.verified) {
                             guildMembers.push(guildMember.id);
                             guildMember.roles.add(verifiedRole, `Raid mitigation expired`);
                         }
@@ -230,9 +230,9 @@ ${iceBreakers[ Math.floor(Math.random() * iceBreakers.length) ]}
 
 I do not detect raid activity anymore. Raid mitigation has ended. Thank you for your patience.
                     
-All new members now have full access to the guild.
-Verification is now set down to medium.
-${_guild.settings.raidMitigation >= 3 ? `**Please remember to re-generate invite links**. I do not re-generate those automatically.` : ``}`;
+New members who answered the verification question now have full guild access.
+Guild verification is now set down to medium (must be a Discord member for 5 or more minutes).
+${_guild.settings.raidMitigation >= 3 ? `**Please remember to re-generate invite links**. I do not re-generate those automatically. This includes the one for the website, and for any server list bots.` : ``}`;
                     _channel.send(response);
                 }
 

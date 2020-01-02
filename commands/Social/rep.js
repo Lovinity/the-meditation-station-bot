@@ -36,8 +36,13 @@ module.exports = class extends Command {
         }
 
         // Disallow repping if canRep is false
-        if (!message.member.settings.canRep)
-            return message.send(`:x: Sorry, you can only rep someone once every 24 hours.`);
+        if (!message.member.settings.canRep) {
+            var msg = await message.send(`:x: Sorry, but you can only !rep someone once every 24 hours.`);
+            setTimeout(() => {
+                msg.delete();
+            }, 10000);
+            return msg;
+        }
 
         // Purchase repping
         if (await yangStore(message, 'repMember', 1)) {
@@ -50,7 +55,7 @@ module.exports = class extends Command {
             const timer = await this.client.schedule.create('repAgain', moment().add(24, 'hours').toDate(), {
                 data: {
                     guild: message.guild.id,
-                    user: user.id
+                    user: message.author.id
                 }
             });
             return message.send(`:white_check_mark: You have repped that user. Thank you for sharing the love!`);

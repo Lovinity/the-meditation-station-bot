@@ -68,7 +68,7 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                 if (this.guild.settings.raidMitigation < 1 && !HPThreshold) {
                     var discipline = new GuildDiscipline(this.user, this.guild, this.client.user)
                         .setType('classC')
-                        .setReason(`You were asked via my antispam system to take a short break from sending messages, but you did not do so.`)
+                        .setReason(`You were asked by the bot's antispam system to take a break from the guild for a few minutes. You neglected to cooperate.`)
                         .setMuteDuration(0.5)
                         .setYang(100)
                         .setHPDamage(10)
@@ -80,7 +80,7 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                 } else if (this.guild.settings.raidMitigation < 1 && HPThreshold) {
                     var discipline = new GuildDiscipline(this.user, this.guild, this.client.user)
                         .setType('classC')
-                        .setReason(`You were asked via my antispam system to take a short break from sending messages, but you did not do so.`)
+                        .setReason(`You were asked by the bot's antispam system to take a break from the guild for a few minutes. You neglected to cooperate.`)
                         .setMuteDuration(0)
                         .setYang(100)
                         .setHPDamage(10)
@@ -93,7 +93,7 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                 } else if (this.guild.settings.raidMitigation < 2) {
                     var discipline = new GuildDiscipline(this.user, this.guild, this.client.user)
                         .setType('classC')
-                        .setMuteReason(`Triggered the antispam system and ignored the warnings by the bot. Level 1 raid mitigation was in effect.`)
+                        .setMuteReason(`You were asked by the bot's antispam system to take a break from the guild for a few minutes. You neglected to cooperate, and level 1 raid mitigation was in effect.`)
                         .setMuteDuration(0)
                         .setYang(100)
                         .setHPDamage(10)
@@ -106,7 +106,7 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                 } else if (this.guild.settings.raidMitigation < 3) {
                     var discipline = new GuildDiscipline(this.user, this.guild, this.client.user)
                         .setType('classC')
-                        .setReason(`Triggered the antispam system and ignored the warnings by the bot. Level 2 raid mitigation was in effect.`)
+                        .setReason(`You were asked by the bot's antispam system to take a break from the guild for a few minutes. You neglected to cooperate, and level 2 raid mitigation was in effect.`)
                         .setBanDuration(1)
                         .addRule(this.guild.settings.antispamRuleNumber);
                     if (HPThreshold) { discipline.setOther(`You do not have any HP left, which may necessitate a permanent ban. Staff will review the incident and make a decision.`) }
@@ -118,7 +118,7 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                     var discipline = new GuildDiscipline(this.user, this.guild, this.client.user)
                         .setType('classC')
                         .setBanDuration(0)
-                        .setReason(`Triggered the antispam system and ignored the warnings by the bot. Level 3 raid mitigation was in effect.`)
+                        .setReason(`You were asked by the bot's antispam system to take a break from the guild for a few minutes. You neglected to cooperate, and level 3 raid mitigation was in effect.`)
                         .addRule(this.guild.settings.antispamRuleNumber);
                     discipline.prepare()
                         .then(prepared => {
