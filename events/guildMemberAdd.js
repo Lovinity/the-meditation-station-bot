@@ -81,7 +81,7 @@ module.exports = class extends Event {
                     if (_channel2)
                         _channel2.send(`**Welcome new member** <@${guildMember.id}>! It looks like you've never been here before. We love new friends! Here are some tips to get started:
 :small_orange_diamond: Be sure to check out the welcome channel for the rules and helpful resources. All members and staff must follow the rules.
-:small_orange_diamond: Use the \`!staff\` bot command at any time if you need to talk privately with staff, such as to report another member
+:small_orange_diamond: Use the \`!staff\` bot command at any time if you need to talk privately with staff, such as to report another member.
 :small_orange_diamond: Use the \`!profile\` bot command to get a link to view and edit your profile! Everyone in the guild gets a bot profile.`);
                     guildMember.roles.add(verifiedRole, `User is verified`);
                 } else if (verifiedRole) {
@@ -92,7 +92,7 @@ module.exports = class extends Event {
             } else {
                 const _channel3 = this.client.channels.resolve(guildMember.guild.settings.unverifiedChannel);
                 if (_channel3)
-                    _channel3.send(`**Welcome new member** <@${guildMember.id}>! As a troll prevention, please check the welcome-unverified channel for instructions on how to get full access to this guild!`)
+                    _channel3.send(`**Welcome new member** <@${guildMember.id}>! As a troll prevention, please check the welcome-unverified channel for instructions on how to get full access to this guild! (note: you cannot see other verified members until you verify yourself).`)
             }
         }
 
