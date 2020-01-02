@@ -186,7 +186,7 @@ ${iceBreakers[ Math.floor(Math.random() * iceBreakers.length) ]}
                 _guild.fetchInvites()
                     .then(invites => {
                         invites.each(invite => {
-                            invite.delete();
+                            invite.delete(`Raid mitigation level 3 active`);
                         });
                     })
             }
