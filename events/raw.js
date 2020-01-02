@@ -100,8 +100,6 @@ module.exports = class extends Event {
                             .setType('classD')
                             .setReason(`You did not correctly answer the verification question. You are flagged as a potential troll.`)
                             .setMuteDuration(0)
-                            .setYang(250)
-                            .setHPDamage(25)
                             .setClassD({
                                 apology: false,
                                 research: `You must write a research paper explaining what the following gender identities are: Woman, Man, Trans Woman, Trans Man, Agender, Genderfluid, and Genderqueer. You must also include in your research paper how/why gender is distinctly different from sex.`,
