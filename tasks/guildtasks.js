@@ -3,6 +3,7 @@ const moment = require("moment");
 const needle = require("needle");
 const wordsearch = require('wordsearch-generator');
 const { MessageEmbed } = require('discord.js');
+const config = require('../config.js');
 
 module.exports = class extends Task {
 
