@@ -92,7 +92,7 @@ module.exports = class extends Event {
             } else {
                 const _channel3 = this.client.channels.resolve(guildMember.guild.settings.unverifiedChannel);
                 if (_channel3)
-                    _channel3.send(`**Welcome new member** <@${guildMember.id}>! As a troll prevention, please check the welcome-unverified channel for instructions on how to get full access to this guild! (note: you cannot see other verified members until you verify yourself).`)
+                    _channel3.send(`**Welcome new member** <@${guildMember.id}>! As a troll prevention, please check the welcome-unverified channel for instructions on how to get full access to this guild! (note: you cannot see other verified members nor many of the channels until you verify yourself).`)
             }
         }
 

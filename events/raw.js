@@ -1,7 +1,6 @@
 const { Event } = require('klasa');
 const GuildDiscipline = require('../util/guildDiscipline');
 const config = require('../config.js');
-const moment = require('moment');
 
 module.exports = class extends Event {
 
@@ -69,8 +68,7 @@ module.exports = class extends Event {
             }
 
             // Verification question for a specific guild, must be manually configured
-
-            if (config.verification.message === `${data.d.channel_id}/${data.d.message_id}` && guild && member && message) {
+            if (config.verification.channel === data.d.channel_id && config.verification.message === data.d.message_id && guild && guild.id === config.verification.guild && member && message) {
                 message.reactions
                     .map((reaction) => {
                         reaction.users.remove(data.d.user_id);
