@@ -68,7 +68,7 @@ module.exports = class extends Event {
             }
 
             // Verification question for a specific guild, must be manually configured
-            if (config.verification.channel === data.d.channel_id && config.verification.message === data.d.message_id && guild && guild.id === config.verification.guild && member && message) {
+            if (data.d.user_id !== this.client.user.id && config.verification.channel === data.d.channel_id && config.verification.message === data.d.message_id && guild && guild.id === config.verification.guild && member && message) {
                 message.reactions
                     .map((reaction) => {
                         reaction.users.remove(data.d.user_id);
