@@ -419,7 +419,7 @@ ${_guild.settings.raidMitigation >= 3 ? `**Please remember to re-generate invite
                         // Process the bets
                         message.reactions.each((reaction) => {
                             reaction.users.each((user) => {
-                                if (user.guildSettings(_guild.id).yang >= yangBet) {
+                                if (user.guildSettings(_guild.id).yang >= yangBet && !user.bot) {
                                     user.guildSettings(_guild.id).update('yang', user.guildSettings(_guild.id).yang - yangBet);
                                     if (reaction.emoji.name === emoji1.char)
                                         bets1.push(user);
