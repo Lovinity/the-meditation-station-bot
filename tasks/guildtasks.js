@@ -297,8 +297,8 @@ ${_guild.settings.raidMitigation >= 3 ? `**Please remember to re-generate invite
                 })
             }
 
-            // tri-hourly Trivia Game at minute 58
-            if (m === 58 && h % 3 === 0) {
+            // Trivia game every 00, 06, 12, and 18, at :55
+            if (m === 55 && h % 6 === 0) {
                 console.log(`trivia`);
                 const botGamesChannel = _guild.settings.botGamesChannel;
                 const _channel = this.client.channels.resolve(botGamesChannel);
@@ -317,7 +317,7 @@ ${_guild.settings.raidMitigation >= 3 ? `**Please remember to re-generate invite
 
                                 var embed = new MessageEmbed()
                                     .setTitle(`Trivia Contest!`)
-                                    .setDescription(`The first person to answer this question correctly will win **${yang}** Yang! But hurry... you only have 3 minutes to answer! Make your guesses as messages. I will respond if and only if you have the correct answer.`)
+                                    .setDescription(`The first person to answer this question correctly will win **${yang}** Yang! But hurry... you only have 5 minutes to answer! Make your guesses as messages. I will respond if and only if you have the correct answer.`)
                                     .setColor("GREEN")
                                     .addField('Category', category)
                                     .addField('Clue', clue);
