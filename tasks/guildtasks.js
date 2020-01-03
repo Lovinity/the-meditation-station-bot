@@ -1,6 +1,7 @@
 const { Task } = require('klasa');
 const moment = require("moment");
 const needle = require("needle");
+const wordsearch = require('wordsearch-generator');
 const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Task {
@@ -315,7 +316,7 @@ ${_guild.settings.raidMitigation >= 3 ? `**Please remember to re-generate invite
                                 var answer = response.answer;
                                 var yang = response.value !== null ? (response.value / 10) : 20;
 
-                                var embed = new MessageEmbed()
+                                let embed = new MessageEmbed()
                                     .setTitle(`Trivia Contest!`)
                                     .setDescription(`The first person to answer this question correctly will win **${yang}** Yang! But hurry... you only have 3 minutes to answer! Make your guesses as messages. I will respond if and only if you have the correct answer.`)
                                     .setColor("GREEN")
@@ -337,6 +338,43 @@ ${_guild.settings.raidMitigation >= 3 ? `**Please remember to re-generate invite
                         .catch(function (err) {
                             this.client.emit('error', err)
                         })
+                }
+            }
+
+            // Word find game every 03, 09, 15, and 21, at :55
+            if (m === 57 && h % 6 === 3) {
+                console.log(`word find`);
+                const botGamesChannel = _guild.settings.botGamesChannel;
+                const _channel = this.client.channels.resolve(botGamesChannel);
+                if (_channel) {
+                    console.log(`channel`);
+                    const words = [ config.commonWords[ Math.floor(Math.random() * config.commonWords.length) ] ];
+                    const yang = words[ 0 ].length * 10;
+                    const gridSize = words[ 0 ].length + 1;
+                    let puzzleGrid = wordsearch.createPuzzle(gridSize, gridSize, 'en', words);
+                    puzzleGrid = wordsearch.hideWords(puzzleGrid, 'en');
+                    let lines = wordsearch.printGrid(puzzleGrid);
+                    var gridText = ``;
+                    for (let i = 0; i < lines.length; i++) {
+                        gridText += lines[ i ] + "\n";
+                    }
+
+                    let embed = new MessageEmbed()
+                        .setTitle(`Word Find Contest!`)
+                        .setDescription(`Below is a word search with one hidden word. The first person to specify what the hidden word is earns ${yang} Yang. But hurry! You only have 3 minutes. Hint: The length of the hidden word is the number of columns/rows in the grid - 1.`)
+                        .setColor("BLUE")
+                        .addField('Grid', gridText);
+
+                    _channel.send({ embed: embed });
+                    _channel.awaitMessages(message => message.cleanContent.toLowerCase() === words[ 0 ],
+                        { max: 1, time: 180000, errors: [ 'time' ] })
+                        .then(messages => {
+                            messages.first().member.settings.update('yang', messages.first().member.settings.yang + yang);
+                            _channel.send(`:first_place: Congratulations to <@${messages.first().member.id}> who found the hidden word! It was ${words[ 0 ]}. You just earned ${yang} Yang.`);
+                        })
+                        .catch(() => {
+                            _channel.send(`:hourglass: Time is up! The hidden word was ${words[ 0 ]}.`)
+                        });
                 }
             }
         }
