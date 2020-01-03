@@ -85,7 +85,7 @@ module.exports = class extends Event {
                 (async (_guild) => {
                     var _channel = _guild.channels.resolve(config.verification.channel);
                     if (_channel) {
-                        var _message = await _channel.message.fetch(config.verification.message);
+                        var _message = await _channel.messages.fetch(config.verification.message);
                         if (_message) {
                             await _message.reactions.removeAll();
                             await _message.react(`1️⃣`);
