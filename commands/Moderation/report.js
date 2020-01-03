@@ -16,7 +16,7 @@ module.exports = class extends Command {
             cooldown: 30,
             runIn: [ 'text' ],
             requiredPermissions: [ "MANAGE_ROLES" ],
-            requiredSettings: [ "reportMembers", "reportTime", "muteRole", "incidentsCategory", "noSelfModRole" ],
+            requiredSettings: [ "reportMembers", "reportTime", "muteRole", "incidentsCategory" ],
             extendedHelp: 'When multiple people report the same member in a configured amount of time, the member gets muted for the safety of the community until staff investigate.'
         });
     }
@@ -32,12 +32,7 @@ module.exports = class extends Command {
         const reports = user.guildSettings(message.guild.id).reports;
         const reportMembers = message.guild.settings.reportMembers || 3;
         const reportTime = moment().add(parseInt(message.guild.settings.reportTime), 'minutes').toDate();
-        const muted = message.guild.settings.muteRole;
-        const mutedRole = message.guild.roles.resolve(muted);
-        const noSelfMod = message.guild.settings.noSelfModRole;
-        const noSelfModRole = message.guild.roles.resolve(noSelfMod);
         const guildMember = message.guild.members.resolve(user.id);
-        const incidents = message.guild.settings.incidentsCategory;
 
         // Reporter is not allowed to report.
         if (message.member.settings.restrictions.cannotUseReportCommand)

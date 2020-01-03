@@ -82,7 +82,7 @@ module.exports = class extends Route {
             activity: parseInt(userSettings.activityScore * 100) / 100,
             joined: joined ? moment(joined).format("YYYY-MM-DD") : "N/A",
             goodrep: userSettings.goodRep,
-            hp: guildMember.HP,
+            hp: guildMember ? guildMember.HP : 0,
             yang: userSettings.yang,
             xpprogress: parseInt(fillValue * 100),
             level: level,
@@ -91,9 +91,11 @@ module.exports = class extends Route {
             location: userSettings.profile.location,
             info: userSettings.profile.info,
             donations: userSettings.profile.donations,
-            pronouns: userSettings.profile.pronouns,
             isbanned: isBanned,
             ismuted: isMuted,
+            roles: guildMember ? guildMember.roles.map((role) => {
+                return {name: role.name, color: role.hexColor}
+            }) : [],
             yangStore: {
                 profileTitle: guildStoreSettings.profileTitle,
                 profileBackground: guildStoreSettings.profileBackground
