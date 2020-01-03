@@ -50,6 +50,7 @@ Client.defaultGuildSchema
     .add('antispamLessStrictRoles', 'role', { array: true })
     .add('antispamLessStrictChannels', 'textchannel', { array: true })
     .add('antispamRuleNumber', 'integer', { default: 1, min: 0 })
+    .add('selfBotsRuleNumber', 'integer', { default: 1, min: 0 })
     .add('raidScore', 'integer', { default: 0, configurable: false })
     .add('raidMitigation', 'integer', { default: 0, configurable: false })
     .add('oneHPPerXP', 'integer', { default: 50, min: 0 })
