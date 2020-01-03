@@ -363,7 +363,7 @@ ${_guild.settings.raidMitigation >= 3 ? `**Please remember to re-generate invite
                         .setTitle(`Word Find Contest!`)
                         .setDescription(`Below is a word search with one hidden word. The first person to specify what the hidden word is earns ${yang} Yang. But hurry! You only have 3 minutes. Hint: The length of the hidden word is the number of columns/rows in the grid - 1.`)
                         .setColor("BLUE")
-                        .addField('Grid', gridText);
+                        .addField('Grid', `\`\`\`${gridText}\`\`\``);
 
                     _channel.send({ embed: embed });
                     _channel.awaitMessages(message => message.cleanContent.toLowerCase() === words[ 0 ],
