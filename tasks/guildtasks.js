@@ -352,7 +352,7 @@ ${_guild.settings.raidMitigation >= 3 ? `**Please remember to re-generate invite
                     console.log(`channel`);
                     const words = [ commonWords[ Math.floor(Math.random() * commonWords.length) ] ];
                     const yang = words[ 0 ].length * 10;
-                    const gridSize = words[ 0 ].length + 1;
+                    const gridSize = words[ 0 ].length + 3;
                     let puzzleGrid = wordsearch.createPuzzle(gridSize, gridSize, 'en', words);
                     puzzleGrid = wordsearch.hideWords(puzzleGrid, 'en');
                     let lines = wordsearch.printGrid(puzzleGrid);
@@ -363,7 +363,7 @@ ${_guild.settings.raidMitigation >= 3 ? `**Please remember to re-generate invite
 
                     let embed = new MessageEmbed()
                         .setTitle(`Word Find Contest!`)
-                        .setDescription(`Below is a word search with one hidden word. The first person to specify what the hidden word is earns ${yang} Yang. But hurry! You only have 3 minutes. Hint: The length of the hidden word is the number of columns/rows in the grid - 1.`)
+                        .setDescription(`Below is a word search with one hidden word. The first person to specify what the hidden word is earns ${yang} Yang. But hurry! You only have 3 minutes. Hint: The length of the hidden word is ${word[0].length} letters.`)
                         .setColor("BLUE")
                         .addField('Grid', `\`\`\`${gridText}\`\`\``);
 
