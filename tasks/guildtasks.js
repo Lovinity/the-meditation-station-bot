@@ -3,7 +3,8 @@ const moment = require("moment");
 const needle = require("needle");
 const wordsearch = require('wordsearch-generator');
 const { MessageEmbed } = require('discord.js');
-const config = require('../config.js');
+const commonWords = require('../assets/commonWords.js');
+const emoji = require('../assets/emoji.js');
 
 module.exports = class extends Task {
 
@@ -342,14 +343,14 @@ ${_guild.settings.raidMitigation >= 3 ? `**Please remember to re-generate invite
                 }
             }
 
-            // Word find game every 03, 09, 15, and 21, at :57
-            if (m === 57 && h % 6 === 3) {
+            // Word find game every 02, 08, 14, and 20, at :57
+            if (m === 57 && h % 6 === 2) {
                 console.log(`word find`);
                 const botGamesChannel = _guild.settings.botGamesChannel;
                 const _channel = this.client.channels.resolve(botGamesChannel);
                 if (_channel) {
                     console.log(`channel`);
-                    const words = [ config.commonWords[ Math.floor(Math.random() * config.commonWords.length) ] ];
+                    const words = [ commonWords[ Math.floor(Math.random() * commonWords.length) ] ];
                     const yang = words[ 0 ].length * 10;
                     const gridSize = words[ 0 ].length + 1;
                     let puzzleGrid = wordsearch.createPuzzle(gridSize, gridSize, 'en', words);
@@ -378,6 +379,94 @@ ${_guild.settings.raidMitigation >= 3 ? `**Please remember to re-generate invite
                         });
                 }
             }
+
+            // Emoji Lottery every 09, 21, at :57
+            if (m === 57 && h % 12 === 9) {
+                console.log(`Emoji Lottery`);
+                const botGamesChannel = _guild.settings.botGamesChannel;
+                const _channel = this.client.channels.resolve(botGamesChannel);
+                if (_channel) {
+                    var randomEmojis = shuffle(emoji);
+                    var yangBet = Math.ceil(Math.random() * 25);
+                    var emoji1 = randomEmojis.next().value;
+                    var emoji2 = randomEmojis.next().value;
+                    var emoji3 = randomEmojis.next().value;
+                    var emoji4 = randomEmojis.next().value;
+
+                    let embed = new MessageEmbed()
+                        .setTitle(`Emoji Lottery!`)
+                        .setDescription(`React to this message in the next 3 minutes to place a bet of **${yangBet} Yang** on the emoji(s) you choose. The higher the odds, the less chance that emoji will win, but the more Yag you'll get if it does win.`)
+                        .setColor("YELLOW")
+                        .addField(`${emoji1.char} (${emoji1.name})`, `Odds 1:2 (wins ${yangBet * 2} Yang)`)
+                        .addField(`${emoji2.char} (${emoji2.name})`, `Odds 1:4 (wins ${yangBet * 4} Yang)`)
+                        .addField(`${emoji3.char} (${emoji3.name})`, `Odds 1:8 (wins ${yangBet * 8} Yang)`)
+                        .addField(`${emoji4.char} (${emoji4.name})`, `Odds 1:16 (wins ${yangBet * 16} Yang)`);
+
+                    var message = await _channel.send({ embed: embed });
+                    await message.react(emoji1.char);
+                    await message.react(emoji2.char);
+                    await message.react(emoji3.char);
+                    await message.react(emoji4.char);
+
+                    // Wait 3 minutes before collecting and processing bets.
+                    setTimeout(async () => {
+                        var message2 = await _channel.send(`:hourglass: No more bets! The winner is...`);
+                        var bets1 = [];
+                        var bets2 = [];
+                        var bets3 = [];
+                        var bets4 = [];
+
+                        // Process the bets
+                        message.reactions.each((reaction) => {
+                            reaction.users.each((user) => {
+                                if (user.guildSettings(_guild.id).yang >= yangBet) {
+                                    user.guildSettings(_guild.id).update('yang', user.guildSettings(_guild.id).yang - yangBet);
+                                    if (reaction.emoji.name === emoji1.char)
+                                        bets1.push(user);
+                                    if (reaction.emoji.name === emoji2.char)
+                                        bets2.push(user);
+                                    if (reaction.emoji.name === emoji3.char)
+                                        bets3.push(user);
+                                    if (reaction.emoji.name === emoji4.char)
+                                        bets4.push(user);
+                                }
+                            });
+                        });
+
+                        // Determine the winner and process it
+                        var randomNumber = (Math.random() * 15);
+                        if (randomNumber < 8) {
+                            bets1.map((user) => {
+                                user.guildSettings(_guild.id).update('yang', user.guildSettings(_guild.id).yang + (yangBet * 2));
+                            });
+
+                            message2.delete();
+                            _channel.send(`:first_place: **The winner is... ${emoji1.char}!**` + "\n\n" + `These members just earned ${yangBet * 2} Yang: ${bets1.map((user) => `<@${user.id}>`).join(" ")}`, {split: true});
+                        } else if (randomNumber < 12) {
+                            bets2.map((user) => {
+                                user.guildSettings(_guild.id).update('yang', user.guildSettings(_guild.id).yang + (yangBet * 4));
+                            });
+
+                            message2.delete();
+                            _channel.send(`:first_place: **The winner is... ${emoji2.char}!**` + "\n\n" + `These members just earned ${yangBet * 4} Yang: ${bets2.map((user) => `<@${user.id}>`).join(" ")}`, {split: true});
+                        } else if (randomNumber < 14) {
+                            bets3.map((user) => {
+                                user.guildSettings(_guild.id).update('yang', user.guildSettings(_guild.id).yang + (yangBet * 8));
+                            });
+
+                            message2.delete();
+                            _channel.send(`:first_place: **The winner is... ${emoji3.char}!**` + "\n\n" + `These members just earned ${yangBet * 8} Yang: ${bets3.map((user) => `<@${user.id}>`).join(" ")}`, {split: true});
+                        } else {
+                            bets4.map((user) => {
+                                user.guildSettings(_guild.id).update('yang', user.guildSettings(_guild.id).yang + (yangBet * 16));
+                            });
+
+                            message2.delete();
+                            _channel.send(`:first_place: **The winner is... ${emoji4.char}!**` + "\n\n" + `These members just earned ${yangBet * 16} Yang: ${bets4.map((user) => `<@${user.id}>`).join(" ")}`, {split: true});
+                        }
+                    }, 180000);
+                }
+            }
         }
     }
 
@@ -394,4 +483,14 @@ function slugify (text) {
         .replace(/\-\-+/g, '-')         // Replace multiple - with single -
         .replace(/^-+/, '')             // Trim - from start of text
         .replace(/-+$/, '');            // Trim - from end of text
+}
+
+function* shuffle (array) {
+
+    var i = array.length;
+
+    while (i--) {
+        yield array.splice(Math.floor(Math.random() * (i + 1)), 1)[ 0 ];
+    }
+
 }
