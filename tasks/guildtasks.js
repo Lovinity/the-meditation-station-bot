@@ -299,7 +299,7 @@ ${_guild.settings.raidMitigation >= 3 ? `**Please remember to re-generate invite
                 })
             }
 
-            // Trivia game every 00, 06, 12, and 18, at :55
+            // Trivia game every 00, 06, 12, and 18, at :57
             if (m === 57 && h % 6 === 0) {
                 console.log(`trivia`);
                 const botGamesChannel = _guild.settings.botGamesChannel;
@@ -342,8 +342,8 @@ ${_guild.settings.raidMitigation >= 3 ? `**Please remember to re-generate invite
                 }
             }
 
-            // Word find game every 03, 09, 15, and 21, at :55
-            if (m === 55 && h % 6 === 3) {
+            // Word find game every 03, 09, 15, and 21, at :57
+            if (m === 57 && h % 6 === 3) {
                 console.log(`word find`);
                 const botGamesChannel = _guild.settings.botGamesChannel;
                 const _channel = this.client.channels.resolve(botGamesChannel);
@@ -368,7 +368,7 @@ ${_guild.settings.raidMitigation >= 3 ? `**Please remember to re-generate invite
 
                     _channel.send({ embed: embed });
                     _channel.awaitMessages(message => message.cleanContent.toLowerCase() === words[ 0 ],
-                        { max: 1, time: 300000, errors: [ 'time' ] })
+                        { max: 1, time: 180000, errors: [ 'time' ] })
                         .then(messages => {
                             messages.first().member.settings.update('yang', messages.first().member.settings.yang + yang);
                             _channel.send(`:first_place: Congratulations to <@${messages.first().member.id}> who found the hidden word! It was ${words[ 0 ]}. You just earned ${yang} Yang.`);
