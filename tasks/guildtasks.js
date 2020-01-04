@@ -417,8 +417,8 @@ ${_guild.settings.raidMitigation >= 3 ? `**Please remember to re-generate invite
                         var bets4 = [];
 
                         // Process the bets
-                        var maps = message.reactions.each(async (reaction) => {
-                            var maps2 = reaction.users.each(async (user) => {
+                        var maps = message.reactions.map(async (reaction) => {
+                            var maps2 = reaction.users.map(async (user) => {
                                 if (user.guildSettings(_guild.id).yang >= yangBet && !user.bot) {
                                     await user.guildSettings(_guild.id).update('yang', user.guildSettings(_guild.id).yang - yangBet);
                                     if (reaction.emoji.name === emoji1.char)
