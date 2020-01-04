@@ -14,6 +14,7 @@ module.exports = class extends Command {
             usageDelim: '',
             cooldown: 60,
             requiredSettings: ["botChannel"],
+            runIn: [ 'text' ],
         });
     }
 

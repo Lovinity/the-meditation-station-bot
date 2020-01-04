@@ -11,7 +11,8 @@ module.exports = class extends Command {
             description: 'Generate a markov chain from the provided text channel.',
             requiredPermissions: [ 'READ_MESSAGE_HISTORY' ],
             usage: '<channel:channel>',
-            cooldown: 60
+            cooldown: 60,
+            runIn: [ 'text' ],
         });
     }
 

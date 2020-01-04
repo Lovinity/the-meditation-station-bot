@@ -9,7 +9,8 @@ module.exports = class extends Command {
             aliases: [ 'choose', 'decide' ],
             description: 'Makes a decision for you given some choices.',
             usage: '<choices:str> [...]',
-            usageDelim: ' | '
+            usageDelim: ' | ',
+            runIn: [ 'text' ],
         });
     }
 

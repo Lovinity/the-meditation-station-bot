@@ -8,7 +8,8 @@ module.exports = class extends Command {
     constructor(...args) {
         super(...args, {
             description: 'Get a random Wikipedia fact.',
-            cooldown: 60
+            cooldown: 60,
+            runIn: [ 'text' ],
         });
     }
 

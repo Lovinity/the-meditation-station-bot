@@ -7,7 +7,8 @@ module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
 			description: 'Get a positive affirmation to motivate you.',
-			usage: ''
+			usage: '',
+			runIn: [ 'text' ],
 		});
 	}
 

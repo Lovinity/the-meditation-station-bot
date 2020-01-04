@@ -6,7 +6,8 @@ module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
 			description: 'Compliments a user.',
-			usage: '[UserToCompliment:member]'
+			usage: '[UserToCompliment:member]',
+			runIn: [ 'text' ],
 		});
 	}
 
