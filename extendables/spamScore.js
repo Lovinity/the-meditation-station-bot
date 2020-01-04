@@ -184,9 +184,9 @@ module.exports = class extends Extendable {
                 // Add spam score for every new line; but the more content : new lines, the less spam score is added.
                 // New lines when content length is 128 characters or less are considered very spammy.
                 var newlines = this.cleanContent.split(/\r\n|\r|\n/).length - 1;
-                var ratio = newlines / (this.cleanContent.length > 128 ? Math.ceil(this.cleanContent.length / 128) : 0.25);
-                score += Math.round(newlines * ratio);
-                if (newlines > 0 && ratio > 0) { scoreReasons[ "New Lines / Scrolling" ] = Math.round(newlines * ratio) }
+                var ratio = newlines / (this.cleanContent.length > 128 ? Math.ceil(this.cleanContent.length / 128) / 2 : 0.25);
+                score += Math.round(ratio);
+                if (newlines > 0 && ratio > 0) { scoreReasons[ "New Lines / Scrolling" ] = Math.round(ratio) }
 
                 // Add score for repeating patterns
                 // TODO: improve this algorithm
