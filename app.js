@@ -134,7 +134,8 @@ Client.defaultRoleSchema
 // Prepare Klasa
 var client = new Client({
     clientOptions: {
-        fetchAllMembers: false
+        // Needed for KlasaReady member checks
+        fetchAllMembers: true
     },
     clientID: '637472382797348875',
     clientSecret: config.clientSecret,
