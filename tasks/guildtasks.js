@@ -363,7 +363,7 @@ ${_guild.settings.raidMitigation >= 3 ? `**Please remember to re-generate invite
 
                     let embed = new MessageEmbed()
                         .setTitle(`Word Find Contest!`)
-                        .setDescription(`Below is a word search with one hidden word. The first person to specify what the hidden word is earns ${yang} Yang. But hurry! You only have 3 minutes. Hint: The length of the hidden word is ${words[0].length} letters.`)
+                        .setDescription(`Below is a word search with one hidden word. The first person to specify what the hidden word is earns ${yang} Yang. But hurry! You only have 3 minutes. Hint: The length of the hidden word is ${words[ 0 ].length} letters.`)
                         .setColor("BLUE")
                         .addField('Grid', `\`\`\`${gridText}\`\`\``);
 
@@ -417,10 +417,10 @@ ${_guild.settings.raidMitigation >= 3 ? `**Please remember to re-generate invite
                         var bets4 = [];
 
                         // Process the bets
-                        message.reactions.each((reaction) => {
-                            reaction.users.each((user) => {
+                        var maps = message.reactions.each(async (reaction) => {
+                            var maps2 = reaction.users.each(async (user) => {
                                 if (user.guildSettings(_guild.id).yang >= yangBet && !user.bot) {
-                                    user.guildSettings(_guild.id).update('yang', user.guildSettings(_guild.id).yang - yangBet);
+                                    await user.guildSettings(_guild.id).update('yang', user.guildSettings(_guild.id).yang - yangBet);
                                     if (reaction.emoji.name === emoji1.char)
                                         bets1.push(user);
                                     if (reaction.emoji.name === emoji2.char)
@@ -431,7 +431,10 @@ ${_guild.settings.raidMitigation >= 3 ? `**Please remember to re-generate invite
                                         bets4.push(user);
                                 }
                             });
+                            await Promise.all(maps2);
                         });
+
+                        await Promise.all(maps);
 
                         // Determine the winner and process it
                         var randomNumber = (Math.random() * 15);
@@ -441,28 +444,28 @@ ${_guild.settings.raidMitigation >= 3 ? `**Please remember to re-generate invite
                             });
 
                             message2.delete();
-                            _channel.send(`:first_place: **The winner is... ${emoji1.char} (${emoji1.name})!**` + "\n\n" + `These members just earned ${yangBet * 2} Yang: ${bets1.map((user) => `<@${user.id}>`).join(" ")}`, {split: true});
+                            _channel.send(`:first_place: **The winner is... ${emoji1.char} (${emoji1.name})!**` + "\n\n" + `These members just earned ${yangBet * 2} Yang: ${bets1.map((user) => `<@${user.id}>`).join(" ")}`, { split: true });
                         } else if (randomNumber < 12) {
                             bets2.map((user) => {
                                 user.guildSettings(_guild.id).update('yang', user.guildSettings(_guild.id).yang + (yangBet * 4));
                             });
 
                             message2.delete();
-                            _channel.send(`:first_place: **The winner is... ${emoji2.char} (${emoji2.name})!**` + "\n\n" + `These members just earned ${yangBet * 4} Yang: ${bets2.map((user) => `<@${user.id}>`).join(" ")}`, {split: true});
+                            _channel.send(`:first_place: **The winner is... ${emoji2.char} (${emoji2.name})!**` + "\n\n" + `These members just earned ${yangBet * 4} Yang: ${bets2.map((user) => `<@${user.id}>`).join(" ")}`, { split: true });
                         } else if (randomNumber < 14) {
                             bets3.map((user) => {
                                 user.guildSettings(_guild.id).update('yang', user.guildSettings(_guild.id).yang + (yangBet * 8));
                             });
 
                             message2.delete();
-                            _channel.send(`:first_place: **The winner is... ${emoji3.char} (${emoji3.name})!**` + "\n\n" + `These members just earned ${yangBet * 8} Yang: ${bets3.map((user) => `<@${user.id}>`).join(" ")}`, {split: true});
+                            _channel.send(`:first_place: **The winner is... ${emoji3.char} (${emoji3.name})!**` + "\n\n" + `These members just earned ${yangBet * 8} Yang: ${bets3.map((user) => `<@${user.id}>`).join(" ")}`, { split: true });
                         } else {
                             bets4.map((user) => {
                                 user.guildSettings(_guild.id).update('yang', user.guildSettings(_guild.id).yang + (yangBet * 16));
                             });
 
                             message2.delete();
-                            _channel.send(`:first_place: **The winner is... ${emoji4.char} (${emoji4.name})!**` + "\n\n" + `These members just earned ${yangBet * 16} Yang: ${bets4.map((user) => `<@${user.id}>`).join(" ")}`, {split: true});
+                            _channel.send(`:first_place: **The winner is... ${emoji4.char} (${emoji4.name})!**` + "\n\n" + `These members just earned ${yangBet * 16} Yang: ${bets4.map((user) => `<@${user.id}>`).join(" ")}`, { split: true });
                         }
                     }, 180000);
                 }
