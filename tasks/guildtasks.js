@@ -363,7 +363,7 @@ ${_guild.settings.raidMitigation >= 3 ? `**Please remember to re-generate invite
 
                     let embed = new MessageEmbed()
                         .setTitle(`Word Find Contest!`)
-                        .setDescription(`Below is a word search with one hidden word. The first person to specify what the hidden word is earns ${yang} Yang. But hurry! You only have 3 minutes. Hint: The length of the hidden word is ${word[0].length} letters.`)
+                        .setDescription(`Below is a word search with one hidden word. The first person to specify what the hidden word is earns ${yang} Yang. But hurry! You only have 3 minutes. Hint: The length of the hidden word is ${words[0].length} letters.`)
                         .setColor("BLUE")
                         .addField('Grid', `\`\`\`${gridText}\`\`\``);
 
