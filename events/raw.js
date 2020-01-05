@@ -82,10 +82,8 @@ module.exports = class extends Event {
                         const _channel2 = this.client.channels.resolve(guild.settings.generalChannel);
                         if (guild.settings.raidMitigation < 2) {
                             if (_channel2)
-                                _channel2.send(`<@${member.id}> is now verified! We love new friends! Here are some tips to get started:
-    :small_orange_diamond: Be sure to check out the welcome channel for the rules and helpful resources. All members and staff must follow the rules.
-    :small_orange_diamond: Use the \`!staff\` bot command at any time if you need to talk privately with staff, such as to report another member.
-    :small_orange_diamond: Use the \`!profile\` bot command to get a link to view and edit your profile! Everyone in the guild gets a bot profile.`);
+                                _channel2.send(`Thank you <@${member.id}> for getting verified! You now have full access to the guild. Check out the information channels to learn more about us!
+${guild.members.filter((member) => !member.user.bot).size < 25 ? `:speech_left: Note: We are still a very new guild. There isn't much activity right now, but please help us change that! make some responses / topics around in the different channels, and invite your friends. We greatly appreciate it!` : ``}`);
                             member.roles.add(verifiedRole, `User is verified`);
                         } else {
                             const _channel3 = this.client.channels.resolve(guild.settings.unverifiedChannel);
