@@ -275,7 +275,7 @@ module.exports = class GuildDiscipline {
                 this.muteDuration = null;
                 this.banDuration = null;
                 msg.setTitle(`:warning: **__YOU HAVE BEEN FORMALLY WARNED__** :warning:`);
-                msg.setThumbnail(`${message.client.options.dashboardHooks.origin}/discipline/warning.png`);
+                msg.setThumbnail(`${this.client.options.dashboardHooks.origin}/discipline/warning.png`);
                 msg.setDescription(`We are concerned about your recent conduct, and you are being issued a formal warning as a result. You need to change your behavior immediately, otherwise further discipline will be issued. Please read the following information carefully.` + "\n\n" + `:hash: Rule numbers violated: ${this.rules.join(", ")}` + "\n" + `More information: ${this.reason}`);
                 msg.setFooter(`💬 This channel is private between you and staff to discuss this matter. Please remain respectful.` + "\n" + `🔄 **You have 48 hours to appeal this warning in this channel if it was issued unjustly.** Leaving the guild, being disrespectful towards staff, or trying to discuss this matter outside of this text channel will remove your privilege to appeal.` + "\n" + `😄 Thank you for your understanding and cooperation.` + "\n\n" + `#️⃣ Case ID: ${this.case}`);
                 break;
@@ -283,24 +283,24 @@ module.exports = class GuildDiscipline {
                 this.muteDuration = null;
                 this.banDuration = null;
                 msg.setTitle(`:octagonal_sign: **__YOU HAVE BEEN DISCIPLINED__** :octagonal_sign:`);
-                msg.setThumbnail(`${message.client.options.dashboardHooks.origin}/discipline/discipline.png`);
+                msg.setThumbnail(`${this.client.options.dashboardHooks.origin}/discipline/discipline.png`);
                 msg.setDescription(`Your recent conduct in the guild has not been satisfactory. We have issued discipline as a result. Please read the following information carefully.` + "\n\n" + `:hash: Rule numbers violated: ${this.rules.join(", ")}` + "\n" + `More information: ${this.reason}`);
                 msg.setFooter(`💬 This channel is private between you and staff to discuss this matter. Please remain respectful.` + "\n" + `🔄 **You have 48 hours to appeal this discipline in this channel if it was issued unjustly.** Leaving the guild, being disrespectful towards staff, or trying to discuss this matter outside of this text channel will remove your privilege to appeal.` + "\n" + `😄 Thank you for your understanding and cooperation.` + "\n\n" + `#️⃣ Case ID: ${this.case}`);
                 break;
             case 'classC':
                 if (this.banDuration === null && this.muteDuration !== null) {
                     msg.setTitle(`:mute: **__YOU HAVE BEEN MUTED FOR SPAMMING__** :mute:`);
-                    msg.setThumbnail(`${message.client.options.dashboardHooks.origin}/discipline/mute.png`);
+                    msg.setThumbnail(`${this.client.options.dashboardHooks.origin}/discipline/mute.png`);
                     msg.setDescription(`You have been muted by the automatic antispam system. Please read the following information carefully.` + "\n\n" + `:hash: Rule numbers violated: ${this.rules.join(", ")}` + "\n" + `More information: ${this.reason}`);
                     msg.setFooter(`💬 This channel is private between you and staff to discuss this matter. Please remain respectful.` + "\n" + `🔄 **You have 48 hours to appeal this discipline in this channel if the bot did not verbally warn you for spamming before disciplining you.** You cannot appeal antispam discipline for any other reason.` + "\n" + `😄 Thank you for your understanding and cooperation.` + "\n\n" + `#️⃣ Case ID: ${this.case}`);
                 } else if (this.banDuration > 0) {
                     msg.setTitle(`:no_entry: **__YOU HAVE BEEN TEMPORARILY BANNED FOR SPAMMING__** :no_entry:`);
-                    msg.setThumbnail(`${message.client.options.dashboardHooks.origin}/discipline/tempban.png`);
+                    msg.setThumbnail(`${this.client.options.dashboardHooks.origin}/discipline/tempban.png`);
                     msg.setDescription(`You have been temporarily banned by the automatic antispam system. Please read the following information carefully.` + "\n\n" + `:hash: Rule numbers violated: ${this.rules.join(", ")}` + "\n" + `More information: ${this.reason}`);
                     msg.setFooter(`💬 This channel is private between you and staff to discuss this matter. Please remain respectful.` + "\n" + `🔄 **You have 48 hours to appeal this discipline in this channel if the bot did not verbally warn you for spamming before disciplining you.** You cannot appeal antispam discipline for any other reason.` + "\n" + `😄 Thank you for your understanding and cooperation.` + "\n\n" + `#️⃣ Case ID: ${this.case}`);
                 } else if (this.banDuration === 0) {
                     msg.setTitle(`:no_entry_sign: **__YOU HAVE BEEN PERMANENTLY BANNED FOR SPAMMING__** :no_entry_sign:`);
-                    msg.setThumbnail(`${message.client.options.dashboardHooks.origin}/discipline/ban.png`);
+                    msg.setThumbnail(`${this.client.options.dashboardHooks.origin}/discipline/ban.png`);
                     msg.setDescription(`You have been permanently banned by the automatic antispam system. Please read the following information carefully.` + "\n\n" + `:hash: Rule numbers violated: ${this.rules.join(", ")}` + "\n" + `More information: ${this.reason}`);
                     msg.setFooter(`💬 This channel is private between you and staff to discuss this matter. Please remain respectful.` + "\n" + `🔄 **You have 48 hours to appeal this discipline in this channel if the bot did not verbally warn you for spamming before disciplining you.** You cannot appeal antispam discipline for any other reason.` + "\n" + `😄 Thank you for your understanding and cooperation.` + "\n\n" + `#️⃣ Case ID: ${this.case}`);
                 }
@@ -310,14 +310,14 @@ module.exports = class GuildDiscipline {
                 this.muteDuration = 0;
                 this.banDuration = null;
                 msg.setTitle(`:notebook: **__YOU HAVE BEEN MUTED AND ARE REQUIRED TO COMPLETE A FEW TASKS__** :notebook:`);
-                msg.setThumbnail(`${message.client.options.dashboardHooks.origin}/discipline/assignment.png`);
+                msg.setThumbnail(`${this.client.options.dashboardHooks.origin}/discipline/assignment.png`);
                 msg.setDescription(`We need you to do a few things because of your recent poor conduct in the guild. Please read the following information carefully.` + "\n\n" + `:hash: Rule numbers violated: ${this.rules.join(", ")}` + "\n" + `More information: ${this.reason}`);
                 msg.setFooter(`💬 This channel is private between you and staff to discuss this matter. Please remain respectful.` + "\n" + `🔄 **You have 48 hours to appeal this discipline in this channel if it was issued unjustly.** Leaving the guild, being disrespectful towards staff, or trying to discuss this matter outside of this text channel will remove your privilege to appeal.` + "\n" + `😄 Thank you for your understanding and cooperation.` + "\n\n" + `#️⃣ Case ID: ${this.case}`);
                 break;
             case 'classE':
                 this.banDuration = null;
                 msg.setTitle(`:closed_lock_with_key: **__RESTRICTIONS HAVE BEEN PLACED ON YOU__** :closed_lock_with_key:`);
-                msg.setThumbnail(`${message.client.options.dashboardHooks.origin}/discipline/restrictions.png`);
+                msg.setThumbnail(`${this.client.options.dashboardHooks.origin}/discipline/restrictions.png`);
                 msg.setDescription(`Because your recent conduct has caused problems, we have issued restrictions against you to protect the safety and integrity of the guild. Please read the following information carefully.` + "\n\n" + `:hash: Rule numbers violated: ${this.rules.join(", ")}` + "\n" + `More information: ${this.reason}`);
                 msg.setFooter(`💬 This channel is private between you and staff to discuss this matter. Please remain respectful.` + "\n" + `🔄 **You have 48 hours to appeal this discipline in this channel if it was issued unjustly.** Leaving the guild, being disrespectful towards staff, or trying to discuss this matter outside of this text channel will remove your privilege to appeal.` + "\n" + `😄 Thank you for your understanding and cooperation.` + "\n\n" + `#️⃣ Case ID: ${this.case}`);
                 break;
@@ -326,12 +326,12 @@ module.exports = class GuildDiscipline {
 
                 if (this.banDuration === 0) {
                     msg.setTitle(`:no_entry_sign: **__YOU HAVE BEEN PERMANENTLY BANNED__** :no_entry_sign:`);
-                    msg.setThumbnail(`${message.client.options.dashboardHooks.origin}/discipline/ban.png`);
+                    msg.setThumbnail(`${this.client.options.dashboardHooks.origin}/discipline/ban.png`);
                     msg.setDescription(`Unfortunately, your presence in our guild has proven detrimental beyond repair. You are required to leave indefinitely for the safety and integrity of the community. Please read the following information carefully.` + "\n\n" + `:hash: Rule numbers violated: ${this.rules.join(", ")}` + "\n" + `More information: ${this.reason}`);
                     msg.setFooter(`💬 This channel is private between you and staff to discuss this matter. Please remain respectful.` + "\n" + `🔄 **You have 48 hours to appeal this discipline in this channel if it was issued unjustly.** Leaving the guild, being disrespectful towards staff, or trying to discuss this matter outside of this text channel will remove your privilege to appeal.` + "\n" + `😄 Thank you for your understanding and cooperation.` + "\n\n" + `#️⃣ Case ID: ${this.case}`);
                 } else {
                     msg.setTitle(`:no_entry: **__YOU HAVE BEEN TEMPORARILY BANNED__** :no_entry:`);
-                    msg.setThumbnail(`${message.client.options.dashboardHooks.origin}/discipline/tempban.png`);
+                    msg.setThumbnail(`${this.client.options.dashboardHooks.origin}/discipline/tempban.png`);
                     msg.setDescription(`Your conduct has caused a lot of problems in the guild. You are required to leave for a temporary time to reflect on, and improve, your behavior. Please read the following information carefully.` + "\n\n" + `:hash: Rule numbers violated: ${this.rules.join(", ")}` + "\n" + `More information: ${this.reason}`);
                     msg.setFooter(`💬 This channel is private between you and staff to discuss this matter. Please remain respectful.` + "\n" + `🔄 **You have 48 hours to appeal this discipline in this channel if it was issued unjustly.** Leaving the guild, being disrespectful towards staff, or trying to discuss this matter outside of this text channel will remove your privilege to appeal.` + "\n" + `😄 Thank you for your understanding and cooperation.` + "\n\n" + `#️⃣ Case ID: ${this.case}`);
                 }
@@ -340,7 +340,7 @@ module.exports = class GuildDiscipline {
                 this.muteDuration = 0;
                 this.banDuration = null;
                 msg.setTitle(`:mag: **__YOU HAVE BEEN MUTED FOR AN INVESTIGATION__** :mag:`);
-                msg.setThumbnail(`${message.client.options.dashboardHooks.origin}/discipline/ban.png`);
+                msg.setThumbnail(`${this.client.options.dashboardHooks.origin}/discipline/ban.png`);
                 msg.setDescription(`Your recent conduct necessitates an investigation by Discord or law enforcement. You have been muted during the investigation. Please read the following information carefully.` + "\n\n" + `:hash: Rule numbers violated: ${this.rules.join(", ")}` + "\n" + `More information: ${this.reason}`);
                 msg.setFooter(`💬 This channel is private between you and staff to discuss this matter. Please remain respectful.` + "\n" + `👮 **You must comply with staff's questions and instruction, and provide only truthful information**. Failure will result in a permanent ban. The only acceptable forms of civil disobedience is polite refusal to answer questions, remaining silent, or leaving the guild.` + "\n" + `😄 Thank you for your understanding and cooperation.` + "\n\n" + `#️⃣ Case ID: ${this.case}`);
         }
