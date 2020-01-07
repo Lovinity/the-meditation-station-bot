@@ -178,7 +178,7 @@ async function askRulesReason (message, discipline) {
     rules.map((rule) => discipline.addRule(rule));
 
     // Next, ask for a reason
-    var reason = await message.awaitReply(`:question: **What Did the Member Do?**: Briefly but specifically explain what the member did that was against the rules. Keep the length under 256 characters. Please do not provide additional instruction/discipline here; that will be asked later. You have 5 minutes to respond.`, 300000);
+    var reason = await message.awaitReply(`:question: **What Did the Member Do?**: Briefly but specifically explain what the member did that was against the rules. Keep the length under 1024 characters. Please do not provide additional instruction/discipline here; that will be asked later. You have 5 minutes to respond.`, 300000);
     if (!reason) {
         throw new Error("No reasons specified")
     }
@@ -187,7 +187,7 @@ async function askRulesReason (message, discipline) {
 
 async function askOther (message, discipline) {
     // Ask for any additional discipline or instruction
-    var other = await message.awaitReply(`:question: **Other discipline**: If there is any other discipline or instructions for the user not already covered by this wizard, please state so here. Keep the length under 256 characters. If there is no other further discipline or instruction, send "none". You have 5 minutes to respond.`, 300000);
+    var other = await message.awaitReply(`:question: **Other discipline**: If there is any other discipline or instructions for the user not already covered by this wizard, please state so here. Keep the length under 1024 characters. If there is no other further discipline or instruction, send "none". You have 5 minutes to respond.`, 300000);
     if (!other) {
         throw new Error("No other discipline specified")
     }

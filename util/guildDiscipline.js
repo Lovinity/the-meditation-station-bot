@@ -1,6 +1,7 @@
 // This class constructs and issues a discipline against a guild member via the user extension
 const ModLog = require('./modLog');
 const moment = require('moment');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = class GuildDiscipline {
 
@@ -214,9 +215,10 @@ module.exports = class GuildDiscipline {
         var guildMember = this.guild.members.resolve(this.user.id);
 
         // Init the message
-        var msg = ``; // Intro / reason
-        var msg2 = "The following discipline has been issued: \n\n"; // Discipline / Accountability
-        var msg3 = ``; // Appeals / Closing / not in the guild
+        var msg = new MessageEmbed()
+            .setAuthor(this.responsible.tag, this.responsible.avatar)
+            .setColor(colour(this.type))
+            .setURL(`${this.client.options.dashboardHooks.origin}/modlogs.html?user=${this.user.id}`);
 
         // Set up a function called for class D discipline and higher
         var classD = () => {
@@ -235,52 +237,33 @@ module.exports = class GuildDiscipline {
                 // Format the mute depending on whether or not a temp ban is issued
                 if (this.banDuration === null) {
                     this.muteDuration = 0;
-                    msg2 += ":mute: **Mute** \n"
-                    msg2 += `You have been muted from the guild until you complete the tasks outlined in this discipline section. Once all tasks are satisfied, your mute will be lifted. If you choose not to do the tasks, you will remain muted until / unless you do them.` + "\n"
-                    msg2 += `:warning: Leaving and re-joining the guild will not remove the mute. It will be removed by staff when you complete the tasks.` + "\n\n"
+                    msg.addField(`:mute: **Muted Until Tasks Completed**`, `You have been muted from the guild until you complete the tasks outlined in this discipline section. Once all tasks are satisfied, your mute will be lifted. If you choose not to do the tasks, you will remain muted until / unless you do them.` + "\n" + `:warning: Leaving and re-joining the guild will not remove the mute. It will be removed by staff when you complete the tasks.`);
                 } else {
-                    msg2 += ":mute: **Mute on Return** \n"
-                    msg2 += `Once you return to the guild, you will be muted until you complete the tasks outlined in this discipline section. Once all tasks are satisfied, your mute will be lifted. If you choose not to do the tasks, you will remain muted until / unless you do them.` + "\n"
-                    msg2 += `:warning: Leaving and re-joining the guild will not remove the mute. It will be removed by staff when you complete the tasks.` + "\n\n"
+                    msg.addField(`:mute: **Will Be Muted on Return to the Guild**`, `Once you return to the guild, you will be muted until you complete the tasks outlined in this discipline section. Once all tasks are satisfied, your mute will be lifted. If you choose not to do the tasks, you will remain muted until / unless you do them.` + "\n" + `:warning: Leaving and re-joining the guild will not remove the mute. It will be removed by staff when you complete the tasks.`);
                 }
                 // No class D discipline, but a mute was specified? Make a mute discipline message based on duration.
             } else if (this.muteDuration !== null) {
-                msg2 += ":mute: **Mute** \n"
-                msg2 += `You have been muted from the guild ${this.muteDuration === 0 ? 'until staff manually remove the muted role from you. You will not have access to the rest of the guild until the mute is removed.' + "\n\n" : `until ${moment().add(this.muteDuration, 'hours').format("LLLL Z")}`} (${this.muteDuration} hours from now). You will not have access to the rest of the guild until the mute expires.` + "\n"
-                msg2 += `:warning: Leaving and re-joining the guild will not remove the mute. It will be removed once expired or once staff manually remove it.` + "\n\n"
+                msg.addField(`:mute: **Muted Until ${this.muteDuration === 0 ? `Staff Unmute You` : `${moment().add(this.muteDuration, 'hours').format("LLLL Z")}`}**`, `You will not have access to any of the guild channels (except this) nor members (except staff) until the mute is removed or expired.` + "\n" + `:warning: Leaving and re-joining the guild will not remove the mute.`);
             }
 
             // Make messages depending on class D discipline specified.
             if (this.classD.apology) {
-                msg2 += ":sweat_smile: **Task: Formal, Reflective Apology** \n"
-                msg2 += `You are required to write formal reflective apologies addressed to each of the following people: **${this.classD.apology}**.
-:small_blue_diamond: Each apology must be no less than 250 words long.
-:small_blue_diamond: You must state in each apology what you did wrong, that you acknowledge you did wrong, how your actions negatively impacted these people and/or the community, what you learned from this experience, and what you will do to ensure this doesn't happen again.
-:small_blue_diamond: Apologies __may not__ contain excuses, justifications, nor defenses. This apology is about the people affected, not you.
-Post your completed apologies in this text channel as an attachment of file type ODT, DOC/DOCX, RTF, TXT, or PDF. Once approved, you will be required, with staff guidance, to present your apologies to those people. After doing that, this task will be satisfied.` + "\n\n"
+                msg.addField(`:sweat_smile: **Required to Write Formal Apology/ies**`, `You are required to write a [separate] formal apology addressed to each of these members: ${this.classD.apology}`, true);
+                msg.addField(`Apology Requirements (each):`, `🟠 No less than 250 words long.` + "\n" + `🟠 Must acknowledge you did wrong, state what you did wrong, mention how your behavior impacted the members/community, what you learned, and what you will do to ensure this does not happen again.` + "\n" + `🟠 May not contain excuses, justifications, nor defensive language.` + "\n" + `🟢 Post completed apologies in this channel as an attachment or link to an online document. You will then be required with staff guidance to present your apologies directly to addressed members.`, true);
             }
 
             if (this.classD.research) {
-                msg2 += ":pencil: **Task: Research Paper** \n"
-                msg2 += `You are required to write a research paper on each of the following topics: **${this.classD.research}**
-:small_blue_diamond: Each research paper must be no less than 500 words long.
-:small_blue_diamond: Each research paper must contain an introduction (thesis / main points), body (supporting details / evidence / sources to back the points stated in the introduction), and conclusion (what you learned by doing this research, and how you will apply this research to your life and how you conduct yourself).
-:small_blue_diamond: Each paper must contain at least 2 cited credible sources to demonstrate you actually did the research on the provided topics.
-Post your completed research paper(s) in this text channel as an attachment of file type ODT, DOC/DOCX, RTF, TXT, or PDF. Once staff approve your papers, staff might require with their guidance that you present your research to the guild. After doing that, this task is satisfied.` + "\n\n"
+                msg.addField(`:pencil: **Required to Write Research Paper(s)**`, `You are required to write a research paper on each of these topics: ${this.classD.research}`, true);
+                msg.addField(`Research Paper Requirements (each):`, `🟠 No less than 500 words long.` + "\n" + `🟠 Must contain an introduction / thesis, body (supporting details, facts, and evidence), and conclusion (what you learned and how you will apply this knowledge).` + "\n" + `🟠 Must have at least 2 credible sources cited (ask staff for help on what is deemed "credible").` + "\n" + `🟢 Post completed research papers in this channel as an attachment or link to an online document. You might additionally be required with staff guidance to present your research to the guild.`, true);
             }
 
             if (this.classD.retraction) {
-                msg2 += ":page_facing_up: **Task: Retraction Statement** \n"
-                msg2 += `You are required to write a retraction statement retracting the following things you posted / said: **${this.classD.retraction}**
-:small_blue_diamond: Each retraction statement must be no less than 250 words long.
-:small_blue_diamond: Each retraction statement must include an introduction (what you originally said, and statement that it was wrong and you retract it), body (the correct information and evidence / sources), and conclusion (what you learned by doing this research / retraction, and what you will do to ensure you fact-check yourself in the future)
-:small_blue_diamond: Each retraction statement must contain at least 2 cited credible sources to act as evidence that your corrected information is indeed correct.
-Post your completed retraction statement(s) in this text channel as an attachment of file type ODT, DOC/DOCX, RTF, TXT, or PDF. Once staff approve your statements, you will be required to present your statement(s) to the rest of the guild with staff guidance. Once you do, this task is satisfied.` + "\n\n"
+                msg.addField(`:page_facing_up: **Required to Write Retraction Statement(s)**`, `You are required to write a retraction statement for the following things you said or posted: ${this.classD.retraction}`, true);
+                msg.addField(`Retraction Statement Requirements (each):`, `🟠 No less than 250 words long.` + "\n" + `🟠 Must contain an introduction (what you originally said, and acknowledgment that it was wrong / inaccurate), body (the correct facts and evidence / citations to support that), and conclusion (what you learned and how you will apply this knowledge).` + "\n" + `🟠 Must have at least 2 credible sources cited (ask staff for help on what is deemed "credible").` + "\n" + `🟢 Post completed retraction statements in this channel as an attachment or link to an online document. You will then be required with staff guidance to present your retraction statements to the guild.`, true);
             }
 
             if (this.classD.quiz) {
-                msg2 += ":question: **Task: Take / Pass a Quiz** \n"
-                msg2 += `You are required to take and pass one or more quizzes on spillthet.org. Here are the details: ` + "\n" + `**${this.classD.quiz}**` + "\n\n"
+                msg.addField(`:question: **Required to Take Quiz(zes)**`, `You are required to take the following quizzes: ${this.classD.quiz}`);
             }
         }
 
@@ -291,165 +274,75 @@ Post your completed retraction statement(s) in this text channel as an attachmen
             case 'classA':
                 this.muteDuration = null;
                 this.banDuration = null;
-                msg += ":warning: **__THIS IS A FORMAL WARNING__** :warning: \n\n"
-                msg += "Staff are concerned about your recent conduct. You are being issued a formal warning for the following: \n"
-                msg += `:hash: **Rule number(s) violated:** ${this.rules.join(", ")}` + "\n"
-                msg += `:notepad_spiral: **Further Information:** ${this.reason}` + "\n\n"
-                msg += "Please work on improving your behavior; Further violations will likely result in discipline."
-
-                msg2 = ""
-
-                msg3 += ":speech_balloon: This channel is private between you and staff; you may communicate any questions or concerns you have here. If you need help resolving this incident, staff are happy to provide some tips and guidance. But please remain respectful. \n"
-                msg3 += ":arrows_counterclockwise: **You have 48 hours to dispute this warning in this text channel if you feel it was wrongly issued**. Leaving the guild, being disrespectful towards staff, or trying to discuss the matter outside of this channel will automatically make this warning final and unappealable. \n"
-                msg3 += `:link: You can view your full moderation history at ${this.client.options.dashboardHooks.origin}/modlogs.html?user=${this.user.id}` + "\n"
-                msg3 += "Thank you for your understanding and cooperation."
-
-                if (!guildMember)
-                    msg3 += "\n\n**User not in the guild**\nI will add permissions to this channel if/when I detect them re-entering the guild."
-
+                msg.setTitle(`:warning: **__YOU HAVE BEEN FORMALLY WARNED__** :warning:`);
+                msg.setThumbnail(`${message.client.options.dashboardHooks.origin}/discipline/warning.png`);
+                msg.setDescription(`We are concerned about your recent conduct, and you are being issued a formal warning as a result. You need to change your behavior immediately, otherwise further discipline will be issued. Please read the following information carefully.` + "\n\n" + `:hash: Rule numbers violated: ${this.rules.join(", ")}` + "\n" + `More information: ${this.reason}`);
+                msg.setFooter(`💬 This channel is private between you and staff to discuss this matter. Please remain respectful.` + "\n" + `🔄 **You have 48 hours to appeal this warning in this channel if it was issued unjustly.** Leaving the guild, being disrespectful towards staff, or trying to discuss this matter outside of this text channel will remove your privilege to appeal.` + "\n" + `😄 Thank you for your understanding and cooperation.` + "\n\n" + `#️⃣ Case ID: ${this.case}`);
                 break;
             case 'classB':
                 this.muteDuration = null;
                 this.banDuration = null;
-                msg += ":octagonal_sign: **__BASIC DISCIPLINE ISSUED__** :octagonal_sign: \n\n"
-                msg += "Come on, friend. We know you can behave better than this. Your recent conduct has necessitated disciplinary action. You are being issued discipline for the following: \n"
-                msg += `:hash: **Rule number(s) violated:** ${this.rules.join(", ")}` + "\n"
-                msg += `:notepad_spiral: **Further Information:** ${this.reason}` + "\n\n"
-                msg += "Staff would like to see you work on this concern and learn from this encounter. Staff may need to issue more severe discipline if this happens again."
-
-                msg3 += ":speech_balloon: This channel is private between you and staff; you may communicate any questions or concerns you have here. If you need help resolving this incident, staff are happy to provide some tips and guidance. But please remain respectful. \n"
-                msg3 += ":arrows_counterclockwise: **You have 48 hours to dispute this discipline in this text channel if you feel it was wrongly issued**. Leaving the guild, being disrespectful towards staff, or trying to discuss the matter outside of this channel will automatically make this discipline final and unappealable. \n"
-                msg3 += `:link: You can view your full moderation history at ${this.client.options.dashboardHooks.origin}/modlogs.html?user=${this.user.id}` + "\n"
-                msg3 += "Thank you for your understanding and cooperation." + "\n\n"
-                msg3 += "**Staff**: Do not delete this channel until the appeal deadline has passed, or an appeal has been granted or denied. Also, if a member loses access to this channel, you can grant access back with the command `!grant username/mention/snowflake`."
-
-                if (!guildMember)
-                    msg3 += "\n\n**User not in the guild**\nI will add permissions to this channel if/when I detect them re-entering the guild."
-
+                msg.setTitle(`:octagonal_sign: **__YOU HAVE BEEN DISCIPLINED__** :octagonal_sign:`);
+                msg.setThumbnail(`${message.client.options.dashboardHooks.origin}/discipline/discipline.png`);
+                msg.setDescription(`Your recent conduct in the guild has not been satisfactory. We have issued discipline as a result. Please read the following information carefully.` + "\n\n" + `:hash: Rule numbers violated: ${this.rules.join(", ")}` + "\n" + `More information: ${this.reason}`);
+                msg.setFooter(`💬 This channel is private between you and staff to discuss this matter. Please remain respectful.` + "\n" + `🔄 **You have 48 hours to appeal this discipline in this channel if it was issued unjustly.** Leaving the guild, being disrespectful towards staff, or trying to discuss this matter outside of this text channel will remove your privilege to appeal.` + "\n" + `😄 Thank you for your understanding and cooperation.` + "\n\n" + `#️⃣ Case ID: ${this.case}`);
                 break;
             case 'classC':
                 if (this.banDuration === null && this.muteDuration !== null) {
-                    msg += ":mute: **__ANTISPAM MUTE ISSUED__** :mute: \n\n"
-                    msg += "You ignored my antispam warning. In order to stop excessive spam, I have issued a mute against you."
-
-                    msg3 += ":speech_balloon: This channel is private between you and staff; you may communicate any questions or concerns you have here. If you need help resolving this incident, staff are happy to provide some tips and guidance. But please remain respectful. \n"
-                    msg3 += ":arrows_counterclockwise: **You have 48 hours to dispute this discipline in this text channel if I did not warn you before issuing antispam discipline**. Leaving the guild, being disrespectful towards staff, or trying to discuss the matter outside of this channel will automatically make this discipline final and unappealable. \n"
-                    msg3 += `:link: You can view your full moderation history at ${this.client.options.dashboardHooks.origin}/modlogs.html?user=${this.user.id}` + "\n"
-                    msg3 += "Thank you for your understanding and cooperation." + "\n\n"
-                    msg3 += "**Staff**: Do not delete this channel until the appeal deadline has passed, or an appeal has been granted or denied. Also, if a member loses access to this channel, you can grant access back with the command `!grant username/mention/snowflake`."
-
-                    if (!guildMember)
-                        msg3 += "\n\n**User not in the guild**\nI will add the mute and permissions to this channel if/when I detect them re-entering the guild."
+                    msg.setTitle(`:mute: **__YOU HAVE BEEN MUTED FOR SPAMMING__** :mute:`);
+                    msg.setThumbnail(`${message.client.options.dashboardHooks.origin}/discipline/mute.png`);
+                    msg.setDescription(`You have been muted by the automatic antispam system. Please read the following information carefully.` + "\n\n" + `:hash: Rule numbers violated: ${this.rules.join(", ")}` + "\n" + `More information: ${this.reason}`);
+                    msg.setFooter(`💬 This channel is private between you and staff to discuss this matter. Please remain respectful.` + "\n" + `🔄 **You have 48 hours to appeal this discipline in this channel if the bot did not verbally warn you for spamming before disciplining you.** You cannot appeal antispam discipline for any other reason.` + "\n" + `😄 Thank you for your understanding and cooperation.` + "\n\n" + `#️⃣ Case ID: ${this.case}`);
                 } else if (this.banDuration > 0) {
-                    msg += ":no_entry: **__ANTISPAM TEMPORARY BAN ISSUED__** :no_entry: \n\n"
-                    msg += "You ignored my antispam warning during an active raid. I have issued a temporary ban against you to mitigate the raid."
-
-                    msg3 += ":speech_balloon: This channel is private between you and staff; you may communicate any questions or concerns you have here. If you need help resolving this incident, staff are happy to provide some tips and guidance. But please remain respectful. \n"
-                    msg3 += ":arrows_counterclockwise: **You have 48 hours to dispute this discipline in this text channel if I did not warn you before issuing antispam discipline**. Leaving the guild, being disrespectful towards staff, or trying to discuss the matter outside of this channel will automatically make this discipline final and unappealable. \n"
-                    msg3 += `:link: You can view your full moderation history at ${this.client.options.dashboardHooks.origin}/modlogs.html?user=${this.user.id}` + "\n"
-                    msg3 += "Thank you for your understanding and cooperation." + "\n\n"
-                    msg3 += "**Staff**: Do not delete this channel until the appeal deadline has passed, or an appeal has been granted or denied. Also, if a member loses access to this channel, you can grant access back with the command `!grant username/mention/snowflake`."
-                    if (!guildMember)
-                        msg3 += "\n\n**User not in the guild**\nThe temp ban was applied immediately."
+                    msg.setTitle(`:no_entry: **__YOU HAVE BEEN TEMPORARILY BANNED FOR SPAMMING__** :no_entry:`);
+                    msg.setThumbnail(`${message.client.options.dashboardHooks.origin}/discipline/tempban.png`);
+                    msg.setDescription(`You have been temporarily banned by the automatic antispam system. Please read the following information carefully.` + "\n\n" + `:hash: Rule numbers violated: ${this.rules.join(", ")}` + "\n" + `More information: ${this.reason}`);
+                    msg.setFooter(`💬 This channel is private between you and staff to discuss this matter. Please remain respectful.` + "\n" + `🔄 **You have 48 hours to appeal this discipline in this channel if the bot did not verbally warn you for spamming before disciplining you.** You cannot appeal antispam discipline for any other reason.` + "\n" + `😄 Thank you for your understanding and cooperation.` + "\n\n" + `#️⃣ Case ID: ${this.case}`);
                 } else if (this.banDuration === 0) {
-                    msg += ":no_entry_sign: **__ANTISPAM PERMANENT BAN ISSUED__** :no_entry_sign: \n\n"
-                    msg += "You ignored my antispam warning during an active severe raid. I have issued a permanent ban against you to mitigate the raid. You are asked to leave the guild and not to return. We wish you the best in your adventures and hope you enjoyed your stay in this guild."
-
-                    msg3 += ":speech_balloon: This channel is private between you and staff; you may communicate any questions or concerns you have here. If you need help resolving this incident, staff are happy to provide some tips and guidance. But please remain respectful. \n"
-                    msg3 += ":arrows_counterclockwise: **You have 48 hours to dispute this discipline in this text channel if I did not warn you before issuing antispam discipline**. Leaving the guild, being disrespectful towards staff, or trying to discuss the matter outside of this channel will automatically make this discipline final and unappealable. \n"
-                    msg3 += `:link: You can view your full moderation history at ${this.client.options.dashboardHooks.origin}/modlogs.html?user=${this.user.id}` + "\n"
-                    msg3 += "Thank you for your understanding and cooperation." + "\n\n"
-                    msg3 += "**Staff**: Do not delete this channel until the appeal deadline has passed, or an appeal has been granted or denied. Also, if a member loses access to this channel, you can grant access back with the command `!grant username/mention/snowflake`."
-                    if (!guildMember)
-                        msg3 += "\n\n**User not in the guild**\nThe ban was applied immediately."
+                    msg.setTitle(`:no_entry_sign: **__YOU HAVE BEEN PERMANENTLY BANNED FOR SPAMMING__** :no_entry_sign:`);
+                    msg.setThumbnail(`${message.client.options.dashboardHooks.origin}/discipline/ban.png`);
+                    msg.setDescription(`You have been permanently banned by the automatic antispam system. Please read the following information carefully.` + "\n\n" + `:hash: Rule numbers violated: ${this.rules.join(", ")}` + "\n" + `More information: ${this.reason}`);
+                    msg.setFooter(`💬 This channel is private between you and staff to discuss this matter. Please remain respectful.` + "\n" + `🔄 **You have 48 hours to appeal this discipline in this channel if the bot did not verbally warn you for spamming before disciplining you.** You cannot appeal antispam discipline for any other reason.` + "\n" + `😄 Thank you for your understanding and cooperation.` + "\n\n" + `#️⃣ Case ID: ${this.case}`);
                 }
 
                 break;
             case 'classD':
                 this.muteDuration = 0;
                 this.banDuration = null;
-                msg += ":mute: **__REFLECTIVE ASSIGNMENT ISSUED__ (muted until completed)** :mute: \n\n"
-                msg += "The staff are disappointed in your recent conduct. Your behavior has caused problems for other members, and we are issuing a mute until you complete a task or two as reflection / accountability for your actions. You are being issued a mute for the following: \n"
-                msg += `:hash: **Rule number(s) violated:** ${this.rules.join(", ")}` + "\n"
-                msg += `:notepad_spiral: **Further Information:** ${this.reason}`
-
-                msg3 += ":speech_balloon: This channel is private between you and staff; you may communicate any questions or concerns you have here. If you need help resolving this incident, staff are happy to provide some tips and guidance. But please remain respectful. \n"
-                msg3 += ":arrows_counterclockwise: **You have 48 hours to dispute this discipline in this text channel**. Leaving the guild, being disrespectful towards staff, or trying to discuss the matter outside of this channel will automatically make this discipline final and unappealable. \n"
-                msg3 += `:link: You can view your full moderation history at ${this.client.options.dashboardHooks.origin}/modlogs.html?user=${this.user.id}` + "\n"
-                msg3 += "Thank you for your understanding and cooperation." + "\n\n"
-                msg3 += "**Staff**: Do not delete this channel until either an appeal has been granted, the user completed all tasks, or 7 days have elapsed without results (kick the member from the guild if that happens as well). Also, if a member loses access to this channel, you can grant access back with the command `!grant username/mention/snowflake`."
-
-                if (!guildMember)
-                    msg3 += "\n\n**User not in the guild**\nI will add the mute and permissions to this channel if/when I detect them re-entering the guild."
+                msg.setTitle(`:notebook: **__YOU HAVE BEEN MUTED AND ARE REQUIRED TO COMPLETE A FEW TASKS__** :notebook:`);
+                msg.setThumbnail(`${message.client.options.dashboardHooks.origin}/discipline/assignment.png`);
+                msg.setDescription(`We need you to do a few things because of your recent poor conduct in the guild. Please read the following information carefully.` + "\n\n" + `:hash: Rule numbers violated: ${this.rules.join(", ")}` + "\n" + `More information: ${this.reason}`);
+                msg.setFooter(`💬 This channel is private between you and staff to discuss this matter. Please remain respectful.` + "\n" + `🔄 **You have 48 hours to appeal this discipline in this channel if it was issued unjustly.** Leaving the guild, being disrespectful towards staff, or trying to discuss this matter outside of this text channel will remove your privilege to appeal.` + "\n" + `😄 Thank you for your understanding and cooperation.` + "\n\n" + `#️⃣ Case ID: ${this.case}`);
                 break;
             case 'classE':
                 this.banDuration = null;
-
-                msg += ":closed_lock_with_key: **__ACCESS RESTRICTIONS ISSUED__** :closed_lock_with_key: \n\n"
-                msg += "The staff are disappointed in your recent conduct. Your behavior has caused problems in the guild to the point access restrictions are necessary. You are being issued discipline for the following: \n"
-                msg += `:hash: **Rule number(s) violated:** ${this.rules.join(", ")}` + "\n"
-                msg += `:notepad_spiral: **Further Information:** ${this.reason}`
-
-                msg3 += ":speech_balloon: This channel is private between you and staff; you may communicate any questions or concerns you have here. If you need help resolving this incident, staff are happy to provide some tips and guidance. But please remain respectful. \n"
-                msg3 += ":arrows_counterclockwise: **You have 48 hours to dispute this discipline in this text channel**. Leaving the guild, being disrespectful towards staff, or trying to discuss the matter outside of this channel will automatically make this discipline final and unappealable. \n"
-                msg3 += `:link: You can view your full moderation history at ${this.client.options.dashboardHooks.origin}/modlogs.html?user=${this.user.id}` + "\n"
-                msg3 += "Thank you for your understanding and cooperation." + "\n\n"
-                msg3 += "**Staff**: Do not delete this channel until either an appeal has been granted, 48 hours have elapsed and the user has no required tasks to complete, the user completed all tasks, or the user has required tasks to complete and 7 days have elapsed without results (kick the member from the guild if that happens as well). Also, if a member loses access to this channel, you can grant access back with the command `!grant username/mention/snowflake`."
-
-                if (!guildMember)
-                    msg3 += "\n\n**User not in the guild**\nI will add the mute and permissions to this channel if/when I detect them re-entering the guild."
+                msg.setTitle(`:closed_lock_with_key: **__RESTRICTIONS HAVE BEEN PLACED ON YOU__** :closed_lock_with_key:`);
+                msg.setThumbnail(`${message.client.options.dashboardHooks.origin}/discipline/restrictions.png`);
+                msg.setDescription(`Because your recent conduct has caused problems, we have issued restrictions against you to protect the safety and integrity of the guild. Please read the following information carefully.` + "\n\n" + `:hash: Rule numbers violated: ${this.rules.join(", ")}` + "\n" + `More information: ${this.reason}`);
+                msg.setFooter(`💬 This channel is private between you and staff to discuss this matter. Please remain respectful.` + "\n" + `🔄 **You have 48 hours to appeal this discipline in this channel if it was issued unjustly.** Leaving the guild, being disrespectful towards staff, or trying to discuss this matter outside of this text channel will remove your privilege to appeal.` + "\n" + `😄 Thank you for your understanding and cooperation.` + "\n\n" + `#️⃣ Case ID: ${this.case}`);
                 break;
             case 'classF':
                 this.muteDuration = null;
 
                 if (this.banDuration === 0) {
-                    msg += ":no_entry_sign: **__PERMANENT BAN ISSUED__** :no_entry_sign: \n\n"
-                    msg += "Your conduct in the guild cannot be tolerated any longer. Therefore, for the safety of the community, you are being asked to leave the guild and not to return. We wish you the best in your adventures and hope you enjoyed your stay in this guild. You are being banned for the following: \n"
-                    msg += `:hash: **Rule number(s) violated:** ${this.rules.join(", ")}` + "\n"
-                    msg += `:notepad_spiral: **Further Information:** ${this.reason}`
-
-                    msg3 += ":speech_balloon: This channel is private between you and staff; you may communicate any questions or concerns you have here prior to leaving (once you leave, you will lose access to the guild). If you need help resolving this incident, staff are happy to provide some tips and guidance. But please remain respectful. \n"
-                    msg3 += ":arrows_counterclockwise: **You have 48 hours to dispute this ban in this text channel if you feel it was wrongly issued**. Leaving the guild, being disrespectful towards staff, or trying to discuss the matter outside of this channel will automatically make this ban final and unappealable. \n"
-                    msg3 += `:link: You can view your full moderation history at ${this.client.options.dashboardHooks.origin}/modlogs.html?user=${this.user.id}` + "\n"
-                    msg3 += "Thank you for your understanding and cooperation." + "\n\n"
-                    msg3 += "**Staff**: Do not delete this channel until the appeal deadline has passed, or an appeal has been granted or denied. Please kick the user if they are still in the guild when the appeal deadline passes. Also, if a member loses access to this channel, you can grant access back with the command `!grant username/mention/snowflake`."
-
-                    if (!guildMember)
-                        msg3 += "\n\n**User not in the guild**\nThe ban was applied immediately."
+                    msg.setTitle(`:no_entry_sign: **__YOU HAVE BEEN PERMANENTLY BANNED__** :no_entry_sign:`);
+                    msg.setThumbnail(`${message.client.options.dashboardHooks.origin}/discipline/ban.png`);
+                    msg.setDescription(`Unfortunately, your presence in our guild has proven detrimental beyond repair. You are required to leave indefinitely for the safety and integrity of the community. Please read the following information carefully.` + "\n\n" + `:hash: Rule numbers violated: ${this.rules.join(", ")}` + "\n" + `More information: ${this.reason}`);
+                    msg.setFooter(`💬 This channel is private between you and staff to discuss this matter. Please remain respectful.` + "\n" + `🔄 **You have 48 hours to appeal this discipline in this channel if it was issued unjustly.** Leaving the guild, being disrespectful towards staff, or trying to discuss this matter outside of this text channel will remove your privilege to appeal.` + "\n" + `😄 Thank you for your understanding and cooperation.` + "\n\n" + `#️⃣ Case ID: ${this.case}`);
                 } else {
-                    msg += ":no_entry: **__TEMPORARY BAN ISSUED__** :no_entry: \n\n"
-                    msg += "The staff are greatly disappointed in your conduct; we know you can do better than this. We ask that you take a break from the guild for some time and reflect on your mistakes. To facilitate this, you have been issued a temporary ban for the following: \n"
-                    msg += `:hash: **Rule number(s) violated:** ${this.rules.join(", ")}` + "\n"
-                    msg += `:notepad_spiral: **Further Information:** ${this.reason}`
-                    msg += "During your temporary ban, the staff would like to see you reflect on your mistakes and put a plan of action in place to improve your behavior. Staff may need to issue a permanent ban if this happens again."
-
-                    msg3 += ":speech_balloon: This channel is private between you and staff; you may communicate any questions or concerns you have here prior to leaving (once you leave, you will lose access to the server until the suspension ends). If you need help resolving this incident, staff are happy to provide some tips and guidance. But please remain respectful. \n"
-                    msg3 += ":arrows_counterclockwise: **You have 48 hours to dispute this temp ban in this text channel if you feel it was wrongly issued**. Leaving the guild, being disrespectful towards staff, or trying to discuss the matter outside of this channel will automatically make this temp ban final and unappealable. \n"
-                    msg3 += `:link: You can view your full moderation history at ${this.client.options.dashboardHooks.origin}/modlogs.html?user=${this.user.id}` + "\n"
-                    msg3 += "Thank you for your understanding and cooperation." + "\n\n"
-                    msg3 += "**Staff**: Do not delete this channel until the appeal deadline has passed, or an appeal has been granted or denied. Please kick the user if they are still in the guild when the appeal deadline passes. Also, if a member loses access to this channel, you can grant access back with the command `!grant username/mention/snowflake`."
-
-                    if (!guildMember)
-                        msg3 += "\n\n**User not in the guild**\nThe ban was applied immediately."
+                    msg.setTitle(`:no_entry: **__YOU HAVE BEEN TEMPORARILY BANNED__** :no_entry:`);
+                    msg.setThumbnail(`${message.client.options.dashboardHooks.origin}/discipline/tempban.png`);
+                    msg.setDescription(`Your conduct has caused a lot of problems in the guild. You are required to leave for a temporary time to reflect on, and improve, your behavior. Please read the following information carefully.` + "\n\n" + `:hash: Rule numbers violated: ${this.rules.join(", ")}` + "\n" + `More information: ${this.reason}`);
+                    msg.setFooter(`💬 This channel is private between you and staff to discuss this matter. Please remain respectful.` + "\n" + `🔄 **You have 48 hours to appeal this discipline in this channel if it was issued unjustly.** Leaving the guild, being disrespectful towards staff, or trying to discuss this matter outside of this text channel will remove your privilege to appeal.` + "\n" + `😄 Thank you for your understanding and cooperation.` + "\n\n" + `#️⃣ Case ID: ${this.case}`);
                 }
                 break;
             case 'classG':
                 this.muteDuration = 0;
                 this.banDuration = null;
-
-                msg += ":incoming_envelope:  **__MUTE ISSUED FOR AN INVESTIGATION__** :incoming_envelope:  \n\n"
-                msg += "Your recent conduct necessitates an investigation because you violated rules pertaining to a third party (such as Discord or the law). Until the investigation concludes, you will be muted. You are being muted for the following: \n"
-                msg += `:hash: **Rule number(s) violated:** ${this.rules.join(", ")}` + "\n"
-                msg += `:notepad_spiral: **Further Information:** ${this.reason}`
-
-                msg3 += ":police_officer: **You are obligated to comply honorably with this investigation.**. You have the right to remain silent, and anything you say can and will be used as part of this investigation. Everything you say, if you say anything, must be truthful and accurate. Failure to comply honorably with the investigation, or showing disrespect towards staff or the third parties, will result in a permanent ban after the investigation finishes." + "\n\n"
-                msg3 += ":speech_balloon: This channel is private between you and staff; you may communicate any questions or concerns you have here. If you need help resolving this incident, staff are happy to provide some tips and guidance. But please remain respectful. \n"
-                msg3 += ":arrows_counterclockwise: **You are unable to appeal this because it involves a third party**. Once a decision by the third party is made, any appeals are the responsibility of that third party and should be brought up with them. \n"
-                msg3 += `:link: You can view your full moderation history at ${this.client.options.dashboardHooks.origin}/modlogs.html?user=${this.user.id}` + "\n"
-                msg3 += "**Staff**: **Do not delete any messages pertaining to this incident sent by the user**; Discord will need them for the investigation. Also, when the investigation concludes, if no action (including warnings) is taken by the third party and you will not be issuing further discipline, this case should be appealed. Do not delete this channel until the investigation concludes. Also, if a member loses access to this channel, you can grant access back with the command `!grant username/mention/snowflake`."
-
-                if (!guildMember)
-                    msg3 += "\n\n**User not in the guild**\nI will add the mute and permissions to this channel if/when I detect them re-entering the guild."
+                msg.setTitle(`:mag: **__YOU HAVE BEEN MUTED FOR AN INVESTIGATION__** :mag:`);
+                msg.setThumbnail(`${message.client.options.dashboardHooks.origin}/discipline/ban.png`);
+                msg.setDescription(`Your recent conduct necessitates an investigation by Discord or law enforcement. You have been muted during the investigation. Please read the following information carefully.` + "\n\n" + `:hash: Rule numbers violated: ${this.rules.join(", ")}` + "\n" + `More information: ${this.reason}`);
+                msg.setFooter(`💬 This channel is private between you and staff to discuss this matter. Please remain respectful.` + "\n" + `👮 **You must comply with staff's questions and instruction, and provide only truthful information**. Failure will result in a permanent ban. The only acceptable forms of civil disobedience is polite refusal to answer questions, remaining silent, or leaving the guild.` + "\n" + `😄 Thank you for your understanding and cooperation.` + "\n\n" + `#️⃣ Case ID: ${this.case}`);
         }
 
         // prepare a modLog
@@ -477,11 +370,9 @@ Post your completed retraction statement(s) in this text channel as an attachmen
         // Bans
         if (this.banDuration !== null) {
             if (this.banDuration === 0) {
-                msg2 += ":no_entry_sign: **Permanent Ban** \n"
-                msg2 += `Once you leave the guild, a ban will be placed on you. This ban will remain in place indefinitely or until staff manually remove it. Until you leave or staff kick you, you will remain muted.` + "\n\n"
+                msg.addField(`:no_entry_sign: **Permanently Banned**`, `You have been permanently banned from the guild. You are no longer welcome here and are required to leave indefinitely. We hope you enjoyed your stay and wish you luck in your journey.` + "\n" + `Once you leave the guild, a ban will be placed on you. This ban will remain in place indefinitely or until staff manually remove it. Until you leave or staff kick you, you will remain muted.`)
             } else {
-                msg2 += ":no_entry: **Temporary Ban** \n"
-                msg2 += `Once you leave the guild, a ban will be placed on you, which will be removed by the bot in ${this.banDuration} days. Your temp-ban time will not begin until you leave the guild or get kicked; until then, you will remain muted.` + "\n\n"
+                msg.addField(`:no_entry: **Temporarily Banned for ${this.banDuration} Days**`, `You are required to leave the guild for the specified number of days to reflect on, and improve, your behavior.` + "\n" + `Once you leave the guild, a ban will be placed on you, which will be removed by the bot in ${this.banDuration} days. Your temp-ban time will not begin until you leave the guild or get kicked; until then, you will remain muted.`);
             }
         }
 
@@ -509,8 +400,6 @@ Post your completed retraction statement(s) in this text channel as an attachmen
         // First, channel restrictions
         if (this.channelRestrictions.length > 0) {
             var channelNames = [];
-            msg2 += `:lock_with_ink_pen: **Channel Restrictions**` + " \n"
-            msg2 += `You can no longer access the following text channels: `
             this.channelRestrictions.map(channel => {
                 var theChannel = this.guild.channels.resolve(channel)
 
@@ -521,14 +410,12 @@ Post your completed retraction statement(s) in this text channel as an attachmen
                     }, `Discipline case ${this.case}`);
                 }
             })
-            msg2 += `${channelNames.join(", ")}` + "\n\n"
+            msg.addField(`:lock_with_ink_pen: **Channel Restrictions Added**`, `You can no longer access the following channels indefinitely: ${channelNames.join(", ")}`);
         }
 
         // Next, add restriction permissions
         if (this.permissions.length > 0) {
             var roleNames = [];
-            msg2 += `:closed_lock_with_key: **Restrictive Roles**` + " \n"
-            msg2 += `These permission-restrictive roles have been added: `
             this.permissions.map((permission, index) => {
                 var theRole = this.guild.roles.resolve(permission)
 
@@ -544,14 +431,11 @@ Post your completed retraction statement(s) in this text channel as an attachmen
                 }
             })
             modLog = modLog.setPermissions(this.permissions);
-            msg2 += `${roleNames.join(", ")}` + "\n\n"
+            msg.addField(`:closed_lock_with_key: **Restrictive Roles Added**`, `These roles have been added to you: ${roleNames.join(", ")}`);
         }
 
         // Next, add bot restrictions
         if (this.botRestrictions.length > 0) {
-            var roleNames = [];
-            msg2 += `:lock: **Bot Restrictions**` + " \n"
-            msg2 += `The following bot-level restrictions have been applied to you: `
             this.botRestrictions.map((restriction, index) => {
                 if (Object.keys(this.user.guildSettings(this.guild.id).restrictions).indexOf(restriction) !== -1) {
                     this.user.guildSettings(this.guild.id).update(`restrictions.${restriction}`, true);
@@ -565,7 +449,7 @@ Post your completed retraction statement(s) in this text channel as an attachmen
                 }
             });
             modLog = modLog.addBotRestrictions(this.botRestrictions);
-            msg2 += `${this.botRestrictions.join(", ")}` + "\n\n"
+            msg.addField(`:lock: **Bot Restrictions Added**`, `These bot restrictions have been applied to you (ask staff if you need clarification on what they do): ${this.botRestrictions.join(", ")}`);
         }
 
         // Check class D discipline
@@ -574,8 +458,7 @@ Post your completed retraction statement(s) in this text channel as an attachmen
         if (this.xp > 0) {
             await this.user.guildSettings(this.guild.id).update(`xp`, (this.user.guildSettings(this.guild.id).xp - this.xp));
 
-            msg2 += `:fleur_de_lis: **Loss of ${this.xp} XP**` + " \n"
-            msg2 += `Your XP is now at ${(this.user.guildSettings(this.guild.id).xp)}` + "\n\n"
+            msg.addField(`:fleur_de_lis: **${this.xp} XP Retracted**`, `${this.xp} experience (XP) was taken away. You now have ${(this.user.guildSettings(this.guild.id).xp)} XP.`);
 
             // Update level roles
             var guildMember = this.guild.members.resolve(this.user);
@@ -615,9 +498,7 @@ Post your completed retraction statement(s) in this text channel as an attachmen
         }
         if (this.yang > 0) {
             await this.user.guildSettings(this.guild.id).update(`yang`, (this.user.guildSettings(this.guild.id).yang - this.yang));
-
-            msg2 += `:gem: **Loss of ${this.yang} Yang**` + " \n"
-            msg2 += `Your Yang balance is now at ${(this.user.guildSettings(this.guild.id).yang)}` + "\n\n"
+            msg.addField(`:gem: **${this.yang} Yang Fine**`, `You were fined ${this.yang} Yang from your account / profile. You now have ${(this.user.guildSettings(this.guild.id).yang)} Yang.`);
         }
         if (this.HPDamage > 0) {
             await this.user.guildSettings(this.guild.id).update(`HPDamage`, (this.user.guildSettings(this.guild.id).HPDamage + this.HPDamage));
@@ -625,18 +506,13 @@ Post your completed retraction statement(s) in this text channel as an attachmen
             msg2 += `:broken_heart: **${this.HPDamage} HP Damage**` + " \n"
             var HP = this.user.HP(this.guild.id);
             if (HP <= 0) {
-                msg2 += `You now have ${HP} HP.` + "\n"
-                msg2 += `You earn 1 HP for every ${this.guild.settings.oneHPPerXP} XP earned in the guild.` + "\n"
-                msg2 += `:warning: **You do not have any HP left**. This means future discipline for any rule violations could include a temporary or permanent ban.` + "\n\n"
+                msg.addField(`:broken_heart: **${this.HPDamage} HP Damage Issued**`, `You lost ${this.HPDamage} Hit Points (HP). You now have 0 HP.` + "\n" + `:warning: **You do not have any HP left!** This means any additional rule violations can result in a temporary or permanent ban at staff discretion.`);
             } else {
-                msg2 += `You now have ${HP} HP.` + "\n"
-                msg2 += `You earn 1 HP for every ${this.guild.settings.oneHPPerXP} XP earned in the guild.` + "\n"
-                msg2 += `Should you run out of HP, you could be issued a temporary or permanent ban.` + "\n\n"
+                msg.addField(`:broken_heart: **${this.HPDamage} HP Damage Issued**`, `You lost ${this.HPDamage} Hit Points (HP). You now have ${HP} HP.` + "\n" + `Bans are not considered / issued except for certain rule violations unless you lose all your HP. You will regenerate 1 HP for every ${this.guild.settings.oneHPPerXP} XP you earn.`);
             }
         }
         if (this.other !== null) {
-            msg2 += `:notepad_spiral: **Additional Discipline / Notes**` + " \n"
-            msg2 += `${this.other}` + "\n\n"
+            msg.addField(`:notepad_spiral: **Additional Discipline / Information**`, this.other);
         }
 
         // If the member is no longer in the guild, issue the ban or tempban immediately, and undo the mute
@@ -698,9 +574,10 @@ Post your completed retraction statement(s) in this text channel as an attachmen
         }
 
         // Push out discipline message
-        this.channel.send((this.user ? `<@${this.user.id}>` : ``) + "\n" + msg + "\n\n" + msg2 + msg3, {
+        this.channel.send((this.user ? `<@${this.user.id}>, please read the following disciplinary information carefully:` : ``), {
             split: true,
-        })
+            embed: msg
+        });
 
         return this;
     }
@@ -735,4 +612,23 @@ Post your completed retraction statement(s) in this text channel as an attachmen
 
 };
 
-
+function colour (type) {
+    switch (type) {
+        case 'classF':
+            return "#dc3545";
+        case 'classC':
+            return '#17a2b8';
+        case 'classA':
+            return "#ffc107";
+        case 'classE':
+            return "#ff851b";
+        case 'classD':
+            return "#605ca8";
+        case 'classB':
+            return "#007bff";
+        case 'classG':
+            return "#f012be";
+        default:
+            return "#ffffff";
+    }
+}
