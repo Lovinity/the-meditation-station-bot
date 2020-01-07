@@ -216,7 +216,7 @@ module.exports = class GuildDiscipline {
 
         // Init the message
         var msg = new MessageEmbed()
-            .setAuthor(this.responsible.tag)
+            .setAuthor(`Responsible Staff Member: ${this.responsible.tag}`)
             .setColor(colour(this.type))
             .setURL(`${this.client.options.dashboardHooks.origin}/modlogs.html?user=${this.user.id}`);
 
