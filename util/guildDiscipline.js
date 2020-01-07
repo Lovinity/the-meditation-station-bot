@@ -503,7 +503,6 @@ module.exports = class GuildDiscipline {
         if (this.HPDamage > 0) {
             await this.user.guildSettings(this.guild.id).update(`HPDamage`, (this.user.guildSettings(this.guild.id).HPDamage + this.HPDamage));
 
-            msg2 += `:broken_heart: **${this.HPDamage} HP Damage**` + " \n"
             var HP = this.user.HP(this.guild.id);
             if (HP <= 0) {
                 msg.addField(`:broken_heart: **${this.HPDamage} HP Damage Issued**`, `You lost ${this.HPDamage} Hit Points (HP). You now have 0 HP.` + "\n" + `:warning: **You do not have any HP left!** This means any additional rule violations can result in a temporary or permanent ban at staff discretion.`);
