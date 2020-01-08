@@ -387,7 +387,7 @@ ${_guild.settings.raidMitigation >= 3 ? `**Please remember to re-generate invite
                 const _channel = this.client.channels.resolve(botGamesChannel);
                 if (_channel) {
                     var randomEmojis = shuffle(emoji);
-                    var yangBet = Math.ceil(Math.random() * 20);
+                    var yangBet = Math.ceil(Math.random() * 20) + 5;
                     var emoji1 = randomEmojis.next().value;
                     var emoji2 = randomEmojis.next().value;
                     var emoji3 = randomEmojis.next().value;
@@ -395,12 +395,18 @@ ${_guild.settings.raidMitigation >= 3 ? `**Please remember to re-generate invite
 
                     let embed = new MessageEmbed()
                         .setTitle(`Emoji Lottery!`)
-                        .setDescription(`React to this message in the next 3 minutes to place a bet of **${yangBet} Yang** on the emoji(s) you choose. The higher the odds, the less chance that emoji will win, but the more Yang you'll get if it does win.`)
+                        .setDescription(`Instructions:
+* You have 3 minutes (until the top of the hour) to "punch out your lottery ticket".
+* Below this message are 4 emoji reactions. To punch your lottery ticket, choose 1 to all 4 of the emojis and react. You must react to at least 1 to play the lottery.
+* If you don't have at least ${yangBet} Yang, your entry will be ignored.
+* In 3 minutes, a drawing is made. 
+*** Each emoji has a 50% chance of being selected in the drawing.
+*** If an emoji is chosen and you reacted to it, it is a "match". If an emoji is not chosen and you did not react to it, it is also a "match".
+*** Your winnings are based on the number of "matches" you had.`)
                         .setColor("YELLOW")
-                        .addField(`${emoji1.char} (${emoji1.name})`, `Odds 1:2 (wins ${yangBet * 2} Yang)`)
-                        .addField(`${emoji2.char} (${emoji2.name})`, `Odds 1:4 (wins ${yangBet * 4} Yang)`)
-                        .addField(`${emoji3.char} (${emoji3.name})`, `Odds 1:8 (wins ${yangBet * 8} Yang)`)
-                        .addField(`${emoji4.char} (${emoji4.name})`, `Odds 1:16 (wins ${yangBet * 16} Yang)`);
+                        .addField(`0 - 2 Matches`, `Lose ${yangBet} Yang`)
+                        .addField(`3 Matches`, `Win ${yangBet * 4} Yang`)
+                        .addField(`4 Matches`, `Win ${yangBet * 16} Yang`);
 
                     var message = await _channel.send({ embed: embed });
                     await message.react(emoji1.char);
@@ -410,63 +416,137 @@ ${_guild.settings.raidMitigation >= 3 ? `**Please remember to re-generate invite
 
                     // Wait 3 minutes before collecting and processing bets.
                     setTimeout(async () => {
-                        var message2 = await _channel.send(`:hourglass: No more bets! The winner is...`);
-                        var bets1 = [];
-                        var bets2 = [];
-                        var bets3 = [];
-                        var bets4 = [];
+                        var message2 = await _channel.send(`:hourglass: No more bets! Doing the drawing now...`);
+                        var emojiSelection = [ false, false, false, false ];
 
-                        // Process the bets
-                        var maps = message.reactions.map(async (reaction) => {
-                            var maps2 = reaction.users.map(async (user) => {
-                                if (user.guildSettings(_guild.id).yang >= yangBet && !user.bot) {
-                                    await user.guildSettings(_guild.id).update('yang', user.guildSettings(_guild.id).yang - yangBet);
+                        // Determine the emoji selection
+                        switch (Math.floor(Math.random() * 16)) {
+                            case 0:
+                                emojiSelection = [ false, false, false, false ];
+                                break;
+                            case 1:
+                                emojiSelection = [ false, false, false, true ];
+                                break;
+                            case 2:
+                                emojiSelection = [ false, false, true, false ];
+                                break;
+                            case 3:
+                                emojiSelection = [ false, true, false, false ];
+                                break;
+                            case 4:
+                                emojiSelection = [ true, false, false, false ];
+                                break;
+                            case 5:
+                                emojiSelection = [ false, false, true, true ];
+                                break;
+                            case 6:
+                                emojiSelection = [ false, true, false, true ];
+                                break;
+                            case 7:
+                                emojiSelection = [ true, false, false, true ];
+                                break;
+                            case 8:
+                                emojiSelection = [ false, true, true, true ];
+                                break;
+                            case 9:
+                                emojiSelection = [ true, false, true, true ];
+                                break;
+                            case 10:
+                                emojiSelection = [ true, true, true, true ];
+                                break;
+                            case 11:
+                                emojiSelection = [ false, true, true, false ];
+                                break;
+                            case 12:
+                                emojiSelection = [ true, false, true, false ];
+                                break;
+                            case 13:
+                                emojiSelection = [ true, true, false, false ];
+                                break;
+                            case 14:
+                                emojiSelection = [ true, true, true, false ];
+                                break;
+                            case 15:
+                                emojiSelection = [ true, true, false, true ];
+                                break;
+                        }
+
+                        var reactions = {};
+                        var matches = {};
+                        var matches3 = [];
+                        var matches4 = [];
+                        var matches0 = [];
+
+                        // Determine every user's reaction pattern
+                        message.reactions.map((reaction) => {
+                            reaction.users.map((user) => {
+                                if (user.guildSettings(_guild.id).yang >= yangBet) {
+
+                                    if (typeof reactions[ user.id ] === 'undefined')
+                                        reactions[ user.id ] = [ false, false, false, false ];
+
                                     if (reaction.emoji.name === emoji1.char)
-                                        bets1.push(user);
+                                        reactions[ user.id ][ 0 ] = true;
                                     if (reaction.emoji.name === emoji2.char)
-                                        bets2.push(user);
+                                        reactions[ user.id ][ 1 ] = true;
                                     if (reaction.emoji.name === emoji3.char)
-                                        bets3.push(user);
+                                        reactions[ user.id ][ 2 ] = true;
                                     if (reaction.emoji.name === emoji4.char)
-                                        bets4.push(user);
+                                        reactions[ user.id ][ 3 ] = true;
                                 }
                             });
-                            await Promise.all(maps2);
                         });
 
-                        await Promise.all(maps);
-
-                        // Determine the winner and process it
-                        var randomNumber = (Math.random() * 15);
-                        if (randomNumber < 8) {
-                            bets1.map((user) => {
-                                user.guildSettings(_guild.id).update('yang', user.guildSettings(_guild.id).yang + (yangBet * 2));
-                            });
-
-                            message2.delete();
-                            _channel.send(`:first_place: **The winner is... ${emoji1.char} (${emoji1.name})!**` + "\n\n" + `These members just earned ${yangBet * 2} Yang: ${bets1.map((user) => `<@${user.id}>`).join(" ")}`, { split: true });
-                        } else if (randomNumber < 12) {
-                            bets2.map((user) => {
-                                user.guildSettings(_guild.id).update('yang', user.guildSettings(_guild.id).yang + (yangBet * 4));
-                            });
-
-                            message2.delete();
-                            _channel.send(`:first_place: **The winner is... ${emoji2.char} (${emoji2.name})!**` + "\n\n" + `These members just earned ${yangBet * 4} Yang: ${bets2.map((user) => `<@${user.id}>`).join(" ")}`, { split: true });
-                        } else if (randomNumber < 14) {
-                            bets3.map((user) => {
-                                user.guildSettings(_guild.id).update('yang', user.guildSettings(_guild.id).yang + (yangBet * 8));
-                            });
-
-                            message2.delete();
-                            _channel.send(`:first_place: **The winner is... ${emoji3.char} (${emoji3.name})!**` + "\n\n" + `These members just earned ${yangBet * 8} Yang: ${bets3.map((user) => `<@${user.id}>`).join(" ")}`, { split: true });
-                        } else {
-                            bets4.map((user) => {
-                                user.guildSettings(_guild.id).update('yang', user.guildSettings(_guild.id).yang + (yangBet * 16));
-                            });
-
-                            message2.delete();
-                            _channel.send(`:first_place: **The winner is... ${emoji4.char} (${emoji4.name})!**` + "\n\n" + `These members just earned ${yangBet * 16} Yang: ${bets4.map((user) => `<@${user.id}>`).join(" ")}`, { split: true });
+                        // Determine every user's number of matches
+                        for (var userID in reactions) {
+                            if (Object.prototype.hasOwnProperty.call(userID, reactions)) {
+                                matches[ userID ] = 0;
+                                for (var i = 0; i < 4; i++) {
+                                    if (reactions[ userID ][ i ] === emojiSelection[ i ])
+                                        matches++;
+                                }
+                            }
                         }
+
+                        // Process Yang
+                        for (var userID in matches) {
+                            if (Object.prototype.hasOwnProperty.call(userID, matches)) {
+                                var user = await this.client.users.fetch(userID);
+                                if (user) {
+                                    if (matches[ userID ] === 3) {
+                                        user.guildSettings(_guild.id).update('yang', user.guildSettings(_guild.id).yang + (yangBet * 4))
+                                        matches3.push(userID);
+                                    } else if (matches[ userID ] === 4) {
+                                        user.guildSettings(_guild.id).update('yang', user.guildSettings(_guild.id).yang + (yangBet * 16))
+                                        matches4.push(userID);
+                                    } else {
+                                        user.guildSettings(_guild.id).update('yang', user.guildSettings(_guild.id).yang - yangBet)
+                                        matches0.push(userID);
+                                    }
+                                }
+                            }
+                        }
+
+                        // Process message
+                        message2.delete();
+                        var msg = `Here is the drawing: `;
+                        if (!emojiSelection[ 0 ] && !emojiSelection[ 1 ] && !emojiSelection[ 2 ] && !emojiSelection[ 3 ]) {
+                            msg += `**No emojis were drawn!**`;
+                        } else {
+                            if (emojiSelection[ 0 ])
+                                msg += emoji1.char;
+                            if (emojiSelection[ 1 ])
+                                msg += emoji2.char;
+                            if (emojiSelection[ 2 ])
+                                msg += emoji3.char;
+                            if (emojiSelection[ 3 ])
+                                msg += emoji4.char;
+                        }
+                        msg += "\n\n";
+                        msg += `:second_place: These members won ${yangBet * 4} Yang with 3 matches: ${matches3.map((match) => `<@${match}> `)}` + "\n";
+                        msg += `:first_place: These members won ${yangBet * 16} Yang with 4 matches: ${matches3.map((match) => `<@${match}> `)}` + "\n";
+                        msg += `:cry: These members lost ${yangBet * 4} Yang: ${matches0.map((match) => `<@${match}> `)}` + "\n";
+                        _channel.send(msg);
                     }, 180000);
                 }
             }
