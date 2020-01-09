@@ -418,6 +418,10 @@ ${emoji1.char}: ???
 ${emoji2.char}: ???
 ${emoji3.char}: ???
 ${emoji4.char}: ???`);
+                        await message2.react(emoji1.char);
+                        await message2.react(emoji2.char);
+                        await message2.react(emoji3.char);
+                        await message2.react(emoji4.char);
                         var emojiSelection = [ false, false, false, false ];
 
                         // Determine the emoji selection
@@ -536,7 +540,7 @@ ${emoji2.char}: ???
 ${emoji3.char}: ???
 ${emoji4.char}: ???`);
                             if (emojiSelection[ 0 ]) {
-                                message.reactions.map((reaction) => {
+                                message2.reactions.map((reaction) => {
                                     if (reaction.emoji.name === emoji1.char) {
                                         reaction.users.map((user) => {
                                             reaction.users.remove(user);
@@ -553,7 +557,7 @@ ${emoji2.char}: ${emojiSelection[ 1 ] ? `**DESTROYED**` : `SAFE`}
 ${emoji3.char}: ???
 ${emoji4.char}: ???`);
                             if (emojiSelection[ 1 ]) {
-                                message.reactions.map((reaction) => {
+                                message2.reactions.map((reaction) => {
                                     if (reaction.emoji.name === emoji2.char) {
                                         reaction.users.map((user) => {
                                             reaction.users.remove(user);
@@ -570,7 +574,7 @@ ${emoji2.char}: ${emojiSelection[ 1 ] ? `**DESTROYED**` : `SAFE`}
 ${emoji3.char}: ${emojiSelection[ 2 ] ? `**DESTROYED**` : `SAFE`}
 ${emoji4.char}: ???`);
                             if (emojiSelection[ 2 ]) {
-                                message.reactions.map((reaction) => {
+                                message2.reactions.map((reaction) => {
                                     if (reaction.emoji.name === emoji3.char) {
                                         reaction.users.map((user) => {
                                             reaction.users.remove(user);
@@ -587,7 +591,7 @@ ${emoji2.char}: ${emojiSelection[ 1 ] ? `**DESTROYED**` : `SAFE`}
 ${emoji3.char}: ${emojiSelection[ 2 ] ? `**DESTROYED**` : `SAFE`}
 ${emoji4.char}: ${emojiSelection[ 3 ] ? `**DESTROYED**` : `SAFE`}`);
                             if (emojiSelection[ 3 ]) {
-                                message.reactions.map((reaction) => {
+                                message2.reactions.map((reaction) => {
                                     if (reaction.emoji.name === emoji4.char) {
                                         reaction.users.map((user) => {
                                             reaction.users.remove(user);
