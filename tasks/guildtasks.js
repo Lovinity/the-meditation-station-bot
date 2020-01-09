@@ -394,15 +394,12 @@ ${_guild.settings.raidMitigation >= 3 ? `**Please remember to re-generate invite
                     var emoji4 = randomEmojis.next().value;
 
                     let embed = new MessageEmbed()
-                        .setTitle(`Emoji Lottery!`)
-                        .setDescription(`Instructions:
-* You have 3 minutes (until the top of the hour) to "punch out your lottery ticket".
-* Below this message are 4 emoji reactions. To punch your lottery ticket, choose 1 to all 4 of the emojis and react. You must react to at least 1 to play the lottery.
-* If you don't have at least ${yangBet} Yang, your entry will be ignored.
-* In 3 minutes, a drawing is made. 
-*** Each emoji has a 50% chance of being selected in the drawing.
-*** If an emoji is chosen and you reacted to it, it is a "match". If an emoji is not chosen and you did not react to it, it is also a "match".
-*** Your winnings are based on the number of "matches" you had.`)
+                        .setTitle(`Emoji roulette!`)
+                        .setDescription(`You have 3 minutes to guess which of the 4 emojis at the bottom of this message will be destroyed.
+* React to the emoji(s) you think will be destroyed. You must react to at least 1 to be considered playing the game, but you can react up to all 4 of them.
+* Each emoji has a 50% chance of being destroyed. 
+* If you react to an emoji that gets destroyed, you score a "match". You also score a "match" if you do not react to an emoji that does not get destroyed. 
+* Winnings or losses are based on the number of matches as explained below.`)
                         .setColor("YELLOW")
                         .addField(`0 - 2 Matches`, `Lose ${yangBet} Yang`)
                         .addField(`3 Matches`, `Win ${yangBet * 4} Yang`)
@@ -416,7 +413,11 @@ ${_guild.settings.raidMitigation >= 3 ? `**Please remember to re-generate invite
 
                     // Wait 3 minutes before collecting and processing bets.
                     setTimeout(async () => {
-                        var message2 = await _channel.send(`:hourglass: No more bets! Doing the drawing now...`);
+                        var message2 = await _channel.send(`:hourglass: And now, determining the fate of each emoji:
+${emoji1.char}: ???
+${emoji2.char}: ???
+${emoji3.char}: ???
+${emoji4.char}: ???`);
                         var emojiSelection = [ false, false, false, false ];
 
                         // Determine the emoji selection
@@ -527,26 +528,81 @@ ${_guild.settings.raidMitigation >= 3 ? `**Please remember to re-generate invite
                             }
                         }
 
-                        // Process message
-                        message2.delete();
-                        var msg = `Here is the drawing: `;
-                        if (!emojiSelection[ 0 ] && !emojiSelection[ 1 ] && !emojiSelection[ 2 ] && !emojiSelection[ 3 ]) {
-                            msg += `**No emojis were drawn!**`;
-                        } else {
-                            if (emojiSelection[ 0 ])
-                                msg += emoji1.char;
-                            if (emojiSelection[ 1 ])
-                                msg += emoji2.char;
-                            if (emojiSelection[ 2 ])
-                                msg += emoji3.char;
-                            if (emojiSelection[ 3 ])
-                                msg += emoji4.char;
-                        }
-                        msg += "\n\n";
-                        msg += `:second_place: These members won ${yangBet * 4} Yang with 3 matches: ${matches3.map((match) => `<@${match}>`).join(" ")}` + "\n";
-                        msg += `:first_place: These members won ${yangBet * 16} Yang with 4 matches: ${matches3.map((match) => `<@${match}>`).join(" ")}` + "\n";
-                        msg += `:cry: These members lost ${yangBet} Yang: ${matches0.map((match) => `<@${match}>`).join(" ")}` + "\n";
-                        _channel.send(msg);
+                        // Process messages on a timer
+                        setTimeout(() => {
+                            message2.edit(`:hourglass: And now, determining the fate of each emoji:
+${emoji1.char}: ${emojiSelection[ 0 ] ? `**DESTROYED**` : `SAFE`}
+${emoji2.char}: ???
+${emoji3.char}: ???
+${emoji4.char}: ???`);
+                            if (emojiSelection[ 0 ]) {
+                                message.reactions.map((reaction) => {
+                                    if (reaction.emoji.name === emoji1.char) {
+                                        reaction.users.map((user) => {
+                                            reaction.users.remove(user);
+                                        });
+                                    }
+                                });
+                            }
+
+                        }, 5000);
+                        setTimeout(() => {
+                            message2.edit(`:hourglass: And now, determining the fate of each emoji:
+${emoji1.char}: ${emojiSelection[ 0 ] ? `**DESTROYED**` : `SAFE`}
+${emoji2.char}: ${emojiSelection[ 1 ] ? `**DESTROYED**` : `SAFE`}
+${emoji3.char}: ???
+${emoji4.char}: ???`);
+                            if (emojiSelection[ 1 ]) {
+                                message.reactions.map((reaction) => {
+                                    if (reaction.emoji.name === emoji2.char) {
+                                        reaction.users.map((user) => {
+                                            reaction.users.remove(user);
+                                        });
+                                    }
+                                });
+                            }
+
+                        }, 10000);
+                        setTimeout(() => {
+                            message2.edit(`:hourglass: And now, determining the fate of each emoji:
+${emoji1.char}: ${emojiSelection[ 0 ] ? `**DESTROYED**` : `SAFE`}
+${emoji2.char}: ${emojiSelection[ 1 ] ? `**DESTROYED**` : `SAFE`}
+${emoji3.char}: ${emojiSelection[ 2 ] ? `**DESTROYED**` : `SAFE`}
+${emoji4.char}: ???`);
+                            if (emojiSelection[ 2 ]) {
+                                message.reactions.map((reaction) => {
+                                    if (reaction.emoji.name === emoji3.char) {
+                                        reaction.users.map((user) => {
+                                            reaction.users.remove(user);
+                                        });
+                                    }
+                                });
+                            }
+
+                        }, 15000);
+                        setTimeout(() => {
+                            message2.edit(`:hourglass: And now, determining the fate of each emoji:
+${emoji1.char}: ${emojiSelection[ 0 ] ? `**DESTROYED**` : `SAFE`}
+${emoji2.char}: ${emojiSelection[ 1 ] ? `**DESTROYED**` : `SAFE`}
+${emoji3.char}: ${emojiSelection[ 2 ] ? `**DESTROYED**` : `SAFE`}
+${emoji4.char}: ${emojiSelection[ 3 ] ? `**DESTROYED**` : `SAFE`}`);
+                            if (emojiSelection[ 3 ]) {
+                                message.reactions.map((reaction) => {
+                                    if (reaction.emoji.name === emoji4.char) {
+                                        reaction.users.map((user) => {
+                                            reaction.users.remove(user);
+                                        });
+                                    }
+                                });
+                            }
+
+                        }, 20000);
+                        setTimeout(() => {
+                            var msg = `:second_place: These members won ${yangBet * 4} Yang with 3 matches: ${matches3.map((match) => `<@${match}>`).join(" ")}` + "\n";
+                            msg += `:first_place: These members won ${yangBet * 16} Yang with 4 matches: ${matches3.map((match) => `<@${match}>`).join(" ")}` + "\n";
+                            msg += `:cry: These members lost ${yangBet} Yang: ${matches0.map((match) => `<@${match}>`).join(" ")}` + "\n";
+                            _channel.send(msg);
+                        }, 25000);
                     }, 180000);
                 }
             }
