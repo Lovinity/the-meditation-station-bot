@@ -499,18 +499,18 @@ ${_guild.settings.raidMitigation >= 3 ? `**Please remember to re-generate invite
 
                         // Determine every user's number of matches
                         for (var userID in reactions) {
-                            if (Object.prototype.hasOwnProperty.call(userID, reactions)) {
+                            if (Object.prototype.hasOwnProperty.call(reactions, userID)) {
                                 matches[ userID ] = 0;
                                 for (var i = 0; i < 4; i++) {
                                     if (reactions[ userID ][ i ] === emojiSelection[ i ])
-                                        matches++;
+                                        matches[ userID ]++;
                                 }
                             }
                         }
 
                         // Process Yang
                         for (var userID in matches) {
-                            if (Object.prototype.hasOwnProperty.call(userID, matches)) {
+                            if (Object.prototype.hasOwnProperty.call(matches, userID)) {
                                 var user = await this.client.users.fetch(userID);
                                 if (user) {
                                     if (matches[ userID ] === 3) {
@@ -543,9 +543,9 @@ ${_guild.settings.raidMitigation >= 3 ? `**Please remember to re-generate invite
                                 msg += emoji4.char;
                         }
                         msg += "\n\n";
-                        msg += `:second_place: These members won ${yangBet * 4} Yang with 3 matches: ${matches3.map((match) => `<@${match}> `)}` + "\n";
-                        msg += `:first_place: These members won ${yangBet * 16} Yang with 4 matches: ${matches3.map((match) => `<@${match}> `)}` + "\n";
-                        msg += `:cry: These members lost ${yangBet * 4} Yang: ${matches0.map((match) => `<@${match}> `)}` + "\n";
+                        msg += `:second_place: These members won ${yangBet * 4} Yang with 3 matches: ${matches3.map((match) => `<@${match}>`).join(" ")}` + "\n";
+                        msg += `:first_place: These members won ${yangBet * 16} Yang with 4 matches: ${matches3.map((match) => `<@${match}>`).join(" ")}` + "\n";
+                        msg += `:cry: These members lost ${yangBet} Yang: ${matches0.map((match) => `<@${match}>`).join(" ")}` + "\n";
                         _channel.send(msg);
                     }, 180000);
                 }
