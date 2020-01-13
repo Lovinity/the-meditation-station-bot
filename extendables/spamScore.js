@@ -176,7 +176,7 @@ module.exports = class extends Extendable {
                 }
 
                 // Add 40 score for here and everyone mentions as these are VERY spammy.
-                if (this.cleanContent.includes("@here") || this.cleanContent.includes("@everyone")) {
+                if (this.content.includes("@here") || this.content.includes("@everyone")) {
                     score += 40;
                     scoreReasons[ "Here / Everyone Mention" ] = 40
                 }
