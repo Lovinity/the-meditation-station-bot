@@ -573,7 +573,9 @@ module.exports = class GuildDiscipline {
         }
 
         // Push out discipline message
-        this.channel.send((this.user ? `<@${this.user.id}>, please read the following disciplinary information carefully:` : ``), {
+        this.channel.send((this.user ? `<@${this.user.id}>, you have been issued discipline. Please read the following disciplinary information carefully.
+If you cannot see the information below (it is posted as an embed), please go in your Discord settings -> App Settings -> Text & Images, and enable the __Show website preview info from links pasted into chat__ option.
+Not enabling this to see your message is not an acceptable excuse for not knowing the terms of your discipline.` : ``), {
             split: true,
             embed: msg
         });
