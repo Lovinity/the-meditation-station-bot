@@ -603,7 +603,7 @@ ${emoji4.char}: ${emojiSelection[ 3 ] ? `**DESTROYED**` : `SAFE`}`);
                         }, 20000);
                         setTimeout(() => {
                             var msg = `:second_place: These members won ${yangBet * 4} Yang with 3 matches: ${matches3.map((match) => `<@${match}>`).join(" ")}` + "\n";
-                            msg += `:first_place: These members won ${yangBet * 16} Yang with 4 matches: ${matches3.map((match) => `<@${match}>`).join(" ")}` + "\n";
+                            msg += `:first_place: These members won ${yangBet * 16} Yang with 4 matches: ${matches4.map((match) => `<@${match}>`).join(" ")}` + "\n";
                             msg += `:cry: These members lost ${yangBet} Yang: ${matches0.map((match) => `<@${match}>`).join(" ")}` + "\n";
                             _channel.send(msg);
                         }, 25000);
