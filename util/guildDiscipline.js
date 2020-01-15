@@ -170,7 +170,7 @@ module.exports = class GuildDiscipline {
                 });
             }
 
-            var response = `:hourglass_flowing_sand: <@${this.user.id}>, staff are filling out an incident report regarding something you recently did in the guild. More information will be provided to you shortly; please wait while staff finish telling me all the information to pass to you.`
+            var response = `:hourglass_flowing_sand: ${this.user.tag}, Staff are filling out an incident report regarding something you recently did in the guild. More information will be provided to you in a few minutes as staff finish the incident report. **Leaving the guild will not avert discipline. Furthermore, you will lose the privilege to appeal discipline if you leave.**`
 
             if (this.type === 'classC' || this.type === 'classD' || (this.type === 'classE' && this.muteDuration !== null) || this.type === 'classF' || this.type === 'classG') {
                 // Add the mute role to the user, if the user is in the guild
@@ -456,10 +456,8 @@ module.exports = class GuildDiscipline {
         classD();
 
         if (this.xp > 0) {
+            msg.addField(`:fleur_de_lis: **${this.xp} XP Retracted**`, `${this.xp} experience (XP) was taken away. You now have ${(this.user.guildSettings(this.guild.id).xp - this.xp)} XP.`);
             await this.user.guildSettings(this.guild.id).update(`xp`, (this.user.guildSettings(this.guild.id).xp - this.xp));
-
-            msg.addField(`:fleur_de_lis: **${this.xp} XP Retracted**`, `${this.xp} experience (XP) was taken away. You now have ${(this.user.guildSettings(this.guild.id).xp)} XP.`);
-
             // Update level roles
             var guildMember = this.guild.members.resolve(this.user);
             if (guildMember) {
@@ -497,18 +495,17 @@ module.exports = class GuildDiscipline {
             }
         }
         if (this.yang > 0) {
+            msg.addField(`:gem: **${this.yang} Yang Fine**`, `You were fined ${this.yang} Yang from your account / profile. You now have ${(this.user.guildSettings(this.guild.id).yang - this.yang)} Yang.`);
             await this.user.guildSettings(this.guild.id).update(`yang`, (this.user.guildSettings(this.guild.id).yang - this.yang));
-            msg.addField(`:gem: **${this.yang} Yang Fine**`, `You were fined ${this.yang} Yang from your account / profile. You now have ${(this.user.guildSettings(this.guild.id).yang)} Yang.`);
         }
         if (this.HPDamage > 0) {
-            await this.user.guildSettings(this.guild.id).update(`HPDamage`, (this.user.guildSettings(this.guild.id).HPDamage + this.HPDamage));
-
-            var HP = this.user.HP(this.guild.id);
+            var HP = this.user.HP(this.guild.id) - this.HPDamage;
             if (HP <= 0) {
                 msg.addField(`:broken_heart: **${this.HPDamage} HP Damage Issued**`, `You lost ${this.HPDamage} Hit Points (HP). You now have 0 HP.` + "\n" + `:warning: **You do not have any HP left!** This means any additional rule violations can result in a temporary or permanent ban at staff discretion.`);
             } else {
                 msg.addField(`:broken_heart: **${this.HPDamage} HP Damage Issued**`, `You lost ${this.HPDamage} Hit Points (HP). You now have ${HP} HP.` + "\n" + `Bans are not considered / issued except for certain rule violations unless you lose all your HP. You will regenerate 1 HP for every ${this.guild.settings.oneHPPerXP} XP you earn.`);
             }
+            await this.user.guildSettings(this.guild.id).update(`HPDamage`, (this.user.guildSettings(this.guild.id).HPDamage + this.HPDamage));
         }
         if (this.other !== null) {
             msg.addField(`:notepad_spiral: **Additional Discipline / Information**`, this.other);

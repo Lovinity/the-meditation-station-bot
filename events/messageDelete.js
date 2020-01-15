@@ -12,7 +12,7 @@ module.exports = class extends Event {
             return;
 
         // Remove XP/Yang
-        if (typeof message.member !== 'undefined')
+        if (typeof message.member !== 'undefined' && message.member !== null)
         {
             var xp = 0 - message.earnedXp;
             message.member.xp(xp, message);
