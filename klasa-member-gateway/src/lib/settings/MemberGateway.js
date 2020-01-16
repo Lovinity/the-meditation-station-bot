@@ -75,14 +75,16 @@ class MemberGateway extends GatewayStorage {
 	 * @param {string|string[]} id The id for this instance
 	 * @returns {?external:Settings}
 	 */
-	get(id, create = false) {
+	get(id, create = true) {
 		const entry = this.cache.get(id);
 		if (entry) return entry.settings;
+
 		if (create) {
 			const settings = new this.Settings(this, { id });
 			if (this._synced && this.schema.size) settings.sync().catch(err => this.client.emit('error', err));
 			return settings;
 		}
+		
 		return null;
 	}
 
