@@ -31,12 +31,8 @@ module.exports = Structures.extend('GuildMember', GuildMember => {
 		 * @since 0.5.0
 		 * @returns {KlasaMemberJSON}
 		 */
-		toJSON () {
+		toJSON() {
 			return { ...super.toJSON(), settings: this.settings };
-		}
-
-		async get settings () {
-			return await this.client.gateways.members.get(`${this.guild.id}.${this.id}`, true);
 		}
 
 	}

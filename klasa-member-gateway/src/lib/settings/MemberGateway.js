@@ -75,18 +75,14 @@ class MemberGateway extends GatewayStorage {
 	 * @param {string|string[]} id The id for this instance
 	 * @returns {?external:Settings}
 	 */
-	async get (id, create = true) {
+	get (id, create = true) {
 		const entry = this.cache.get(id);
 		if (entry) return entry.settings;
 
 		if (create) {
 			const settings = new this.Settings(this, { id });
-			try {
-				await settings.sync(true);
-				return settings;
-			} catch (e) {
-				this.client.emit('error', e);
-			}
+			settings.sync(id).catch(err => this.client.emit('error', err));
+			return settings;
 		}
 
 		return null;
@@ -100,19 +96,13 @@ class MemberGateway extends GatewayStorage {
 	 * @param {Object<string, *>} [data={}] The data for this Settings instance
 	 * @returns {external:Settings}
 	 */
-	async create (id, data = {}) {
+	create (id, data = {}) {
 		const entry = this.cache.get(id);
 		if (entry) return entry.settings;
 
 		const settings = new this.Settings(this, Object.assign({ id }, data));
-		try {
-			await settings.sync(true);
-			return settings;
-		} catch (e) {
-			this.client.emit('error', e);
-		}
-
-		return null;
+		settings.sync(id).catch(err => this.client.emit('error', err));
+		return settings;
 	}
 
 	async sync (input = [ ...this.cache.keys() ]) {
@@ -121,7 +111,7 @@ class MemberGateway extends GatewayStorage {
 			const entries = await this.provider.getAll(this.type, input);
 			for (const entry of entries) {
 				if (!entry) continue;
-				const cache = await this.get(entry.id);
+				const cache = this.get(entry.id);
 				if (cache) {
 					if (!cache._existsInDB) cache._existsInDB = true;
 					cache._patch(entry);
@@ -135,8 +125,8 @@ class MemberGateway extends GatewayStorage {
 			return this;
 		}
 
-		const cache = await this.get((input && input.id) || input);
-		return cache ? await cache.sync(true) : null;
+		const cache = this.get((input && input.id) || input);
+		return cache ? cache.sync() : null;
 	}
 
 }
