@@ -102,7 +102,7 @@ module.exports = class extends Route {
         respond = respond.sort(compare);
 
         var restrictions = settings.restrictions;
-        restrictions.push({ muted: settings.muted });
+        restrictions.muted = settings.muted;
 
         return response.end(JSON.stringify({ message: { tag: user.tag, modLogs: respond, restrictions: restrictions, muted: settings.muted } }));
     }
