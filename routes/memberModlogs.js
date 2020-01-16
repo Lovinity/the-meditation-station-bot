@@ -101,7 +101,10 @@ module.exports = class extends Route {
         }
         respond = respond.sort(compare);
 
-        return response.end(JSON.stringify({ message: { tag: user.tag, modLogs: respond, restrictions: settings.restrictions, muted: settings.muted } }));
+        var restrictions = settings.restrictions;
+        restrictions.push({ muted: settings.muted });
+
+        return response.end(JSON.stringify({ message: { tag: user.tag, modLogs: respond, restrictions: restrictions, muted: settings.muted } }));
     }
 
     async post (request, response) {
