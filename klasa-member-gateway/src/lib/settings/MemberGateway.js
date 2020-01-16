@@ -95,7 +95,7 @@ class MemberGateway extends GatewayStorage {
 		const entry = this.cache.get(id);
 		if (entry) return entry.settings;
 
-		const settings = new this.Settings(this, { id }, ...data);
+		const settings = new this.Settings(this, Object.assign({ id }, data));
 		if (this._synced && this.schema.size) settings.sync().catch(err => this.client.emit('error', err));
 		return settings;
 	}
