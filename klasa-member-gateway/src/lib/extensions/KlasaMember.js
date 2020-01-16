@@ -15,7 +15,7 @@ module.exports = Structures.extend('GuildMember', GuildMember => {
 		/**
 		 * @param {...*} args Normal D.JS GuildMember args
 		 */
-		async constructor(...args) {
+		constructor(...args) {
 			super(...args);
 
 			/**
@@ -23,7 +23,7 @@ module.exports = Structures.extend('GuildMember', GuildMember => {
 			 * @since 0.0.1
 			 * @type {external:Settings}
 			 */
-			this.settings = await this.client.gateways.members.get(`${this.guild.id}.${this.id}`, true);
+			this.settings = this.client.gateways.members.get(`${this.guild.id}.${this.id}`, true);
 		}
 
 		/**
@@ -31,8 +31,12 @@ module.exports = Structures.extend('GuildMember', GuildMember => {
 		 * @since 0.5.0
 		 * @returns {KlasaMemberJSON}
 		 */
-		toJSON() {
+		toJSON () {
 			return { ...super.toJSON(), settings: this.settings };
+		}
+
+		async get settings () {
+			return await this.client.gateways.members.get(`${this.guild.id}.${this.id}`, true);
 		}
 
 	}
