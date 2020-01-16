@@ -1,4 +1,5 @@
-const { Structures, GuildMember } = require('discord.js');
+const { Structures } = require('discord.js');
+const { KlasaMember } = require('klasa');
 
 Structures.extend('User', User => class MyUser extends User {
 
@@ -10,7 +11,7 @@ Structures.extend('User', User => class MyUser extends User {
       var guild = this.client.guilds.resolve(guildID);
       if (!guild) return null;
 
-      var guildmember = new GuildMember(this.client, {
+      var guildmember = new KlasaMember(this.client, {
         user: this
       }, guild);
 
@@ -21,7 +22,7 @@ Structures.extend('User', User => class MyUser extends User {
       var guild = this.client.guilds.resolve(guildID);
       if (!guild) return 100;
 
-      var guildmember = new GuildMember(this.client, {
+      var guildmember = new KlasaMember(this.client, {
         user: this
       }, guild);
 
