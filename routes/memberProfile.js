@@ -48,7 +48,6 @@ module.exports = class extends Route {
 
         }
 
-        var isMuted = false;
         const userSettings = await user.guildSettings(guild.id);
 
         var guildMember;
@@ -57,10 +56,6 @@ module.exports = class extends Route {
             var joined;
             if (guildMember) {
                 joined = guildMember.joinedAt;
-                var muteRole = guild.roles.resolve(guild.settings.muteRole);
-
-                if (muteRole && guildMember.roles.get(muteRole.id))
-                    isMuted = true;
             }
         } catch (e) {
 
@@ -92,7 +87,7 @@ module.exports = class extends Route {
             info: userSettings.profile.info,
             donations: userSettings.profile.donations,
             isbanned: isBanned,
-            ismuted: isMuted,
+            ismuted: userSettings.muted,
             roles: guildMember ? guildMember.roles.map((role) => {
                 return {name: role.name, color: role.hexColor}
             }) : [],
