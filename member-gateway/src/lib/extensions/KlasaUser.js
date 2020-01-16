@@ -7,8 +7,10 @@ module.exports = Structures.extend('User', User => {
 			super(...args);
 		}
 
-		guildSettings(guildID) {
-			return this.client.gateways.members.get(`${guildID}.${this.id}`, true);
+		async guildSettings(guildID) {
+			var settings = this.client.gateways.members.get(`${guildID}.${this.id}`, true);
+			await settings.sync();
+			return settings;
 		}
 
 	}

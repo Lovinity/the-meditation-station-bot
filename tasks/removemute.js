@@ -22,7 +22,9 @@ module.exports = class extends Task {
                         _guildMember.roles.remove(_role, `Mute expired`);
                     }
                 }
-                _user.guildSettings(_guild.id).update(`muted`, false, _guild);
+
+                var settings = await _user.guildSettings(_guild.id);
+                settings.update(`muted`, false, _guild);
 
                 const logchannel = _guild.channels.resolve(_guild.settings.modLogChannel);
 

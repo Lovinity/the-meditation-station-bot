@@ -46,12 +46,15 @@ module.exports = class extends Command {
 
         // Purchase repping
         if (await yangStore(message, 'repMember', 1)) {
-            user.guildSettings(message.guild.id).update(`goodRep`, user.guildSettings(message.guild.id).goodRep + 10)
+            var settings = await user.guildSettings(message.guild.id);
+            await settings.update(`goodRep`, settings.goodRep + 10)
             const channel2 = message.guild.channels.resolve(message.guild.settings.eventLogChannel);
             if (channel2) {
                 channel2.send(`:rep: User ${message.author.tag} (${message.author.id}) repped ${user.tag} (${user.id}) for the following reason: ${reason}`);
             }
-            message.author.guildSettings(message.guild.id).update(`canRep`, false)
+
+            settings = await message.author.guildSettings(message.guild.id)
+            await settings.update(`canRep`, false)
             const timer = await this.client.schedule.create('repAgain', moment().add(24, 'hours').toDate(), {
                 data: {
                     guild: message.guild.id,

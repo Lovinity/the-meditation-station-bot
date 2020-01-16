@@ -27,9 +27,11 @@ module.exports = class extends Command {
             return message.delete({ reason: `Use of !discipline channel outside of a staff or incidents channel` });
         }
 
+        var settings = await user.guildSettings(message.guild.id);
+
         // Send a message containing information about the user's disciplinary records
         // Get the modLogs
-        const modLogs = user.guildSettings(message.guild.id).modLogs;
+        const modLogs = settings.modLogs;
 
         var rules = {};
 
@@ -58,16 +60,16 @@ module.exports = class extends Command {
             }
         });
 
-        var HP = user.HP(message.guild.id);
+        var HP = await user.HP(message.guild.id);
         response += `**Current HP**: ${HP}` + "\n"
         if (HP > 0) {
             response += `Member does **not** qualify for a ban on this discipline (except for criminal activity, sexual engagement with minors, violation of Discord's TOS with Discord taking action, sharing of legally private info, or using multiple accounts).` + "\n\n"
         } else {
             response += `:warning: **Member qualifies for a temporary or permanent ban**. Please ask yourself if this member is causing more harm than good to the community. If so, this discipline should be a class F temporary or permanent ban.` + "\n\n"
         }
-        response += `**Current Yang**: ${user.guildSettings(message.guild.id).yang}` + "\n"
-        response += `**Current XP**: ${user.guildSettings(message.guild.id).xp}` + "\n"
-        response += `**Active Bot Restrictions**: ${Object.entries(user.guildSettings(message.guild.id).restrictions).map(([key, value]) => value ? `${key} ` : undefined)}` + "\n\n"
+        response += `**Current Yang**: ${settings.yang}` + "\n"
+        response += `**Current XP**: ${settings.xp}` + "\n"
+        response += `**Active Bot Restrictions**: ${Object.entries(settings.restrictions).map(([key, value]) => value ? `${key} ` : undefined)}` + "\n\n"
 
         var separateMessage = await message.channel.send(response, { split: true });
 
@@ -307,7 +309,7 @@ async function askClassE (message, user, discipline, hasAccountability) {
         discipline.addChannelRestrictions(resp);
     }
 
-    var resp = await message.awaitReply(`:question: **Bot Restrictions**: Add one or more of the following bot restrictions to the member, or type "none" to add none of them (separate each restriction with a space; type exactly as it appears case sensitive; you have 5 minutes to respond): ${Object.keys(user.guildSettings(message.guild.id).restrictions).join(", ")}`, 300000);
+    var resp = await message.awaitReply(`:question: **Bot Restrictions**: Add one or more of the following bot restrictions to the member, or type "none" to add none of them (separate each restriction with a space; type exactly as it appears case sensitive; you have 5 minutes to respond): ${Object.keys(settings.restrictions).join(", ")}`, 300000);
     if (!resp) {
         throw new Error("No bot restrictions specified")
     }

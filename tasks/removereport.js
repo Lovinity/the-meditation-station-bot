@@ -11,7 +11,8 @@ module.exports = class extends Task {
             const _reportee = this.client.users.resolve(reportee);
             if (_reportee)
             {
-                await _reportee.guildSettings(guild).update(`reports`, `${reporter}`, {action: 'remove'});
+                var settings = await _reportee.guildSettings(guild);
+                await settings.update(`reports`, `${reporter}`, {action: 'remove'});
             }
         }
     }

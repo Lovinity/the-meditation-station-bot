@@ -488,20 +488,23 @@ ${emoji4.char}: ???`);
                         // Determine every user's reaction pattern
                         message.reactions.map((reaction) => {
                             reaction.users.map((user) => {
-                                if (user.guildSettings(_guild.id).yang >= yangBet) {
+                                user.guildSettings(_guild.id)
+                                    .then((settings) => {
+                                        if (settings.yang >= yangBet) {
 
-                                    if (typeof reactions[ user.id ] === 'undefined')
-                                        reactions[ user.id ] = [ false, false, false, false ];
+                                            if (typeof reactions[ user.id ] === 'undefined')
+                                                reactions[ user.id ] = [ false, false, false, false ];
 
-                                    if (reaction.emoji.name === emoji1.char)
-                                        reactions[ user.id ][ 0 ] = true;
-                                    if (reaction.emoji.name === emoji2.char)
-                                        reactions[ user.id ][ 1 ] = true;
-                                    if (reaction.emoji.name === emoji3.char)
-                                        reactions[ user.id ][ 2 ] = true;
-                                    if (reaction.emoji.name === emoji4.char)
-                                        reactions[ user.id ][ 3 ] = true;
-                                }
+                                            if (reaction.emoji.name === emoji1.char)
+                                                reactions[ user.id ][ 0 ] = true;
+                                            if (reaction.emoji.name === emoji2.char)
+                                                reactions[ user.id ][ 1 ] = true;
+                                            if (reaction.emoji.name === emoji3.char)
+                                                reactions[ user.id ][ 2 ] = true;
+                                            if (reaction.emoji.name === emoji4.char)
+                                                reactions[ user.id ][ 3 ] = true;
+                                        }
+                                    });
                             });
                         });
 
@@ -520,15 +523,16 @@ ${emoji4.char}: ???`);
                         for (var userID in matches) {
                             if (Object.prototype.hasOwnProperty.call(matches, userID)) {
                                 var user = await this.client.users.fetch(userID);
+                                var userSettings = await user.guildSettings(_guild.id);
                                 if (user) {
                                     if (matches[ userID ] === 3) {
-                                        user.guildSettings(_guild.id).update('yang', user.guildSettings(_guild.id).yang + (yangBet * 4))
+                                        settings.update('yang', settings.yang + (yangBet * 4))
                                         matches3.push(userID);
                                     } else if (matches[ userID ] === 4) {
-                                        user.guildSettings(_guild.id).update('yang', user.guildSettings(_guild.id).yang + (yangBet * 16))
+                                        settings.update('yang', settings.yang + (yangBet * 16))
                                         matches4.push(userID);
                                     } else {
-                                        user.guildSettings(_guild.id).update('yang', user.guildSettings(_guild.id).yang - yangBet)
+                                        settings.update('yang', settings.yang - yangBet)
                                         matches0.push(userID);
                                     }
                                 }

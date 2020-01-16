@@ -14,8 +14,9 @@ module.exports = class extends Command {
 
     async run (message, [ yang, user, reason ]) {
         const eventLogChannel = message.guild.channels.resolve(message.guild.settings.eventLogChannel);
+        var settings = await user.guildSettings(message.guild.id)
 
-        await user.guildSettings(message.guild.id).update('yang', user.guildSettings(message.guild.id).yang + yang);
+        await settings.update('yang', settings.yang + yang);
 
         if (eventLogChannel) {
             eventLogChannel.send(`:gem: ${Math.abs(yang)} Yang was ${yang < 0 ? `charged from` : `awarded to`} ${user.tag} (${user.id}) by ${message.author.tag} (${message.author.id}) for reason: ${reason}`);

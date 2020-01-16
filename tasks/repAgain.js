@@ -7,7 +7,8 @@ module.exports = class extends Task {
         if (_guild) {
             const _user = await this.client.users.fetch(user);
             if (_user) {
-                await _user.guildSettings(guild.id).update(`canRep`, true);
+                var settings = await _user.guildSettings(guild.id);
+                await settings.update(`canRep`, true);
             }
         }
     }

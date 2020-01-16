@@ -49,8 +49,8 @@ module.exports = class extends Route {
         }
 
         var isMuted = false;
+        const userSettings = await user.guildSettings(guild.id);
 
-        const userSettings = user.guildSettings(guild.id);
         var guildMember;
         try {
             guildMember = await guild.members.fetch(user.id)
@@ -82,7 +82,7 @@ module.exports = class extends Route {
             activity: parseInt(userSettings.activityScore * 100) / 100,
             joined: joined ? moment(joined).format("YYYY-MM-DD") : "N/A",
             goodrep: userSettings.goodRep,
-            hp: guildMember ? guildMember.HP : 0,
+            hp: guildMember ? guildMember.HP : await user.HP(guild.id),
             yang: userSettings.yang,
             xpprogress: parseInt(fillValue * 100),
             level: level,
@@ -136,7 +136,7 @@ module.exports = class extends Route {
                 try {
                     var user = await this.client.users.fetch(request.body.user);
                     if (!user) throw new Error("User not found");
-                    var userSettings = user.guildSettings(guild.id);
+                    var userSettings = await user.guildSettings(guild.id);
                     if (!userSettings) throw new Error("User settings not found");
                 } catch (e) {
                     return response.end(JSON.stringify({ error: "Unable to fetch the provided user." }));
@@ -180,7 +180,7 @@ module.exports = class extends Route {
                     if (/[^\x20-\x7E]/g.test(request.body.title)) return response.end(JSON.stringify({ error: `Title may not contain special characters.` }));
                     if (sameUser && request.body.title !== '' && request.body.title !== userSettings.profile.title) await userSettings.update('yang', userSettings.yang - 50);
                     await userSettings.update('profile.title', request.body.title);
-                    userSettings = user.guildSettings(guild.id);
+                    userSettings = await user.guildSettings(guild.id);
                 }
 
                 if (request.body.background || request.body.background === "") {
@@ -192,7 +192,7 @@ module.exports = class extends Route {
                     } else {
                         await userSettings.update('profile.background', request.body.background);
                     }
-                    userSettings = user.guildSettings(guild.id);
+                    userSettings = await user.guildSettings(guild.id);
                 }
 
                 if (request.body.pronouns) {
@@ -203,7 +203,7 @@ module.exports = class extends Route {
                     if (request.body.pronouns.length > 64) return response.end(JSON.stringify({ error: `Pronouns may not be more than 64 characters long.` }));
                     if (/[^\x20-\x7E]/g.test(request.body.pronouns)) return response.end(JSON.stringify({ error: `Pronouns may not contain special characters.` }));
                     await userSettings.update('profile.pronouns', request.body.pronouns);
-                    userSettings = user.guildSettings(guild.id);
+                    userSettings = await user.guildSettings(guild.id);
                 }
 
                 if (request.body.identities) {
@@ -214,14 +214,14 @@ module.exports = class extends Route {
                     if (request.body.identities.length > 96) return response.end(JSON.stringify({ error: `Identities may not be more than 96 characters long.` }));
                     if (/[^\x20-\x7E]/g.test(request.body.identities)) return response.end(JSON.stringify({ error: `Identities may not contain special characters.` }));
                     await userSettings.update('profile.identities', request.body.identities);
-                    userSettings = user.guildSettings(guild.id);
+                    userSettings = await user.guildSettings(guild.id);
                 }
 
                 if (request.body.dob) {
                     if (sameUser && userSettings.profile.dob !== null && userSettings.profile.dob !== request.body.dob) return response.end(JSON.stringify({ error: `Date of birth cannot be changed once already set except by a staff member.` }));
                     if (request.body.dob !== '' && !moment(request.body.dob).isValid()) return response.end(JSON.stringify({ error: `Date of birth is not a valid date. Try using the format YYYY-MM-DD.` }));
                     await userSettings.update('profile.dob', request.body.dob !== '' ? moment(request.body.dob).format("YYYY-MM-DD") : null);
-                    userSettings = user.guildSettings(guild.id);
+                    userSettings = await user.guildSettings(guild.id);
                 }
 
                 if (request.body.location) {
@@ -232,7 +232,7 @@ module.exports = class extends Route {
                     if (request.body.location.length > 64) return response.end(JSON.stringify({ error: `Location may not be more than 64 characters long.` }));
                     if (/[^\x20-\x7E]/g.test(request.body.location)) return response.end(JSON.stringify({ error: `Location may not contain special characters.` }));
                     await userSettings.update('profile.location', request.body.location);
-                    userSettings = user.guildSettings(guild.id);
+                    userSettings = await user.guildSettings(guild.id);
                 }
 
                 if (request.body.info) {
@@ -296,7 +296,7 @@ module.exports = class extends Route {
                         return response.end(JSON.stringify({ error: `Profile info may not contain more than 4 uses of profane words. Yours had ${profaneCount}. Words detected: ${profane.join(", ")}` }));
 
                     await userSettings.update('profile.info', request.body.info);
-                    userSettings = user.guildSettings(guild.id);
+                    userSettings = await user.guildSettings(guild.id);
                 }
 
                 if (guild) {

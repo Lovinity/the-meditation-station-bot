@@ -43,7 +43,8 @@ module.exports = class extends Route {
             return response.end(JSON.stringify({ error: "Unable to fetch the provided user." }));
         }
 
-        var modLogs = user.guildSettings(guild.id).modLogs;
+        var settings = await user.guildSettings(guild.id);
+        var modLogs = settings.modLogs;
 
         var respond = [];
         if (modLogs.length > 0) {
@@ -100,7 +101,7 @@ module.exports = class extends Route {
         }
         respond = respond.sort(compare);
 
-        return response.end(JSON.stringify({ message: { tag: user.tag, modLogs: respond, restrictions: user.guildSettings(guild.id).restrictions, muted: user.guildSettings(guild.id).muted } }));
+        return response.end(JSON.stringify({ message: { tag: user.tag, modLogs: respond, restrictions: settings.restrictions, muted: settings.muted } }));
     }
 
     async post (request, response) {
@@ -139,7 +140,7 @@ module.exports = class extends Route {
                     return response.end(JSON.stringify({ error: "Unable to fetch the provided user." }));
                 }
 
-                var modLogs = user.guildSettings(guild.id).modLogs;
+                var modLogs = settings.modLogs;
                 if (modLogs.length < 1) return response.end(JSON.stringify({ error: "You are trying to appeal a case when the provided user has no cases on record." }));
 
                 var log = modLogs.find((modLog) => modLog.case === request.body.case);
@@ -149,19 +150,19 @@ module.exports = class extends Route {
 
                 // BEGIN appealing
                 try {
-                    await user.guildSettings(guild.id).update(`modLogs`, log, { action: 'remove' });
+                    await settings.update(`modLogs`, log, { action: 'remove' });
                     log.valid = false;
-                    await user.guildSettings(guild.id).update(`modLogs`, log, { action: 'add' });
+                    await settings.update(`modLogs`, log, { action: 'add' });
 
                     // Now, appeal all discipline
                     if (log.discipline.xp !== 0) {
-                        user.guildSettings(guild.id).update(`xp`, (user.guildSettings(guild.id).xp + log.discipline.xp));
+                        settings.update(`xp`, (settings.xp + log.discipline.xp));
                     }
                     if (log.discipline.yang !== 0) {
-                        user.guildSettings(guild.id).update(`yang`, (user.guildSettings(guild.id).yang + log.discipline.yang));
+                        settings.update(`yang`, (settings.yang + log.discipline.yang));
                     }
                     if (log.discipline.HPDamage !== 0) {
-                        user.guildSettings(guild.id).update(`HPDamage`, (user.guildSettings(guild.id).HPDamage - log.discipline.HPDamage));
+                        settings.update(`HPDamage`, (settings.HPDamage - log.discipline.HPDamage));
                     }
 
                     const guildMember = guild.members.resolve(user.id);
@@ -212,7 +213,7 @@ module.exports = class extends Route {
                             guildMember.roles.remove(mutedRole, `Mute was appealed`);
                         } else {
                             // Otherwise, set muted to false manually
-                            await user.guildSettings(guild.id).update(`muted`, false, guild);
+                            await settings.update(`muted`, false, guild);
                         }
                     }
 
@@ -239,7 +240,7 @@ module.exports = class extends Route {
                                 if (guildMember) {
                                     guildMember.roles.remove(theRole, `Discipline case ${log.case} appealed`);
                                 } else {
-                                    user.guildSettings(guild.id).update(`roles`, theRole, guild, { action: 'remove' });
+                                    settings.update(`roles`, theRole, guild, { action: 'remove' });
                                 }
                             }
                         })
@@ -248,8 +249,8 @@ module.exports = class extends Route {
                     // Remove bot restrictions
                     if (log.botRestrictions.length > 0) {
                         log.botRestrictions.map((restriction) => {
-                            if (Object.keys(user.guildSettings(guild.id).restrictions).indexOf(restriction) !== -1) {
-                                user.guildSettings(guild.id).update(`restrictions.${restriction}`, false);
+                            if (Object.keys(settings.restrictions).indexOf(restriction) !== -1) {
+                                settings.update(`restrictions.${restriction}`, false);
 
                                 if (restriction === 'cannotUseVoiceChannels' && guildMember) {
                                     guildMember.voice.setDeaf(false, 'cannotUseVoiceChannels appealed.');

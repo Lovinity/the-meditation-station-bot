@@ -29,7 +29,8 @@ module.exports = class extends Command {
         }
 
         // First, resolve configured settings
-        const reports = user.guildSettings(message.guild.id).reports;
+        var settings = await user.guildSettings(message.guild.id);
+        const reports = settings.reports;
         const reportMembers = message.guild.settings.reportMembers || 3;
         const reportTime = moment().add(parseInt(message.guild.settings.reportTime), 'minutes').toDate();
         const guildMember = message.guild.members.resolve(user.id);
@@ -63,7 +64,7 @@ module.exports = class extends Command {
             message.guild.raidScore(5);
 
             // Add this report into the member's report records
-            await user.guildSettings(message.guild.id).update(`reports`, `${message.author.id}`, { action: 'add' });
+            await settings.update(`reports`, `${message.author.id}`, { action: 'add' });
 
             if ((reports.length + 1) < reportMembers)
                 return message.sendMessage(`:white_check_mark: Your report was acknowledged. Not enough reports have been made yet for an auto-mute. Please explain why you reported the user here with evidence. Staff may revoke your !report privileges if you do not do so.`);
@@ -118,7 +119,7 @@ ${reportMembers} members have reported you for misconduct within the last ${repo
                 if (guildMember) {
                     guildMember.roles.add(mutedRole, `Mute via several !report s`);
                 } else {
-                    await user.guildSettings(message.guild.id).update(`muted`, true, message.guild);
+                    await settings.update(`muted`, true, message.guild);
                 }
             }
 

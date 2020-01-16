@@ -1,4 +1,4 @@
-const {Command} = require('klasa');
+const { Command } = require('klasa');
 
 module.exports = class extends Command {
 
@@ -6,7 +6,7 @@ module.exports = class extends Command {
         super(...args, {
             name: 'staff',
             enabled: true,
-            runIn: ['text'],
+            runIn: [ 'text' ],
             cooldown: 600,
             deletable: true,
             bucket: 1,
@@ -14,8 +14,8 @@ module.exports = class extends Command {
             guarded: false,
             nsfw: false,
             permissionLevel: 0,
-            requiredPermissions: ["MANAGE_CHANNELS", "MANAGE_ROLES"],
-            requiredSettings: ["incidentsCategory"],
+            requiredPermissions: [ "MANAGE_CHANNELS", "MANAGE_ROLES" ],
+            requiredSettings: [ "incidentsCategory" ],
             subcommands: false,
             description: 'Initiates a private text channel between you and the staff, say, to report incidents in private.',
             quotedStringSupport: false,
@@ -25,7 +25,7 @@ module.exports = class extends Command {
         });
     }
 
-    async run(message, [mute, ...users]) {
+    async run (message, [ mute, ...users ]) {
         var overwrites = [];
         var msg = await message.send(`:hourglass_flowing_sand: Please wait...`);
         var response = ``;
@@ -37,10 +37,9 @@ module.exports = class extends Command {
         const incidents = message.guild.settings.incidentsCategory;
 
         // First, handle if any member parameters were provided
-        if (users && users.length > 0)
-        {
+        if (users && users.length > 0) {
             // Check to see if author is staff. If not, bail with an error message.
-            const {permission} = await this.client.permissionLevels.run(message, 4);
+            const { permission } = await this.client.permissionLevels.run(message, 4);
             if (!permission)
                 return msg.edit(`:x: No no, only staff can specify specific members to be added to an incidents channel. Please use the command without any arguments.`);
 
@@ -70,19 +69,19 @@ ${mute ? `**You have been muted from the rest of the guild until staff speak wit
                 });
 
                 // Mute the users if the mute parameter was provided in the command
-                if (mute)
-                {
+                if (mute) {
                     const muted = message.guild.settings.muteRole;
                     const mutedRole = message.guild.roles.resolve(muted);
                     var guildMember = message.guild.members.resolve(user.id);
 
-                    if (mutedRole)
-                    {
-                        if (guildMember)
-                        {
+                    if (mutedRole) {
+                        if (guildMember) {
                             guildMember.roles.add(mutedRole, `Mute via !staff command`);
                         } else {
-                            user.guildSettings(message.guild.id).update(`muted`, true, message.guild);
+                            user.guildSettings(message.guild.id)
+                                .then((settings) => {
+                                    settings.update(`muted`, true, message.guild);
+                                });
                         }
                     }
 
@@ -130,8 +129,7 @@ Thank you, <@${message.author.id}>!
         });
 
         // Process permission overwrites for staff
-        if (message.guild.settings.modRole)
-        {
+        if (message.guild.settings.modRole) {
             overwrites.push({
                 id: message.guild.settings.modRole,
                 allow: [
@@ -166,7 +164,7 @@ Thank you, <@${message.author.id}>!
         return message.delete();
     }
 
-    async init() {
+    async init () {
 
     }
 

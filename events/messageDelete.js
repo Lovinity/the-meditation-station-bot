@@ -1,9 +1,9 @@
-const {Event} = require('klasa');
-const {MessageEmbed} = require('discord.js');
+const { Event } = require('klasa');
+const { MessageEmbed } = require('discord.js');
 const moment = require("moment");
 module.exports = class extends Event {
 
-    async run(message) {
+    async run (message) {
         if (message.command && message.command.deletable)
             for (const msg of message.responses)
                 msg.delete();
@@ -12,8 +12,7 @@ module.exports = class extends Event {
             return;
 
         // Remove XP/Yang
-        if (typeof message.member !== 'undefined' && message.member !== null)
-        {
+        if (typeof message.member !== 'undefined' && message.member !== null) {
             var xp = 0 - message.earnedXp;
             message.member.xp(xp, message);
             message.earnedXp = 0;
@@ -33,8 +32,11 @@ module.exports = class extends Event {
                     .filter((reaction) => reaction.emoji.id === reaction.message.guild.settings.repEmoji && reaction.message.author.id !== message.author.id)
                     .each((reaction) => {
                         reaction.users.each((reactionUser) => {
-                            if (!reactionUser.bot && !reactionUser.guildSettings(message.guild.id).restrictions.cannotGiveReputation)
-                                message.member.settings.update('goodRep', message.member.settings.goodRep - 1);
+                            reactionUser.guildSettings(message.guild.id)
+                                .then((settings) => {
+                                    if (!reactionUser.bot && !settings.restrictions.cannotGiveReputation)
+                                        message.member.settings.update('goodRep', message.member.settings.goodRep - 1);
+                                });
                         });
                     });
             }
@@ -63,10 +65,10 @@ module.exports = class extends Event {
             return;
 
         var display = new MessageEmbed()
-                .setTitle(`Deleted Message`)
-                .setDescription(`${message.cleanContent}`)
-                .setAuthor(message.author.tag, message.author.displayAvatarURL())
-                .setFooter(`Message created **${message.createdAt}** in channel **${message.channel.name}**`);
+            .setTitle(`Deleted Message`)
+            .setDescription(`${message.cleanContent}`)
+            .setAuthor(message.author.tag, message.author.displayAvatarURL())
+            .setFooter(`Message created **${message.createdAt}** in channel **${message.channel.name}**`);
 
         const _channel = this.client.channels.resolve(modLog);
 

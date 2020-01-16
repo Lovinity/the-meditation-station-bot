@@ -21,8 +21,11 @@ module.exports = class extends Event {
                     .filter((reaction) => reaction.emoji.id === reaction.message.guild.settings.repEmoji && reaction.message.author.id !== message.author.id)
                     .each((reaction) => {
                         reaction.users.each((reactionUser) => {
-                            if (!reactionUser.bot && !reactionUser.guildSettings(message.guild.id).restrictions.cannotGiveReputation)
-                                message.member.settings.update('goodRep', message.member.settings.goodRep - 1);
+                            reactionUser.guildSettings(message.guild.id)
+                                .then((settings) => {
+                                    if (!reactionUser.bot && !settings.restrictions.cannotGiveReputation)
+                                        message.member.settings.update('goodRep', message.member.settings.goodRep - 1);
+                                });
                         });
                     });
             }

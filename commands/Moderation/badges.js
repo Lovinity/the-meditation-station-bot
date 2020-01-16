@@ -106,7 +106,9 @@ module.exports = class extends Command {
 
         const eventLogChannel = message.guild.channels.resolve(message.guild.settings.eventLogChannel);
 
-        await user.guildSettings(message.guild.id).update('profile.badges', { ID: sBadge.ID, earnedOn: moment().format("LLL") }, { action: 'add' });
+        var settings = await user.guildSettings(message.guild.id);
+
+        await settings.update('profile.badges', { ID: sBadge.ID, earnedOn: moment().format("LLL") }, { action: 'add' });
 
         if (eventLogChannel) {
             eventLogChannel.send(`:medal: The ${sBadge.name} badge (${sBadge.ID}) was awarded to ${user.tag} (${user.id}) by ${message.author.tag} (${message.author.id}).`)

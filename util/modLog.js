@@ -135,7 +135,8 @@ module.exports = class ModLog {
             await channel.send({ embed: this.embed });
         }
         const user = this.client.users.resolve(this.user.id);
-        await user.guildSettings(this.guild.id).update(`modLogs`, this.pack, { action: 'add' });
+        var settings = await user.guildSettings(this.guild.id);
+        await settings.update(`modLogs`, this.pack, { action: 'add' });
         return this.pack;
     }
 

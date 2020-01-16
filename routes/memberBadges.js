@@ -34,7 +34,8 @@ module.exports = class extends Route {
             return response.end(JSON.stringify({ error: "Unable to fetch the provided user." }));
         }
 
-        const userBadges = user.guildSettings(guild.id).profile.badges;
+        var settings = await user.guildSettings(guild.id);
+        const userBadges = settings.profile.badges;
         const guildBadges = guild.settings.badges;
         var respond = { tag: user.tag, badges: [] };
 

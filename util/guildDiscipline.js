@@ -177,8 +177,9 @@ module.exports = class GuildDiscipline {
                 if (guildMember) {
                     guildMember.roles.add(mutedRole, this.reason);
                 } else {
+                    var settings = await settings;
                     // Otherwise, set muted to true manually
-                    this.user.guildSettings(this.guild.id).update(`muted`, true, this.guild);
+                    settings.update(`muted`, true, this.guild);
                 }
 
                 response += "\n\n" + `**You have been muted in the guild for the time being for the safety of the community.**`
@@ -345,6 +346,10 @@ module.exports = class GuildDiscipline {
                 msg.setFooter(`💬 This channel is private between you and staff to discuss this matter. Please remain respectful.` + "\n" + `👮 **You must comply with staff's questions and instruction, and provide only truthful information**. Failure will result in a permanent ban. The only acceptable forms of civil disobedience is polite refusal to answer questions, remaining silent, or leaving the guild.` + "\n" + `😄 Thank you for your understanding and cooperation.` + "\n\n" + `#️⃣ Case ID: ${this.case}`);
         }
 
+        // Get settings
+
+        var settings = await this.user.guildSettings(this.guild.id);
+
         // prepare a modLog
         var modLog = new ModLog(this.guild)
             .setType(this.type)
@@ -424,7 +429,7 @@ module.exports = class GuildDiscipline {
                     if (guildMember) {
                         guildMember.roles.add(theRole, `Discipline case ${this.case}`);
                     } else {
-                        this.user.guildSettings(this.guild.id).update(`roles`, theRole, this.guild, { action: 'add' });
+                        settings.update(`roles`, theRole, this.guild, { action: 'add' });
                     }
                 } else {
                     this.permissions.splice(index, 1);
@@ -437,8 +442,8 @@ module.exports = class GuildDiscipline {
         // Next, add bot restrictions
         if (this.botRestrictions.length > 0) {
             this.botRestrictions.map((restriction, index) => {
-                if (Object.keys(this.user.guildSettings(this.guild.id).restrictions).indexOf(restriction) !== -1) {
-                    this.user.guildSettings(this.guild.id).update(`restrictions.${restriction}`, true);
+                if (Object.keys(settings.restrictions).indexOf(restriction) !== -1) {
+                    settings.update(`restrictions.${restriction}`, true);
 
                     if (restriction === 'cannotUseVoiceChannels' && guildMember) {
                         guildMember.voice.setDeaf(true, 'User disciplined with cannotUseVoiceChannels restriction.');
@@ -456,8 +461,8 @@ module.exports = class GuildDiscipline {
         classD();
 
         if (this.xp > 0) {
-            msg.addField(`:fleur_de_lis: **${this.xp} XP Retracted**`, `${this.xp} experience (XP) was taken away. You now have ${(this.user.guildSettings(this.guild.id).xp - this.xp)} XP.`);
-            await this.user.guildSettings(this.guild.id).update(`xp`, (this.user.guildSettings(this.guild.id).xp - this.xp));
+            msg.addField(`:fleur_de_lis: **${this.xp} XP Retracted**`, `${this.xp} experience (XP) was taken away. You now have ${(settings.xp - this.xp)} XP.`);
+            await settings.update(`xp`, (settings.xp - this.xp));
             // Update level roles
             var guildMember = this.guild.members.resolve(this.user);
             if (guildMember) {
@@ -495,17 +500,18 @@ module.exports = class GuildDiscipline {
             }
         }
         if (this.yang > 0) {
-            msg.addField(`:gem: **${this.yang} Yang Fine**`, `You were fined ${this.yang} Yang from your account / profile. You now have ${(this.user.guildSettings(this.guild.id).yang - this.yang)} Yang.`);
-            await this.user.guildSettings(this.guild.id).update(`yang`, (this.user.guildSettings(this.guild.id).yang - this.yang));
+            msg.addField(`:gem: **${this.yang} Yang Fine**`, `You were fined ${this.yang} Yang from your account / profile. You now have ${(settings.yang - this.yang)} Yang.`);
+            await settings.update(`yang`, (settings.yang - this.yang));
         }
         if (this.HPDamage > 0) {
-            var HP = this.user.HP(this.guild.id) - this.HPDamage;
+            var HP = await this.user.HP(this.guild.id);
+            HP = HP - this.HPDamage;
             if (HP <= 0) {
                 msg.addField(`:broken_heart: **${this.HPDamage} HP Damage Issued**`, `You lost ${this.HPDamage} Hit Points (HP). You now have 0 HP.` + "\n" + `:warning: **You do not have any HP left!** This means any additional rule violations can result in a temporary or permanent ban at staff discretion.`);
             } else {
                 msg.addField(`:broken_heart: **${this.HPDamage} HP Damage Issued**`, `You lost ${this.HPDamage} Hit Points (HP). You now have ${HP} HP.` + "\n" + `Bans are not considered / issued except for certain rule violations unless you lose all your HP. You will regenerate 1 HP for every ${this.guild.settings.oneHPPerXP} XP you earn.`);
             }
-            await this.user.guildSettings(this.guild.id).update(`HPDamage`, (this.user.guildSettings(this.guild.id).HPDamage + this.HPDamage));
+            await settings.update(`HPDamage`, (settings.HPDamage + this.HPDamage));
         }
         if (this.other !== null) {
             msg.addField(`:notepad_spiral: **Additional Discipline / Information**`, this.other);
@@ -518,7 +524,7 @@ module.exports = class GuildDiscipline {
             if (this.banDuration !== null) {
                 await this.guild.members.ban(this.user, { days: 7, reason: this.reason });
                 if ((!this.classD.apology && !this.classD.research && !this.classD.retraction && !this.classD.quiz) || this.banDuration === 0) {
-                    this.user.guildSettings(this.guild.id).update(`muted`, false, this.guild);
+                    settings.update(`muted`, false, this.guild);
                 }
                 if (this.banDuration > 0) {
                     // Add a schedule if the mute is limited duration
@@ -585,6 +591,7 @@ Not enabling this to see your message is not an acceptable excuse for not knowin
         // Get the configured muted role
         const muted = this.guild.settings.muteRole;
         const mutedRole = this.guild.roles.resolve(muted);
+        var settings = await this.user.guildSettings(this.guild.id);
 
         // error if there is no muted role
         if (!mutedRole)
@@ -598,7 +605,7 @@ Not enabling this to see your message is not an acceptable excuse for not knowin
                 guildMember.roles.remove(mutedRole, `Staff did not complete discipline wizard.`);
             } else {
                 // Otherwise, remove mutedRole to the list of roles for the user so it's applied when/if they return
-                this.user.guildSettings(this.guild.id).update(`muted`, false, this.guild);
+                settings.update(`muted`, false, this.guild);
             }
         }
         if (this.message)
