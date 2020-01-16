@@ -8,7 +8,7 @@ module.exports = Structures.extend('User', User => {
 		}
 
 		guildSettings(guildID) {
-			return this.client.gateways.members.create([guildID, this.id]);
+			return this.client.gateways.members.get(`${guildID}.${this.id}`, true);
 		}
 
 	}
