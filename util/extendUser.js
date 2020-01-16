@@ -6,12 +6,12 @@ Structures.extend('User', User => class MyUser extends User {
     super(...args);
 
     // Guild based member settings
-    this.guildSettings = (guildID) => {
-      return this.client.gateways.members.get(`${guildID}.${this.id}`, true);
+    this.guildSettings = async (guildID) => {
+      return await this.client.gateways.members.get(`${guildID}.${this.id}`, true);
     };
 
-    this.HP = (guildID) => {
-      var settings = this.client.gateways.members.get(`${guildID}.${this.id}`, true);
+    this.HP = async (guildID) => {
+      var settings = await this.client.gateways.members.get(`${guildID}.${this.id}`, true);
       var guild = this.client.guilds.resolve(guildID);
       if (!guild) return 100;
 
