@@ -110,62 +110,66 @@ module.exports = class extends Event {
             var inactiveRole = guild.roles.resolve(guild.settings.inactiveRole);
             guild.members.each((guildMember) => {
 
-                // Check if the member should be muted. If so, reset all roles
-                if (muteRole && (guildMember.settings.muted || guildMember.roles.get(muteRole.id))) {
-                    if (!guildMember.roles.get(muteRole.id) && _channelMod)
-                        _channelMod.send(`:mute: The member <@!${guildMember.user.id}> had a mute on their account and was re-muted upon the bot restarting. Check to be sure they were not trying to mute evade.`);
-                    guildMember.settings.update(`muted`, true, guild);
-                    guildMember.roles.set([ guild.settings.muteRole ], `User supposed to be muted`);
-                } else {
-                    // Member has the verified role. Update database with the current roles set in case anything changed since bot was down.
-                    if (verifiedRole && guildMember.roles.get(verifiedRole.id)) {
-                        guildMember.settings.update('verified', true);
-                        guildMember.settings.reset(`roles`);
-                        guildMember.roles.each((role) => {
-                            if (role.id !== guild.roles.everyone.id && role.id !== guild.settings.muteRole)
-                                guildMember.settings.update(`roles`, role, guild, { action: 'add' });
-                        });
-                        updateLevels(guildMember);
-                        // Member does not have verified role but has passed the verification stage, so add all roles from the database
-                    } else if (guildMember.settings.verified) {
-                        // We have to lodash clone the roles before we start adding them, otherwise guildMemberUpdate will interfere with this process
-                        guildMember.roles.set(guildMember.settings.roles, `Re-assigning roles`)
-                            .then(() => {
-                                // Verify the member if we are not in raid mitigation level 2+
-                                if (guild.settings.raidMitigation < 2 && verifiedRole) {
-                                    guildMember.roles.add(verifiedRole, `User is verified`);
-                                }
+                guildMember.settings.sync()
+                    .then(() => {
+
+                        // Check if the member should be muted. If so, reset all roles
+                        if (muteRole && (guildMember.settings.muted || guildMember.roles.get(muteRole.id))) {
+                            if (!guildMember.roles.get(muteRole.id) && _channelMod)
+                                _channelMod.send(`:mute: The member <@!${guildMember.user.id}> had a mute on their account and was re-muted upon the bot restarting. Check to be sure they were not trying to mute evade.`);
+                            guildMember.settings.update(`muted`, true, guild);
+                            guildMember.roles.set([ guild.settings.muteRole ], `User supposed to be muted`);
+                        } else {
+                            // Member has the verified role. Update database with the current roles set in case anything changed since bot was down.
+                            if (verifiedRole && guildMember.roles.get(verifiedRole.id)) {
+                                guildMember.settings.update('verified', true);
+                                guildMember.settings.reset(`roles`);
+                                guildMember.roles.each((role) => {
+                                    if (role.id !== guild.roles.everyone.id && role.id !== guild.settings.muteRole)
+                                        guildMember.settings.update(`roles`, role, guild, { action: 'add' });
+                                });
                                 updateLevels(guildMember);
-                            })
+                                // Member does not have verified role but has passed the verification stage, so add all roles from the database
+                            } else if (guildMember.settings.verified) {
+                                // We have to lodash clone the roles before we start adding them, otherwise guildMemberUpdate will interfere with this process
+                                guildMember.roles.set(guildMember.settings.roles, `Re-assigning roles`)
+                                    .then(() => {
+                                        // Verify the member if we are not in raid mitigation level 2+
+                                        if (guild.settings.raidMitigation < 2 && verifiedRole) {
+                                            guildMember.roles.add(verifiedRole, `User is verified`);
+                                        }
+                                        updateLevels(guildMember);
+                                    })
 
-                        // Have to do this outside of the then() statement because then() does not hold back completion of this each().
-                        if (guild.settings.raidMitigation < 2 && verifiedRole) {
-                            verified.push(guildMember.id);
+                                // Have to do this outside of the then() statement because then() does not hold back completion of this each().
+                                if (guild.settings.raidMitigation < 2 && verifiedRole) {
+                                    verified.push(guildMember.id);
+                                }
+                            }
                         }
-                    }
-                }
 
-                if (!guildMember.user.bot) {
-                    if (guildMember.settings.lastMessage === null && moment().diff(moment(guildMember.joinedAt), 'hours') > (24 * 7)) {
-                        if (inactiveRole && !guildMember.roles.get(inactiveRole.id)) {
-                            guildMember.roles.add(inactiveRole, `New member has not sent a message in the last 7 days.`);
-                            if (modLogChannel)
-                                modLogChannel.send(`:zzz: New member ${guildMember.user.tag} (${guildMember.id}) has joined over 7 days ago without sending their first message. Marked inactive until they do.`)
-                            if (inactiveChannel)
-                                inactiveChannel.send(`:zzz: Hey <@${guildMember.id}>; it looks like you joined over 7 days ago but have not yet sent your first message. Say hi in any channel so we know you are not a lurker and wish to remain in our guild.`);
+                        if (!guildMember.user.bot) {
+                            if (guildMember.settings.lastMessage === null && moment().diff(moment(guildMember.joinedAt), 'hours') > (24 * 7)) {
+                                if (inactiveRole && !guildMember.roles.get(inactiveRole.id)) {
+                                    guildMember.roles.add(inactiveRole, `New member has not sent a message in the last 7 days.`);
+                                    if (modLogChannel)
+                                        modLogChannel.send(`:zzz: New member ${guildMember.user.tag} (${guildMember.id}) has joined over 7 days ago without sending their first message. Marked inactive until they do.`)
+                                    if (inactiveChannel)
+                                        inactiveChannel.send(`:zzz: Hey <@${guildMember.id}>; it looks like you joined over 7 days ago but have not yet sent your first message. Say hi in any channel so we know you are not a lurker and wish to remain in our guild.`);
+                                }
+                            } else if (guildMember.settings.lastMessage !== null && moment().diff(moment(guildMember.settings.lastMessage), 'days') > 30) {
+                                if (inactiveRole && !guildMember.roles.get(inactiveRole.id)) {
+                                    guildMember.roles.add(inactiveRole, `Regular member has not sent any messages in the last 30 days.`);
+                                    if (modLogChannel)
+                                        modLogChannel.send(`:zzz: Member ${guildMember.user.tag} (${guildMember.id}) has not sent any messages in the last 30 days. Marked inactive until they do.`)
+                                    if (inactiveChannel)
+                                        inactiveChannel.send(`:zzz: Hey <@${guildMember.id}>; you haven't sent any messages in over 30 days. Say hi in any channel so we know you're okay, still around, and want to remain in the guild.`);
+                                }
+                            } else if (inactiveRole && guildMember.roles.get(inactiveRole.id)) {
+                                guildMember.roles.remove(inactiveRole, `Member is no longer inactive`);
+                            }
                         }
-                    } else if (guildMember.settings.lastMessage !== null && moment().diff(moment(guildMember.settings.lastMessage), 'days') > 30) {
-                        if (inactiveRole && !guildMember.roles.get(inactiveRole.id)) {
-                            guildMember.roles.add(inactiveRole, `Regular member has not sent any messages in the last 30 days.`);
-                            if (modLogChannel)
-                                modLogChannel.send(`:zzz: Member ${guildMember.user.tag} (${guildMember.id}) has not sent any messages in the last 30 days. Marked inactive until they do.`)
-                            if (inactiveChannel)
-                                inactiveChannel.send(`:zzz: Hey <@${guildMember.id}>; you haven't sent any messages in over 30 days. Say hi in any channel so we know you're okay, still around, and want to remain in the guild.`);
-                        }
-                    } else if (inactiveRole && guildMember.roles.get(inactiveRole.id)) {
-                        guildMember.roles.remove(inactiveRole, `Member is no longer inactive`);
-                    }
-                }
+                    });
             });
 
             // Make a message welcoming the new members who have been verified.
