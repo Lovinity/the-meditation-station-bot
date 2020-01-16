@@ -49,8 +49,6 @@ module.exports = class extends Event {
             }
         }
 
-        /*
-
         // Iterate through guild operations on bot startup
         this.client.guilds.each((guild) => {
 
@@ -196,8 +194,6 @@ module.exports = class extends Event {
 
                 });
         });
-
-        */
 
 
     }
