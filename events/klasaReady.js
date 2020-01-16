@@ -145,8 +145,6 @@ module.exports = class extends Event {
                     }
                 }
 
-                /*
-                // Check if the member is inactive
                 if (!guildMember.user.bot) {
                     if (guildMember.settings.lastMessage === null && moment().diff(moment(guildMember.joinedAt), 'hours') > (24 * 7)) {
                         if (inactiveRole && !guildMember.roles.get(inactiveRole.id)) {
@@ -168,7 +166,6 @@ module.exports = class extends Event {
                         guildMember.roles.remove(inactiveRole, `Member is no longer inactive`);
                     }
                 }
-                */
             });
 
             // Make a message welcoming the new members who have been verified.
