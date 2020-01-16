@@ -14,7 +14,7 @@ Structures.extend('User', User => class MyUser extends User {
         user: this
       }, guild);
 
-      return guildmember.settings;
+      return guildmember;
     };
 
     this.HP = (guildID) => {
