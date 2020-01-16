@@ -7,6 +7,8 @@ Structures.extend('User', User => class MyUser extends User {
 
     this.HP = async (guildID) => {
       var settings = await this.guildSettings(guildID);
+      var guild = this.client.guilds.resolve(guildID);
+      if (!guild) return 0;
 
       var damage = settings.HPDamage;
       var decay = guild.settings.oneHPPerXP;
