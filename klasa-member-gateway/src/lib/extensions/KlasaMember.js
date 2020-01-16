@@ -15,7 +15,7 @@ module.exports = Structures.extend('GuildMember', GuildMember => {
 		/**
 		 * @param {...*} args Normal D.JS GuildMember args
 		 */
-		constructor(...args) {
+		async constructor(...args) {
 			super(...args);
 
 			/**
