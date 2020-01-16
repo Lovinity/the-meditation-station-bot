@@ -23,7 +23,7 @@ module.exports = Structures.extend('GuildMember', GuildMember => {
 			 * @since 0.0.1
 			 * @type {external:Settings}
 			 */
-			this.settings = this.client.gateways.members.get(`${this.guild.id}.${this.id}`, true);
+			this.settings = await this.client.gateways.members.get(`${this.guild.id}.${this.id}`, true);
 		}
 
 		/**
