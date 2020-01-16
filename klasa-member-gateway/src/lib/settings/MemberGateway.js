@@ -92,15 +92,15 @@ class MemberGateway extends GatewayStorage {
 	 * @returns {external:Settings}
 	 */
 	create (id, data = {}) {
-		const entry = this.get(id);
-		if (entry) return entry;
+		const entry = this.cache.get(id);
+		if (entry) return entry.settings;
 
-		const settings = new this.Settings(this, { id });
+		const settings = new this.Settings(this, { id }, ...data);
 		if (this._synced && this.schema.size) settings.sync().catch(err => this.client.emit('error', err));
 		return settings;
 	}
 
-	async sync(input = [...this.cache.keys()]) {
+	async sync (input = [ ...this.cache.keys() ]) {
 		if (Array.isArray(input)) {
 			if (!this._synced) this._synced = true;
 			const entries = await this.provider.getAll(this.type, input);
