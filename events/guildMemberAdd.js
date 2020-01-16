@@ -57,8 +57,8 @@ module.exports = class extends Event {
 
         // Check if the member should be muted. If so, reset all roles
         if (muteRole && (guildMember.settings.muted || guildMember.roles.get(muteRole.id))) {
-            guildMember.settings.update(`muted`, true, guildMember.guild);
-            guildMember.roles.set([ guildMember.guild.settings.muteRole ], `User supposed to be muted`);
+            guildMember.settings.update(`muted`, true, guild);
+            guildMember.roles.set([ guild.settings.muteRole ], `User supposed to be muted`);
             if (_channelMod)
                 _channelMod.send(`:mute: The member <@!${guildMember.user.id}> had a mute on their account and was re-muted upon entering the guild. Check to be sure they were not trying to mute evade.`);
         } else {
