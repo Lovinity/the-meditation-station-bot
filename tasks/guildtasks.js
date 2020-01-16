@@ -53,6 +53,7 @@ module.exports = class extends Task {
                     mostActiveStaff = guildMember.user.tag;
                 }
 
+                /*
                 // Determine inactive users
                 if (!guildMember.user.bot) {
                     if (guildMember.settings.lastMessage === null && moment().diff(moment(guildMember.joinedAt), 'hours') > (24 * 7)) {
@@ -78,6 +79,8 @@ module.exports = class extends Task {
                         }
                     }
                 }
+
+                */
             });
 
             // Update highest activity score

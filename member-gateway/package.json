@@ -1,0 +1,11 @@
+{
+  "engines": {
+    "node": ">=8.6.0"
+  },
+  "main": "src/index.js",
+  "name": "member-gateway",
+  "peerDependencies": {
+    "klasa": "github:dirigeants/klasa#master"
+  },
+  "version": "0.0.1-dev"
+}
