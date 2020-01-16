@@ -101,6 +101,30 @@ class MemberGateway extends GatewayStorage {
 		return settings;
 	}
 
+	async sync(input = [...this.cache.keys()]) {
+		if (Array.isArray(input)) {
+			if (!this._synced) this._synced = true;
+			const entries = await this.provider.getAll(this.type, input);
+			for (const entry of entries) {
+				if (!entry) continue;
+				const cache = this.get(entry.id);
+				if (cache) {
+					if (!cache._existsInDB) cache._existsInDB = true;
+					cache._patch(entry);
+				}
+			}
+
+			// Set all the remaining settings from unknown status in DB to not exists.
+			for (const entry of this.cache.values()) {
+				if (entry.settings._existsInDB === null) entry.settings._existsInDB = false;
+			}
+			return this;
+		}
+
+		const cache = this.get((input && input.id) || input);
+		return cache ? cache.sync() : null;
+	}
+
 }
 
 module.exports = MemberGateway;
