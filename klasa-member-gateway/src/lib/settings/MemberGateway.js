@@ -92,12 +92,11 @@ class MemberGateway extends GatewayStorage {
 	 * @returns {external:Settings}
 	 */
 	create (id, data = {}) {
-		const [ guildID, memberID ] = typeof id === 'string' ? id.split('.') : id;
-		const entry = this.get([ guildID, memberID ]);
+		const entry = this.get(id);
 		if (entry) return entry;
 
-		const settings = new this.Settings(this, { id: `${guildID}.${memberID}`, ...data });
-		if (this._synced && this.schema.size) settings.sync(id).catch(err => this.client.emit('error', err));
+		const settings = new this.Settings(this, { id });
+		if (this._synced && this.schema.size) settings.sync().catch(err => this.client.emit('error', err));
 		return settings;
 	}
 
