@@ -7,11 +7,11 @@ Structures.extend('User', User => class MyUser extends User {
 
     // Guild based member settings
     this.guildSettings = (guildID) => {
-      return this.client.gateways.members.create(`${guildID}.${this.id}`);
+      return this.client.gateways.members.get(`${guildID}.${this.id}`);
     };
 
     this.HP = (guildID) => {
-      var settings = this.client.gateways.members.create(`${guildID}.${this.id}`);
+      var settings = this.client.gateways.members.get(`${guildID}.${this.id}`);
       var guild = this.client.guilds.resolve(guildID);
       if (!guild) return 100;
 
