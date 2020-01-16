@@ -121,7 +121,7 @@ class MemberGateway extends GatewayStorage {
 			const entries = await this.provider.getAll(this.type, input);
 			for (const entry of entries) {
 				if (!entry) continue;
-				const cache = this.get(entry.id);
+				const cache = await this.get(entry.id);
 				if (cache) {
 					if (!cache._existsInDB) cache._existsInDB = true;
 					cache._patch(entry);
@@ -135,7 +135,7 @@ class MemberGateway extends GatewayStorage {
 			return this;
 		}
 
-		const cache = this.get((input && input.id) || input);
+		const cache = await this.get((input && input.id) || input);
 		return cache ? await cache.sync(true) : null;
 	}
 
