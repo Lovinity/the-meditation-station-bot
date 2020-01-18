@@ -88,7 +88,7 @@ module.exports = class extends Event {
 
         // Post in general if the member left within 1 hour of joining
         if (moment().subtract(1, 'hours').isBefore(moment(guildMember.joinedAt)) && generalChannel) {
-            generalChannel.send(`:frowning: O-oh, <@${guildMember.user.id}> did not want to stay after.`);
+            generalChannel.send(`:frowning: O-oh, <@${guildMember.user.id}> did not want to stay after all.`);
         }
 
     }
