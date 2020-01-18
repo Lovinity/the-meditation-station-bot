@@ -120,7 +120,7 @@ ${guild.members.filter((member) => !member.user.bot).size < 25 ? `:speech_left: 
                                 prepared.finalize();
                             });
                         if (generalChannel)
-                            generalChannel.send(`:imp: It looks like <@${member.user.id}> did not answer the verification question correctly. So they will not have full guild access for a while, at least.`)
+                            generalChannel.send(`:imp: Well, that's embarrassing. <@${member.user.id}> did not answer the verification question correctly. It'll be a while before they can get full guild access, if they do.`)
                     }
                 }
             }
