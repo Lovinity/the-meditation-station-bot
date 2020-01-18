@@ -88,7 +88,7 @@ ${guild.members.filter((member) => !member.user.bot).size < 25 ? `:speech_left: 
                         } else {
                             const _channel3 = this.client.channels.resolve(guild.settings.unverifiedChannel);
                             if (_channel3)
-                                _channel3.send(`<@${member.id}>, **you have been verified**! Unfortunately, the guild is still under a raid. You will get full guild access once the bot has determined the raid to be over. This should hopefully be no more than a couple of hours. Thank you for your patience.`)
+                                _channel3.send(`<@${member.id}>, **you have been verified**! However, the bot is currently trying to stop a raid in the guild. You will get full guild access once the bot has determined the raid to be over. This should hopefully be no more than a couple of hours. Thank you for your patience.`)
                         }
                     } else { // Automatic mute discipline for choosing the wrong gender!
                         member.settings.update('verified', true); // Still verify them among the discipline because verification is a one-shot thing.
