@@ -85,13 +85,15 @@ module.exports = class extends Event {
                     guildMember.roles.add(verifiedRole, `User is verified`);
                 } else if (verifiedRole) {
                     const _channel3 = this.client.channels.resolve(guildMember.guild.settings.unverifiedChannel);
-                    if (_channel3)
+                    if (_channel3) {
                         _channel3.send(`**Welcome** <@${guildMember.id}>! Please stand by for a short while; you had already previously passed verification, but due to an ongoing raid, I cannot let you have full guild access until the raid ends.`)
+                    }
                 }
             } else if (verifiedRole) {
                 const _channel3 = this.client.channels.resolve(guildMember.guild.settings.unverifiedChannel);
-                if (_channel3)
-                    _channel3.send(`**Welcome new member** <@${guildMember.id}>! As a troll prevention, please check the welcome-unverified channel for instructions on how to get full access to this guild! (note: you cannot see other verified members nor many of the channels until you verify yourself.).`)
+                if (_channel3) {
+                    _channel3.send(`**Welcome new member** <@${guildMember.id}>! As a troll prevention, please check the welcome-unverified channel for instructions on how to get full access to this guild! (note: you cannot see verified members nor many of the channels until you verify yourself.).`)
+                }
             } else {
                 if (_channel2)
                     _channel2.send(`**Welcome new member** <@${guildMember.id}>! Check out the information channels to learn more about us! Please especially read the rules. `)

@@ -14,12 +14,14 @@ module.exports = class extends Event {
             var channel;
             var message;
             var generalChannel;
+            var unverifiedChannel;
             if (guild) {
                 member = await guild.members.fetch(data.d.user_id);
                 channel = guild.channels.resolve(data.d.channel_id);
                 if (channel)
                     message = await channel.messages.fetch(data.d.message_id);
-                generalChannel = this.client.channels.resolve(guild.settings.generalChannel);
+                generalChannel = guild.channels.resolve(guild.settings.generalChannel);
+                unverifiedChannel = guild.channels.resolve(guild.settings.unverifiedChannel);
             }
 
             // Self roles
@@ -76,6 +78,13 @@ module.exports = class extends Event {
                         reaction.users.remove(data.d.user_id);
                     });
                 if (!member.settings.verified) {
+                    // Prune the unverified channel every time someone answers the verification question
+                    if (unverifiedChannel) {
+                        unverifiedChannel.bulkDelete(1000)
+                        .then(() => {
+                            unverifiedChannel.send(`:wastebasket: For security, this channel is pruned every time someone answers the verification question.`)
+                        })
+                    }
                     if (config.verification.correct === data.d.emoji.name.codePointAt(0)) {
                         member.settings.update('verified', true);
                         const verifiedRole = guild.roles.resolve(guild.settings.verifiedRole);
@@ -87,9 +96,8 @@ module.exports = class extends Event {
 ${guild.members.filter((member) => !member.user.bot).size < 25 ? `:speech_left: Note: We are still a very new guild. There isn't much activity right now, but please help us change that! make some responses / topics around in the different channels, and invite your friends. We greatly appreciate it!` : ``}`);
                             member.roles.add(verifiedRole, `User is verified`);
                         } else {
-                            const _channel3 = this.client.channels.resolve(guild.settings.unverifiedChannel);
-                            if (_channel3)
-                                _channel3.send(`<@${member.id}>, **you have been verified**! However, the bot is currently trying to stop a raid in the guild. You will get full guild access once the bot has determined the raid to be over. This should hopefully be no more than a couple of hours. Thank you for your patience.`)
+                            if (unverifiedChannel)
+                                unverifiedChannel.send(`<@${member.id}>, **you have been verified**! However, the bot is currently trying to stop a raid in the guild. You will get full guild access once the bot has determined the raid to be over. This should hopefully be no more than a couple of hours. Thank you for your patience.`)
                             if (generalChannel)
                                 generalChannel.send(`:hourglass: <@${member.user.id}> was verified but has to wait until raid mitigation ends before they have full guild access.`)
                         }
