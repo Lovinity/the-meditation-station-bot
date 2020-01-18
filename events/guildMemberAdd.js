@@ -63,7 +63,7 @@ module.exports = class extends Event {
                 _channelMod.send(`:mute: The member <@!${guildMember.user.id}> had a mute on their account and was re-muted upon entering the guild. Check to be sure they were not trying to mute evade.`);
         } else {
             // Re-assign saved roles
-            if (guildMember.settings.roles.length > 0) {
+            if (guildMember.settings.verified && guildMember.settings.roles.length > 0) {
                 guildMember.roles.set(guildMember.settings.roles, `Re-assigning roles`)
                     .then(() => {
                         // Verify the member if we are not in raid mitigation level 2+
@@ -79,37 +79,38 @@ module.exports = class extends Event {
                 // Verify the member if we are not in raid mitigation level 2+
                 if (guildMember.guild.settings.raidMitigation < 2 && verifiedRole) {
                     if (_channel2)
-                        _channel2.send(`**Welcome new member** <@${guildMember.id}>! It looks like you've never been here before. We love new friends! Here are some tips to get started:
-:small_orange_diamond: Be sure to check out the welcome channel for the rules and helpful resources. All members and staff must follow the rules.
-:small_orange_diamond: Use the \`!staff\` bot command at any time if you need to talk privately with staff, such as to report another member.
-:small_orange_diamond: Use the \`!profile\` bot command to get a link to view and edit your profile! Everyone in the guild gets a bot profile.`);
+                        _channel2.send(`**Welcome back** <@${guildMember.id}>! I see you have been here before. I remembered your profile, XP, Yang, HP, badges, profile info, roles, etc. Be sure to check out the welcome channel; the rules may have changed since you were last with us.`)
+                    updateLevels(guildMember);
                     guildMember.roles.add(verifiedRole, `User is verified`);
                 } else if (verifiedRole) {
                     const _channel3 = this.client.channels.resolve(guildMember.guild.settings.unverifiedChannel);
                     if (_channel3)
                         _channel3.send(`**Welcome** <@${guildMember.id}>! Please stand by for a short while; you had already previously passed verification, but due to an ongoing raid, I cannot let you have full guild access until the raid ends.`)
                 }
-            } else {
+            } else if (verifiedRole) {
                 const _channel3 = this.client.channels.resolve(guildMember.guild.settings.unverifiedChannel);
                 if (_channel3)
-                    _channel3.send(`**Welcome new member** <@${guildMember.id}>! As a troll prevention, please check the welcome-unverified channel for instructions on how to get full access to this guild! (note: you cannot see other verified members nor many of the channels until you verify yourself).`)
+                    _channel3.send(`**Welcome new member** <@${guildMember.id}>! As a troll prevention, please check the welcome-unverified channel for instructions on how to get full access to this guild! (note: you cannot see other verified members nor many of the channels until you verify yourself.).`)
+            } else {
+                if (_channel2)
+                    _channel2.send(`**Welcome new member** <@${guildMember.id}>! Check out the information channels to learn more about us! Please especially read the rules. `)
             }
         }
 
         // Re-assign permissions to discipline channels.
         guildMember.guild.channels
-        .filter((channel) => channel.topic && channel.topic !== null && channel.topic.startsWith(`Discipline ${guildMember.user.id}`))
-        .each((channel) => {
-            channel.createOverwrite(guildMember, {
-                ADD_REACTIONS: true,
-                VIEW_CHANNEL: true,
-                SEND_MESSAGES: true,
-                EMBED_LINKS: true,
-                ATTACH_FILES: true,
-                READ_MESSAGE_HISTORY: true
-            }, "Active incident channel; user re-entered the guild.");
-            channel.send(`:unlock: This member had (re-)entered the guild. Channel permissions were assigned so they can see it.`);
-        });
+            .filter((channel) => channel.topic && channel.topic !== null && channel.topic.startsWith(`Discipline ${guildMember.user.id}`))
+            .each((channel) => {
+                channel.createOverwrite(guildMember, {
+                    ADD_REACTIONS: true,
+                    VIEW_CHANNEL: true,
+                    SEND_MESSAGES: true,
+                    EMBED_LINKS: true,
+                    ATTACH_FILES: true,
+                    READ_MESSAGE_HISTORY: true
+                }, "Active incident channel; user re-entered the guild.");
+                channel.send(`:unlock: This member had (re-)entered the guild. Channel permissions were assigned so they can see it.`);
+            });
     }
 
 };
