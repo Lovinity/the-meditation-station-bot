@@ -1,5 +1,6 @@
 const { Event } = require('klasa');
 const _ = require("lodash");
+const moment = require('moment');
 
 module.exports = class extends Event {
 
@@ -111,7 +112,15 @@ module.exports = class extends Event {
                 }, "Active incident channel; user re-entered the guild.");
                 channel.send(`:unlock: This member had (re-)entered the guild. Channel permissions were assigned so they can see it.`);
             });
+
+        const flagLogChannel = this.client.channels.resolve(this.guild.settings.flagLogChannel);
+        if (flagLogChannel) {
+
+            // Add a flag log if the member's account is less than 7 days old
+            if (moment().subtract(7, 'days').isAfter(moment(guildMember.user.createdAt))) {
+                flagLogChannel.send(`:clock7: Member <@${guildMember.user.id}> (${guildMember.user.id}) just joined the guild but their user account is less than 7 days old. Trolls often create new accounts, so keep an eye on them.`)
+            }
+        }
     }
 
 };
-
