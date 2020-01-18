@@ -86,8 +86,8 @@ module.exports = class extends Event {
                 channel.send(`:arrows_counterclockwise: :x: This member left the guild. They can no longer motion to appeal this discipline.`)
             });
 
-        // Post in general if the member left within 1 hour of joining
-        if (moment().subtract(1, 'hours').isAfter(moment(guildMember.joinedAt)) && generalChannel) {
+        // Post in general if the member left and had no XP
+        if (guildMember.settings.xp === 0 && generalChannel) {
             generalChannel.send(`:frowning: O-oh, <@${guildMember.user.id}> did not want to stay after all.`);
         }
 

@@ -113,7 +113,7 @@ module.exports = class extends Event {
                 channel.send(`:unlock: This member had (re-)entered the guild. Channel permissions were assigned so they can see it.`);
             });
 
-        const flagLogChannel = this.client.channels.resolve(this.guild.settings.flagLogChannel);
+        const flagLogChannel = this.client.channels.resolve(guildMember.guild.settings.flagLogChannel);
         if (flagLogChannel) {
 
             // Add a flag log if the member's account is less than 7 days old
