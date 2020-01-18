@@ -94,7 +94,7 @@ ${guild.members.filter((member) => !member.user.bot).size < 25 ? `:speech_left: 
                         member.settings.update('verified', true); // Still verify them among the discipline because verification is a one-shot thing.
                         var discipline = new GuildDiscipline(member.user, guild, this.client.user)
                             .setType('classD')
-                            .setReason(`You did not correctly answer the verification question. You are flagged as a potential troll.`)
+                            .setReason(`You did not answer the verification question correctly (you chose ${data.d.emoji.name} ). We need you to take extra steps as explained below to prove to us you are not a troll to get full guild access.`)
                             .setMuteDuration(0)
                             .setClassD({
                                 apology: false,
