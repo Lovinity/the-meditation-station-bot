@@ -254,30 +254,16 @@ module.exports = class extends Route {
                         log.botRestrictions.map((restriction) => {
                             if (Object.keys(settings.restrictions).indexOf(restriction) !== -1) {
                                 settings.update(`restrictions.${restriction}`, false);
-
-                                if (restriction === 'cannotUseVoiceChannels' && guildMember) {
-                                    guildMember.voice.setDeaf(false, 'cannotUseVoiceChannels appealed.');
-                                    guildMember.voice.setMute(false, 'cannotUseVoiceChannels appealed.');
-                                }
                             }
                         });
                     }
 
-                    // Remove incident if it is pending in the guild
-                    const pendIncidents = guild.settings.pendIncidents;
-                    if (pendIncidents && pendIncidents.length > 0) {
-                        pendIncidents.map((incident) => {
-                            if (incident.user === user.id)
-                                guild.settings.update(`pendIncidents`, incident, { action: 'remove' });
-                        });
-                    }
-
-                    if (log.channel !== null) {
-                        const channel = guild.channels.resolve(log.channel);
-                        if (channel) {
+                    // Let the member know in incidents channel it was appealed
+                    guild.channels
+                        .filter((channel) => channel.name === `discipline-${log.case}`)
+                        .each((channel) => {
                             channel.send(`:negative_squared_cross_mark: This incident has been appealed by ${authUser.tag} (${authUser.id}), and issued discipline was reversed.`);
-                        }
-                    }
+                        });
 
                     const channel2 = guild.channels.resolve(guild.settings.modLogChannel);
                     if (channel2) {

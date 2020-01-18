@@ -18,10 +18,8 @@ module.exports = class extends Event {
         if (_channel)
             _channel.send(`:wave: The member <@!${guildMember.user.id}> (${guildMember.user.id}) just left the guild on ${moment().format('LLLL')} guild time.`);
 
-        // Finalize any bans if the member has them
+        // Finalize any suspensions if the member has them
         const pendSuspensions = guildMember.guild.settings.pendSuspensions;
-
-        // Pending suspension
         if (pendSuspensions && pendSuspensions.length > 0)
         {
             pendSuspensions.map((suspension) => {
@@ -49,7 +47,6 @@ module.exports = class extends Event {
 
         // Finalize any bans if the member has them
         const pendBans = guildMember.guild.settings.pendBans;
-        // Pending bans
         if (pendBans && pendBans.length > 0)
         {
             pendBans.map((ban) => {
@@ -75,6 +72,13 @@ module.exports = class extends Event {
                             });
 
                 });
+
+        // Post about losing the opportunity to appeal, if applicable.
+        guildMember.guild.channels
+        .filter((channel) => channel.topic && channel.topic !== null && channel.topic.startsWith(`Discipline ${guildMember.user.id}`))
+        .each((channel) => {
+            channel.send(`:arrows_counterclockwise: :x: This member left the guild. They can no longer motion to appeal this discipline.`)
+        });
 
         // Remove any of the member's purchased advertisements
         if (guildMember.guild.settings.ads.length > 0) {

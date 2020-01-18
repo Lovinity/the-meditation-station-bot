@@ -43,7 +43,6 @@ Client.defaultGuildSchema
     .add('fuckboyRuleNumber', 'integer', { default: 1, min: 0 })
     .add('pendSuspensions', 'any', { array: true, configurable: false })
     .add('pendBans', 'any', { array: true, configurable: false })
-    .add('pendIncidents', 'any', { array: true, configurable: false })
     .add('incidentsCategory', 'categorychannel')
     .add('staffCategory', 'categorychannel')
     .add('antispamCooldown', 'integer', { default: 33, min: 0, max: 100 })

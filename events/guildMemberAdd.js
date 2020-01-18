@@ -96,26 +96,20 @@ module.exports = class extends Event {
             }
         }
 
-        // See if there are any pending incidents for this member, and if so, assign permissions to that channel
-        const pendIncidents = guildMember.guild.settings.pendIncidents;
-        if (pendIncidents && pendIncidents.length > 0) {
-            pendIncidents.map((incident) => {
-                if (incident.user === guildMember.id) {
-                    const channel = this.client.channels.resolve(incident.channel);
-                    if (channel) {
-                        channel.createOverwrite(guildMember, {
-                            ADD_REACTIONS: true,
-                            VIEW_CHANNEL: true,
-                            SEND_MESSAGES: true,
-                            EMBED_LINKS: true,
-                            ATTACH_FILES: true,
-                            READ_MESSAGE_HISTORY: true
-                        }, "Active incident channel; user re-entered the guild.");
-                        guildMember.guild.settings.update(`pendIncidents`, incident, { action: 'remove' });
-                    }
-                }
-            });
-        }
+        // Re-assign permissions to discipline channels.
+        guildMember.guild.channels
+        .filter((channel) => channel.topic && channel.topic !== null && channel.topic.startsWith(`Discipline ${guildMember.user.id}`))
+        .each((channel) => {
+            channel.createOverwrite(guildMember, {
+                ADD_REACTIONS: true,
+                VIEW_CHANNEL: true,
+                SEND_MESSAGES: true,
+                EMBED_LINKS: true,
+                ATTACH_FILES: true,
+                READ_MESSAGE_HISTORY: true
+            }, "Active incident channel; user re-entered the guild.");
+            channel.send(`:unlock: This member had (re-)entered the guild. Channel permissions were assigned so they can see it.`);
+        });
     }
 
 };
