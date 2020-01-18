@@ -120,6 +120,11 @@ module.exports = class extends Event {
             if (moment().subtract(7, 'days').isBefore(moment(guildMember.user.createdAt))) {
                 flagLogChannel.send(`:clock7: Member <@${guildMember.user.id}> (${guildMember.user.id}) just joined the guild but their user account is less than 7 days old. Trolls often create new accounts, so keep an eye on them.`)
             }
+
+            // Add a flag log if the member has less than 100 HP, indicating they've been disciplined before and should be watched
+            if (guildMember.HP < 100) {
+                flagLogChannel.send(`:police_officer: Member <@${guildMember.user.id}> (${guildMember.user.id}) just re-joined the guild. Keep an eye on them because they have been disciplined in the past (they have ${guildMember.HP} HP).`)
+            }
         }
     }
 
