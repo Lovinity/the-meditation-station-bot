@@ -117,7 +117,7 @@ module.exports = class extends Event {
         if (flagLogChannel) {
 
             // Add a flag log if the member's account is less than 7 days old
-            if (moment().subtract(7, 'days').isAfter(moment(guildMember.user.createdAt))) {
+            if (moment().subtract(7, 'days').isBefore(moment(guildMember.user.createdAt))) {
                 flagLogChannel.send(`:clock7: Member <@${guildMember.user.id}> (${guildMember.user.id}) just joined the guild but their user account is less than 7 days old. Trolls often create new accounts, so keep an eye on them.`)
             }
         }
