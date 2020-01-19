@@ -123,9 +123,12 @@ module.exports = class extends Event {
                 flagLogChannel.send(`:clock7: Member <@${guildMember.user.id}> (${guildMember.user.id}) just joined the guild but their user account is less than 7 days old. Trolls often create new accounts, so keep an eye on them.`)
             }
 
-            // Add a flag log if the member has less than 100 HP, indicating they've been disciplined before and should be watched
-            if (guildMember.HP < 100) {
-                flagLogChannel.send(`:police_officer: Member <@${guildMember.user.id}> (${guildMember.user.id}) just re-joined the guild. Keep an eye on them because they have been disciplined in the past (they have ${guildMember.HP} HP).`)
+            // Add a flag log if the member has one or more active modLogs against them.
+            if (guildMember.settings.modLogs.length > 0) {
+                var logs = guildMember.settings.modLogs.filter((log) => log.valid);
+                if (logs.length > 0) {
+                    flagLogChannel.send(`:police_officer: Member <@${guildMember.user.id}> (${guildMember.user.id}) just re-joined the guild. Keep an eye on them because they have ${logs.length} discipline records on their account. (they have ${guildMember.HP} HP).`)
+                }
             }
         }
     }
