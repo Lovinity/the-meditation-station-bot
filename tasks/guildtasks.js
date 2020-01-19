@@ -529,13 +529,13 @@ ${emoji4.char}: ???`);
                                 var userSettings = await user.guildSettings(_guild.id);
                                 if (user) {
                                     if (matches[ userID ] === 3) {
-                                        settings.update('yang', settings.yang + (yangBet * 4))
+                                        userSettings.update('yang', userSettings.yang + (yangBet * 4))
                                         matches3.push(userID);
                                     } else if (matches[ userID ] === 4) {
-                                        settings.update('yang', settings.yang + (yangBet * 16))
+                                        userSettings.update('yang', userSettings.yang + (yangBet * 16))
                                         matches4.push(userID);
                                     } else {
-                                        settings.update('yang', settings.yang - yangBet)
+                                        userSettings.update('yang', userSettings.yang - yangBet)
                                         matches0.push(userID);
                                     }
                                 }
