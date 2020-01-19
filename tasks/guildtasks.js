@@ -490,27 +490,26 @@ ${emoji4.char}: ???`);
                         var matches0 = [];
 
                         // Determine every user's reaction pattern
-                        message.reactions.map((reaction) => {
-                            reaction.users.map((user) => {
-                                user.guildSettings(_guild.id)
-                                    .then((settings) => {
-                                        if (settings.yang >= yangBet) {
+                        await Promise.all(message.reactions.map(async (reaction) => {
+                            return await Promise.all(reaction.users.map(async (user) => {
+                                var _settings = await user.guildSettings(_guild.id);
+                                if (_settings.yang >= yangBet) {
 
-                                            if (typeof reactions[ user.id ] === 'undefined')
-                                                reactions[ user.id ] = [ false, false, false, false ];
+                                    if (typeof reactions[ user.id ] === 'undefined')
+                                        reactions[ user.id ] = [ false, false, false, false ];
 
-                                            if (reaction.emoji.name === emoji1.char)
-                                                reactions[ user.id ][ 0 ] = true;
-                                            if (reaction.emoji.name === emoji2.char)
-                                                reactions[ user.id ][ 1 ] = true;
-                                            if (reaction.emoji.name === emoji3.char)
-                                                reactions[ user.id ][ 2 ] = true;
-                                            if (reaction.emoji.name === emoji4.char)
-                                                reactions[ user.id ][ 3 ] = true;
-                                        }
-                                    });
-                            });
-                        });
+                                    if (reaction.emoji.name === emoji1.char)
+                                        reactions[ user.id ][ 0 ] = true;
+                                    if (reaction.emoji.name === emoji2.char)
+                                        reactions[ user.id ][ 1 ] = true;
+                                    if (reaction.emoji.name === emoji3.char)
+                                        reactions[ user.id ][ 2 ] = true;
+                                    if (reaction.emoji.name === emoji4.char)
+                                        reactions[ user.id ][ 3 ] = true;
+                                }
+                                return;
+                            }));
+                        }));
 
                         // Determine every user's number of matches
                         for (var userID in reactions) {
