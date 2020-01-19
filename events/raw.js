@@ -80,7 +80,7 @@ module.exports = class extends Event {
                 if (!member.settings.verified) {
                     // Prune the unverified channel every time someone answers the verification question
                     if (unverifiedChannel) {
-                        unverifiedChannel.bulkDelete(1000)
+                        unverifiedChannel.bulkDelete(100)
                         .then(() => {
                             unverifiedChannel.send(`:wastebasket: For security, this channel is pruned every time someone answers the verification question.`)
                         })
