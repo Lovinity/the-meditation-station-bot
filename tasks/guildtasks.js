@@ -152,8 +152,8 @@ module.exports = class extends Task {
             _guild.channels
                 .filter((channel) => channel.name.startsWith("support-"))
                 .each((channel) => {
-                    if ((!channel.lastMessage && moment(channel.createdAt).add(2, 'days').isBefore(moment())) || (channel.lastMessage && moment(channel.lastMessage.createdAt).add(1, 'days').isBefore(moment()))) {
-                        channel.delete(`Support channel expired (24 hours of inactivity).`);
+                    if ((!channel.lastMessage && moment(channel.createdAt).add(2, 'days').isBefore(moment())) || (channel.lastMessage && moment(channel.lastMessage.createdAt).add(2, 'days').isBefore(moment()))) {
+                        channel.delete(`Support channel expired (48 hours of inactivity).`);
                     }
                 });
 
@@ -163,6 +163,13 @@ module.exports = class extends Task {
                 .each((channel) => {
                     if (moment(channel.createdAt).add(14, 'days').isBefore(moment())) {
                         channel.delete(`Temp channel expired (14 days since it was created).`);
+                    }
+                });
+            _guild.channels
+                .filter((channel) => channel.name.endsWith("-temp1"))
+                .each((channel) => {
+                    if ((!channel.lastMessage && moment(channel.createdAt).add(1, 'days').isBefore(moment())) || (channel.lastMessage && moment(channel.lastMessage.createdAt).add(1, 'days').isBefore(moment()))) {
+                        channel.delete(`Temp channel expired (24 hours of inactivity).`);
                     }
                 });
 
