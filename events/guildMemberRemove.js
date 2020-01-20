@@ -86,6 +86,13 @@ module.exports = class extends Event {
                 channel.send(`:arrows_counterclockwise: :x: This member left the guild. They can no longer motion to appeal this discipline.`)
             });
 
+        // Post in interrogation channels if applicable.
+        guildMember.guild.channels
+            .filter((channel) => channel.name.startsWith("interrogation-") && channel.topic && channel.topic !== null && channel.topic.includes(guildMember.user.id))
+            .each((channel) => {
+                channel.send(`:arrows_counterclockwise: :x: <@${guildMember.user.id}> left the guild. Please treat this as a motion they no longer want to be interrogated (immediately proceed to deciding on what action to take, if any).`)
+            });
+
         // Post in general if the member left within 1 hour of joining
         if (moment().subtract(1, 'hours').isBefore(moment(guildMember.joinedAt)) && generalChannel) {
             generalChannel.send(`:frowning: O-oh, <@${guildMember.user.id}> did not want to stay after all.`);
