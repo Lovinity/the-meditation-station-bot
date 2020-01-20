@@ -111,8 +111,23 @@ module.exports = class extends Event {
                     EMBED_LINKS: true,
                     ATTACH_FILES: true,
                     READ_MESSAGE_HISTORY: true
-                }, "Active incident channel; user re-entered the guild.");
-                channel.send(`:unlock: This member had (re-)entered the guild. Channel permissions were assigned so they can see it.`);
+                }, "Active discipline channel; user re-entered the guild.");
+                channel.send(`:unlock: This member had (re-)entered the guild. Channel permissions were assigned so they can see it. <@${guildMember.user.id}>, sorry but because you had either left the guild and came back, or you were gone when this discipline was issued, it is now final and cannot be appealed.`);
+            });
+
+        // Re-assign permissions to interrogation channels
+        guildMember.guild.channels
+            .filter((channel) => channel.name.startsWith("interrogation-") && channel.topic && channel.topic !== null && channel.topic.includes(guildMember.user.id))
+            .each((channel) => {
+                channel.createOverwrite(guildMember, {
+                    ADD_REACTIONS: true,
+                    VIEW_CHANNEL: true,
+                    SEND_MESSAGES: true,
+                    EMBED_LINKS: true,
+                    ATTACH_FILES: true,
+                    READ_MESSAGE_HISTORY: true
+                }, "Active interrogation channel; user re-entered the guild.");
+                channel.send(`:unlock: <@${guildMember.user.id}> had (re-)entered the guild. Channel permissions were assigned so they can see it.`);
             });
 
         const flagLogChannel = this.client.channels.resolve(guildMember.guild.settings.flagLogChannel);

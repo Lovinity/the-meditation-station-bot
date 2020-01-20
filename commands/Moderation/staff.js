@@ -17,15 +17,15 @@ module.exports = class extends Command {
             requiredPermissions: [ "MANAGE_CHANNELS", "MANAGE_ROLES" ],
             requiredSettings: [ "incidentsCategory" ],
             subcommands: false,
-            description: 'Initiates a private text channel between you and the staff, say, to report incidents in private.',
+            description: 'Initiates a private text channel between you and the staff, say, to report incidents in private. Or, if members provided, initiates a private staff channel between staff and those members without muting them.',
             quotedStringSupport: false,
-            usage: '[mute] [user:username] [...]',
+            usage: '[user:username] [...]',
             usageDelim: ' | ',
-            extendedHelp: 'When provided with no arguments, the command will create a text channel between the author and the staff. When arguments are provided, and the author has permission level 4 or above, a private text channel is created between the provided members and staff.'
+            extendedHelp: ''
         });
     }
 
-    async run (message, [ mute, ...users ]) {
+    async run (message, [ ...users ]) {
         var overwrites = [];
         var msg = await message.send(`:hourglass_flowing_sand: Please wait...`);
         var response = ``;
@@ -44,12 +44,10 @@ module.exports = class extends Command {
                 return msg.edit(`:x: No no, only staff can specify specific members to be added to an incidents channel. Please use the command without any arguments.`);
 
             // Create a proper response message
-            response = `:eye_in_speech_bubble: **__Hey, the staff want to speak with you__** :eye_in_speech_bubble: 
+            response = `:eye_in_speech_bubble: **__Hey, the staff would like to speak with you__** :eye_in_speech_bubble: 
 
-You are seeing this channel because a staff member asked to speak with you (via the !staff command). Please be patient until a staff member gets with you.
-This does not necessarily mean you're in trouble; the staff command is used for multiple purposes.
-            
-${mute ? `**You have been muted from the rest of the guild until staff speak with you** in order to protect the safety of the community.` : ``}   
+Staff would like to speak with you about something. This intervention was initiated by <@${message.author.id}> . Please wait until a staff member posts their inquiry.
+Intervention channels do not usually mean that you are in trouble, unlike interrogation channels.
 `;
 
             // Process permission overwrites and response mentions
@@ -67,25 +65,6 @@ ${mute ? `**You have been muted from the rest of the guild until staff speak wit
                     ],
                     type: 'member'
                 });
-
-                // Mute the users if the mute parameter was provided in the command
-                if (mute) {
-                    const muted = message.guild.settings.muteRole;
-                    const mutedRole = message.guild.roles.resolve(muted);
-                    var guildMember = message.guild.members.resolve(user.id);
-
-                    if (mutedRole) {
-                        if (guildMember) {
-                            guildMember.roles.add(mutedRole, `Mute via !staff command`);
-                        } else {
-                            user.guildSettings(message.guild.id)
-                                .then((settings) => {
-                                    settings.update(`muted`, true, message.guild);
-                                });
-                        }
-                    }
-
-                }
             });
 
             // No member parameters
@@ -105,17 +84,16 @@ ${mute ? `**You have been muted from the rest of the guild until staff speak wit
             });
 
             // Create a proper response message
-            response = `:eye_in_speech_bubble: **__You asked to speak with staff privately__** :eye_in_speech_bubble: 
+            response = `:eye_in_speech_bubble: **__Staff, <@${message.author.id}> would like to speak with you__** :eye_in_speech_bubble: 
 
-You are seeing this channel because you used the !staff command to request to speak with staff privately.
+A member used the !staff command to ask to speak with you in private.
             
-**If you are reporting someone for misconduct**, please include any/all evidence and information to show their misconduct, including screenshots, or audio recordings of VC incidents, if necessary.
+<@${message.author.id}>, **If you are reporting someone for misconduct**, please include any/all evidence and information to show their misconduct, including screenshots, or audio recordings of VC incidents, if necessary.
 You may consider using the command \`!report username/mention/snowflake\` in this channel as well; if several members use this on the same person within a period of time, they will automatically be muted until staff investigate. Please do not abuse this command.
             
 **If you are not reporting someone for misconduct**, please post your inquiry here, and staff will get to you as soon as possible.
             
-Thank you, <@${message.author.id}>!
-`;
+Thank you!`;
 
         }
 
@@ -150,7 +128,7 @@ Thank you, <@${message.author.id}>!
         // Create the incidents channel
         var channel = await message.guild.channels.create(`intervention-${Date.now().toString(36) + (this.client.shard ? this.client.shard.id.toString(36) : '') + String.fromCharCode((1 % 26) + 97)}`, {
             type: 'text',
-            topic: `Private staff channel initiated by ${message.author.tag}`,
+            topic: `Intervention channel initiated by ${message.author.tag}`,
             parent: incidents,
             permissionOverwrites: overwrites,
             rateLimitPerUser: 15,
