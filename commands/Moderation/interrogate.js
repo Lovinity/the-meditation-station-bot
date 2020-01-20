@@ -58,7 +58,7 @@ Staff have started an interrogation for your recent conduct in the guild; please
                     guildMember.roles.add(mutedRole, `Mute via !interrogate command`);
                 }
                 response += `<@${user.id}> `;
-                userIDs.push(`<@${user.id}> (${user.tag})`);
+                userIDs.push(`${user.id} (${user.tag})`);
                 overwrites.push({
                     id: user.id,
                     allow: [
