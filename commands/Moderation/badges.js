@@ -1,4 +1,4 @@
-const { Command } = require('klasa');
+const { Command, CommandPrompt, CommandUsage } = require('klasa');
 const moment = require("moment");
 var fs = require('fs');
 const download = require('image-downloader');
@@ -16,6 +16,8 @@ module.exports = class extends Command {
             usageDelim: ' | ',
             cooldown: 30,
             requiredSettings: [ "botChannel" ],
+            promptLimit: 1,
+            promptTime: 60000
         });
     }
 
@@ -89,8 +91,12 @@ module.exports = class extends Command {
     }
 
     async award (message, [ user, id ]) {
-        if (!user) return message.send(`:x: Username / mention / snowflake required; I need to know to whom I will award the badge.`);
-        if (!id) return message.send(`:x: Badge ID required.`);
+
+        if (!user || !id) {
+            var usage = new CommandUsage(message.client, `<add|award> <user:username> <id:string>`, ` | `, this);
+            var prompt = new CommandPrompt(message, usage, { limit: 2, time: 60000 });
+            await prompt.run();
+        }
 
         var sBadge;
 

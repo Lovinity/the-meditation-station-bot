@@ -13,6 +13,8 @@ module.exports = class extends Command {
             usage: '<channel:channel>',
             cooldown: 60,
             runIn: [ 'text' ],
+            promptLimit: 1,
+            promptTime: 60000
         });
     }
 

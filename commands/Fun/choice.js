@@ -11,6 +11,8 @@ module.exports = class extends Command {
             usage: '<choices:str> [...]',
             usageDelim: ' | ',
             runIn: [ 'text' ],
+            promptLimit: 1,
+            promptTime: 60000
         });
     }
 
