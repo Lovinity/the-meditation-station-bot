@@ -75,6 +75,7 @@ Client.defaultGuildSchema
             .add('advertisementHere', 'integer', { min: 0, default: 250 })
             .add('wikiFact', 'integer', { min: 0, default: 10 })
             .add('superpower', 'integer', { min: 0, default: 10 })
+            .add('fml', 'integer', { min: 0, default: 10 })
     })
     .add('ads', 'any', { array: true, configurable: false })
     .add('badges', 'any', { array: true, configurable: false });

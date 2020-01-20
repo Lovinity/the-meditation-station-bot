@@ -37,8 +37,8 @@ module.exports = class extends Event {
             this.client.emit('error', e);
         }
 
-        if (this.client.ready && old.content !== message.content)
-            this.client.monitors.run(message);
+        // Run monitors
+        if (this.client.ready && !old.partial && old.content !== message.content) this.client.monitors.run(message);
 
         // Skip the bot
         if (message.author.id === this.client.user.id)

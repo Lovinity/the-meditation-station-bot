@@ -5,6 +5,8 @@ module.exports = class extends Event {
 
     async run (messages) {
         var modLog;
+
+        // Delete command messages too if deletable
         for (const message of messages) {
             if (message.command && message.command.deletable)
                 for (const msg of message.responses)

@@ -4,9 +4,12 @@ const moment = require("moment");
 module.exports = class extends Event {
 
     async run (message) {
+        
+        // Delete command message too if deletable
         if (message.command && message.command.deletable)
             for (const msg of message.responses)
                 msg.delete();
+
         // Skip the bot
         if (message.author.id === this.client.user.id)
             return;
