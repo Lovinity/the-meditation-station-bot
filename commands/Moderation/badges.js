@@ -12,7 +12,7 @@ module.exports = class extends Command {
             permissionLevel: 4,
             runIn: [ 'text' ],
             description: 'Manage earnable badges.',
-            usage: '<add|award> (user:username) (badgeid:string)',
+            usage: '<add|award> (user:userCustom) (badgeid:badgeidCustom)',
             usageDelim: ' | ',
             cooldown: 30,
             requiredSettings: [ "botChannel" ],
@@ -22,14 +22,21 @@ module.exports = class extends Command {
 
         // user and badgeid are only required for the award subcommand
         this
-			.createCustomResolver('user', (arg, possible, msg, [action]) => {
-				if (action === 'add' || arg) return arg;
-				return undefined;
-			})
-			.createCustomResolver('badgeid', (arg, possible, msg, [action]) => {
-				if (action === 'add' || arg) return arg;
-				return undefined;
-			});
+            .createCustomResolver('userCustom', (arg, possible, msg, [ action ]) => {
+                if (action === 'add' || arg) {
+                    var argument = this.client.arguments.get('username');
+                    if (!argument) throw "Error: username argument resolver not found."
+                    argument.run(arg, possible, message)
+                        .then((response) => {
+                            return response;
+                        })
+                }
+                throw "User is required for awarding a badge";
+            })
+            .createCustomResolver('badgeidCustom', (arg, possible, msg, [ action ]) => {
+                if (action === 'add' || arg) return arg;
+                throw "badgeid is required for awarding a badge";
+            });
     }
 
     async add (message, []) {
