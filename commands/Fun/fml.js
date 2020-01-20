@@ -31,7 +31,7 @@ module.exports = class extends Command {
             const updoot = root.querySelector('.vote-up');
 
             if (article.childNodes[ 0 ].text.length < 5) {
-                return msg.sendMessage('Today, something went wrong, so you will have to try again in a few moments. FML again.');
+                return message.sendMessage('Today, something went wrong, so you will have to try again in a few moments. FML again.');
             }
 
             return message.sendEmbed(new MessageEmbed()
