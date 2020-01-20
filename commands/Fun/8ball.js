@@ -10,6 +10,8 @@ module.exports = class extends Command {
             description: 'Magic 8-Ball, does exactly what the toy does.',
             usage: '<query:str>',
             runIn: [ 'text' ],
+            promptLimit: 1,
+            promptTime: 60000
         });
     }
 
