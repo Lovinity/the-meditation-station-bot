@@ -15,6 +15,8 @@ module.exports = class extends Command {
             cooldown: 30,
             requiredSettings: [ "botChannel" ],
             runIn: [ 'text' ],
+            promptLimit: 1,
+            promptTime: 60000
         });
     }
 

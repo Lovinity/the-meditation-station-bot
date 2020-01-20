@@ -22,6 +22,8 @@ module.exports = class extends Command {
             quotedStringSupport: false,
             usage: '<user:username>',
             usageDelim: ' | ',
+            promptLimit: 1,
+            promptTime: 60000,
             extendedHelp: 'Use this command to remove someone in a support channel you created who is not being supportive.'
         });
     }

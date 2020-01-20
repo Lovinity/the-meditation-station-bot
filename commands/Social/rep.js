@@ -12,7 +12,9 @@ module.exports = class extends Command {
             cooldown: 30,
             runIn: [ 'text' ],
             requiredSettings: [ "botChannel" ],
-            extendedHelp: 'You can use this command once every 24 hours to award 10 good reputation to a member in the guild. Format: rep guildMember | reason for repping. Abuse of the rep command could be disciplined.'
+            extendedHelp: 'You can use this command once every 24 hours to award 10 good reputation to a member in the guild. Format: rep guildMember | reason for repping. Abuse of the rep command could be disciplined.',
+            promptLimit: 1,
+            promptTime: 60000
         });
     }
 

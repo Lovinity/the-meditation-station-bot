@@ -9,7 +9,9 @@ module.exports = class extends Command {
             runIn: [ 'text' ],
             description: 'Unmute a member.',
             usage: '<user:username>',
-            usageDelim: ''
+            usageDelim: '',
+            promptLimit: 1,
+            promptTime: 60000
         });
     }
 

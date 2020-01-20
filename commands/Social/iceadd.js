@@ -13,7 +13,9 @@ module.exports = class extends Command {
             description: 'Add a question into the pool of Ice Breaker questions.',
             usage: '<question:string>',
             usageDelim: '',
-            extendedHelp: 'No extended help available.'
+            extendedHelp: 'No extended help available.',
+            promptLimit: 1,
+            promptTime: 60000
         });
     }
 
