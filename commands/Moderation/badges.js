@@ -1,4 +1,4 @@
-const { Command, CommandPrompt, CommandUsage } = require('klasa');
+const { Command } = require('klasa');
 const moment = require("moment");
 var fs = require('fs');
 const download = require('image-downloader');
@@ -12,31 +12,13 @@ module.exports = class extends Command {
             permissionLevel: 4,
             runIn: [ 'text' ],
             description: 'Manage earnable badges.',
-            usage: '<add|award> (user:userCustom) (badgeid:badgeidCustom)',
+            usage: '<add|award> [user:username] [id:string]',
             usageDelim: ' | ',
             cooldown: 30,
             requiredSettings: [ "botChannel" ],
-            promptLimit: 3,
+            promptLimit: 1,
             promptTime: 60000
         });
-
-        // user and badgeid are only required for the award subcommand
-        this
-            .createCustomResolver('userCustom', (arg, possible, msg, [ action ]) => {
-                if (action === 'add' || arg) {
-                    var argument = this.client.arguments.get('username');
-                    if (!argument) throw "Error: username argument resolver not found."
-                    argument.run(arg, possible, message)
-                        .then((response) => {
-                            return response;
-                        })
-                }
-                throw "User is required for awarding a badge";
-            })
-            .createCustomResolver('badgeidCustom', (arg, possible, msg, [ action ]) => {
-                if (action === 'add' || arg) return arg;
-                throw "badgeid is required for awarding a badge";
-            });
     }
 
     async add (message, []) {
@@ -108,13 +90,15 @@ module.exports = class extends Command {
         return message.send(`:white_check_mark: Badge has been added! Its ID is ${badgeID}`);
     }
 
-    async award (message, [ user, badgeid ]) {
+    async award (message, [ user, id ]) {
+        if (!user) return message.send(`:x: Username / mention / snowflake required; I need to know to whom I will award the badge.`);
+        if (!id) return message.send(`:x: Badge ID required.`);
 
         var sBadge;
 
         if (message.guild.settings.badges && message.guild.settings.badges.length > 0) {
             message.guild.settings.badges
-                .filter((badge) => badge.ID === badgeid && badge.active)
+                .filter((badge) => badge.ID === id && badge.active)
                 .map((badge) => {
                     sBadge = badge;
                 });
