@@ -8,7 +8,12 @@ const yangStore = require('../../util/yangStore');
 module.exports = class extends Command {
 
     constructor(...args) {
-        super(...args, { description: 'Gets a random FML story.' });
+        super(...args, {
+            description: 'Get a random FML story.',
+            cooldown: 60,
+            runIn: [ 'text' ],
+            enabled: false // DISABLED; the below code does not work as the FML website has changed
+        });
     }
 
     async run (message) {
@@ -26,7 +31,7 @@ module.exports = class extends Command {
             const root = await fetch('http://www.fmylife.com/random')
                 .then(result => result.text())
                 .then(HTMLParser.parse);
-            const article = root.querySelector('.block a');
+            const article = root.querySelector('.article-panel');
             const downdoot = root.querySelector('.vote-down');
             const updoot = root.querySelector('.vote-up');
 
