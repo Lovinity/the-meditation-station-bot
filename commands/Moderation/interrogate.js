@@ -31,7 +31,7 @@ module.exports = class extends Command {
         var response = ``;
         const muted = message.guild.settings.muteRole;
         const mutedRole = message.guild.roles.resolve(muted);
-        var userIDs;
+        var userIDs = [];
 
         // Gather necessary config
         const incidents = message.guild.settings.incidentsCategory;
