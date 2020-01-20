@@ -12,6 +12,8 @@ module.exports = class extends Command {
             usage: '<user:username>',
             usageDelim: ' | ',
             requiredSettings: [ "incidentsCategory", "staffCategory" ],
+            promptLimit: 1,
+            promptTime: 60000
         });
     }
 

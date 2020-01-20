@@ -21,7 +21,9 @@ module.exports = class extends Command {
             quotedStringSupport: false,
             usage: '<user:username> [...]',
             usageDelim: ' | ',
-            extendedHelp: ''
+            extendedHelp: '',
+            promptLimit: 1,
+            promptTime: 60000
         });
     }
 

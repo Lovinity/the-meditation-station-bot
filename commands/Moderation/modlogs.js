@@ -11,10 +11,12 @@ module.exports = class extends Command {
             description: 'Generate a link to view moderation logs for the specified user.',
             usage: '<user:username>',
             usageDelim: ' | ',
+            promptLimit: 1,
+            promptTime: 60000
         });
     }
 
     async run (message, [ user ]) {
-        return message.send(`:link: ${message.client.options.dashboardHooks.origin}/modlogs.html?user=${user.id}`);
+        return message.send(`:link: To view the modlogs of ${user.tag}, go to ${message.client.options.dashboardHooks.origin}/modlogs.html?user=${user.id}`);
     }
 }

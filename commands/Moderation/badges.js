@@ -12,13 +12,24 @@ module.exports = class extends Command {
             permissionLevel: 4,
             runIn: [ 'text' ],
             description: 'Manage earnable badges.',
-            usage: '<add|award> [user:username] [id:string]',
+            usage: '<add|award> (user:username) (badgeid:string)',
             usageDelim: ' | ',
             cooldown: 30,
             requiredSettings: [ "botChannel" ],
-            promptLimit: 1,
+            promptLimit: 3,
             promptTime: 60000
         });
+
+        // user and badgeid are only required for the award subcommand
+        this
+			.createCustomResolver('user', (arg, possible, msg, [action]) => {
+				if (action === 'add' || arg) return arg;
+				return undefined;
+			})
+			.createCustomResolver('badgeid', (arg, possible, msg, [action]) => {
+				if (action === 'add' || arg) return arg;
+				return undefined;
+			});
     }
 
     async add (message, []) {
@@ -90,19 +101,13 @@ module.exports = class extends Command {
         return message.send(`:white_check_mark: Badge has been added! Its ID is ${badgeID}`);
     }
 
-    async award (message, [ user, id ]) {
-
-        if (!user || !id) {
-            var usage = new CommandUsage(message.client, `<add|award> <user:username> <id:string>`, ` | `, this);
-            var prompt = new CommandPrompt(message, usage, { limit: 2, time: 60000 });
-            await prompt.run();
-        }
+    async award (message, [ user, badgeid ]) {
 
         var sBadge;
 
         if (message.guild.settings.badges && message.guild.settings.badges.length > 0) {
             message.guild.settings.badges
-                .filter((badge) => badge.ID === id && badge.active)
+                .filter((badge) => badge.ID === badgeid && badge.active)
                 .map((badge) => {
                     sBadge = badge;
                 });

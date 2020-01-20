@@ -10,7 +10,9 @@ module.exports = class extends Command {
             runIn: ['text'],
             description: 'Add or remove a level role.',
             usage: '<level:int{2,100}> [role:rolename]',
-            usageDelim: ' | '
+            usageDelim: ' | ',
+            promptLimit: 1,
+            promptTime: 60000
         });
     }
 

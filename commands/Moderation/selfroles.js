@@ -1,4 +1,4 @@
-const { Command } = require('klasa');
+const { Command, CommandPrompt, CommandUsage } = require('klasa');
 var wait = require('wait-for-stuff');
 
 module.exports = class extends Command {
@@ -13,13 +13,20 @@ module.exports = class extends Command {
             usageDelim: ' | ',
             cooldown: 15,
             requiredSettings: [ "selfRolesChannel" ],
+            promptLimit: 1,
+            promptTime: 60000
         });
     }
 
     async add (message, [ role ]) {
-        if (!role) {
-            return message.send(`:x: Role id/name/mention is required.`);
+
+        // Role is required argument for this subcommand. Validate and prompt.
+        if (!user || !badgeid) {
+            var usage = new CommandUsage(message.client, `<add|remove|regenerate:default> <role:rolename>`, ` | `, this);
+            var prompt = new CommandPrompt(message, usage, { limit: 1, time: 60000 });
+            await prompt.run();
         }
+
         var category = await message.awaitMessage(`:question: First, send a message containing the name of the category (case sentitive) you want this role to be added to. If you specify a category that does not exist, it will be created. Then, react to the message you just sent with the reaction you want users to use to assign that role to themselves.`, 60000);
         if (!category) {
             return message.send(`:x: The selfroles command timed out.`);

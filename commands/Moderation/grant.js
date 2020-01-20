@@ -9,7 +9,9 @@ module.exports = class extends Command {
             runIn: ['text'],
             description: 'Grant a user or users access to the channel this command was executed in.',
             usage: '<user:username> [...]',
-            usageDelim: ' | '
+            usageDelim: ' | ',
+            promptLimit: 1,
+            promptTime: 60000
         });
     }
 
