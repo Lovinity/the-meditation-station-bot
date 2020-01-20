@@ -387,6 +387,7 @@ ${_guild.settings.raidMitigation >= 3 ? `**Please remember to re-generate invite
                 }
             }
 
+            /* DISABLED: does not work
             // Emoji Lottery every 04, 10, 16, 22, at :57
             if (m === 57 && h % 6 === 4) {
                 console.log(`Emoji Lottery`);
@@ -620,6 +621,7 @@ ${emoji4.char}: ${emojiSelection[ 3 ] ? `**DESTROYED**` : `SAFE`}`);
                     }, 180000);
                 }
             }
+            */
         }
     }
 
