@@ -20,8 +20,9 @@ module.exports = class extends Monitor {
         const { permission } = await this.client.permissionLevels.run(message, 4);
         if (/(https?:\/\/)?(www\.)?(discord\.(gg|li|me|io)|discordapp\.com\/invite)\/.+/.test(message.content) && !permission) {
 
-            // Delay deletion by 3 seconds so it doesn't conflict with the !ad command.
+            // Delay deletion by 3 seconds so it doesn't conflict with the !ad command. Also add 25 spam score since this triggers a message.
             setTimeout(() => {
+                message.member.spamScore(25, message);
                 message.send(`:x: <@${message.author.id}>, please use the !ad command if you want to purchase an ad to promote a server. Ignore this if you are using the !ad command.`)
                     .then((msg) => {
                         setTimeout(function () {

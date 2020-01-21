@@ -22,6 +22,7 @@ module.exports = class extends Monitor {
         if (/(https?:\/\/[^\s]+)/g.test(message.content) && message.member.settings.xp < 128 && !permission) {
             // Delay deletion by 3 seconds so it doesn't conflict with the !ad command.
             setTimeout(() => {
+                message.member.spamScore(25, message);
                 message.send(`:x: <@${message.author.id}>, You must be level 3 (128 XP) or above to post links in this guild. Ignore if you are creating an !ad.`)
                     .then((msg) => {
                         setTimeout(function () {

@@ -19,9 +19,10 @@ module.exports = class extends Monitor {
         if (message.type !== 'DEFAULT')
             return null;
 
-        // Delete messages without an attachment in channels ending in -pics
+        // Delete messages without an attachment in channels ending in -pics. Also add 25 spam score since this triggers a bot message.
         if (message.channel.name.endsWith("-pics") && message.attachments.size <= 0)
         {
+            message.member.spamScore(25, message);
             message.send(`:x: This channel is for attachments only. Please use another channel for discussion.`)
                     .then((msg) => {
                         setTimeout(function () {

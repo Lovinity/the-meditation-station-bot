@@ -6,7 +6,7 @@ module.exports = class extends Monitor {
         super(...args, {
             name: 'staffMention',
             enabled: true,
-            ignoreBots: false,
+            ignoreBots: true,
             ignoreSelf: true,
             ignoreOthers: false,
             ignoreWebhooks: true,
