@@ -4,7 +4,7 @@ const GuildDiscipline = require('../util/guildDiscipline');
 module.exports = class extends Event {
 
     async run (message) {
-        if (message.type === 'DEFAULT' && typeof message.member !== 'undefined' && message !== null) {
+        if (message.type === 'DEFAULT' && message !== null && message.member !== null && typeof message.member !== 'undefined') {
 
             // Spam scoring
             try {
@@ -22,7 +22,7 @@ module.exports = class extends Event {
                     }
                 }
             } catch (e) {
-                // Don't spit out errors because you'll get a lot of unneceesary cannot read spamScore of nulls
+                this.client.emit('error', e);
             }
         }
 
