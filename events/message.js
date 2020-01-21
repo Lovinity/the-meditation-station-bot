@@ -22,7 +22,7 @@ module.exports = class extends Event {
                     }
                 }
             } catch (e) {
-                this.client.emit('error', e);
+                // Don't spit out errors because you'll get a lot of unneceesary cannot read spamScore of nulls
             }
         }
 
