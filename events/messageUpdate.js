@@ -8,7 +8,7 @@ module.exports = class extends Event {
     async run (old, message) {
         // First, update spam score if new score is bigger than old score. Do NOT update if new score is less than old score; we don't want to lower it.
         try {
-            if (message.type === 'DEFAULT' && typeof message.member !== 'undefined' && message !== null) {
+            if (message.type === 'DEFAULT' && message !== null && typeof message.member !== 'undefined' && message.member !== null) {
                 var oldscore = old.earnedSpamScore;
                 var newscore = await message.spamScore;
                 message.earnedSpamScore = newscore;
@@ -19,7 +19,7 @@ module.exports = class extends Event {
             }
 
             // Update XP/Yang; remove all reputation and reactions as the message has been edited.
-            if (typeof message.member !== 'undefined' && message.author.id !== this.client.user.id) {
+            if (typeof message.member !== 'undefined' && message.member !== null && message.author.id !== this.client.user.id) {
                 message.reactions.removeAll();
                 var xp1 = old.earnedXp;
                 var xp2 = message.xp;

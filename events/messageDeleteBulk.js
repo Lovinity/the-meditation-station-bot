@@ -19,7 +19,7 @@ module.exports = class extends Event {
         }).map((message) => {
 
             // Remove XP/Yang
-            if (typeof message.member !== 'undefined') {
+            if (typeof message.member !== 'undefined' && message.member !== null) {
                 var xp = 0 - message.earnedXp;
                 message.member.xp(xp, message);
                 message.earnedXp = 0;
