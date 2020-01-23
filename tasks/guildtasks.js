@@ -262,15 +262,15 @@ ${_guild.settings.raidMitigation >= 3 ? `**Please remember to re-generate invite
                             if (!guildMember.voice.deaf && !guildMember.user.bot)
                                 awardTo.push(guildMember);
                             // Is the member unmuted and not a bot? Award listening XP/Yang to qualified members (if no one is unmuted, no one gets rewarded)
-                            // Every 2 minutes, allow for XP rewarding even if the only speaking member is a bot
-                            if (!guildMember.voice.mute && (!guildMember.user.bot || m % 2 === 0))
+                            // Every 3 minutes, allow for XP rewarding even if the only speaking member is a bot
+                            if (!guildMember.voice.mute && (!guildMember.user.bot || m % 3 === 0))
                                 award = true;
                         });
 
-                    // Award XP to everyone who qualifies if the channel as a whole qualifies
+                    // Award 2 XP to everyone if the channel as a whole qualifies
                     if (award && awardTo.length > 1) {
                         awardTo.forEach((guildMember) => {
-                            guildMember.xp(1);
+                            guildMember.xp(2);
                         });
                     }
                 });
