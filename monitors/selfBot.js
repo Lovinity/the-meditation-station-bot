@@ -5,7 +5,7 @@ module.exports = class extends Monitor {
     constructor(...args) {
         super(...args, {
             name: 'selfBot',
-            enabled: true,
+            enabled: false, // UH OH! False positive detected. Had to disable.
             ignoreBots: true, // IMPORTANT! Bots can post embeds (and that is fine), but regular users cannot.
             ignoreSelf: true, // IMPORTANT! Or you'll be disciplining your own bot for embeds.
             ignoreOthers: false,
