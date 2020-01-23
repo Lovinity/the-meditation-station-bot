@@ -268,7 +268,7 @@ ${_guild.settings.raidMitigation >= 3 ? `**Please remember to re-generate invite
                         });
 
                     // Award 2 XP to everyone if the channel as a whole qualifies
-                    if (award && awardTo.length > 1) {
+                    if (award && awardTo.length > 0 && channel.members.length > 1) {
                         awardTo.forEach((guildMember) => {
                             guildMember.xp(2);
                         });
