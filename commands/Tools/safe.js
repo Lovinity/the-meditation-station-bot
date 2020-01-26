@@ -16,12 +16,12 @@ module.exports = class extends Command {
     }
 
     async run (message, [ first, second = null ]) {
-        if (message.member.unsafe && first === 'set') {
+        if (message.member.settings.unsafe && first === 'set') {
             await message.send(`:x: Cannot set right now.`)
             return message.delete();
         }
 
-        if (!message.member.unsafe && first !== 'set') {
+        if (!message.member.settings.unsafe && first !== 'set') {
             await message.send(`:x: You do not need to do that.`)
             return message.delete();
         }
