@@ -26,6 +26,7 @@ Client.defaultGuildSchema
     .add('noXPChannels', 'textchannel', { array: true })
     .add('repEmoji', 'string')
     .add('muteRole', 'role')
+    .add('unsafeRole', 'role')
     .add('modRole', 'role')
     .add('staffRole', 'role')
     .add('inactiveRole', 'role')
@@ -119,9 +120,11 @@ Client.defaultMemberSchema
     .add('verified', 'boolean', { default: false, configurable: false })
     .add('canRep', 'boolean', { default: true, configurable: false })
     .add('muted', 'boolean', { default: false, configurable: false })
+    .add('unsafe', 'boolean', { default: false, configurable: false })
     .add('modLogs', 'any', { array: true, configurable: false })
     .add('reports', 'string', { array: true, configurable: false })
-    .add('roles', 'role', { array: true, configurable: false });
+    .add('roles', 'role', { array: true, configurable: false })
+    .add('safeWord', 'string');
 
 Client.defaultRoleSchema
     .add('self', folder => {

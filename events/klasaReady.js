@@ -102,6 +102,7 @@ module.exports = class extends Event {
             // Cycle through all the members without the verified role and assign them the stored roles if applicable.
             const verifiedRole = guild.roles.resolve(guild.settings.verifiedRole);
             const muteRole = guild.roles.resolve(guild.settings.muteRole);
+            const unsafeRole = guild.roles.resolve(guild.settings.unsafeRole);
             var verified = [];
             const generalChannel = this.client.channels.resolve(guild.settings.generalChannel);
             const _channelMod = this.client.channels.resolve(guild.settings.modLogChannel);
@@ -120,6 +121,11 @@ module.exports = class extends Event {
                                     _channelMod.send(`:mute: The member <@!${guildMember.user.id}> had a mute on their account and was re-muted upon the bot restarting. Check to be sure they were not trying to mute evade.`);
                                 settings.update(`muted`, true, guild);
                                 guildMember.roles.set([ guild.settings.muteRole ], `User supposed to be muted`);
+                            } else if (unsafeRole && (settings.unsafe || guildMember.roles.get(unsafeRole.id))) {
+                                if (_channelMod && !guildMember.roles.get(unsafeRole.id))
+                                    _channelMod.send(`:fearful: The member <@!${guildMember.user.id}> was marked unsafe when they left, and was re-marked unsafe upon entering the guild.`);
+                                settings.update(`unsafe`, true, guild);
+                                guildMember.roles.set([ guild.settings.unsafeRole ], `User supposed to be unsafe`);
                             } else {
                                 // Member has the verified role. Update database with the current roles set in case anything changed since bot was down.
                                 if (verifiedRole && guildMember.roles.get(verifiedRole.id)) {
