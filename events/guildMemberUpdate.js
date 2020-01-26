@@ -23,14 +23,14 @@ module.exports = class extends Event {
                 await newMember.settings.update(`muted`, false, newMember.guild);
                 newMember.roles.set(newMember.settings.roles, `User no longer muted; apply previous roles`);
 
-            } else if (!isMuted && !wasMuted && !newMember.roles.get(newMember.guild.settings.unsafeRole)) { // User not, nor was, muted, nor is unsafe; update role database
+            } else if (!isMuted && !wasMuted && !oldMember.roles.get(oldMember.guild.settings.unsafeRole) && !newMember.roles.get(newMember.guild.settings.unsafeRole)) { // User not, nor was, muted, nor is unsafe; update role database
                 newMember.settings.reset(`roles`);
                 newMember.roles.each((role) => {
                     if (role.id !== newMember.guild.roles.everyone.id && role.id !== newMember.guild.settings.muteRole)
                         newMember.settings.update(`roles`, role, newMember.guild, { action: 'add' });
                 });
             }
-        } else if (!newMember.roles.get(newMember.guild.settings.unsafeRole)) {
+        } else if (!oldMember.roles.get(oldMember.guild.settings.unsafeRole) && !newMember.roles.get(newMember.guild.settings.unsafeRole)) {
             newMember.settings.reset(`roles`);
             newMember.roles.each((role) => {
                 if (role.id !== newMember.guild.roles.everyone.id)
