@@ -24,9 +24,11 @@ module.exports = class extends Event {
             } catch (e) {
                 this.client.emit('error', e);
             }
-        }
 
-        if (this.client.ready) this.client.monitors.run(message);
+            if (this.client.ready) this.client.monitors.run(message);
+        } else if (message.type === 'DEFAULT' && message.guild === null && !message.author.bot) {
+            return message.send(`Well hi there! Sorry but I don't know what to say in DMs. Please use bot commands in a guild. Thanks!`);
+        }
     }
 
 };
