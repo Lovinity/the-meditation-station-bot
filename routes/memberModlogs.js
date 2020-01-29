@@ -143,6 +143,7 @@ module.exports = class extends Route {
                     return response.end(JSON.stringify({ error: "Unable to fetch the provided user." }));
                 }
 
+                var settings = await user.guildSettings(guild.id);
                 var modLogs = settings.modLogs;
                 if (modLogs.length < 1) return response.end(JSON.stringify({ error: "You are trying to appeal a case when the provided user has no cases on record." }));
 
