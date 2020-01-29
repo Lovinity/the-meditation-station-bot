@@ -48,7 +48,7 @@ module.exports = class extends Command {
             }
         });
 
-        var response = `__**Relevant Disciplinary Information**__` + "\n\n"
+        var response = `__**MODERATION LOGS IN A BRIEF**__` + "\n\n"
         Object.entries(rules).map(([ key, value ]) => {
             if (value.length > 0) {
                 value = value.filter(record => record.valid)
@@ -65,7 +65,7 @@ module.exports = class extends Command {
         var HP = await user.HP(message.guild.id);
         response += `**Current HP**: ${HP}` + "\n"
         if (HP > 0) {
-            response += `Member does **not** qualify for a ban on this discipline (except for criminal activity, sexual engagement with minors, violation of Discord's TOS with Discord taking action, sharing of legally private info, or using multiple accounts).` + "\n\n"
+            response += `Member does **not** qualify for a ban on this discipline (unless they violated the zero tolerance policy).` + "\n\n"
         } else {
             response += `:warning: **Member qualifies for a temporary or permanent ban**. Please ask yourself if this member is causing more harm than good to the community. If so, this discipline should be a class F temporary or permanent ban.` + "\n\n"
         }
@@ -78,7 +78,7 @@ module.exports = class extends Command {
         // First, ask what kind of discipline to issue
         var menu = new RichMenu(new MessageEmbed()
             .setTitle(`Choose the highest class discipline for ${user.tag}`)
-            .setDescription(`G is the highest class and A is the lowest class. You have 5 minutes to pick an option.`)
+            .setDescription(`G is the highest class and A is the lowest class. You have 10 minutes to pick an option.`)
         );
         menu.addOption(`classA`, `Warning`);
         menu.addOption(`classB`, `Basic Discipline (Yang fine, HP damage, and/or loss of XP)`);
@@ -201,7 +201,7 @@ async function askOther (message, discipline) {
 
 async function askClassB (message, discipline) {
     // Ask for HP damage (bad reputation)
-    var HP = await message.awaitReply(`:question: **HP damage**: How much HP damage should the user take (you can issue more damage than they have)? Use "0" for none. You have 10 minutes to respond.`, 600000);
+    var HP = await message.awaitReply(`:question: **HP damage**: How much HP damage should the user take (you can issue more damage than they have)?. You should issue HP depending on how much of a disturbance they caused the community, generally between 0 and 100 HP. You are allowed to issue more HP damage than HP they have. You have 10 minutes to respond.`, 600000);
     if (!HP) {
         throw new Error("No HP specified")
     }
@@ -213,7 +213,7 @@ async function askClassB (message, discipline) {
     discipline.setHPDamage(HP);
 
     // Ask for Yang charge
-    var yang = await message.awaitReply(`:question: **Yang Fine**: How much Yang should be charged from this user? Use "0" for none. You are allowed to fine more than the user has in their balance. You have 10 minutes to respond.`, 600000);
+    var yang = await message.awaitReply(`:question: **Yang Fine**: How much Yang should be charged from this user? Use "0" for none. Generally, fine 10 Yang for every 1 HP damage. You are allowed to fine more than the user has in their balance. You have 10 minutes to respond.`, 600000);
     if (!yang) {
         throw new Error("No yang specified")
     }
@@ -246,7 +246,7 @@ async function askClassD (message, discipline) {
         quiz: false
     }
 
-    var resp = await message.awaitReply(`:question: **Apologies**: If this member should be required to write formal / reflective apologies, specify the usernames of the member(s) the apologies should be addressed to (do NOT use mentions nor snowflake IDs). Specify "none" if the user does not have to write any apologies. You have 10 minutes to respond.`, 600000);
+    var resp = await message.awaitReply(`:question: **Apologies**: If this member should be required to write formal / reflective apologies, please explain below in complete sentences, including the members/groups the apology/ies should be addressed to. Do not include base requirements. Send "none" to not require any apologies. You have 10 minutes to respond.`, 600000);
     if (!resp) {
         throw new Error("No apology specified")
     }
@@ -255,7 +255,7 @@ async function askClassD (message, discipline) {
         isAccountable = true;
     }
 
-    var resp = await message.awaitReply(`:question: **Research papers**: If this member should be required to do a research paper, specify what topics / points the user should research. Clearly indicate/separate where the user should write a separate research paper if doing multiple. Do not include base research paper requirements; those are already included. Specify "none" if the user does not have to write any research papers. You have 10 minutes to respond.`, 600000);
+    var resp = await message.awaitReply(`:question: **Research papers**: If this member should be required to do a research paper, please explain below in complete sentences. Do not include base research paper requirements; those are already included. Specify "none" if the user does not have to write any research papers. You have 10 minutes to respond.`, 600000);
     if (!resp) {
         throw new Error("No research specified")
     }
@@ -264,7 +264,7 @@ async function askClassD (message, discipline) {
         isAccountable = true;
     }
 
-    var resp = await message.awaitReply(`:question: **Retraction Statements**: If this member should be required to make a retraction statement, specify what the user must retract and correct. Clearly indicate/separate where the user should write a separate retraction statement if doing multiple. Do not include base retraction statement requirements; those are already included. Specify "none" if the user does not have to make any retraction statements. You have 10 minutes to respond.`, 600000);
+    var resp = await message.awaitReply(`:question: **Retraction Statements**: If this member should be required to make a retraction statement(s), explain below in complete sentences. Do not include base retraction statement requirements; those are already included. Specify "none" if the user does not have to make any retraction statements. You have 10 minutes to respond.`, 600000);
     if (!resp) {
         throw new Error("No research specified")
     }
@@ -273,7 +273,7 @@ async function askClassD (message, discipline) {
         isAccountable = true;
     }
 
-    var resp = await message.awaitReply(`:question: **Quizzes**: If this member should be required to take and pass any quizzes, specify the requirements and include links to reading materials and the quiz itself. If the quiz is not yet made, include reading material links and indicate a quiz will be made and the link will be posted in the incident channel. Specify "none" if the user does not have to take any quizzes. You have 10 minutes to respond.`, 600000);
+    var resp = await message.awaitReply(`:question: **Quizzes**: If this member should be required to take and pass any quizzes, explain below in complete sentences (including what would be considered "passing") and include link(s) to the quiz(zes). If the quiz is not yet made, include reading material links and indicate a quiz will be made and the link will be posted in the incident channel. Specify "none" if the user does not have to take any quizzes. You have 10 minutes to respond.`, 600000);
     if (!resp) {
         throw new Error("No quizzes specified")
     }
@@ -303,7 +303,7 @@ async function askClassE (message, user, discipline, hasAccountability) {
         }
     }
 
-    var resp = await message.awaitReply(`:question: **Text Channel Restrictions**: If this user should be denied access to one or more text channels, specify which text channels they should be removed from using proper # channel notation. Specify "none" to not restrict the user from any text channels. You have 10 minutes to respond.`, 600000);
+    var resp = await message.awaitReply(`:question: **Text Channel Restrictions**: If this user should be denied access to one or more text channels, tag all of the channels they should be removed from using # and Discord channel tagging. Specify "none" to not restrict the user from any text channels. You have 10 minutes to respond.`, 600000);
     if (!resp) {
         throw new Error("No channel restrictions specified")
     }
@@ -345,13 +345,13 @@ async function askClassF (message, discipline) {
 }
 
 async function askWillMute (message, discipline) {
-    var willMute = await message.ask(`:question: **Initial Mute**: Are you going to either issue a mute, or require the user to write an apology / research paper / retraction statement or take a quiz?`);
+    var willMute = await message.ask(`:question: **Initial Mute**: Are you going to either issue a mute, or require the user to complete an apology / research paper / retraction statement / quiz?`);
     if (willMute)
         discipline.setMuteDuration(0);
 }
 
 async function askClassF (message, discipline) {
-    var willBan = await message.ask(`:warning: **Are you sure you want to issue a ban?**: You have 1 minute to respond. This member does not qualify for any bans because they still have HP. You are only allowed to issue a ban if this user engaged/encouraged fellonious crime, violated Discord's terms of service or community guidelines, engaged sexually with or posted content (including art) of someone under 18 years old, or is using multiple accounts in the guild. Issuing bans otherwise may be considered staff abuse and could result in staff discipline.`);
+    var willBan = await message.ask(`:warning: **Are you sure you want to issue a ban?**: You have 1 minute to respond. This member does not qualify for a ban because they still have HP. You are only allowed to issue a ban if this user violated the zero tolerance policy. Issuing bans otherwise may be considered staff abuse and could result in staff discipline.`);
     if (willBan)
         return true;
     return false;
