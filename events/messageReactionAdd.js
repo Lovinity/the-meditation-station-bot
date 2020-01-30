@@ -52,8 +52,9 @@ module.exports = class extends Event {
                 var msgReactions = msg.reactions.resolve(guild.settings.repEmoji);
                 if (msgReactions) {
                     console.log(`msgReactions good`);
-                    msgReaction.users.each((reactionUser) => {
-                        if (reactionUser.id !== this.client.user.id && !reactionUser.bot && reaction.message.author.id !== reactionUser.id) {
+                    msgReaction.users.map((reactionUser) => {
+                        console.log(`User check`);
+                        if (reactionUser.id !== this.client.user.id && !reactionUser.bot && msg.author.id !== reactionUser.id) {
                             console.log(`User good`);
                             var reactionMember = guild.members.resolve(reactionUser);
                             if (reactionMember) {
