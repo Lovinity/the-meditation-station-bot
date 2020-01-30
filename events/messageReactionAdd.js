@@ -49,19 +49,23 @@ module.exports = class extends Event {
             var reactionCount = 0;
             if (guild && guild.settings.repEmoji && starChannel) {
                 console.log(`Guild good`);
-                reaction.users.each((reactionUser) => {
-                    if (reactionUser.id !== this.client.user.id && !reactionUser.bot && reaction.message.author.id !== reactionUser.id) {
-                        console.log(`User good`);
-                        var reactionMember = guild.members.resolve(reactionUser);
-                        if (reactionMember) {
-                            console.log(`Member good`);
-                            if (!reactionMember.settings.restrictions.cannotGiveReputation) {
-                                console.log(`Can rep`);
-                                reactionCount++;
+                var msgReaction = await msg.reactions.resolve(reaction.message.guild.settings.repEmoji).fetch();
+                if (msgReaction) {
+                    console.log(`msgReaction good`);
+                    msgReaction.users.each((reactionUser) => {
+                        if (reactionUser.id !== this.client.user.id && !reactionUser.bot && reaction.message.author.id !== reactionUser.id) {
+                            console.log(`User good`);
+                            var reactionMember = guild.members.resolve(reactionUser);
+                            if (reactionMember) {
+                                console.log(`Member good`);
+                                if (!reactionMember.settings.restrictions.cannotGiveReputation) {
+                                    console.log(`Can rep`);
+                                    reactionCount++;
+                                }
                             }
                         }
-                    }
-                })
+                    })
+                }
             }
 
             console.log(`Reactions: ${reactionCount}`);
