@@ -6,6 +6,11 @@ module.exports = class extends Event {
 
     async run (guildMember) {
 
+        // Upgrade partial members to full members
+        if (guildMember.partial) {
+            await guildMember.fetch();
+        }
+
         await guildMember.settings.sync(true);
 
         // Get the configured modLog channel.

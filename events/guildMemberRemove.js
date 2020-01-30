@@ -3,7 +3,16 @@ const moment = require('moment');
 
 module.exports = class extends Event {
 
-    run (guildMember) {
+    async run (guildMember) {
+
+        // Can't do anything if the guild member is a partial
+        if (guildMember.partial) {
+            const owner = this.client.application.owner;
+            if (owner) {
+                owner.send(`:question: Partial guild member ${guildMember.id} left.`);
+            }
+            return;
+        }
 
         // Get the configured modLog channel.
         const modLog = guildMember.guild.settings.eventLogChannel;

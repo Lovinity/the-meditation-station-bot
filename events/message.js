@@ -4,6 +4,12 @@ const GuildDiscipline = require('../util/guildDiscipline');
 module.exports = class extends Event {
 
     async run (message) {
+        
+        // Upgrade partial messages to full messages
+        if (message.partial) {
+            await message.fetch();
+        }
+
         if (message.type === 'DEFAULT' && message !== null && message.member !== null && typeof message.member !== 'undefined') {
 
             // Spam scoring

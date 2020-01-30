@@ -4,6 +4,12 @@ const { MessageEmbed } = require("discord.js");
 module.exports = class extends Event {
 
     async run (reaction, user) {
+
+        // Fetch partials
+        if (reaction.partial) await reaction.partial.fetch();
+        if (reaction.message.partial) await reaction.message.fetch();
+        if (user.partial) await user.fetch();
+
         if (!reaction.message.member)
             return null;
 

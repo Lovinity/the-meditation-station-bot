@@ -4,7 +4,16 @@ const moment = require("moment");
 module.exports = class extends Event {
 
     async run (message) {
-        
+
+        // If the message is a partial, we can't do anything.
+        if (message.partial) {
+            const owner = this.client.application.owner;
+            if (owner) {
+                owner.send(`:question: Partial message ${message.id} was deleted.`);
+            }
+            return;
+        }
+
         // Delete command message too if deletable
         if (message.command && message.command.deletable)
             for (const msg of message.responses)

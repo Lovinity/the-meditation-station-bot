@@ -3,10 +3,16 @@ const { Event } = require('klasa');
 module.exports = class extends Event {
 
     async run (oldMember, newMember) {
+
+        // Upgrade partial new members to full members,
+        if (newMember.partial) {
+            await newMember.fetch();
+        }
+
         const mutedRole = newMember.guild.roles.resolve(newMember.guild.settings.muteRole);
         if (mutedRole) {
             var isMuted = (newMember.roles.get(newMember.guild.settings.muteRole) ? true : false);
-            var wasMuted = (oldMember.roles.get(oldMember.guild.settings.muteRole) ? true : false);
+            var wasMuted = (oldMember.partial ? false : oldMember.roles.get(oldMember.guild.settings.muteRole) ? true : false);
 
             // Kick the user out of voice channels if they are muted
             if (isMuted && newMember.voice.channelID) {
@@ -23,14 +29,14 @@ module.exports = class extends Event {
                 await newMember.settings.update(`muted`, false, newMember.guild);
                 newMember.roles.set(newMember.settings.roles, `User no longer muted; apply previous roles`);
 
-            } else if (!isMuted && !wasMuted && !oldMember.roles.get(oldMember.guild.settings.unsafeRole) && !newMember.roles.get(newMember.guild.settings.unsafeRole)) { // User not, nor was, muted, nor is unsafe; update role database
+            } else if (!isMuted && !wasMuted && !oldMember.partial && !oldMember.roles.get(oldMember.guild.settings.unsafeRole) && !newMember.roles.get(newMember.guild.settings.unsafeRole)) { // User not, nor was, muted, nor is unsafe; update role database
                 newMember.settings.reset(`roles`);
                 newMember.roles.each((role) => {
                     if (role.id !== newMember.guild.roles.everyone.id && role.id !== newMember.guild.settings.muteRole)
                         newMember.settings.update(`roles`, role, newMember.guild, { action: 'add' });
                 });
             }
-        } else if (!oldMember.roles.get(oldMember.guild.settings.unsafeRole) && !newMember.roles.get(newMember.guild.settings.unsafeRole)) {
+        } else if (!oldMember.partial && !oldMember.roles.get(oldMember.guild.settings.unsafeRole) && !newMember.roles.get(newMember.guild.settings.unsafeRole)) {
             newMember.settings.reset(`roles`);
             newMember.roles.each((role) => {
                 if (role.id !== newMember.guild.roles.everyone.id)
@@ -42,7 +48,7 @@ module.exports = class extends Event {
         if (unsafeRole) {
             if (!newMember.roles.get(newMember.guild.settings.muteRole)) {
                 var isUnsafe = (newMember.roles.get(newMember.guild.settings.unsafeRole) ? true : false);
-                var wasUnsafe = (oldMember.roles.get(oldMember.guild.settings.unsafeRole) ? true : false);
+                var wasUnsafe = (oldMember.partial ? false : oldMember.roles.get(oldMember.guild.settings.unsafeRole) ? true : false);
 
                 // If newly unsafe, or unsafe with more than 1 role, or not unsafe when they should be unsafe, remove all roles except unsafe.
                 if ((!wasUnsafe && isUnsafe) || (isUnsafe && newMember.roles.size > 2) || (!isUnsafe && !wasUnsafe && newMember.settings.unsafe)) {

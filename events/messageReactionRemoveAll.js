@@ -4,6 +4,12 @@ const { MessageEmbed } = require("discord.js");
 module.exports = class extends Event {
 
     async run (message) {
+        
+        // Upgrade partial messages to full messages
+        if (message.partial) {
+            await message.fetch();
+        }
+
         if (!message.member)
             return null;
 

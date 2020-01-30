@@ -8,6 +8,10 @@ module.exports = class extends Event {
 
         // Delete command messages too if deletable
         for (const message of messages) {
+            
+            // Skip partials
+            if (message.partial) continue;
+
             if (message.command && message.command.deletable)
                 for (const msg of message.responses)
                     msg.delete();

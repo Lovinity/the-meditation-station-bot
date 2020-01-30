@@ -10,7 +10,11 @@ module.exports = class extends Event {
 
     async run (oldState, newState) {
         console.log(`Voice state update`)
-        if (newState.member && oldState.channelID !== newState.channelID && newState.channelID) {
+
+        // Fetch partials
+        if (newState.member.partial) await newState.member.fetch();
+
+        if (newState.member && newState.channelID && (oldState.member.partial || oldState.channelID !== newState.channelID)) {
 
             // Check if the member is muted. If so, kick them out of the voice channel.
             var isMuted = (newState.member.settings.muted);

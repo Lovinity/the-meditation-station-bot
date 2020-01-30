@@ -6,10 +6,16 @@ const moment = require("moment");
 module.exports = class extends Event {
 
     async run (old, message) {
+
+        // Upgrade partial messages to full messages
+        if (message.partial) {
+            await message.fetch();
+        }
+
         // First, update spam score if new score is bigger than old score. Do NOT update if new score is less than old score; we don't want to lower it.
         try {
             if (message.type === 'DEFAULT' && message !== null && typeof message.member !== 'undefined' && message.member !== null) {
-                var oldscore = old.earnedSpamScore;
+                var oldscore = old.partial ? 1000000 : old.earnedSpamScore;
                 var newscore = await message.spamScore;
                 message.earnedSpamScore = newscore;
                 if (newscore > oldscore) {
@@ -21,7 +27,7 @@ module.exports = class extends Event {
             // Update XP/Yang; remove all reputation and reactions as the message has been edited.
             if (typeof message.member !== 'undefined' && message.member !== null && message.author.id !== this.client.user.id) {
                 message.reactions.removeAll();
-                var xp1 = old.earnedXp;
+                var xp1 = old.partial ? message.xp : old.earnedXp;
                 var xp2 = message.xp;
                 if (newscore > message.guild.settings.antispamCooldown) {
                     xp2 = 0;
@@ -53,7 +59,7 @@ module.exports = class extends Event {
 
         var display = new MessageEmbed()
             .setTitle(`Old Message`)
-            .setDescription(`${old.cleanContent}`)
+            .setDescription(`${old.partial ? `Unknown Messahe` : old.cleanContent}`)
             .setAuthor(message.author.tag, message.author.displayAvatarURL())
             .setFooter(`Message created **${message.createdAt}** in channel **${message.channel.name}**`);
 
@@ -63,9 +69,11 @@ module.exports = class extends Event {
         var oldAttachments = [];
         var newAttachments = [];
 
+        if (!old.partial) {
         old.attachments.array().map((attachment) => {
             oldAttachments.push(attachment.url);
         });
+    }
 
         message.attachments.array().map((attachment) => {
             newAttachments.push(attachment.url);
@@ -86,9 +94,11 @@ module.exports = class extends Event {
         var oldEmbeds = [];
         var newEmbeds = [];
 
+        if (!old.partial) {
         old.embeds.map((embed) => {
             oldEmbeds.push(JSON.stringify(embed));
         });
+    }
 
         message.embeds.map((embed) => {
             newEmbeds.push(JSON.stringify(embed));
@@ -105,7 +115,7 @@ module.exports = class extends Event {
         });
 
         // Get the differences between old and new content
-        var diff = jsdiff.diffSentences(old.cleanContent, message.cleanContent);
+        var diff = jsdiff.diffSentences(old.partial ? `` : old.cleanContent, message.cleanContent);
         diff.map(function (part) {
             if (part.added) {
                 display.addField(`Part added`, part.value);

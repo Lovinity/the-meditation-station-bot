@@ -1,3 +1,5 @@
+// Used for events we always want to monitor even if uncached
+
 const { Event } = require('klasa');
 const GuildDiscipline = require('../util/guildDiscipline');
 const config = require('../config.js');
@@ -7,7 +9,8 @@ module.exports = class extends Event {
     async run (data) {
         // console.log(data);
 
-        // Check for selfrole reactions (this is in the raw event because we want it to work even on uncached messages)
+        // TODO: Move this to reaction events now that partials are enabled
+
         if (data.t === "MESSAGE_REACTION_ADD") {
             var guild = this.client.guilds.resolve(data.d.guild_id);
             var member;

@@ -1,20 +1,30 @@
-const {Event} = require('klasa');
+const { Event } = require('klasa');
 const moment = require("moment");
 
 module.exports = class extends Event {
 
-    run(channel) {
+    async run (channel) {
+
+        // If the channel is a partial, we can't do anything.
+        if (channel.partial) {
+            const owner = this.client.application.owner;
+            if (owner) {
+                owner.send(`:question: Partial channel ${channel.id} was deleted.`);
+            }
+            return;
+        }
+
         // Get the configured modLog channel.
         const modLog = channel.guild.settings.eventLogChannel;
 
         // End if there is no configured channel or the channel is not a text channel
         if (!modLog || channel.type !== 'text')
             return;
-        
+
         const _channel = this.client.channels.resolve(modLog);
 
         // Initiate data variable
-        var data = `ARCHIVE of deleted text channel ${channel.name}, ID ${channel.id}\nCreated on ${moment(channel.createdAt).format()}\nDeleted on ${moment().format()}\n\n`;
+        var data = `ARCHIVE (max 1,000 messages / 10 days old) of deleted text channel ${channel.name}, ID ${channel.id}\nCreated on ${moment(channel.createdAt).format()}\nDeleted on ${moment().format()}\n\n`;
 
         // Iterate through the messages, sorting by ID, and add them to data
         var messages = channel.messages;
@@ -40,7 +50,7 @@ module.exports = class extends Event {
         var buffer = new Buffer(data, "utf-8");
 
         // Send the buffer to the staff channel as a txt file
-        _channel.send(`:speech_left: :wastebasket: The channel ${channel.name} (${channel.id}) was deleted.`, {files: [{attachment: buffer, name: `${channel.name}.txt`}]});
+        _channel.send(`:speech_left: :wastebasket: The channel ${channel.name} (${channel.id}) was deleted.`, { files: [ { attachment: buffer, name: `${channel.name}.txt` } ] });
 
 
     }

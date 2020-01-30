@@ -136,10 +136,11 @@ Client.defaultRoleSchema
 
 // Prepare Klasa
 var client = new Client({
-    clientOptions: {
-        // Needed for KlasaReady member checks
-        fetchAllMembers: true
-    },
+    fetchAllMembers: true, // Needed for KlasaReady member checks
+    messageCacheMaxSize: 1000, // We're going to cache by days old rather than number, but have 1,000 as a max just in case
+    messageCacheLifetime: (60 * 60 * 24 * 10), // 10 days
+    messageSweepInterval: (60 * 60), // Sweep every hour
+    partials: ['USER', 'MESSAGE', 'CHANNEL', 'GUILD_MEMBER', 'REACTION'], // Allow partials so we do not miss important event information
     clientID: '637472382797348875',
     clientSecret: config.clientSecret,
     commandEditing: true,
