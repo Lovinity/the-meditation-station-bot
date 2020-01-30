@@ -64,7 +64,9 @@ module.exports = class extends Event {
                 })
             }
 
-            if (typeof guild !== 'undefined' && starChannel && reactionCount >= guild.settings.starboardRequired) {
+            console.log(`Reactions: ${reactionCount}`);
+
+            if (guild && starChannel && reactionCount >= guild.settings.starboardRequired) {
                 if (starChannel && starChannel.postable && starChannel.embedable && !msg.channel.nsfw) {
                     const fetch = await starChannel.messages.fetch({ limit: 100 });
                     const starMsg = fetch.find(m => m.embeds.length && m.embeds[ 0 ].footer && m.embeds[ 0 ].footer.text.startsWith("REP:") && m.embeds[ 0 ].footer.text.endsWith(msg.id));
