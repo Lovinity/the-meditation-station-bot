@@ -53,8 +53,8 @@ module.exports = class extends Event {
             if (msgReactions) {
                 msgReactions.users.each((reactionUser) => {
                     if (reactionUser.id !== this.client.user.id && !reactionUser.bot && reaction.message.author.id !== reactionUser.id) {
+                        var reactionMember = guild.members.resolve(reactionUser);
                         if (reactionMember) {
-                            var reactionMember = guild.members.resolve(reactionUser);
                             if (!reactionMember.settings.restrictions.cannotGiveReputation) {
                                 reactionCount++;
                             }
@@ -63,8 +63,6 @@ module.exports = class extends Event {
                 })
             }
         }
-
-        console.log(`Reactions: ${reactionCount}`);
 
         if (guild && starChannel && reactionCount >= guild.settings.starboardRequired) {
             if (starChannel && starChannel.postable && starChannel.embedable && !msg.channel.nsfw) {
