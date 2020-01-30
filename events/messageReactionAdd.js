@@ -48,22 +48,15 @@ module.exports = class extends Event {
             const starChannel = guild.channels.resolve(guild.settings.starboardChannel);
             var reactionCount = 0;
             if (guild && guild.settings.repEmoji && starChannel) {
-                console.log(`Guild good`);
                 var msgReactions = msg.reactions.resolve(guild.settings.repEmoji);
                 if (msgReactions) {
-                    console.log(`msgReactions good`);
                     var reactionUsers = await msgReactions.users.fetch();
                     if (reactionUsers) {
-                        console.log(`reactionUsers good`);
                         reactionUsers.map((reactionUser) => {
-                            console.log(`User check`);
                             if (reactionUser.id !== this.client.user.id && !reactionUser.bot && msg.author.id !== reactionUser.id) {
-                                console.log(`User good`);
                                 var reactionMember = guild.members.resolve(reactionUser);
                                 if (reactionMember) {
-                                    console.log(`Member good`);
                                     if (!reactionMember.settings.restrictions.cannotGiveReputation) {
-                                        console.log(`Can rep`);
                                         reactionCount++;
                                     }
                                 }
@@ -72,8 +65,6 @@ module.exports = class extends Event {
                     }
                 }
             }
-
-            console.log(`Reactions: ${reactionCount}`);
 
             if (guild && starChannel && reactionCount >= guild.settings.starboardRequired) {
                 if (starChannel && starChannel.postable && starChannel.embedable && !msg.channel.nsfw) {
