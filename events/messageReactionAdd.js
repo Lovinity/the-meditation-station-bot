@@ -41,19 +41,15 @@ module.exports = class extends Event {
                     reaction.message.member.spamScore(10);
                 }
             }
-        }
 
-        // Starboard (via rep emoji)
-        const msg = reaction.message;
-        const { guild } = msg;
-        const starChannel = guild.channels.resolve(guild.settings.starboardChannel);
-        var reactionCount = 0;
-        if (guild && guild.settings.repEmoji && starChannel) {
-            console.log(`Guild good`);
-            var msgReactions = msg.reactions.resolve(guild.settings.repEmoji);
-            if (msgReactions) {
-                console.log(`msgReactions good`);
-                msgReactions.users.each((reactionUser) => {
+            // Starboard (via rep emoji)
+            const msg = reaction.message;
+            const { guild } = msg;
+            const starChannel = guild.channels.resolve(guild.settings.starboardChannel);
+            var reactionCount = 0;
+            if (guild && guild.settings.repEmoji && starChannel) {
+                console.log(`Guild good`);
+                reaction.users.each((reactionUser) => {
                     if (reactionUser.id !== this.client.user.id && !reactionUser.bot && reaction.message.author.id !== reactionUser.id) {
                         console.log(`User good`);
                         var reactionMember = guild.members.resolve(reactionUser);
@@ -67,6 +63,7 @@ module.exports = class extends Event {
                     }
                 })
             }
+
         }
 
         console.log(`Reactions ${reactionCount}`);
