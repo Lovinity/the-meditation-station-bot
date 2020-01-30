@@ -46,7 +46,7 @@ module.exports = class extends Event {
         // Starboard (via rep emoji)
         const msg = reaction.message;
         const { guild } = msg;
-        const starChannel = guild.channels.get(guild.settings.starboardChannel);
+        const starChannel = guild.channels.resolve(guild.settings.starboardChannel);
         var reactionCount = 0;
         if (guild && guild.settings.repEmoji && starChannel) {
             var msgReactions = msg.reactions.resolve(guild.settings.repEmoji);
@@ -63,6 +63,8 @@ module.exports = class extends Event {
                 })
             }
         }
+
+        console.log(`Reactions: ${reactionCount}`);
 
         if (guild && starChannel && reactionCount >= guild.settings.starboardRequired) {
             if (starChannel && starChannel.postable && starChannel.embedable && !msg.channel.nsfw) {
