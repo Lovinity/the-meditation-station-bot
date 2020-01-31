@@ -344,7 +344,7 @@ ${_guild.settings.raidMitigation >= 3 ? `**Please remember to re-generate invite
                                     });
                             }
                         })
-                        .catch(function (err) {
+                        .catch((err) => {
                             this.client.emit('error', err)
                         })
                 }
