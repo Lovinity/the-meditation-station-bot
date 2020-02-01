@@ -80,7 +80,7 @@ module.exports = class extends Task {
 
                                 // Add deny permissions for @everyone
                                 overwrites.push({
-                                    id: this.guild.roles.everyone,
+                                    id: _guild.roles.everyone,
                                     deny: [
                                         "VIEW_CHANNEL",
                                     ],
@@ -147,7 +147,7 @@ module.exports = class extends Task {
 
                                 // Add deny permissions for @everyone
                                 overwrites.push({
-                                    id: this.guild.roles.everyone,
+                                    id: _guild.roles.everyone,
                                     deny: [
                                         "VIEW_CHANNEL",
                                     ],
