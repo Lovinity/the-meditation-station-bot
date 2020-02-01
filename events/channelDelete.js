@@ -59,7 +59,7 @@ module.exports = class extends Event {
         var buffer = new Buffer(data, "utf-8");
 
         // Send the buffer to the staff channel as a txt file
-        _channel.send(`:speech_left: :wastebasket: The channel ${channel.name} (${channel.id}) was deleted${auditLog ? ` by ${auditLog.executor.tag}` : ``}.`, { files: [ { attachment: buffer, name: `${channel.name}.txt` } ] });
+        _channel.send(`:speech_left: :wastebasket: The channel ${channel.name} (${channel.id}) was deleted${auditLog ? ` by ${auditLog.executor.tag} (${auditLog.executor.id})` : ``}.`, { files: [ { attachment: buffer, name: `${channel.name}.txt` } ] });
 
 
     }

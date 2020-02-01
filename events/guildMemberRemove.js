@@ -23,10 +23,24 @@ module.exports = class extends Event {
 
         const _channel = this.client.channels.resolve(modLog);
         const generalChannel = this.client.channels.resolve(guildMember.guild.settings.generalChannel);
+        var modLogChannel = guild.channels.resolve(guild.settings.modLogChannel);
+
+        // Find out who kicked the member
+        const fetchedLogs = await channel.guild.fetchAuditLogs({
+            limit: 1,
+            type: 'MEMBER_KICK',
+        });
+        const auditLog = fetchedLogs.entries.first();
+        if (!auditLog || auditLog.target.id !== guildMember.id)
+            auditLog = undefined;
 
         // send a log to the channel
         if (_channel)
-            _channel.send(`:wave: The member <@!${guildMember.user.id}> (${guildMember.user.id}) just left the guild on ${moment().format('LLLL')} guild time.`);
+            _channel.send(`:wave: The member <@${guildMember.user.id}> (${guildMember.user.id}) just left the guild on ${moment().format('LLLL')} guild time.`);
+
+        // If mewmber was kicked, log it in mod log channel
+        if (auditLog && modLogChannel)
+            modLogChannel.send(`:athletic_shoe: The member <@${guildMember.user.id}> was kicked from the guild by ${auditLog.executor.tag} (${auditLog.executor.id}).`);
 
         // Finalize any suspensions if the member has them
         const pendSuspensions = guildMember.guild.settings.pendSuspensions;

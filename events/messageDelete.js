@@ -23,6 +23,15 @@ module.exports = class extends Event {
         if (message.author.id === this.client.user.id)
             return;
 
+        // Find out who deleted the message
+        const fetchedLogs = await channel.guild.fetchAuditLogs({
+            limit: 1,
+            type: 'MESSAGE_DELETE',
+        });
+        const auditLog = fetchedLogs.entries.first();
+        if (!auditLog || auditLog.target.id !== message.author.id)
+            auditLog = undefined;
+
         // Remove XP/Yang
         if (typeof message.member !== 'undefined' && message.member !== null) {
             var xp = 0 - message.earnedXp;
@@ -93,7 +102,7 @@ module.exports = class extends Event {
             display.addField(`Contained Embed`, JSON.stringify(embed));
         });
 
-        _channel.sendEmbed(display, `:wastebasket: A message ${message.id} was deleted.`);
+        _channel.sendEmbed(display, `:wastebasket: Message ${message.id} was deleted${auditLog ? ` by ${auditLog.executor.tag} (${auditLog.executor.id})` : ``}.`);
 
 
     }
