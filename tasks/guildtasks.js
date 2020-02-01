@@ -107,18 +107,18 @@ module.exports = class extends Task {
                                 }
 
                                 // Create the incidents channel
-                                var _channel = await _guild.channels.create(`inactive-${Date.now().toString(36) + (_guild.client.shard ? _guild.client.shard.id.toString(36) : '') + String.fromCharCode((1 % 26) + 97)}`, {
+                                _guild.channels.create(`inactive-${Date.now().toString(36) + (_guild.client.shard ? _guild.client.shard.id.toString(36) : '') + String.fromCharCode((1 % 26) + 97)}`, {
                                     type: 'text',
                                     topic: `Inactive member ${guildMember.id} (${guildMember.user.tag})`,
                                     parent: incidents,
                                     permissionOverwrites: overwrites,
                                     rateLimitPerUser: 15,
                                     reason: `Member ${guildMember.user.tag} is inactive.`
-                                });
-
-                                // Send an initial message to the channel
-                                await _channel.send(`:zzz: **__YOU JOINED OVER 7 DAYS AGO WITHOUT SENDING YOUR FIRST MESSAGE__** :zzz:
+                                }).then((_channel) => {
+                                    // Send an initial message to the channel
+                                    _channel.send(`:zzz: **__YOU JOINED OVER 7 DAYS AGO WITHOUT SENDING YOUR FIRST MESSAGE__** :zzz:
 <@${guildMember.id}> , you joined the guild over 7 days ago without sending your first message. We understand some people are shy. But to protect the guild from lurkers saving messages or planning raids, you are marked inactive and could be kicked at anytime by staff. To exit inactive status, just send a message anywhere in the guild as soon as possible. Thank you for understanding!`);
+                                });
                             }
                         }
                     }
@@ -174,18 +174,18 @@ module.exports = class extends Task {
                                 }
 
                                 // Create the incidents channel
-                                var _channel = await _guild.channels.create(`inactive-${Date.now().toString(36) + (_guild.client.shard ? _guild.client.shard.id.toString(36) : '') + String.fromCharCode((1 % 26) + 97)}`, {
+                                _guild.channels.create(`inactive-${Date.now().toString(36) + (_guild.client.shard ? _guild.client.shard.id.toString(36) : '') + String.fromCharCode((1 % 26) + 97)}`, {
                                     type: 'text',
                                     topic: `Inactive member ${guildMember.id} (${guildMember.user.tag})`,
                                     parent: incidents,
                                     permissionOverwrites: overwrites,
                                     rateLimitPerUser: 15,
                                     reason: `Member ${guildMember.user.tag} is inactive.`
-                                });
-
-                                // Send an initial message to the channel
-                                await _channel.send(`:zzz: **__YOU HAVE NOT SENT ANY MESSAGES FOR OVER 30 DAYS__** :zzz:
+                                }).then((_channel) => {
+                                    // Send an initial message to the channel
+                                    _channel.send(`:zzz: **__YOU HAVE NOT SENT ANY MESSAGES FOR OVER 30 DAYS__** :zzz:
 <@${guildMember.id}> , we have not heard from you in over 30 days. You have been marked inactive now, and staff may kick you at any time. To exit inactive status, just send a message anywhere in the guild as soon as possible to let us know you are still here. Thanks for understanding!`);
+                                });
                             }
                         }
                     }
