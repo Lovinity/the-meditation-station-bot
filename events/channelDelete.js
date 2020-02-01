@@ -29,8 +29,9 @@ module.exports = class extends Event {
             type: 'CHANNEL_DELETE',
         });
         const auditLog = fetchedLogs.entries.first();
-        if (auditLog)
-            const { auditExecutor, auditTarget } = auditLog;
+        if (auditLog) {
+            var { auditExecutor, auditTarget } = auditLog;
+        }
         if (auditTarget.id !== channel.id)
             auditLog = undefined;
 
