@@ -30,7 +30,7 @@ module.exports = class extends Event {
             limit: 1,
             type: 'MEMBER_KICK',
         });
-        const auditLog = fetchedLogs.entries.first();
+        var auditLog = fetchedLogs.entries.first();
         if (!auditLog || auditLog.target.id !== guildMember.id)
             auditLog = undefined;
 
