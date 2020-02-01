@@ -266,10 +266,10 @@ async function askClassD (message, discipline) {
 
     var resp = await message.awaitReply(`:question: **Retraction Statements**: If this member should be required to make a retraction statement(s), explain below in complete sentences. Do not include base retraction statement requirements; those are already included. Specify "none" if the user does not have to make any retraction statements. You have 10 minutes to respond.`, 600000);
     if (!resp) {
-        throw new Error("No research specified")
+        throw new Error("No retraction specified")
     }
     if (resp.toLowerCase() !== 'none') {
-        classD.research = resp;
+        classD.retraction = resp;
         isAccountable = true;
     }
 
