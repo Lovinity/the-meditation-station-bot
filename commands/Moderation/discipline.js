@@ -121,7 +121,7 @@ module.exports = class extends Command {
                         await askRulesReason(message, discipline);
                         await askClassB(message, discipline);
                         var hasAccountability = await askClassD(message, discipline);
-                        await askClassE(message, user, discipline, hasAccountability);
+                        await askClassE(message, user, settings, discipline, hasAccountability);
                         await askOther(message, discipline);
                         break;
                     case 'classF':
@@ -287,7 +287,7 @@ async function askClassD (message, discipline) {
     return isAccountable;
 }
 
-async function askClassE (message, user, discipline, hasAccountability) {
+async function askClassE (message, user, settings, discipline, hasAccountability) {
     if (!hasAccountability) {
         var duration = await message.awaitReply(`:question: **Mute**: If a mute should be issued, specify how long the mute should be in hours. Use "0" for indefinite / until staff remove it. Specify "none" if no mute is to be issued. You have 10 minutes to respond.`, 600000);
         if (!duration) {
