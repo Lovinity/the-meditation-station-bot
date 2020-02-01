@@ -22,7 +22,6 @@ Client.defaultGuildSchema
     .add('unverifiedChannel', 'textchannel')
     .add('starboardChannel', 'textchannel')
     .add('selfRolesChannel', 'textchannel')
-    .add('inactiveChannel', 'textchannel')
     .add('noXPChannels', 'textchannel', { array: true })
     .add('repEmoji', 'string')
     .add('muteRole', 'role')

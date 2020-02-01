@@ -13,9 +13,9 @@ module.exports = class extends Task {
         if (_guild) {
             var cooldown = _guild.settings.antispamCooldown;
             var generalChannel = _guild.channels.resolve(_guild.settings.generalChannel);
-            var inactiveChannel = _guild.channels.resolve(_guild.settings.inactiveChannel);
             var modLogChannel = _guild.channels.resolve(_guild.settings.modLogChannel);
             var inactiveRole = _guild.roles.resolve(_guild.settings.inactiveRole);
+            var incidents = _guild.settings.incidentsCategory;
             var mostActiveUsers = [];
             var mostActiveStaff;
             var highestActivityScore;
@@ -60,10 +60,66 @@ module.exports = class extends Task {
                             guildMember.roles.add(inactiveRole, `New member has not sent a message in the last 7 days.`);
                             if (modLogChannel)
                                 modLogChannel.send(`:zzz: New member ${guildMember.user.tag} (${guildMember.id}) has joined over 7 days ago without sending their first message. Marked inactive until they do.`)
-                            if (inactiveChannel)
-                                inactiveChannel.send(`:zzz: Hey <@${guildMember.id}>; it looks like you joined over 7 days ago but have not yet sent your first message. Say hi in any channel so we know you are not a lurker and wish to remain in our guild.`);
-                        } else if (inactiveChannel && (Math.random() * 2880) > 2879) {
-                            inactiveChannel.send(`:zzz: Hey <@${guildMember.id}>; we still haven't heard from you. Say hi in any channel so we know you're not a lurker and wish to remain in the guild.`)
+
+                            // Create an incidents channel if configuration permits
+                            if (incidents) {
+                                // Create an incidents channel between the muted user and staff, first grant permissions for the user
+                                var overwrites = [];
+                                overwrites.push({
+                                    id: guildMember.id,
+                                    allow: [
+                                        "ADD_REACTIONS",
+                                        "VIEW_CHANNEL",
+                                        "SEND_MESSAGES",
+                                        "EMBED_LINKS",
+                                        "ATTACH_FILES",
+                                        "READ_MESSAGE_HISTORY"
+                                    ],
+                                    type: 'member'
+                                });
+
+                                // Add deny permissions for @everyone
+                                overwrites.push({
+                                    id: this.guild.roles.everyone,
+                                    deny: [
+                                        "VIEW_CHANNEL",
+                                    ],
+                                    type: 'role'
+                                });
+
+                                // Process permission overwrites for staff
+                                if (_guild.settings.modRole) {
+                                    overwrites.push({
+                                        id: _guild.settings.modRole,
+                                        allow: [
+                                            "ADD_REACTIONS",
+                                            "VIEW_CHANNEL",
+                                            "SEND_MESSAGES",
+                                            "MANAGE_MESSAGES",
+                                            "MENTION_EVERYONE",
+                                            "MANAGE_ROLES",
+                                            "EMBED_LINKS",
+                                            "ATTACH_FILES",
+                                            "READ_MESSAGE_HISTORY"
+                                        ],
+                                        type: 'role'
+                                    });
+                                }
+
+                                // Create the incidents channel
+                                var _channel = await _guild.channels.create(`inactive-${Date.now().toString(36) + (_guild.client.shard ? _guild.client.shard.id.toString(36) : '') + String.fromCharCode((1 % 26) + 97)}`, {
+                                    type: 'text',
+                                    topic: `Inactive member ${guildMember.id} (${guildMember.user.tag})`,
+                                    parent: incidents,
+                                    permissionOverwrites: overwrites,
+                                    rateLimitPerUser: 15,
+                                    reason: `Member ${guildMember.user.tag} is inactive.`
+                                });
+
+                                // Send an initial message to the channel
+                                await _channel.send(`:zzz: **__YOU JOINED OVER 7 DAYS AGO WITHOUT SENDING YOUR FIRST MESSAGE__** :zzz:
+<@${guildMember.id}> , you joined the guild over 7 days ago without sending your first message. We understand some people are shy. But to protect the guild from lurkers saving messages or planning raids, you are marked inactive and could be kicked at anytime by staff. To exit inactive status, just send a message anywhere in the guild as soon as possible. Thank you for understanding!`);
+                            }
                         }
                     }
                     if (guildMember.settings.lastMessage !== null && moment().diff(moment(guildMember.settings.lastMessage), 'days') > 30) {
@@ -71,10 +127,66 @@ module.exports = class extends Task {
                             guildMember.roles.add(inactiveRole, `Regular member has not sent any messages in the last 30 days.`);
                             if (modLogChannel)
                                 modLogChannel.send(`:zzz: Member ${guildMember.user.tag} (${guildMember.id}) has not sent any messages in the last 30 days. Marked inactive until they do.`)
-                            if (inactiveChannel)
-                                inactiveChannel.send(`:zzz: Hey <@${guildMember.id}>; you haven't sent any messages in over 30 days. Say hi in any channel so we know you're okay, still around, and want to remain in the guild.`);
-                        } else if (inactiveChannel && (Math.random() * 2880) > 2879) {
-                            inactiveChannel.send(`:zzz: Hey <@${guildMember.id}>; we still haven't heard from you. Say hi in any channel so we know you're still around and wish to remain in the guild.`)
+
+                            // Create an incidents channel if configuration permits
+                            if (incidents) {
+                                // Create an incidents channel between the muted user and staff, first grant permissions for the user
+                                var overwrites = [];
+                                overwrites.push({
+                                    id: guildMember.id,
+                                    allow: [
+                                        "ADD_REACTIONS",
+                                        "VIEW_CHANNEL",
+                                        "SEND_MESSAGES",
+                                        "EMBED_LINKS",
+                                        "ATTACH_FILES",
+                                        "READ_MESSAGE_HISTORY"
+                                    ],
+                                    type: 'member'
+                                });
+
+                                // Add deny permissions for @everyone
+                                overwrites.push({
+                                    id: this.guild.roles.everyone,
+                                    deny: [
+                                        "VIEW_CHANNEL",
+                                    ],
+                                    type: 'role'
+                                });
+
+                                // Process permission overwrites for staff
+                                if (_guild.settings.modRole) {
+                                    overwrites.push({
+                                        id: _guild.settings.modRole,
+                                        allow: [
+                                            "ADD_REACTIONS",
+                                            "VIEW_CHANNEL",
+                                            "SEND_MESSAGES",
+                                            "MANAGE_MESSAGES",
+                                            "MENTION_EVERYONE",
+                                            "MANAGE_ROLES",
+                                            "EMBED_LINKS",
+                                            "ATTACH_FILES",
+                                            "READ_MESSAGE_HISTORY"
+                                        ],
+                                        type: 'role'
+                                    });
+                                }
+
+                                // Create the incidents channel
+                                var _channel = await _guild.channels.create(`inactive-${Date.now().toString(36) + (_guild.client.shard ? _guild.client.shard.id.toString(36) : '') + String.fromCharCode((1 % 26) + 97)}`, {
+                                    type: 'text',
+                                    topic: `Inactive member ${guildMember.id} (${guildMember.user.tag})`,
+                                    parent: incidents,
+                                    permissionOverwrites: overwrites,
+                                    rateLimitPerUser: 15,
+                                    reason: `Member ${guildMember.user.tag} is inactive.`
+                                });
+
+                                // Send an initial message to the channel
+                                await _channel.send(`:zzz: **__YOU HAVE NOT SENT ANY MESSAGES FOR OVER 30 DAYS__** :zzz:
+<@${guildMember.id}> , we have not heard from you in over 30 days. You have been marked inactive now, and staff may kick you at any time. To exit inactive status, just send a message anywhere in the guild as soon as possible to let us know you are still here. Thanks for understanding!`);
+                            }
                         }
                     }
                 }
