@@ -24,7 +24,7 @@ module.exports = class extends Event {
             return;
 
         // Find out who deleted the message
-        const fetchedLogs = await channel.guild.fetchAuditLogs({
+        const fetchedLogs = await message.guild.fetchAuditLogs({
             limit: 1,
             type: 'MESSAGE_DELETE',
         });

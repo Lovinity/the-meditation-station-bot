@@ -15,7 +15,7 @@ module.exports = class extends Event {
         }
 
         // Find out who applied the ban
-        const fetchedLogs = await channel.guild.fetchAuditLogs({
+        const fetchedLogs = await guild.fetchAuditLogs({
             limit: 1,
             type: 'MEMBER_BAN_REMOVE',
         });
