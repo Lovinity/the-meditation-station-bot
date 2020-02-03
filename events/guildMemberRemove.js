@@ -23,7 +23,7 @@ module.exports = class extends Event {
 
         const _channel = this.client.channels.resolve(modLog);
         const generalChannel = this.client.channels.resolve(guildMember.guild.settings.generalChannel);
-        var modLogChannel = guild.channels.resolve(guild.settings.modLogChannel);
+        var modLogChannel = guildMember.guild.channels.resolve(guildMember.guild.settings.modLogChannel);
 
         // Find out who kicked the member
         const fetchedLogs = await guildMember.guild.fetchAuditLogs({
