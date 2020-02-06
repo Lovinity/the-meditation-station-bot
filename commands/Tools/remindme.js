@@ -10,7 +10,7 @@ module.exports = class extends Command {
     constructor(...args) {
         super(...args, {
             description: 'creates a reminder',
-            usage: '<when:time> <text:str> [...]',
+            usage: '<when:chronotime> <text:str> [...]',
             usageDelim: ' | ',
             cooldown: 30,
             requiredSettings: [ "botChannel" ],

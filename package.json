@@ -19,6 +19,7 @@
   "dependencies": {
     "@tensorflow-models/toxicity": "^1.2.1",
     "@tensorflow/tfjs": "^1.4.0",
+    "chrono-node": "^1.4.2",
     "diff": "^4.0.1",
     "discord.js": "github:discordjs/discord.js#123713305ad5a6aa1e5205a53713494009740aef",
     "fantasy-names": "^2.0.1",
