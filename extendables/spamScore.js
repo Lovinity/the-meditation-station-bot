@@ -116,11 +116,11 @@ module.exports = class extends Extendable {
             // Iterate through messages of this channel from the last 3 minutes by the same author
             var collection = this.channel.messages
                 .filter((message) => {
+                    if (message.partial || message === null || !message) return false;
                     return message.id !== this.id && message.author.id === this.author.id && moment(this.createdAt).subtract(3, 'minutes').isBefore(moment(message.createdAt)) && moment(this.createdAt).isAfter(moment(message.createdAt));
                 });
             //console.log(`${collection.size} messages`);
             collection.each((message) => {
-
                 // If the current message was sent at a time that causes the typing speed to be more than 7 characters per second, 
                 // add score for flooding / copypasting. The faster / more characters typed, the more score added.
                 var timediff = moment(this.createdAt).diff(moment(message.createdAt), 'seconds');

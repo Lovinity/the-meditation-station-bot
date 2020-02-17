@@ -177,7 +177,7 @@ module.exports = class GuildDiscipline {
                 if (guildMember) {
                     guildMember.roles.add(mutedRole, this.reason);
                 } else {
-                    var settings = await settings;
+                    var settings = await guildMember.settings;
                     // Otherwise, set muted to true manually
                     settings.update(`muted`, true, this.guild);
                 }
@@ -269,7 +269,7 @@ module.exports = class GuildDiscipline {
         }
 
         // Update the incidents channel with relevant information
-        if (this.message !== null)
+        if (this.message)
             await this.message.delete();
         switch (this.type) {
             case 'classA':
