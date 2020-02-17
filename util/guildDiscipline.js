@@ -177,7 +177,7 @@ module.exports = class GuildDiscipline {
                 if (guildMember) {
                     guildMember.roles.add(mutedRole, this.reason);
                 } else {
-                    var settings = await guildMember.settings;
+                    var settings = await this.user.guildSettings(this.guild.id);
                     // Otherwise, set muted to true manually
                     settings.update(`muted`, true, this.guild);
                 }
