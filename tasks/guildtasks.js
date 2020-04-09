@@ -24,7 +24,7 @@ module.exports = class extends Task {
                 var sorter = b.settings.activityScore - a.settings.activityScore;
                 return sorter;
             };
-            _guild.members.cache.sort(compare).each((guildMember) => {
+            _guild.members.sort(compare).each((guildMember) => {
                 // Antispam cooldown
                 var newScore = guildMember.settings.spamScore - cooldown;
                 if (newScore < 0)
@@ -46,17 +46,17 @@ module.exports = class extends Task {
                 activityLevel += newScore;
 
                 // Calculate most active members
-                if (!_guild.settings.staffRole || !guildMember.roles.cache.get(_guild.settings.staffRole)) {
+                if (!_guild.settings.staffRole || !guildMember.roles.get(_guild.settings.staffRole)) {
                     if (mostActiveUsers.length < 3 && newScore >= 1)
                         mostActiveUsers.push(guildMember.user.tag);
-                } else if (_guild.settings.staffRole && guildMember.roles.cache.get(_guild.settings.staffRole) && !mostActiveStaff && newScore >= 1) {
+                } else if (_guild.settings.staffRole && guildMember.roles.get(_guild.settings.staffRole) && !mostActiveStaff && newScore >= 1) {
                     mostActiveStaff = guildMember.user.tag;
                 }
 
                 // Determine inactive users
                 if (!guildMember.user.bot) {
                     if (guildMember.settings.lastMessage === null && moment().diff(moment(guildMember.joinedAt), 'hours') > (24 * 7)) {
-                        if (inactiveRole && !guildMember.roles.cache.get(inactiveRole.id)) {
+                        if (inactiveRole && !guildMember.roles.get(inactiveRole.id)) {
                             guildMember.roles.add(inactiveRole, `New member has not sent a message in the last 7 days.`);
                             if (modLogChannel)
                                 modLogChannel.send(`:zzz: New member ${guildMember.user.tag} (${guildMember.id}) has joined over 7 days ago without sending their first message. Marked inactive until they do.`)
@@ -123,7 +123,7 @@ module.exports = class extends Task {
                         }
                     }
                     if (guildMember.settings.lastMessage !== null && moment().diff(moment(guildMember.settings.lastMessage), 'days') > 30) {
-                        if (inactiveRole && !guildMember.roles.cache.get(inactiveRole.id)) {
+                        if (inactiveRole && !guildMember.roles.get(inactiveRole.id)) {
                             guildMember.roles.add(inactiveRole, `Regular member has not sent any messages in the last 30 days.`);
                             if (modLogChannel)
                                 modLogChannel.send(`:zzz: Member ${guildMember.user.tag} (${guildMember.id}) has not sent any messages in the last 30 days. Marked inactive until they do.`)
@@ -243,7 +243,7 @@ module.exports = class extends Task {
                 if (_guild.settings.raidMitigation === 3)
                     raidMitigation2 = `**Level 3**` + "\n" + `:heart: New Member Verification: Required Verified Phone Number` + "\n" + `:heart: New Member Participation: Isolated until Mitigation Ends` + "\n" + `:heart: Invite Links: Deleted / Not Allowed` + "\n" + `:heart: Antispam Discipline: permanent ban`
                 embed.addField(`Raid Mitigation Status`, raidMitigation + "\n" + raidMitigation2);
-                embed.addField(`Guild Members`, _guild.members.cache.filter((member) => !member.user.bot).size);
+                embed.addField(`Guild Members`, _guild.members.filter((member) => !member.user.bot).size);
                 if (mostActiveUsers.length > 0) {
                     var mostActiveUsersText = ``;
                     mostActiveUsers.map((maUser, index) => {
@@ -253,7 +253,7 @@ module.exports = class extends Task {
                 }
                 if (mostActiveStaff)
                     embed.addField(`Most Active Staff Member Recently`, mostActiveStaff);
-                embed.addField(`Guild Activity Index`, parseInt(activityLevel / _guild.members.cache.filter((member) => !member.user.bot).size));
+                embed.addField(`Guild Activity Index`, parseInt(activityLevel / _guild.members.filter((member) => !member.user.bot).size));
 
 
                 _guild.channels.resolve(statsMessageChannel).messages.fetch(statsMessage)
@@ -261,7 +261,7 @@ module.exports = class extends Task {
             }
 
             // Remove support channels that have expired
-            _guild.channels.cache
+            _guild.channels
                 .filter((channel) => channel.name.startsWith("support-"))
                 .each((channel) => {
                     if ((!channel.lastMessage && moment(channel.createdAt).add(2, 'days').isBefore(moment())) || (channel.lastMessage && moment(channel.lastMessage.createdAt).add(2, 'days').isBefore(moment()))) {
@@ -270,14 +270,14 @@ module.exports = class extends Task {
                 });
 
             // Remove temp channels that have expired
-            _guild.channels.cache
+            _guild.channels
                 .filter((channel) => channel.name.endsWith("-temp14"))
                 .each((channel) => {
                     if (moment(channel.createdAt).add(14, 'days').isBefore(moment())) {
                         channel.delete(`Temp channel expired (14 days since it was created).`);
                     }
                 });
-            _guild.channels.cache
+            _guild.channels
                 .filter((channel) => channel.name.endsWith("-temp1"))
                 .each((channel) => {
                     if ((!channel.lastMessage && moment(channel.createdAt).add(1, 'days').isBefore(moment())) || (channel.lastMessage && moment(channel.lastMessage.createdAt).add(1, 'days').isBefore(moment()))) {
@@ -325,8 +325,8 @@ ${iceBreakers[ Math.floor(Math.random() * iceBreakers.length) ]}
                 var verifiedRole = _guild.roles.resolve(_guild.settings.verifiedRole);
                 if (verifiedRole) {
                     var guildMembers = [];
-                    _guild.members.cache.each((guildMember) => {
-                        if (!guildMember.roles.cache.get(verifiedRole.id) && guildMember.settings.verified) {
+                    _guild.members.each((guildMember) => {
+                        if (!guildMember.roles.get(verifiedRole.id) && guildMember.settings.verified) {
                             guildMembers.push(guildMember.id);
                             guildMember.roles.add(verifiedRole, `Raid mitigation expired`);
                         }
@@ -363,12 +363,12 @@ ${_guild.settings.raidMitigation >= 3 ? `**Please remember to re-generate invite
             }
 
             // Check for voice channel listening and award XP for listeners
-            _guild.channels.cache
+            _guild.channels
                 .filter((channel) => channel.type === 'voice')
                 .each((channel) => {
                     var award = false;
                     var awardTo = [];
-                    channel.members.cache
+                    channel.members
                         .each((guildMember) => {
                             // Is the member undeaf and not a bot? They deserve a listening award!
                             if (!guildMember.voice.deaf && !guildMember.user.bot)

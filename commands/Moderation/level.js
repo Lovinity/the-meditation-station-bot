@@ -23,8 +23,8 @@ module.exports = class extends Command {
             var temp = message.guild.settings.levelRoles[`level${level}`];
             if (temp && temp !== null)
             {
-                message.guild.members.cache.each(guildMember => {
-                    if (guildMember.roles.cache.get(temp))
+                message.guild.members.each(guildMember => {
+                    if (guildMember.roles.has(temp))
                         guildMember.roles.remove(temp, `Level was deleted`);
                 });
             }
@@ -35,8 +35,8 @@ module.exports = class extends Command {
             var temp = message.guild.settings.levelRoles[`level${level}`];
             if (temp && temp !== null)
             {
-                message.guild.members.cache.each(guildMember => {
-                    if (guildMember.roles.cache.get(temp))
+                message.guild.members.each(guildMember => {
+                    if (guildMember.roles.has(temp))
                         guildMember.roles.remove(temp, `Level was deleted`);
                 });
             }
@@ -58,17 +58,17 @@ module.exports = class extends Command {
         var levelKeys = Object.keys(levelRoles);
         if (levelKeys.length > 0)
         {
-            message.guild.members.cache.each(guildMember => {
+            message.guild.members.each(guildMember => {
                 var rolesToAdd = [];
                 var rolesToRemove = [];
                 levelKeys.map(levelKey => {
                     var xp = Math.ceil(((levelKey - 1) / 0.177) ** 2);
-                    if (guildMember.guild.roles.cache.get(levelRoles[levelKey]))
+                    if (guildMember.guild.roles.has(levelRoles[levelKey]))
                     {
-                        if (guildMember.settings.xp >= xp && !guildMember.roles.cache.get(levelRoles[levelKey]))
+                        if (guildMember.settings.xp >= xp && !guildMember.roles.has(levelRoles[levelKey]))
                         {
                             rolesToAdd.push(levelRoles[levelKey]);
-                        } else if (guildMember.settings.xp < xp && guildMember.roles.cache.get(levelRoles[levelKey])) {
+                        } else if (guildMember.settings.xp < xp && guildMember.roles.has(levelRoles[levelKey])) {
                             rolesToRemove.push(levelRoles[levelKey]);
                         }
                     }

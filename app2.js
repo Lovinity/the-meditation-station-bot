@@ -203,7 +203,7 @@ var client = new Client({
         // Members can view audit logs
         .add(4, ({ guild, member }) => guild && member.permissions.has('VIEW_AUDIT_LOG'), { fetch: true })
         // Member has the guild's modRole
-        .add(5, ({ guild, member }) => guild && guild.settings.modRole && member.roles.cache.get(guild.settings.modRole), { fetch: true }, { break: true })
+        .add(5, ({ guild, member }) => guild && guild.settings.modRole && member.roles.get(guild.settings.modRole), { fetch: true }, { break: true })
         // Members of guilds must have 'MANAGE_GUILD' permission
         .add(6, ({ guild, member }) => guild && member.permissions.has('MANAGE_GUILD'), { fetch: true })
         // The member using this command must be the guild owner
@@ -212,7 +212,7 @@ var client = new Client({
         .add(9, ({ author, client }) => author === client.owner, { break: true })
         // Allows the bot owner to use Bot Owner only commands, which silently fail for other users.
         .add(10, ({ author, client }) => author === client.owner),
-    readyMessage: (client) => `Ready to serve ${client.guilds.cache.size} guilds and ${client.users.cache.size} users`,
+    readyMessage: (client) => `Ready to serve ${client.guilds.size} guilds and ${client.users.size} users`,
 });
 
 // Add a channels gateway

@@ -26,7 +26,7 @@ module.exports = class extends Command {
             return message.send(`:x: This guild does not have a muteRole. Please create a muteRole to use the unmute command.`);
 
         if (guildMember) {
-            if (!guildMember.roles.cache.get(muted))
+            if (!guildMember.roles.get(muted))
                 return message.send(`:x: That user is not currently muted.`);
 
             guildMember.roles.remove(mutedRole, `Mute removed with !unmute by ${message.author.tag}`);

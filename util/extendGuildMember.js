@@ -19,7 +19,7 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
             if (typeof message !== `undefined` && message.author.id === this.client.user.id)
                 return null;
 
-            var isMuted = (this.roles.cache.get(this.guild.settings.muteRole));
+            var isMuted = (this.roles.get(this.guild.settings.muteRole));
 
             // Update the score
             var currentScore = this.settings.spamScore;
@@ -158,7 +158,7 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                 console.log(`Increased level!`);
                 var levelRole = this.guild.settings.levelRoles[ `level${curLevel}` ];
                 var role = this.guild.roles.resolve(levelRole);
-                if (role && levelRole && levelRole !== null && this.guild.roles.cache.get(levelRole) && !this.roles.cache.get(levelRole)) {
+                if (role && levelRole && levelRole !== null && this.guild.roles.has(levelRole) && !this.roles.has(levelRole)) {
                     this.roles.add(levelRole, `Achieved level ${curLevel}`);
                     if (message) {
                         message.send(`:tada: **Congratulations <@${this.id}>, you earned the ${role.name} role!**`);
@@ -189,10 +189,10 @@ Structures.extend('GuildMember', GuildMember => class MyGuildMember extends Guil
                     var rolesToRemove = [];
                     levelKeys.map(levelKey => {
                         var xp = Math.ceil(((levelKey - 1) / 0.177) ** 2);
-                        if (this.guild.roles.cache.get(levelRoles[ levelKey ])) {
-                            if (this.settings.xp >= xp && !this.roles.cache.get(levelRoles[ levelKey ])) {
+                        if (this.guild.roles.has(levelRoles[ levelKey ])) {
+                            if (this.settings.xp >= xp && !this.roles.has(levelRoles[ levelKey ])) {
                                 rolesToAdd.push(levelRoles[ levelKey ]);
-                            } else if (this.settings.xp < xp && this.roles.cache.get(levelRoles[ levelKey ])) {
+                            } else if (this.settings.xp < xp && this.roles.has(levelRoles[ levelKey ])) {
                                 rolesToRemove.push(levelRoles[ levelKey ]);
                             }
                         }

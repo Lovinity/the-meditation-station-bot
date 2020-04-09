@@ -52,7 +52,7 @@ module.exports = class extends Event {
                 message.reactions
                     .filter((reaction) => reaction.emoji.id === reaction.message.guild.settings.repEmoji && reaction.message.author.id !== message.author.id)
                     .each((reaction) => {
-                        reaction.users.cache.each((reactionUser) => {
+                        reaction.users.each((reactionUser) => {
                             reactionUser.guildSettings(message.guild.id)
                                 .then((settings) => {
                                     if (!reactionUser.bot && !settings.restrictions.cannotGiveReputation)
@@ -67,7 +67,7 @@ module.exports = class extends Event {
         const { guild } = message;
         if (guild && guild.settings.starboardChannel) {
 
-            const starChannel = message.guild.channels.resolve(message.guild.settings.starboardChannel);
+            const starChannel = message.guild.channels.get(message.guild.settings.starboardChannel);
             if (starChannel) {
                 const fetch = await starChannel.messages.fetch({ limit: 100 });
                 const starMsg = fetch.find(m => m.embeds.length && m.embeds[ 0 ].footer && m.embeds[ 0 ].footer.text.startsWith("REP:") && m.embeds[ 0 ].footer.text.endsWith(message.id));

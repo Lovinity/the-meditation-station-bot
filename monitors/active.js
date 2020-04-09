@@ -22,11 +22,11 @@ module.exports = class extends Monitor {
             return null;
 
         var inactiveRole = message.guild.roles.resolve(message.guild.settings.inactiveRole);
-        if (inactiveRole && message.member.roles.cache.get(inactiveRole.id)) {
+        if (inactiveRole && message.member.roles.get(inactiveRole.id)) {
             message.member.roles.remove(inactiveRole, `Member no longer inactive`);
 
             // Post about being active again if applicable
-            message.guild.channels.cache
+            message.guild.channels
                 .filter((channel) => channel.topic && channel.topic !== null && channel.topic.startsWith(`Inactive member ${message.author.id}`))
                 .each((channel) => {
                     channel.send(`:white_check_mark: There you are! Thank you for posting a message. You are no longer considered inactive.`)

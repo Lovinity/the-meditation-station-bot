@@ -31,10 +31,10 @@ module.exports = class extends Event {
                 var rolesToRemove = [];
                 levelKeys.map(levelKey => {
                     var xp = Math.ceil(((levelKey - 1) / 0.177) ** 2);
-                    if (guildMember.guild.roles.cache.get(levelRoles[ levelKey ])) {
-                        if (guildMember.settings.xp >= xp && !guildMember.roles.cache.get(levelRoles[ levelKey ])) {
+                    if (guildMember.guild.roles.has(levelRoles[ levelKey ])) {
+                        if (guildMember.settings.xp >= xp && !guildMember.roles.has(levelRoles[ levelKey ])) {
                             rolesToAdd.push(levelRoles[ levelKey ]);
-                        } else if (guildMember.settings.xp < xp && guildMember.roles.cache.get(levelRoles[ levelKey ])) {
+                        } else if (guildMember.settings.xp < xp && guildMember.roles.has(levelRoles[ levelKey ])) {
                             rolesToRemove.push(levelRoles[ levelKey ]);
                         }
                     }
@@ -50,7 +50,7 @@ module.exports = class extends Event {
         }
 
         // Iterate through guild operations on bot startup
-        this.client.guilds.cache.each((guild) => {
+        this.client.guilds.each((guild) => {
 
             // Kick self if the guild is black listed
             if (!guild.available)
@@ -75,7 +75,7 @@ module.exports = class extends Event {
             }
 
             // Cache the last (default #) messages in all channels
-            guild.channels.cache.each((channel) => {
+            guild.channels.each((channel) => {
                 if (channel.type === 'text')
                     channel.messages.fetch();
             });
@@ -89,29 +89,29 @@ module.exports = class extends Event {
             const _channelMod = this.client.channels.resolve(guild.settings.modLogChannel);
             var modLogChannel = guild.channels.resolve(guild.settings.modLogChannel);
             var inactiveRole = guild.roles.resolve(guild.settings.inactiveRole);
-            guild.members.cache.each((_guildMember) => {
+            guild.members.each((_guildMember) => {
 
                 ((guildMember) => {
                     guildMember.settings.sync(true)
                         .then((settings) => {
 
                             // Check if the member should be muted. If so, reset all roles
-                            if (muteRole && (settings.muted || guildMember.roles.cache.get(muteRole.id))) {
-                                if (!guildMember.roles.cache.get(muteRole.id) && _channelMod)
+                            if (muteRole && (settings.muted || guildMember.roles.get(muteRole.id))) {
+                                if (!guildMember.roles.get(muteRole.id) && _channelMod)
                                     _channelMod.send(`:mute: The member <@!${guildMember.user.id}> had a mute on their account and was re-muted upon the bot restarting. Check to be sure they were not trying to mute evade.`);
                                 settings.update(`muted`, true, guild);
                                 guildMember.roles.set([ guild.settings.muteRole ], `User supposed to be muted`);
-                            } else if (unsafeRole && (settings.unsafe || guildMember.roles.cache.get(unsafeRole.id))) {
-                                if (_channelMod && !guildMember.roles.cache.get(unsafeRole.id))
+                            } else if (unsafeRole && (settings.unsafe || guildMember.roles.get(unsafeRole.id))) {
+                                if (_channelMod && !guildMember.roles.get(unsafeRole.id))
                                     _channelMod.send(`:fearful: The member <@!${guildMember.user.id}> was marked unsafe when they left, and was re-marked unsafe upon entering the guild.`);
                                 settings.update(`unsafe`, true, guild);
                                 guildMember.roles.set([ guild.settings.unsafeRole ], `User supposed to be unsafe`);
                             } else {
                                 // Member has the verified role. Update database with the current roles set in case anything changed since bot was down.
-                                if (verifiedRole && guildMember.roles.cache.get(verifiedRole.id)) {
+                                if (verifiedRole && guildMember.roles.get(verifiedRole.id)) {
                                     settings.update('verified', true);
                                     settings.reset(`roles`);
-                                    guildMember.roles.cache.each((role) => {
+                                    guildMember.roles.each((role) => {
                                         if (role.id !== guild.roles.everyone.id && role.id !== guild.settings.muteRole)
                                             settings.update(`roles`, role, guild, { action: 'add' });
                                     });

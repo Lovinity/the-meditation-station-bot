@@ -71,7 +71,7 @@ module.exports = class extends Command {
 async function generateMessages (message, selfRolesChannel) {
     await pruneMessageChannel(message, selfRolesChannel);
     var selfRoles = {}
-    message.guild.roles.cache.each((role) => {
+    message.guild.roles.each((role) => {
         var settings = role.settings;
         if (settings && settings.self && settings.self.category !== null && settings.self.reaction !== null) {
             if (typeof selfRoles[ settings.self.category ] === 'undefined')

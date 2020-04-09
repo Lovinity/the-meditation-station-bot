@@ -34,10 +34,10 @@ module.exports = class extends Event {
                 var rolesToRemove = [];
                 levelKeys.map(levelKey => {
                     var xp = Math.ceil(((levelKey - 1) / 0.177) ** 2);
-                    if (_guildMember.guild.roles.cache.get(levelRoles[ levelKey ])) {
-                        if (_guildMember.settings.xp >= xp && !_guildMember.roles.cache.get(levelRoles[ levelKey ])) {
+                    if (_guildMember.guild.roles.has(levelRoles[ levelKey ])) {
+                        if (_guildMember.settings.xp >= xp && !_guildMember.roles.has(levelRoles[ levelKey ])) {
                             rolesToAdd.push(levelRoles[ levelKey ]);
-                        } else if (_guildMember.settings.xp < xp && _guildMember.roles.cache.get(levelRoles[ levelKey ])) {
+                        } else if (_guildMember.settings.xp < xp && _guildMember.roles.has(levelRoles[ levelKey ])) {
                             rolesToRemove.push(levelRoles[ levelKey ]);
                         }
                     }
@@ -63,12 +63,12 @@ module.exports = class extends Event {
         const unsafeRole = guildMember.guild.roles.resolve(guildMember.guild.settings.unsafeRole);
 
         // Check if the member should be muted. If so, reset all roles
-        if (muteRole && (guildMember.settings.muted || guildMember.roles.cache.get(muteRole.id))) {
+        if (muteRole && (guildMember.settings.muted || guildMember.roles.get(muteRole.id))) {
             guildMember.settings.update(`muted`, true, guildMember.guild);
             guildMember.roles.set([ guildMember.guild.settings.muteRole ], `User supposed to be muted`);
             if (_channelMod)
                 _channelMod.send(`:mute: The member <@!${guildMember.user.id}> had a mute on their account and was re-muted upon entering the guild. Check to be sure they were not trying to mute evade.`);
-        } else if (unsafeRole && (guildMember.settings.unsafe || guildMember.roles.cache.get(unsafeRole.id))) {
+        } else if (unsafeRole && (guildMember.settings.unsafe || guildMember.roles.get(unsafeRole.id))) {
             guildMember.settings.update(`unsafe`, true, guildMember.guild);
             guildMember.roles.set([ guildMember.guild.settings.unsafeRole ], `User supposed to be unsafe`);
             if (_channelMod)
@@ -112,7 +112,7 @@ module.exports = class extends Event {
         }
 
         // Re-assign permissions to discipline channels.
-        guildMember.guild.channels.cache
+        guildMember.guild.channels
             .filter((channel) => channel.topic && channel.topic !== null && channel.topic.startsWith(`Discipline ${guildMember.user.id}`))
             .each((channel) => {
                 channel.createOverwrite(guildMember, {
@@ -127,7 +127,7 @@ module.exports = class extends Event {
             });
 
         // Re-assign permissions to interrogation channels
-        guildMember.guild.channels.cache
+        guildMember.guild.channels
             .filter((channel) => channel.name.startsWith("interrogation-") && channel.topic && channel.topic !== null && channel.topic.includes(guildMember.user.id))
             .each((channel) => {
                 channel.createOverwrite(guildMember, {
