@@ -22,7 +22,7 @@ module.exports = class extends Monitor {
             return null;
 
         var inactiveRole = message.guild.roles.resolve(message.guild.settings.inactiveRole);
-        if (inactiveRole && message.member.roles.get(inactiveRole.id)) {
+        if (inactiveRole && message.member.roles.cache.get(inactiveRole.id)) {
             message.member.roles.remove(inactiveRole, `Member no longer inactive`);
 
             // Post about being active again if applicable

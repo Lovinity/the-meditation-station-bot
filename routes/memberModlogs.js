@@ -30,7 +30,7 @@ module.exports = class extends Route {
 
         if (authUser.id !== request.query.user) {
             if (guild && guild.settings.modRole) {
-                if (!authMember.roles.get(guild.settings.modRole)) return response.end(JSON.stringify({ error: `You do not have the guild's modRole and therefore are not allowed to view other users' moderation logs.` }));
+                if (!authMember.roles.cache.get(guild.settings.modRole)) return response.end(JSON.stringify({ error: `You do not have the guild's modRole and therefore are not allowed to view other users' moderation logs.` }));
             } else if (!authMember.permissions.has('VIEW_AUDIT_LOG')) {
                 return response.end(JSON.stringify({ error: `You do not have VIEW_AUDIT_LOG permissions and therefore are not allowed to view other users' moderation logs.` }));
             }
@@ -131,7 +131,7 @@ module.exports = class extends Route {
                 if (request.auth.scope[ 0 ] === request.body.user) return response.end(JSON.stringify({ error: "You cannot appeal your own cases." }));
 
                 if (guild && guild.settings.modRole) {
-                    if (!authMember.roles.get(guild.settings.modRole)) return response.end(JSON.stringify({ error: `You do not have the guild's modRole and therefore are not allowed to appeal cases.` }));
+                    if (!authMember.roles.cache.get(guild.settings.modRole)) return response.end(JSON.stringify({ error: `You do not have the guild's modRole and therefore are not allowed to appeal cases.` }));
                 } else if (!authMember.permissions.has('VIEW_AUDIT_LOG')) {
                     return response.end(JSON.stringify({ error: `You do not have VIEW_AUDIT_LOG permissions and therefore are not allowed to appeal cases.` }));
                 }

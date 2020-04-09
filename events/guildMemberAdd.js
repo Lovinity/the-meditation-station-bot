@@ -63,12 +63,12 @@ module.exports = class extends Event {
         const unsafeRole = guildMember.guild.roles.resolve(guildMember.guild.settings.unsafeRole);
 
         // Check if the member should be muted. If so, reset all roles
-        if (muteRole && (guildMember.settings.muted || guildMember.roles.get(muteRole.id))) {
+        if (muteRole && (guildMember.settings.muted || guildMember.roles.cache.get(muteRole.id))) {
             guildMember.settings.update(`muted`, true, guildMember.guild);
             guildMember.roles.set([ guildMember.guild.settings.muteRole ], `User supposed to be muted`);
             if (_channelMod)
                 _channelMod.send(`:mute: The member <@!${guildMember.user.id}> had a mute on their account and was re-muted upon entering the guild. Check to be sure they were not trying to mute evade.`);
-        } else if (unsafeRole && (guildMember.settings.unsafe || guildMember.roles.get(unsafeRole.id))) {
+        } else if (unsafeRole && (guildMember.settings.unsafe || guildMember.roles.cache.get(unsafeRole.id))) {
             guildMember.settings.update(`unsafe`, true, guildMember.guild);
             guildMember.roles.set([ guildMember.guild.settings.unsafeRole ], `User supposed to be unsafe`);
             if (_channelMod)

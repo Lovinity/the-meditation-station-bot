@@ -123,7 +123,7 @@ module.exports = class extends Route {
                 var sameUser = request.auth.scope[ 0 ] === request.body.user;
 
                 if (guild && guild.settings.modRole) {
-                    if (!sameUser && !authMember.roles.get(guild.settings.modRole)) return response.end(JSON.stringify({ error: `You do not have the modRole and are therefore not allowed to edit the profiles of other members.` }));
+                    if (!sameUser && !authMember.roles.cache.get(guild.settings.modRole)) return response.end(JSON.stringify({ error: `You do not have the modRole and are therefore not allowed to edit the profiles of other members.` }));
                 } else if (!sameUser && !authMember.permissions.has('VIEW_AUDIT_LOG')) {
                     return response.end(JSON.stringify({ error: `You do not have VIEW_AUDIT_LOG permissions and therefore are not allowed to edit the profiles of other members.` }));
                 }

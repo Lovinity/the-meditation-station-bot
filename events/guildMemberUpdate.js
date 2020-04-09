@@ -11,8 +11,8 @@ module.exports = class extends Event {
 
         const mutedRole = newMember.guild.roles.resolve(newMember.guild.settings.muteRole);
         if (mutedRole) {
-            var isMuted = (newMember.roles.get(newMember.guild.settings.muteRole) ? true : false);
-            var wasMuted = (oldMember.partial ? false : oldMember.roles.get(oldMember.guild.settings.muteRole) ? true : false);
+            var isMuted = (newMember.roles.cache.get(newMember.guild.settings.muteRole) ? true : false);
+            var wasMuted = (oldMember.partial ? false : oldMember.roles.cache.get(oldMember.guild.settings.muteRole) ? true : false);
 
             // Kick the user out of voice channels if they are muted
             if (isMuted && newMember.voice.channelID) {
@@ -29,14 +29,14 @@ module.exports = class extends Event {
                 await newMember.settings.update(`muted`, false, newMember.guild);
                 newMember.roles.set(newMember.settings.roles, `User no longer muted; apply previous roles`);
 
-            } else if (!isMuted && !wasMuted && !oldMember.partial && !oldMember.roles.get(oldMember.guild.settings.unsafeRole) && !newMember.roles.get(newMember.guild.settings.unsafeRole)) { // User not, nor was, muted, nor is unsafe; update role database
+            } else if (!isMuted && !wasMuted && !oldMember.partial && !oldMember.roles.cache.get(oldMember.guild.settings.unsafeRole) && !newMember.roles.cache.get(newMember.guild.settings.unsafeRole)) { // User not, nor was, muted, nor is unsafe; update role database
                 newMember.settings.reset(`roles`);
                 newMember.roles.each((role) => {
                     if (role.id !== newMember.guild.roles.everyone.id && role.id !== newMember.guild.settings.muteRole)
                         newMember.settings.update(`roles`, role, newMember.guild, { action: 'add' });
                 });
             }
-        } else if (!oldMember.partial && !oldMember.roles.get(oldMember.guild.settings.unsafeRole) && !newMember.roles.get(newMember.guild.settings.unsafeRole)) {
+        } else if (!oldMember.partial && !oldMember.roles.cache.get(oldMember.guild.settings.unsafeRole) && !newMember.roles.cache.get(newMember.guild.settings.unsafeRole)) {
             newMember.settings.reset(`roles`);
             newMember.roles.each((role) => {
                 if (role.id !== newMember.guild.roles.everyone.id)
@@ -46,9 +46,9 @@ module.exports = class extends Event {
 
         const unsafeRole = newMember.guild.roles.resolve(newMember.guild.settings.unsafeRole);
         if (unsafeRole) {
-            if (!newMember.roles.get(newMember.guild.settings.muteRole)) {
-                var isUnsafe = (newMember.roles.get(newMember.guild.settings.unsafeRole) ? true : false);
-                var wasUnsafe = (oldMember.partial ? false : oldMember.roles.get(oldMember.guild.settings.unsafeRole) ? true : false);
+            if (!newMember.roles.cache.get(newMember.guild.settings.muteRole)) {
+                var isUnsafe = (newMember.roles.cache.get(newMember.guild.settings.unsafeRole) ? true : false);
+                var wasUnsafe = (oldMember.partial ? false : oldMember.roles.cache.get(oldMember.guild.settings.unsafeRole) ? true : false);
 
                 // If newly unsafe, or unsafe with more than 1 role, or not unsafe when they should be unsafe, remove all roles except unsafe.
                 if ((!wasUnsafe && isUnsafe) || (isUnsafe && newMember.roles.size > 2) || (!isUnsafe && !wasUnsafe && newMember.settings.unsafe)) {
@@ -60,7 +60,7 @@ module.exports = class extends Event {
                     await newMember.settings.update(`unsafe`, false, newMember.guild);
                     newMember.roles.set(newMember.settings.roles, `User no longer unsafe; apply previous roles`);
                 }
-            } else if (newMember.roles.get(newMember.guild.settings.unsafeRole)) {
+            } else if (newMember.roles.cache.get(newMember.guild.settings.unsafeRole)) {
                 newMember.roles.remove(unsafeRole, `Member is muted; cannot be unsafe at this time.`);
             }
         }

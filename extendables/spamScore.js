@@ -40,7 +40,7 @@ module.exports = class extends Extendable {
                 // If the member is muted, the spam score will always be 150%
                 var multiplier = 0.5;
 
-                var isMuted = (this.member && this.guild && this.member.roles.get(this.guild.settings.muteRole));
+                var isMuted = (this.member && this.guild && this.member.roles.cache.get(this.guild.settings.muteRole));
 
                 // If this is not a less strict channel, add 0.5 to the multiplier.
                 if (this.guild.settings.antispamLessStrictChannels.indexOf(this.channel.id) === -1)

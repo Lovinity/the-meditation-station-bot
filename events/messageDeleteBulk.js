@@ -57,7 +57,7 @@ module.exports = class extends Event {
             const { guild } = message;
             if (guild && guild.settings.starboardChannel) {
 
-                const starChannel = message.guild.channels.get(message.guild.settings.starboardChannel);
+                const starChannel = message.guild.channels.resolve(message.guild.settings.starboardChannel);
                 if (starChannel) {
                     (async (_starChannel) => {
                         const fetch = await starChannel.messages.fetch({ limit: 100 });

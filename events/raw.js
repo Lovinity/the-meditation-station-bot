@@ -32,7 +32,7 @@ module.exports = class extends Event {
                 var roles = await guild.roles.fetch();
                 roles.each((role) => {
                     if (role.settings.self.message === `${data.d.channel_id}/${data.d.message_id}` && (role.settings.self.reaction === `${data.d.emoji.name}:${data.d.emoji.id}` || role.settings.self.reaction == data.d.emoji.name.codePointAt(0))) {
-                        if (!member.roles.get(role.id)) {
+                        if (!member.roles.cache.get(role.id)) {
                             member.roles.add(role, `Added self role`);
                             if (channel && member) {
                                 member.spamScore(5);

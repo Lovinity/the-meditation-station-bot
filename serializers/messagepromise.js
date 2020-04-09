@@ -28,7 +28,7 @@ module.exports = class extends Serializer {
 
 	stringify (data, channel) {
 		// channel might be a message, I sure as heck don't know
-		return ((channel.messages || channel.channel.messages).get(data) || { content: (data && data.content) || data }).content;
+		return ((channel.messages || channel.channel.messages).resolve(data) || { content: (data && data.content) || data }).content;
 	}
 
 	static error (language, name) {

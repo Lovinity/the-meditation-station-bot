@@ -46,17 +46,17 @@ module.exports = class extends Task {
                 activityLevel += newScore;
 
                 // Calculate most active members
-                if (!_guild.settings.staffRole || !guildMember.roles.get(_guild.settings.staffRole)) {
+                if (!_guild.settings.staffRole || !guildMember.roles.cache.get(_guild.settings.staffRole)) {
                     if (mostActiveUsers.length < 3 && newScore >= 1)
                         mostActiveUsers.push(guildMember.user.tag);
-                } else if (_guild.settings.staffRole && guildMember.roles.get(_guild.settings.staffRole) && !mostActiveStaff && newScore >= 1) {
+                } else if (_guild.settings.staffRole && guildMember.roles.cache.get(_guild.settings.staffRole) && !mostActiveStaff && newScore >= 1) {
                     mostActiveStaff = guildMember.user.tag;
                 }
 
                 // Determine inactive users
                 if (!guildMember.user.bot) {
                     if (guildMember.settings.lastMessage === null && moment().diff(moment(guildMember.joinedAt), 'hours') > (24 * 7)) {
-                        if (inactiveRole && !guildMember.roles.get(inactiveRole.id)) {
+                        if (inactiveRole && !guildMember.roles.cache.get(inactiveRole.id)) {
                             guildMember.roles.add(inactiveRole, `New member has not sent a message in the last 7 days.`);
                             if (modLogChannel)
                                 modLogChannel.send(`:zzz: New member ${guildMember.user.tag} (${guildMember.id}) has joined over 7 days ago without sending their first message. Marked inactive until they do.`)
@@ -123,7 +123,7 @@ module.exports = class extends Task {
                         }
                     }
                     if (guildMember.settings.lastMessage !== null && moment().diff(moment(guildMember.settings.lastMessage), 'days') > 30) {
-                        if (inactiveRole && !guildMember.roles.get(inactiveRole.id)) {
+                        if (inactiveRole && !guildMember.roles.cache.get(inactiveRole.id)) {
                             guildMember.roles.add(inactiveRole, `Regular member has not sent any messages in the last 30 days.`);
                             if (modLogChannel)
                                 modLogChannel.send(`:zzz: Member ${guildMember.user.tag} (${guildMember.id}) has not sent any messages in the last 30 days. Marked inactive until they do.`)
@@ -326,7 +326,7 @@ ${iceBreakers[ Math.floor(Math.random() * iceBreakers.length) ]}
                 if (verifiedRole) {
                     var guildMembers = [];
                     _guild.members.each((guildMember) => {
-                        if (!guildMember.roles.get(verifiedRole.id) && guildMember.settings.verified) {
+                        if (!guildMember.roles.cache.get(verifiedRole.id) && guildMember.settings.verified) {
                             guildMembers.push(guildMember.id);
                             guildMember.roles.add(verifiedRole, `Raid mitigation expired`);
                         }

@@ -96,19 +96,19 @@ module.exports = class extends Event {
                         .then((settings) => {
 
                             // Check if the member should be muted. If so, reset all roles
-                            if (muteRole && (settings.muted || guildMember.roles.get(muteRole.id))) {
-                                if (!guildMember.roles.get(muteRole.id) && _channelMod)
+                            if (muteRole && (settings.muted || guildMember.roles.cache.get(muteRole.id))) {
+                                if (!guildMember.roles.cache.get(muteRole.id) && _channelMod)
                                     _channelMod.send(`:mute: The member <@!${guildMember.user.id}> had a mute on their account and was re-muted upon the bot restarting. Check to be sure they were not trying to mute evade.`);
                                 settings.update(`muted`, true, guild);
                                 guildMember.roles.set([ guild.settings.muteRole ], `User supposed to be muted`);
-                            } else if (unsafeRole && (settings.unsafe || guildMember.roles.get(unsafeRole.id))) {
-                                if (_channelMod && !guildMember.roles.get(unsafeRole.id))
+                            } else if (unsafeRole && (settings.unsafe || guildMember.roles.cache.get(unsafeRole.id))) {
+                                if (_channelMod && !guildMember.roles.cache.get(unsafeRole.id))
                                     _channelMod.send(`:fearful: The member <@!${guildMember.user.id}> was marked unsafe when they left, and was re-marked unsafe upon entering the guild.`);
                                 settings.update(`unsafe`, true, guild);
                                 guildMember.roles.set([ guild.settings.unsafeRole ], `User supposed to be unsafe`);
                             } else {
                                 // Member has the verified role. Update database with the current roles set in case anything changed since bot was down.
-                                if (verifiedRole && guildMember.roles.get(verifiedRole.id)) {
+                                if (verifiedRole && guildMember.roles.cache.get(verifiedRole.id)) {
                                     settings.update('verified', true);
                                     settings.reset(`roles`);
                                     guildMember.roles.each((role) => {

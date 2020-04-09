@@ -71,9 +71,9 @@ class RoleGateway extends GatewayStorage {
 	get(id) {
 		const [guildID, roleID] = typeof id === 'string' ? id.split('.') : id;
 
-		const guild = this.client.guilds.get(guildID);
+		const guild = this.client.guilds.cache.get(guildID);
 		if (guild) {
-			const role = guild.roles.get(roleID);
+			const role = guild.roles.cache.get(roleID);
 			return role && role.settings;
 		}
 

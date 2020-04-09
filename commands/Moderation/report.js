@@ -46,7 +46,7 @@ module.exports = class extends Command {
         if (reports.indexOf(`${message.author.id}`) === -1) {
 
             // Reported member is already muted.
-            if (guildMember && guildMember.roles.get(mutedRole.id))
+            if (guildMember && guildMember.roles.cache.get(mutedRole.id))
                 return message.send(`:x: The member is already muted, therefore the report command was not acknowledged. However, you can still provide evidence here for staff to investigate.`);
 
             // By this point, the report is authorized

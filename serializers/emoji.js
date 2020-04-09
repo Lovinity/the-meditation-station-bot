@@ -24,8 +24,8 @@ module.exports = class extends Serializer {
             data = { name: String.fromCodePoint(parseInt(data[ 0 ])) }
             console.dir(data)
         }
-        console.dir(new GuildEmoji(this.client, data, this.client.guilds.get(guild)));
-        return new GuildEmoji(this.client, data, this.client.guilds.get(guild));
+        console.dir(new GuildEmoji(this.client, data, this.client.guilds.resolve(guild)));
+        return new GuildEmoji(this.client, data, this.client.guilds.resolve(guild));
     }
 
     serialize (data) {
