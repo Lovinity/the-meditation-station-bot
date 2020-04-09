@@ -29,7 +29,7 @@ module.exports = class extends Task {
                 }
 
                 // Announce in the incidents channel that the mute is expired
-                _guild.channels
+                _guild.channels.cache
                     .filter((channel) => channel.name === `discipline-${caseID}`)
                     .each((channel) => {
                         channel.send(`:loud_sound: Your mute has expired.`);

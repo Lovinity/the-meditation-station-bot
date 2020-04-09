@@ -5,7 +5,7 @@ const ROLE_REGEXP = Argument.regex.role;
 
 function resolveRole(query, guild) {
     if (query instanceof Role)
-        return guild.roles.has(query.id) ? query : null;
+        return guild.roles.cache.get(query.id) ? query : null;
     if (typeof query === 'string' && ROLE_REGEXP.test(query))
         return guild.roles.resolve(ROLE_REGEXP.exec(query)[1]);
     return null;
@@ -22,7 +22,7 @@ module.exports = class extends Argument {
 
         const results = [];
         const reg = new RegExp(regExpEsc(arg), 'i');
-        for (const role of message.guild.roles.values()) {
+        for (const role of message.guild.roles.cache.values()) {
             if (reg.test(role.name))
                 results.push(role); }
 

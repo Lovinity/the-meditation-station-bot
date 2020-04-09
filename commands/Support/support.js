@@ -107,7 +107,7 @@ This channel will automatically be deleted by the bot when it goes 48 hours with
             return message.send({ embed: embed });
         } else {
             // Check if the support channel exists and bail if it does not
-            var theChannel = message.guild.channels.find(r => r.name === `support-${incident}`)
+            var theChannel = message.guild.channels.cache.find(r => r.name === `support-${incident}`)
             if (!theChannel)
                 return message.send(':x: That support channel does not exist. Either it was typed incorrectly, or it was removed / closed.')
 

@@ -31,10 +31,10 @@ module.exports = class extends Event {
                 var rolesToRemove = [];
                 levelKeys.map(levelKey => {
                     var xp = Math.ceil(((levelKey - 1) / 0.177) ** 2);
-                    if (guildMember.guild.roles.has(levelRoles[ levelKey ])) {
-                        if (guildMember.settings.xp >= xp && !guildMember.roles.has(levelRoles[ levelKey ])) {
+                    if (guildMember.guild.roles.cache.get(levelRoles[ levelKey ])) {
+                        if (guildMember.settings.xp >= xp && !guildMember.roles.cache.get(levelRoles[ levelKey ])) {
                             rolesToAdd.push(levelRoles[ levelKey ]);
-                        } else if (guildMember.settings.xp < xp && guildMember.roles.has(levelRoles[ levelKey ])) {
+                        } else if (guildMember.settings.xp < xp && guildMember.roles.cache.get(levelRoles[ levelKey ])) {
                             rolesToRemove.push(levelRoles[ levelKey ]);
                         }
                     }
@@ -50,7 +50,7 @@ module.exports = class extends Event {
         }
 
         // Iterate through guild operations on bot startup
-        this.client.guilds.each((guild) => {
+        this.client.guilds.cache.each((guild) => {
 
             // Kick self if the guild is black listed
             if (!guild.available)
@@ -75,7 +75,7 @@ module.exports = class extends Event {
             }
 
             // Cache the last (default #) messages in all channels
-            guild.channels.each((channel) => {
+            guild.channels.cache.each((channel) => {
                 if (channel.type === 'text')
                     channel.messages.fetch();
             });
@@ -89,7 +89,7 @@ module.exports = class extends Event {
             const _channelMod = this.client.channels.resolve(guild.settings.modLogChannel);
             var modLogChannel = guild.channels.resolve(guild.settings.modLogChannel);
             var inactiveRole = guild.roles.resolve(guild.settings.inactiveRole);
-            guild.members.each((_guildMember) => {
+            guild.members.cache.each((_guildMember) => {
 
                 ((guildMember) => {
                     guildMember.settings.sync(true)
@@ -111,7 +111,7 @@ module.exports = class extends Event {
                                 if (verifiedRole && guildMember.roles.cache.get(verifiedRole.id)) {
                                     settings.update('verified', true);
                                     settings.reset(`roles`);
-                                    guildMember.roles.each((role) => {
+                                    guildMember.roles.cache.each((role) => {
                                         if (role.id !== guild.roles.everyone.id && role.id !== guild.settings.muteRole)
                                             settings.update(`roles`, role, guild, { action: 'add' });
                                     });

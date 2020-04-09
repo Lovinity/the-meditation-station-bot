@@ -9,7 +9,7 @@ module.exports = class extends Event {
         }
 
         // Add event logs to guilds if things changed
-        this.client.guilds
+        this.client.guilds.cache
             .filter((guild) => guild.members.resolve(newUser.id))
             .each((guild) => {
                 const eventLogChannel = this.client.channels.resolve(guild.settings.eventLogChannel);

@@ -26,7 +26,7 @@ module.exports = class extends Monitor {
             message.member.roles.remove(inactiveRole, `Member no longer inactive`);
 
             // Post about being active again if applicable
-            message.guild.channels
+            message.guild.channels.cache
                 .filter((channel) => channel.topic && channel.topic !== null && channel.topic.startsWith(`Inactive member ${message.author.id}`))
                 .each((channel) => {
                     channel.send(`:white_check_mark: There you are! Thank you for posting a message. You are no longer considered inactive.`)

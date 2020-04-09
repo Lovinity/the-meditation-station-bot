@@ -49,7 +49,7 @@ module.exports = class extends Extendable {
                 // If the member does not have a role defined in less strict roles, add 0.5 to the multiplier.
                 if (typeof this.member !== 'undefined') {
                     var lessStrict = false;
-                    this.member.roles
+                    this.member.roles.cache
                         .filter((role) => {
                             return this.guild.settings.antispamLessStrictRoles.indexOf(role.id) !== -1;
                         })
@@ -95,7 +95,7 @@ module.exports = class extends Extendable {
             }
             console.log('Message spam score ' + this.id)
             // Add 5 score for each mention; mention spam
-            var nummentions = this.mentions.users.size + this.mentions.roles.size;
+            var nummentions = this.mentions.users.size + this.mentions.roles.cache.size;
             score += (5 * nummentions);
             if (nummentions > 0) { scoreReasons[ "Mentions" ] = (nummentions * 5) }
 

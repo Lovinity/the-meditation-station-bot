@@ -260,7 +260,7 @@ module.exports = class extends Route {
                     }
 
                     // Let the member know in incidents channel it was appealed
-                    guild.channels
+                    guild.channels.cache
                         .filter((channel) => channel.name === `discipline-${log.case}`)
                         .each((channel) => {
                             channel.send(`:negative_squared_cross_mark: This incident has been appealed by ${authUser.tag} (${authUser.id}), and issued discipline was reversed.`);

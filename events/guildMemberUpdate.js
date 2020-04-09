@@ -20,7 +20,7 @@ module.exports = class extends Event {
             }
 
             // If newly muted, or muted with more than 1 role, or not muted when they should be muted, remove all roles except muted.
-            if ((!wasMuted && isMuted) || (isMuted && newMember.roles.size > 2) || (!isMuted && !wasMuted && newMember.settings.muted)) {
+            if ((!wasMuted && isMuted) || (isMuted && newMember.roles.cache.size > 2) || (!isMuted && !wasMuted && newMember.settings.muted)) {
                 await newMember.settings.update(`muted`, true, newMember.guild);
                 // Remove all roles except the muted role
                 newMember.roles.set([ newMember.guild.settings.muteRole ], `User muted; remove all other roles`);
@@ -31,14 +31,14 @@ module.exports = class extends Event {
 
             } else if (!isMuted && !wasMuted && !oldMember.partial && !oldMember.roles.cache.get(oldMember.guild.settings.unsafeRole) && !newMember.roles.cache.get(newMember.guild.settings.unsafeRole)) { // User not, nor was, muted, nor is unsafe; update role database
                 newMember.settings.reset(`roles`);
-                newMember.roles.each((role) => {
+                newMember.roles.cache.each((role) => {
                     if (role.id !== newMember.guild.roles.everyone.id && role.id !== newMember.guild.settings.muteRole)
                         newMember.settings.update(`roles`, role, newMember.guild, { action: 'add' });
                 });
             }
         } else if (!oldMember.partial && !oldMember.roles.cache.get(oldMember.guild.settings.unsafeRole) && !newMember.roles.cache.get(newMember.guild.settings.unsafeRole)) {
             newMember.settings.reset(`roles`);
-            newMember.roles.each((role) => {
+            newMember.roles.cache.each((role) => {
                 if (role.id !== newMember.guild.roles.everyone.id)
                     newMember.settings.update(`roles`, role, newMember.guild, { action: 'add' });
             });
@@ -51,7 +51,7 @@ module.exports = class extends Event {
                 var wasUnsafe = (oldMember.partial ? false : oldMember.roles.cache.get(oldMember.guild.settings.unsafeRole) ? true : false);
 
                 // If newly unsafe, or unsafe with more than 1 role, or not unsafe when they should be unsafe, remove all roles except unsafe.
-                if ((!wasUnsafe && isUnsafe) || (isUnsafe && newMember.roles.size > 2) || (!isUnsafe && !wasUnsafe && newMember.settings.unsafe)) {
+                if ((!wasUnsafe && isUnsafe) || (isUnsafe && newMember.roles.cache.size > 2) || (!isUnsafe && !wasUnsafe && newMember.settings.unsafe)) {
                     await newMember.settings.update(`unsafe`, true, newMember.guild);
                     // Remove all roles except the muted role
                     newMember.roles.set([ newMember.guild.settings.unsafeRole ], `User unsafe; remove all other roles`);

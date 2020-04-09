@@ -493,10 +493,10 @@ module.exports = class GuildDiscipline {
                     var rolesToRemove = [];
                     levelKeys.map(levelKey => {
                         var xp = Math.ceil(((levelKey - 1) / 0.177) ** 2);
-                        if (guildMember.guild.roles.has(levelRoles[ levelKey ])) {
-                            if (guildMember.settings.xp >= xp && !guildMember.roles.has(levelRoles[ levelKey ])) {
+                        if (guildMember.guild.roles.cache.get(levelRoles[ levelKey ])) {
+                            if (guildMember.settings.xp >= xp && !guildMember.roles.cache.get(levelRoles[ levelKey ])) {
                                 rolesToAdd.push(levelRoles[ levelKey ]);
-                            } else if (guildMember.settings.xp < xp && guildMember.roles.has(levelRoles[ levelKey ])) {
+                            } else if (guildMember.settings.xp < xp && guildMember.roles.cache.get(levelRoles[ levelKey ])) {
                                 rolesToRemove.push(levelRoles[ levelKey ]);
                             }
                         }

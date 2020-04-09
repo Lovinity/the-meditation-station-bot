@@ -34,10 +34,10 @@ module.exports = class extends Event {
                 var rolesToRemove = [];
                 levelKeys.map(levelKey => {
                     var xp = Math.ceil(((levelKey - 1) / 0.177) ** 2);
-                    if (_guildMember.guild.roles.has(levelRoles[ levelKey ])) {
-                        if (_guildMember.settings.xp >= xp && !_guildMember.roles.has(levelRoles[ levelKey ])) {
+                    if (_guildMember.guild.roles.cache.get(levelRoles[ levelKey ])) {
+                        if (_guildMember.settings.xp >= xp && !_guildMember.roles.cache.get(levelRoles[ levelKey ])) {
                             rolesToAdd.push(levelRoles[ levelKey ]);
-                        } else if (_guildMember.settings.xp < xp && _guildMember.roles.has(levelRoles[ levelKey ])) {
+                        } else if (_guildMember.settings.xp < xp && _guildMember.roles.cache.get(levelRoles[ levelKey ])) {
                             rolesToRemove.push(levelRoles[ levelKey ]);
                         }
                     }
@@ -112,7 +112,7 @@ module.exports = class extends Event {
         }
 
         // Re-assign permissions to discipline channels.
-        guildMember.guild.channels
+        guildMember.guild.channels.cache
             .filter((channel) => channel.topic && channel.topic !== null && channel.topic.startsWith(`Discipline ${guildMember.user.id}`))
             .each((channel) => {
                 channel.createOverwrite(guildMember, {
@@ -127,7 +127,7 @@ module.exports = class extends Event {
             });
 
         // Re-assign permissions to interrogation channels
-        guildMember.guild.channels
+        guildMember.guild.channels.cache
             .filter((channel) => channel.name.startsWith("interrogation-") && channel.topic && channel.topic !== null && channel.topic.includes(guildMember.user.id))
             .each((channel) => {
                 channel.createOverwrite(guildMember, {
