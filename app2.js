@@ -212,7 +212,7 @@ var client = new Client({
         .add(9, ({ author, client }) => author === client.owner, { break: true })
         // Allows the bot owner to use Bot Owner only commands, which silently fail for other users.
         .add(10, ({ author, client }) => author === client.owner),
-    readyMessage: (client) => `Ready to serve ${client.guilds.size} guilds and ${client.users.size} users`,
+    readyMessage: (client) => `Ready to serve ${client.guilds.cache.size} guilds and ${client.users.cache.size} users`,
 });
 
 // Add a channels gateway

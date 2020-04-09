@@ -58,7 +58,7 @@ const awaitReaction = async (msg, message) => {
 
 const awaitMessage = async (msg, message) => {
 	const messages = await msg.channel.awaitMessages(mes => mes.author === msg.author, { time: 60000, max: 1 });
-	if (messages.size === 0) return false;
+	if (messages.cache.size === 0) return false;
 	const responseMessage = await messages.first().content;
 	messages.first().delete();
 	message.delete();
