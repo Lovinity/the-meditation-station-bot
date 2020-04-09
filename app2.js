@@ -14,6 +14,7 @@ Client.defaultGuildSchema
     .add('botChannel', 'textchannel')
     .add('botGamesChannel', 'textchannel')
     .add('modLogChannel', 'textchannel')
+    .add('modLogPublicChannel', 'textchannel')
     .add('eventLogChannel', 'textchannel')
     .add('flagLogChannel', 'textchannel')
     .add('iceBreakerChannel', 'textchannel')
@@ -25,7 +26,6 @@ Client.defaultGuildSchema
     .add('noXPChannels', 'textchannel', { array: true })
     .add('repEmoji', 'string')
     .add('muteRole', 'role')
-    .add('unsafeRole', 'role')
     .add('modRole', 'role')
     .add('staffRole', 'role')
     .add('inactiveRole', 'role')
@@ -116,6 +116,49 @@ Client.defaultMemberSchema
             .add('cannotPurchaseAds', 'boolean', { default: false, configurable: false })
             .add('cannotEditProfile', 'boolean', { default: false, configurable: false })
     })
+    .add('RP', folder => {
+        folder
+            .add('inSession', 'integer', { default: 0, configurable: false })
+            .add('team', 'string')
+            .add('earthCharacter', folder2 => {
+                folder2
+                    .add('name', 'string')
+                    .add('image', 'url')
+                    .add('strength', 'integer', { default: 1 })
+                    .add('dexterity', 'integer', { default: 1 })
+                    .add('constitution', 'integer', { default: 1 })
+                    .add('intelligence', 'integer', { default: 1 })
+                    .add('wisdom', 'integer', { default: 1 })
+                    .add('charisma', 'integer', { default: 1 })
+                    .add('XP', 'integer', { default: 0, configurable: false })
+                    .add('HP', 'integer', { default: 50, configurable: false })
+                    .add('maxHPBonus', 'integer', { default: 0, configurable: false })
+                    .add('EP', 'integer', { default: 25, configurable: false })
+                    .add('info', 'string')
+                    .add('skills', 'string')
+                    .add('items', 'string')
+                    .add('ailments', 'string')
+            })
+            .add('matrixCharacter', folder2 => {
+                folder2
+                    .add('name', 'string')
+                    .add('image', 'url')
+                    .add('strength', 'integer', { default: 1 })
+                    .add('dexterity', 'integer', { default: 1 })
+                    .add('constitution', 'integer', { default: 1 })
+                    .add('intelligence', 'integer', { default: 1 })
+                    .add('wisdom', 'integer', { default: 1 })
+                    .add('charisma', 'integer', { default: 1 })
+                    .add('XP', 'integer', { default: 0, configurable: false })
+                    .add('HP', 'integer', { default: 50, configurable: false })
+                    .add('maxHPBonus', 'integer', { default: 0, configurable: false })
+                    .add('EP', 'integer', { default: 50, configurable: false })
+                    .add('info', 'string')
+                    .add('skills', 'string')
+                    .add('items', 'string')
+                    .add('ailments', 'string')
+            })
+    })
     .add('verified', 'boolean', { default: false, configurable: false })
     .add('canRep', 'boolean', { default: true, configurable: false })
     .add('muted', 'boolean', { default: false, configurable: false })
@@ -139,8 +182,8 @@ var client = new Client({
     messageCacheMaxSize: 1000, // We're going to cache by days old rather than number, but have 1,000 as a max just in case
     messageCacheLifetime: (60 * 60 * 24 * 10), // 10 days
     messageSweepInterval: (60 * 60), // Sweep every hour
-    partials: ['USER', 'MESSAGE', 'CHANNEL', 'GUILD_MEMBER', 'REACTION'], // Allow partials so we do not miss important event information
-    clientID: '637472382797348875',
+    partials: [ 'USER', 'MESSAGE', 'CHANNEL', 'GUILD_MEMBER', 'REACTION' ], // Allow partials so we do not miss important event information
+    clientID: '697807264693747733',
     clientSecret: config.clientSecret,
     commandEditing: true,
     typing: true,

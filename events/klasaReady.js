@@ -80,25 +80,6 @@ module.exports = class extends Event {
                     channel.messages.fetch();
             });
 
-            // Reset verification roles for specific guild
-            if (guild.id === config.verification.guild) {
-                (async (_guild) => {
-                    var _channel = _guild.channels.resolve(config.verification.channel);
-                    if (_channel) {
-                        var _message = await _channel.messages.fetch(config.verification.message);
-                        if (_message) {
-                            await _message.reactions.removeAll();
-                            await _message.react(`1️⃣`);
-                            await _message.react(`2️⃣`);
-                            await _message.react(`3️⃣`);
-                            await _message.react(`4️⃣`);
-                            await _message.react(`5️⃣`);
-                            await _message.react(`6️⃣`);
-                        }
-                    }
-                })(guild);
-            }
-
             // Cycle through all the members without the verified role and assign them the stored roles if applicable.
             const verifiedRole = guild.roles.resolve(guild.settings.verifiedRole);
             const muteRole = guild.roles.resolve(guild.settings.muteRole);

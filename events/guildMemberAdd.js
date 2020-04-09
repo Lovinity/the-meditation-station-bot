@@ -107,7 +107,7 @@ module.exports = class extends Event {
                 }
             } else {
                 if (_channel2)
-                    _channel2.send(`**Welcome new member** <@${guildMember.id}>! Check out the information channels to learn more about us! Please especially read the rules. `)
+                    _channel2.send(`**Welcome new member** <@${guildMember.id}>! Check out the information channels to learn more about us and how to get started in the role play campaign! Please especially read the rules. `)
             }
         }
 

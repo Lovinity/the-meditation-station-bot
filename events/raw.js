@@ -74,60 +74,6 @@ module.exports = class extends Event {
                 });
             }
 
-            // Verification question for a specific guild, must be manually configured
-            if (data.d.user_id !== this.client.user.id && config.verification.channel === data.d.channel_id && config.verification.message === data.d.message_id && guild && guild.id === config.verification.guild && member && message) {
-                message.reactions
-                    .map((reaction) => {
-                        reaction.users.remove(data.d.user_id);
-                    });
-                if (!member.settings.verified) {
-                    // Prune the unverified channel every time someone answers the verification question
-                    if (unverifiedChannel) {
-                        unverifiedChannel.bulkDelete(100)
-                        .then(() => {
-                            unverifiedChannel.send(`:wastebasket: For security, this channel is pruned every time someone answers the verification question.`)
-                        })
-                    }
-                    if (config.verification.correct === data.d.emoji.name.codePointAt(0)) {
-                        member.settings.update('verified', true);
-                        const verifiedRole = guild.roles.resolve(guild.settings.verifiedRole);
-                        if (!verifiedRole)
-                            return null;
-                        if (guild.settings.raidMitigation < 2) {
-                            if (generalChannel)
-                                generalChannel.send(`Thank you <@${member.id}> for getting verified! You now have full access to the guild. Check out the information channels to learn more about us!
-${guild.members.filter((member) => !member.user.bot).size < 25 ? `:speech_left: Note: We are still a very new guild. There isn't much activity right now, but please help us change that! make some responses / topics around in the different channels, and invite your friends. We greatly appreciate it!` : ``}`);
-                            member.roles.add(verifiedRole, `User is verified`);
-                        } else {
-                            if (unverifiedChannel)
-                                unverifiedChannel.send(`<@${member.id}>, **you have been verified**! However, the bot is currently trying to stop a raid in the guild. You will get full guild access once the bot has determined the raid to be over. This should hopefully be no more than a couple of hours. Thank you for your patience.`)
-                            if (generalChannel)
-                                generalChannel.send(`:hourglass: <@${member.user.id}> was verified but has to wait until raid mitigation ends before they have full guild access.`)
-                        }
-                    } else { // Automatic mute discipline for choosing the wrong gender!
-                        member.settings.update('verified', true); // Still verify them among the discipline because verification is a one-shot thing.
-                        var discipline = new GuildDiscipline(member.user, guild, this.client.user)
-                            .setType('classD')
-                            .setReason(`You did not answer the verification question correctly (you chose ${data.d.emoji.name} ). We need you to take extra steps as explained below to prove to us you are not a troll to get full guild access.`)
-                            .setMuteDuration(0)
-                            .setClassD({
-                                apology: false,
-                                research: `You must write a research paper explaining what the following gender identities are: Woman, Man, Trans Woman, Trans Man, Agender, Genderfluid, and Genderqueer. You must also include in your research paper how/why gender is distinctly different from sex.`,
-                                retraction: false,
-                                quiz: false
-                            })
-                            .setOther(`After completing your research paper, staff will again ask you the same or a similar verification question. You must complete your research paper within 7 days, and get the verification question correct on the second try, to be allowed full guild access.`)
-                            .addRule(5);
-                        discipline.prepare()
-                            .then(prepared => {
-                                prepared.finalize();
-                            });
-                        if (generalChannel)
-                            generalChannel.send(`:imp: Well, that's embarrassing. <@${member.user.id}> did not answer the verification question correctly. It'll be a while before they can get full guild access, if they do.`)
-                    }
-                }
-            }
-
         }
     }
 
